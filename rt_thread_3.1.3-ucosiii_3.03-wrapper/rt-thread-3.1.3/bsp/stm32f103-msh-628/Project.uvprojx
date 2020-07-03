@@ -484,14 +484,14 @@
               <FilePath>..\..\..\uCOS-III_Wrapper\uC-CPU\cpu.h</FilePath>
             </File>
             <File>
-              <FileName>cpu_a.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\uC-CPU\cpu_a.c</FilePath>
-            </File>
-            <File>
               <FileName>cpu_def.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uC-CPU\cpu_def.h</FilePath>
+            </File>
+            <File>
+              <FileName>cpu_a.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uC-CPU\cpu_a.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -507,6 +507,11 @@
               <FileName>os_cfg.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg.h</FilePath>
+            </File>
+            <File>
+              <FileName>os_type.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_type.h</FilePath>
             </File>
             <File>
               <FileName>os_core.c</FileName>
@@ -558,11 +563,6 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_tmr.c</FilePath>
             </File>
-            <File>
-              <FileName>os_type.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_type.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -594,11 +594,6 @@
               <FilePath>..\..\..\uCOS-III_Wrapper\test\queue_test.c</FilePath>
             </File>
             <File>
-              <FileName>readme.txt</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\test\readme.txt</FilePath>
-            </File>
-            <File>
               <FileName>sem_test.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\test\sem_test.c</FilePath>
@@ -607,6 +602,11 @@
               <FileName>timer_test.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\test\timer_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>readme.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\test\readme.txt</FilePath>
             </File>
           </Files>
         </Group>
