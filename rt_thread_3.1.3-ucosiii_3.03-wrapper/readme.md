@@ -3,7 +3,7 @@ A wrapper which can make codes developed by uCOS-III APIs can directly run on RT
 
 这是一个针对RT-Thread操作系统的uCOS-III兼容层，可以让基于uCOS-III的应用层程序做最小的修改，使项目快速从uCOS-III迁移到RT-Thread。
 
-本文件内的兼容层为uCOS-III3.03版本向RT-Thread Nano-3.1.3兼容。由于uCOS-III支持<u>8、16、32位</u>CPU，而RT-Thread支持<u>32、64位CPU</u>，**因此本兼容层仅能对基于32位CPU的已有工程进行兼容**。
+本文件内的兼容层为uCOS-III3.03版本向RT-Thread Nano-3.1.3兼容。由于uCOS-III支持8、16、32位CPU，而RT-Thread支持32、64位CPU，**因此本兼容层仅能对基于32位CPU的已有工程进行兼容**。
 
 
 ## 版本详细信息
@@ -11,6 +11,8 @@ uC/OS-III        3.03.00 </br>
 uC/CPU          1.30.00 </br>
 uC/LIB            1.37.02 </br>
 RTT nano       3.1.3  </br>
+
+
 
 # 二、使用
 
@@ -66,7 +68,7 @@ void  OSSchedRoundRobinCfg (CPU_BOOLEAN en, OS_TICK dflt_time_quanta, OS_ERR *p_
 ### 4.2 os_flag.c
 ```c
 OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP *p_grp, OS_OPT opt, OS_ERR *p_err);
-OS_FLAGS  OSFlagPost (OS_FLAG_GRP *p_grp, OS_FLAGS flags, OS_OPT opt, OS_ERR *p_err);
+OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err);
 ```
 
 ### 4.3 os_mutex.c
@@ -111,7 +113,10 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb, OS_ERR  *p_err);
 OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr, OS_ERR  *p_err);
 ```
 
+
+
 ## 5.被RT-Thread接管的API
+
 下列uCOS-III API 被RT-Thread接管，无需实现：
 
 ### 5.1 os_core.c
@@ -120,5 +125,8 @@ void  OSInit (OS_ERR  *p_err);
 void  OSStart (OS_ERR  *p_err);
 ```
 
+
+
 ## 5.TODO
+
 实现任务内建信号量、任务内建消息队列、任务内建寄存器以及任务用户补充的存储区的相关API兼容
