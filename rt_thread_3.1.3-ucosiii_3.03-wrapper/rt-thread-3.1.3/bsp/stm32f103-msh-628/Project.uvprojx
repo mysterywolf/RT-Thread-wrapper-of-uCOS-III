@@ -563,6 +563,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_tmr.c</FilePath>
             </File>
+            <File>
+              <FileName>os_var.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_var.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

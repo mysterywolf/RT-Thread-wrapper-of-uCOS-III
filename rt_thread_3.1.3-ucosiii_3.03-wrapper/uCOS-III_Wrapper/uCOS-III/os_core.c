@@ -43,13 +43,34 @@
 #include <os.h>
 
 /*
-RTT接管,以下函数不予实现
-OSInit
-OSStart
 由于RTT没有相关接口，因此以下函数没有实现
 OSSchedRoundRobinCfg
 */
 
+/*
+************************************************************************************************************************
+*                                                    INITIALIZATION
+*
+* Description: This function is used to initialize the internals of uC/OS-III and MUST be called prior to
+*              creating any uC/OS-III object and, prior to calling OS_Start().
+*
+* Arguments  : p_err         is a pointer to a variable that will contain an error code returned by this function.
+*
+*                                OS_ERR_NONE    Initialization was successful
+*                                Other          Other OS_ERR_xxx depending on the sub-functions called by OSInit().
+* Returns    : none
+************************************************************************************************************************
+*/
+
+void  OSInit (OS_ERR  *p_err)
+{
+    *p_err = OS_ERR_NONE;
+    
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u
+    OSTaskRegNextAvailID    = (OS_REG_ID)0;
+#endif    
+    
+}
 /*
 ************************************************************************************************************************
 *                                                      ENTER ISR
@@ -283,6 +304,35 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
     
     rt_err = rt_thread_yield();
     *p_err = _err_rtt_to_ucosiii(rt_err); 
+}
+
+/*
+************************************************************************************************************************
+*                                                 START MULTITASKING
+*
+* Description: This function is used to start the multitasking process which lets uC/OS-III manages the task that you
+*              created.  Before you can call OSStart(), you MUST have called OSInit() and you MUST have created at least
+*              one application task.
+*
+* Argument(s): p_err      is a pointer to a variable that will contain an error code returned by this function.
+*
+*                             OS_ERR_FATAL_RETURN    OS was running and OSStart() returned.
+*                             OS_ERR_OS_RUNNING      OS is already running, OSStart() has no effect
+*
+* Returns    : none
+*
+* Note(s)    : 1) OSStartHighRdy() MUST:
+*                 a) Call OSTaskSwHook() then,
+*                 b) Load the context of the task pointed to by OSTCBHighRdyPtr.
+*                 c) Execute the task.
+*
+*              2) OSStart() is not supposed to return.  If it does, that would be considered a fatal error.
+************************************************************************************************************************
+*/
+
+void  OSStart (OS_ERR  *p_err)
+{
+    *p_err = OS_ERR_OS_RUNNING; 
 }
 
 /*

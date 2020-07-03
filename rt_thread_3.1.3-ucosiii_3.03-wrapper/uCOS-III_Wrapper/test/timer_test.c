@@ -41,6 +41,7 @@ static void thread2_entry(void *param)
     OSTmrStart(&tmr1,&err);	//¿ªÆô¶¨Ê±Æ÷1
     while(1)
     {
+        
         OSTaskStkChk(RT_NULL,&free,&used,&used_max,&err);
         rt_kprintf("free:%d,used:%d,used_max:%d\r\n",free,used,used_max);
         OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);

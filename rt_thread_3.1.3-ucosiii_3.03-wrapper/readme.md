@@ -21,6 +21,7 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 
 需要提前安装好RT-Thread Nano-3.1.3 Keil支持包：https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.1.3.pack
 
+
 ## 2.迁移步骤
 1) 浏览一下uC-CPU/cpu.h文件，看一下头文件中的定义是否符合你的CPU，一般不需要改这个文件
 
@@ -38,7 +39,6 @@ typedef  void  (*OS_TMR_CALLBACK_PTR)(void *p_tmr, void *p_arg);
 ```c
 typedef  void (*OS_TMR_CALLBACK_PTR)(void *parameter);
 ```
-
 
 
 ## 3.os_cfg.h配置文件
@@ -60,39 +60,57 @@ typedef  void (*OS_TMR_CALLBACK_PTR)(void *parameter);
 ​    本兼容层为了满足uCOS-III的容错要求，封装时，在真正调用RT-Thread接口函数之前，替RT-Thread做了大量的函数参数合法性检查，这些检查如果觉得没有必要，可以使用该宏定义予以关闭。</br>
 
 
+## 4.运行
 
-## 4.没有实现的兼容的API
+```c
+int main(void) /*RT-Thread main线程*/
+{
+    OS_ERR err;
+    
+    OSInit(&err); /*uCOS-III操作系统初始化*/
+    
+    OSStart(&err);/*开始运行uCOS-III操作系统*/
+    
+	//.....
+        
+}
+
+```
+
+
+# 三、API
+## 1.没有实现的兼容的API
 
 由于RT-Thread没有提供相关接口，以下uCOS-III APi无法实现：
 
-### 4.1 os_core.c
+### 1.1 os_core.c
 ```c
 void  OSSchedRoundRobinCfg (CPU_BOOLEAN en, OS_TICK dflt_time_quanta, OS_ERR *p_err);
 ```
-### 4.2 os_flag.c
+### 1.2 os_flag.c
 ```c
 OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP *p_grp, OS_OPT opt, OS_ERR *p_err);
 OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err);
 ```
 
-### 4.3 os_mutex.c
+### 1.3 os_mutex.c
 ```c
 OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX *p_mutex, OS_OPT opt, OS_ERR *p_err);
 ```
 
-### 4.4 os_q.c
+### 1.4 os_q.c
 ```c
 OS_MSG_QTY  OSQFlush (OS_Q *p_q, OS_ERR *p_err);
 OS_OBJ_QTY  OSQPendAbort (OS_Q *p_q, OS_OPT opt, OS_ERR *p_err);
 ```
 
-### 4.5 os_sem.c
+### 1.5 os_sem.c
 ```c
 void  OSSemSet (OS_SEM *p_sem, OS_SEM_CTR cnt, OS_ERR *p_err);
 OS_OBJ_QTY  OSSemPendAbort (OS_SEM *p_sem, OS_OPT opt, OS_ERR *p_err);
 ```
 
-### 4.6 os_stat.c
+### 1.6 os_stat.c
 由于RTT没有统计任务，本文件**所有函数**不予实现
 
 ```c
@@ -100,37 +118,24 @@ void  OSStatReset (OS_ERR  *p_err);
 void  OSStatTaskCPUUsageInit (OS_ERR  *p_err);
 ```
 
-### 4.7 os_task.c
+### 1.7 os_task.c
 
 ```c
 void  OSTaskChangePrio (OS_TCB *p_tcb, OS_PRIO prio_new, OS_ERR *p_err);
 void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
 ```
 
-### 4.8 os_time.c
+### 1.8 os_time.c
 ```c
 void  OSTimeDlyResume (OS_TCB  *p_tcb, OS_ERR  *p_err);
 ```
 
-### 4.9 os_tmr.c
+### 1.9 os_tmr.c
 ```c
 OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr, OS_ERR  *p_err);
 ```
 
 
-
-## 5.被RT-Thread接管的API
-
-下列uCOS-III API 被RT-Thread接管，无需实现：
-
-### 5.1 os_core.c
-```c
-void  OSInit (OS_ERR  *p_err);
-void  OSStart (OS_ERR  *p_err);
-```
-
-
-
-# 三、TODO
+# 四、TODO
 
 实现任务内建信号量、任务内建消息队列、任务内建寄存器以及任务用户补充的存储区的相关API兼容

@@ -63,6 +63,18 @@
 #include <os_cfg.h>
 #include <lib_def.h>
 
+/*
+************************************************************************************************************************
+*                                                     MISCELLANEOUS
+************************************************************************************************************************
+*/
+
+#ifdef   OS_GLOBALS
+#define  OS_EXT
+#else
+#define  OS_EXT  extern
+#endif
+
 
 /*
 ************************************************************************************************************************
@@ -264,7 +276,7 @@ typedef  enum  os_err {
 
     OS_ERR_N                         = 23000u,
     OS_ERR_NAME                      = 23001u,
-//    OS_ERR_NO_MORE_ID_AVAIL          = 23002u,
+    OS_ERR_NO_MORE_ID_AVAIL          = 23002u,
 
     OS_ERR_O                         = 24000u,
     OS_ERR_OBJ_CREATED               = 24001u,
@@ -275,7 +287,7 @@ typedef  enum  os_err {
     OS_ERR_OPT_INVALID               = 24101u,
 
 //    OS_ERR_OS_NOT_RUNNING            = 24201u,
-//    OS_ERR_OS_RUNNING                = 24202u,
+    OS_ERR_OS_RUNNING                = 24202u,
 
     OS_ERR_P                         = 25000u,
 //    OS_ERR_PEND_ABORT                = 25001u,
@@ -461,7 +473,7 @@ struct os_q
 */
 struct os_tcb
 {
-    struct rt_thread task;/*任务*/
+    struct rt_thread task;/*任务，要确保该成员位于结构体第一个*/
     struct rt_semaphore Sem;/*内建信号量*/
     struct rt_messagequeue MsgQ;/*内建队列*/
     void *MsgPtr;/*内建队列消息指针*/
@@ -470,7 +482,6 @@ struct os_tcb
     OS_REG RegTbl[OS_CFG_TASK_REG_TBL_SIZE];/*任务寄存器*/
     CPU_STK StkSize;/*任务堆栈大小*/
 };
-
 
 /*
 ************************************************************************************************************************
@@ -494,6 +505,19 @@ typedef  struct  rt_timer            OS_TMR;
 
 typedef  void                        (*OS_TASK_PTR)        (void *parameter);
 typedef  struct os_tcb               OS_TCB;
+
+
+/*
+************************************************************************************************************************
+************************************************************************************************************************
+*                                           G L O B A L   V A R I A B L E S
+************************************************************************************************************************
+************************************************************************************************************************
+*/
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u
+OS_EXT            OS_REG_ID                 OSTaskRegNextAvailID;       /* Next available Task Register ID            */
+#endif
+
 
 
 /*
@@ -635,12 +659,11 @@ OS_SEM_CTR    OSTaskSemSet              (OS_TCB                *p_tcb,
                                          OS_SEM_CTR             cnt,
                                          OS_ERR                *p_err);
 
-#if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
 void          OSTaskStkChk              (OS_TCB                *p_tcb,
                                          CPU_STK_SIZE          *p_free,
                                          CPU_STK_SIZE          *p_used,
+                                         CPU_STK_SIZE          *p_used_max,
                                          OS_ERR                *p_err);
-#endif
 
 #if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
 void          OSTaskTimeQuantaSet       (OS_TCB                *p_tcb,

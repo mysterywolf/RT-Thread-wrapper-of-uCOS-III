@@ -54,11 +54,7 @@ OSTaskSemPendAbort
 OSTaskSemPost
 OSTaskSemSet
 
-2)任务内建寄存器
-OSTaskRegGet
-OSTaskRegSet
-
-3)运行过程中修改任务参数
+2)运行过程中修改任务参数
 OSTaskChangePrio
 OSTaskTimeQuantaSet
 */
@@ -343,6 +339,61 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 
 /*
 ************************************************************************************************************************
+*                                       GET THE CURRENT VALUE OF A TASK REGISTER
+*
+* Description: This function is called to obtain the current value of a task register.  Task registers are application
+*              specific and can be used to store task specific values such as 'error numbers' (i.e. errno), statistics,
+*              etc.
+*
+* Arguments  : p_tcb     is a pointer to the OS_TCB of the task you want to read the register from.  If 'p_tcb' is a
+*                        NULL pointer then you will get the register of the current task.
+*
+*              id        is the 'id' of the desired task variable.  Note that the 'id' must be less than
+*                        OS_CFG_TASK_REG_TBL_SIZE
+*
+*              p_err     is a pointer to a variable that will hold an error code related to this call.
+*
+*                            OS_ERR_NONE            if the call was successful
+*                            OS_ERR_REG_ID_INVALID  if the 'id' is not between 0 and OS_CFG_TASK_REG_TBL_SIZE-1
+*
+* Returns    : The current value of the task's register or 0 if an error is detected.
+************************************************************************************************************************
+*/
+
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u
+OS_REG  OSTaskRegGet (OS_TCB     *p_tcb,
+                      OS_REG_ID   id,
+                      OS_ERR     *p_err)
+{
+    OS_REG     value;
+    rt_thread_t p_thread;
+    
+    CPU_SR_ALLOC();
+
+#if OS_CFG_ARG_CHK_EN > 0u
+    if (id >= OS_CFG_TASK_REG_TBL_SIZE) {
+       *p_err = OS_ERR_REG_ID_INVALID;
+        return ((OS_REG)0);
+    }
+#endif
+
+    CPU_CRITICAL_ENTER();
+    if (p_tcb == (OS_TCB *)0) {
+        p_thread = rt_thread_self();
+    }
+    else{
+        p_thread = &p_tcb->task;
+    }
+    value = ((OS_TCB*)p_thread)->RegTbl[id];
+    CPU_CRITICAL_EXIT();
+    
+   *p_err = OS_ERR_NONE;
+    return ((OS_REG)value);
+}
+#endif
+
+/*
+************************************************************************************************************************
 *                                    ALLOCATE THE NEXT AVAILABLE TASK REGISTER ID
 *
 * Description: This function is called to obtain a task register ID.  This function thus allows task registers IDs to be
@@ -363,15 +414,6 @@ OS_REG_ID  OSTaskRegGetID (OS_ERR  *p_err)
 {
     OS_REG_ID  id;
     CPU_SR_ALLOC();
-
-
-
-#ifdef OS_SAFETY_CRITICAL
-    if (p_err == (OS_ERR *)0) {
-        OS_SAFETY_CRITICAL_EXCEPTION();
-        return ((OS_REG_ID)OS_CFG_TASK_REG_TBL_SIZE);
-    }
-#endif
 
     CPU_CRITICAL_ENTER();
     if (OSTaskRegNextAvailID >= OS_CFG_TASK_REG_TBL_SIZE) {       /* See if we exceeded the number of IDs available   */
@@ -419,16 +461,9 @@ void  OSTaskRegSet (OS_TCB     *p_tcb,
                     OS_REG      value,
                     OS_ERR     *p_err)
 {
+    rt_thread_t p_thread;
+    
     CPU_SR_ALLOC();
-
-
-
-#ifdef OS_SAFETY_CRITICAL
-    if (p_err == (OS_ERR *)0) {
-        OS_SAFETY_CRITICAL_EXCEPTION();
-        return;
-    }
-#endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
     if (id >= OS_CFG_TASK_REG_TBL_SIZE) {
@@ -439,9 +474,12 @@ void  OSTaskRegSet (OS_TCB     *p_tcb,
 
     CPU_CRITICAL_ENTER();
     if (p_tcb == (OS_TCB *)0) {
-        p_tcb = OSTCBCurPtr;
+        p_thread = rt_thread_self();
     }
-    p_tcb->RegTbl[id] = value;
+    else{
+        p_thread = &p_tcb->task;
+    }
+    ((OS_TCB*)p_thread)->RegTbl[id] = value;
     CPU_CRITICAL_EXIT();
    *p_err             = OS_ERR_NONE;
 }
@@ -529,6 +567,8 @@ void  OSTaskResume (OS_TCB  *p_tcb,
 *              p_used      is a pointer to a variable that will receive the number of used 'entries' on the task's stack.
 *
 *              p_used_max  is a pointer to a variable that will receive the maximum number of used 'entries' on the task's stack.
+*                          -------------说明-------------
+*                          该参数是相较于原版新增的参数
 *
 *              p_err       is a pointer to a variable that will contain an error code.
 *
