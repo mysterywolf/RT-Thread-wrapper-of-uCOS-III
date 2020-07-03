@@ -33,11 +33,11 @@ uCOS-III原版软件定时器回调函数定义：
 本兼容层软件定时器回调函数定义：
 `typedef  void (*OS_TMR_CALLBACK_PTR)(void *parameter);`
 
-4)浏览一下uCOS-III/os_cfg.h，看一下配置宏定义，这里需要说明以下几点</br>
-	`#define  RT_DEBUG_UCOSIII` 
+4)浏览一下uCOS-III/os_cfg.h（该文件合并了原版os_cfg.h文件和os_cfg_app.h文件），看一下配置宏定义：</br>
+	`#define  RT_DEBUG_UCOSIII` </br>
     该宏定义定义是否启用兼容层调试，建议在第一次迁移时打开，因为在兼容层内部，一部分uCOS-III原版功能没有实现，如果用户用到了这部分没有实现的功能，将会通过调试的方式输出，予以提示。用户务必对业务逻辑予以修改。</br>
-    `#define  OS_CFG_TMR_TASK_RATE_HZ`
+    `#define  OS_CFG_TMR_TASK_RATE_HZ`</br>
     在原版uCOS-III中，该宏定义定义了软件定时器的时基信号，这与RT-Thread的软件定时器有本质的不同，在RT-Thread中，软件定时器的时基信号就等于OS ticks。因此uCOS-III的软件定时器设置的时间都是基于该时基信号完成的，为了能够将uCOS-III软件定时器时间参数转为RT-Thread软件定时器的时间参数，需要用到该宏定义。请使该宏定义与原工程使用uCOS-III时的该宏定义参数一致。</br>
-    `#define  OS_CFG_ARG_CHK_EN`
+    `#define  OS_CFG_ARG_CHK_EN`</br>
     本兼容层为了满足uCOS-III的容错要求，封装时，在真正调用RT-Thread接口函数之前，替RT-Thread做了大量的函数参数合法性检查，这些检查如果觉得没有必要，可以使用该宏定义予以关闭。</br>
 
