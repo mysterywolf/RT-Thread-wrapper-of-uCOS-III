@@ -303,7 +303,7 @@ typedef  enum  os_err {
     OS_ERR_Q_SIZE                    = 26004u,
 
     OS_ERR_R                         = 27000u,
-//    OS_ERR_REG_ID_INVALID            = 27001u,
+    OS_ERR_REG_ID_INVALID            = 27001u,
 //    OS_ERR_ROUND_ROBIN_1             = 27002u,
 //    OS_ERR_ROUND_ROBIN_DISABLED      = 27003u,
 
@@ -493,7 +493,7 @@ typedef  void                        (*OS_TMR_CALLBACK_PTR)(void *parameter);
 typedef  struct  rt_timer            OS_TMR;
 
 typedef  void                        (*OS_TASK_PTR)        (void *parameter);
-typedef  struct  rt_thread           OS_TCB;
+typedef  struct os_tcb               OS_TCB;
 
 
 /*
@@ -548,9 +548,11 @@ OS_FLAGS      OSFlagPost                (OS_FLAG_GRP           *p_grp,
 /*                                                 TASK MANAGEMENT                                                    */
 /* ================================================================================================================== */
 
+#if OS_CFG_TASK_CHANGE_PRIO_EN > 0u
 void          OSTaskChangePrio          (OS_TCB                *p_tcb,
                                          OS_PRIO                prio_new,
                                          OS_ERR                *p_err);
+#endif
 
 void          OSTaskCreate              (OS_TCB                *p_tcb,
                                          CPU_CHAR              *p_name,
@@ -566,25 +568,85 @@ void          OSTaskCreate              (OS_TCB                *p_tcb,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
 
+#if OS_CFG_TASK_DEL_EN > 0u
 void          OSTaskDel                 (OS_TCB                *p_tcb,
                                          OS_ERR                *p_err);
+#endif
 
+#if OS_CFG_TASK_Q_EN > 0u
+OS_MSG_QTY    OSTaskQFlush              (OS_TCB                *p_tcb,
+                                         OS_ERR                *p_err);
+
+void         *OSTaskQPend               (OS_TICK                timeout,
+                                         OS_OPT                 opt,
+                                         OS_MSG_SIZE           *p_msg_size,
+                                         CPU_TS                *p_ts,
+                                         OS_ERR                *p_err);
+
+CPU_BOOLEAN   OSTaskQPendAbort          (OS_TCB                *p_tcb,
+                                         OS_OPT                 opt,
+                                         OS_ERR                *p_err);
+
+void          OSTaskQPost               (OS_TCB                *p_tcb,
+                                         void                  *p_void,
+                                         OS_MSG_SIZE            msg_size,
+                                         OS_OPT                 opt,
+                                         OS_ERR                *p_err);
+
+#endif
+
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u
+OS_REG        OSTaskRegGet              (OS_TCB                *p_tcb,
+                                         OS_REG_ID              id,
+                                         OS_ERR                *p_err);
+
+OS_REG_ID     OSTaskRegGetID            (OS_ERR                *p_err);
+
+void          OSTaskRegSet              (OS_TCB                *p_tcb,
+                                         OS_REG_ID              id,
+                                         OS_REG                 value,
+                                         OS_ERR                *p_err);
+#endif
+
+#if OS_CFG_TASK_SUSPEND_EN > 0u
 void          OSTaskResume              (OS_TCB                *p_tcb,
                                          OS_ERR                *p_err);
 
 void          OSTaskSuspend             (OS_TCB                *p_tcb,
                                          OS_ERR                *p_err);
+#endif
 
+OS_SEM_CTR    OSTaskSemPend             (OS_TICK                timeout,
+                                         OS_OPT                 opt,
+                                         CPU_TS                *p_ts,
+                                         OS_ERR                *p_err);
+
+#if (OS_CFG_TASK_SEM_PEND_ABORT_EN > 0u)
+CPU_BOOLEAN   OSTaskSemPendAbort        (OS_TCB                *p_tcb,
+                                         OS_OPT                 opt,
+                                         OS_ERR                *p_err);
+#endif
+
+OS_SEM_CTR    OSTaskSemPost             (OS_TCB                *p_tcb,
+                                         OS_OPT                 opt,
+                                         OS_ERR                *p_err);
+
+OS_SEM_CTR    OSTaskSemSet              (OS_TCB                *p_tcb,
+                                         OS_SEM_CTR             cnt,
+                                         OS_ERR                *p_err);
+
+#if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
 void          OSTaskStkChk              (OS_TCB                *p_tcb,
                                          CPU_STK_SIZE          *p_free,
                                          CPU_STK_SIZE          *p_used,
-                                         CPU_STK_SIZE          *p_used_max,
                                          OS_ERR                *p_err);
+#endif
 
+#if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
 void          OSTaskTimeQuantaSet       (OS_TCB                *p_tcb,
                                          OS_TICK                time_quanta,
                                          OS_ERR                *p_err);
-
+#endif
 
 /* ================================================================================================================== */
 /*                                             MUTUAL EXCLUSION SEMAPHORES                                            */

@@ -207,7 +207,6 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     rt_err_t rt_err;
     
     (void)q_size;
-    (void)p_ext;
     (void)opt;
     (void)stk_limit;
     
@@ -258,9 +257,9 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     {
         *p_err = OS_ERR_STK_SIZE_INVALID;
         return;
-    }
+    }   
     
-    rt_err = rt_thread_init(p_tcb,
+    rt_err = rt_thread_init(&p_tcb->task,
                             (const char*)p_name,
                             p_task,
                             p_arg,
@@ -274,9 +273,13 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     {
         return;
     }
-
+    
+    p_tcb->StkSize = stk_size;
+    p_tcb->ExtPtr = p_ext;
+    rt_memset(p_tcb->RegTbl,0,sizeof(OS_REG)*OS_CFG_TASK_REG_TBL_SIZE);
+    
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
-    rt_err = rt_thread_startup(p_tcb);                 
+    rt_err = rt_thread_startup(&p_tcb->task);                 
     *p_err = _err_rtt_to_ucosiii(rt_err);
 }
 
@@ -333,10 +336,116 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     } 
     else
     {
-        rt_err = rt_thread_detach(p_tcb);
+        rt_err = rt_thread_detach(&p_tcb->task);
         *p_err = _err_rtt_to_ucosiii(rt_err);   
     }
 }
+
+/*
+************************************************************************************************************************
+*                                    ALLOCATE THE NEXT AVAILABLE TASK REGISTER ID
+*
+* Description: This function is called to obtain a task register ID.  This function thus allows task registers IDs to be
+*              allocated dynamically instead of statically.
+*
+* Arguments  : p_err       is a pointer to a variable that will hold an error code related to this call.
+*
+*                            OS_ERR_NONE               if the call was successful
+*                            OS_ERR_NO_MORE_ID_AVAIL   if you are attempting to assign more task register IDs than you 
+*                                                           have available through OS_CFG_TASK_REG_TBL_SIZE.
+*
+* Returns    : The next available task register 'id' or OS_CFG_TASK_REG_TBL_SIZE if an error is detected.
+************************************************************************************************************************
+*/
+
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u
+OS_REG_ID  OSTaskRegGetID (OS_ERR  *p_err)
+{
+    OS_REG_ID  id;
+    CPU_SR_ALLOC();
+
+
+
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((OS_REG_ID)OS_CFG_TASK_REG_TBL_SIZE);
+    }
+#endif
+
+    CPU_CRITICAL_ENTER();
+    if (OSTaskRegNextAvailID >= OS_CFG_TASK_REG_TBL_SIZE) {       /* See if we exceeded the number of IDs available   */
+       *p_err = OS_ERR_NO_MORE_ID_AVAIL;                          /* Yes, cannot allocate more task register IDs      */
+        CPU_CRITICAL_EXIT();
+        return ((OS_REG_ID)OS_CFG_TASK_REG_TBL_SIZE);
+    }
+     
+    id    = OSTaskRegNextAvailID;								  /* Assign the next available ID                     */
+    OSTaskRegNextAvailID++;										  /* Increment available ID for next request          */
+    CPU_CRITICAL_EXIT();
+   *p_err = OS_ERR_NONE;
+    return (id);
+}
+#endif
+
+/*
+************************************************************************************************************************
+*                                       SET THE CURRENT VALUE OF A TASK REGISTER
+*
+* Description: This function is called to change the current value of a task register.  Task registers are application
+*              specific and can be used to store task specific values such as 'error numbers' (i.e. errno), statistics,
+*              etc.
+*
+* Arguments  : p_tcb     is a pointer to the OS_TCB of the task you want to set the register for.  If 'p_tcb' is a NULL
+*                        pointer then you will change the register of the current task.
+*
+*              id        is the 'id' of the desired task register.  Note that the 'id' must be less than
+*                        OS_CFG_TASK_REG_TBL_SIZE
+*
+*              value     is the desired value for the task register.
+*
+*              p_err     is a pointer to a variable that will hold an error code related to this call.
+*
+*                            OS_ERR_NONE            if the call was successful
+*                            OS_ERR_REG_ID_INVALID  if the 'id' is not between 0 and OS_CFG_TASK_REG_TBL_SIZE-1
+*
+* Returns    : none
+************************************************************************************************************************
+*/
+
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u
+void  OSTaskRegSet (OS_TCB     *p_tcb,
+                    OS_REG_ID   id,
+                    OS_REG      value,
+                    OS_ERR     *p_err)
+{
+    CPU_SR_ALLOC();
+
+
+
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+#if OS_CFG_ARG_CHK_EN > 0u
+    if (id >= OS_CFG_TASK_REG_TBL_SIZE) {
+       *p_err = OS_ERR_REG_ID_INVALID;
+        return;
+    }
+#endif
+
+    CPU_CRITICAL_ENTER();
+    if (p_tcb == (OS_TCB *)0) {
+        p_tcb = OSTCBCurPtr;
+    }
+    p_tcb->RegTbl[id] = value;
+    CPU_CRITICAL_EXIT();
+   *p_err             = OS_ERR_NONE;
+}
+#endif
 
 /*
 ************************************************************************************************************************
@@ -388,20 +497,20 @@ void  OSTaskResume (OS_TCB  *p_tcb,
     }     
     
     /*检查任务是否企图自己恢复自己*/
-    if(rt_thread_self() == p_tcb)
+    if(rt_thread_self() == &p_tcb->task)
     {
         *p_err = OS_ERR_TASK_RESUME_SELF;
         return;
     }
     
     /*检查任务是否没有被挂起*/
-    if((p_tcb->stat & RT_THREAD_STAT_MASK) != RT_THREAD_SUSPEND)
+    if((p_tcb->task.stat & RT_THREAD_STAT_MASK) != RT_THREAD_SUSPEND)
     {
         *p_err = OS_ERR_TASK_NOT_SUSPENDED;
         return;
     }
     
-    rt_err = rt_thread_resume(p_tcb);
+    rt_err = rt_thread_resume(&p_tcb->task);
     
     *p_err = _err_rtt_to_ucosiii(rt_err);
 }
@@ -453,6 +562,8 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     rt_uint32_t stack_free;
     rt_uint8_t *ptr;
     
+    rt_thread_t thread = &p_tcb->task;
+    
     if(p_free == RT_NULL ||
        p_used == RT_NULL
     )
@@ -471,11 +582,11 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     /*若TCB指针为NULL,表示当前线程*/
     if(p_tcb ==RT_NULL)
     {
-        p_tcb = rt_thread_self();
+        thread = rt_thread_self();
     }
     
     /*检查任务堆栈是否为NULL*/
-    if(p_tcb->stack_addr == RT_NULL)
+    if(thread->stack_addr == RT_NULL)
     {
         *p_err = OS_ERR_TASK_NOT_EXIST;
         return;        
@@ -484,13 +595,13 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     *p_err = OS_ERR_NONE;
     
     /*计算堆栈最大使用情况*/
-    ptr = (rt_uint8_t *)p_tcb->stack_addr;
+    ptr = (rt_uint8_t *)thread->stack_addr;
     while (*ptr == '#')ptr ++;
-    stack_size = p_tcb->stack_size;
-    stack_used_max = p_tcb->stack_size - ((rt_ubase_t) ptr - (rt_ubase_t) p_tcb->stack_addr);
+    stack_size = thread->stack_size;
+    stack_used_max = thread->stack_size - ((rt_ubase_t) ptr - (rt_ubase_t) thread->stack_addr);
     
     /*计算堆栈实时使用情况*/
-    stack_used = (rt_ubase_t)p_tcb->stack_addr + p_tcb->stack_size - (rt_ubase_t)p_tcb->sp;
+    stack_used = (rt_ubase_t)thread->stack_addr +thread->stack_size - (rt_ubase_t)thread->sp;
     stack_free = stack_size - stack_used;
     
     *p_used_max = stack_used_max / sizeof(CPU_STK_SIZE);
@@ -559,8 +670,8 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
     } 
     else
     {
-        rt_err = rt_thread_suspend(p_tcb);
-        if(rt_thread_self() == p_tcb)/*是否要将自己挂起*/
+        rt_err = rt_thread_suspend(&p_tcb->task);
+        if(rt_thread_self() == &p_tcb->task)/*是否要将自己挂起*/
         {
             rt_schedule();/* 根据RTT的要求,若挂起自己需要立即调用rt_shedule进行调度*/
         }
