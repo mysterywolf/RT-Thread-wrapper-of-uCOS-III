@@ -25,13 +25,19 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 1) 浏览一下uC-CPU/cpu.h文件，看一下头文件中的定义是否符合你的CPU，一般不需要改这个文件
 
 2) 浏览一下uCOS-III/os.h文件，看一下错误代码，这个错误代码和原版uCOS是有一定区别的。</br>
-**注意:**请勿随意打开注释掉的枚举体成员,如果用户使用到了这些注释掉的成员,则会在迁移时编译报错,用以提醒用户这些错误代码在兼容层已经不可用。
+**注意:** 请勿随意打开注释掉的枚举体成员,如果用户使用到了这些注释掉的成员,则会在迁移时编译报错,用以提醒用户这些错误代码在兼容层已经不可用。
 
-3) 软件定时器：uCOS-III原版的软件定时器回调函数是两个参数，本兼容层由于RT-Thread的回调函数仅为一个参数，因此改为一个参数（详见uCOS-III/os.h）。</br>
+3) 软件定时器：uCOS-III原版的软件定时器回调函数是两个参数，本兼容层由于RT-Thread的回调函数仅为一个参数，因此改为一个参数（详见uCOS-III/os.h）。
+
 uCOS-III原版软件定时器回调函数定义：</br>
-`typedef  void  (*OS_TMR_CALLBACK_PTR)(void *p_tmr, void *p_arg);`</br>
+
+```c
+typedef  void  (*OS_TMR_CALLBACK_PTR)(void *p_tmr, void *p_arg);
+```
 本兼容层软件定时器回调函数定义：</br>
-`typedef  void (*OS_TMR_CALLBACK_PTR)(void *parameter);`
+```c
+typedef  void (*OS_TMR_CALLBACK_PTR)(void *parameter);
+```
 
 
 
