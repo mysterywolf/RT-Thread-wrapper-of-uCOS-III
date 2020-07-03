@@ -27,6 +27,8 @@ void tmr1_callback(void *p_tmr, void *p_arg)
 static void thread2_entry(void *param)
 {
     OS_ERR err;
+    OS_REG_ID id;
+    
     CPU_STK_SIZE free,used,used_max;
 	//创建定时器1
 	OSTmrCreate((OS_TMR		*)&tmr1,		//定时器1
@@ -39,9 +41,14 @@ static void thread2_entry(void *param)
                 (OS_ERR	    *)&err);		//返回的错误码   
                 
     OSTmrStart(&tmr1,&err);	//开启定时器1
+    
+    //测试任务内建寄存器
+    id =  OSTaskRegGetID(&err);
+    OSTaskRegSet(RT_NULL,id,323,&err); 
+    rt_kprintf("TaskRegGet:%d\r\n",OSTaskRegGet(RT_NULL,id,&err));           
+                
     while(1)
     {
-        
         OSTaskStkChk(RT_NULL,&free,&used,&used_max,&err);
         rt_kprintf("free:%d,used:%d,used_max:%d\r\n",free,used,used_max);
         OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);
