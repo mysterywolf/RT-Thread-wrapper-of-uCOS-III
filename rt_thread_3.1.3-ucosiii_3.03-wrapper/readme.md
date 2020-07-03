@@ -1,6 +1,4 @@
 # 一、 概述
-A wrapper which can make codes developed by uCOS-III APIs can directly run on RT-Thread
-
 这是一个针对RT-Thread操作系统的uCOS-III兼容层，可以让基于uCOS-III的应用层程序做最小的修改，使项目快速从uCOS-III迁移到RT-Thread。
 
 本文件内的兼容层为uCOS-III3.03版本向RT-Thread Nano-3.1.3兼容。由于uCOS-III支持8、16、32位CPU，而RT-Thread支持32、64位CPU，**因此本兼容层仅能对基于32位CPU的已有工程进行兼容**。
