@@ -1,9 +1,7 @@
-# RT-Thread + μC/OS-III 会碰出怎样的火花？
-A wrapper which can make codes developed by uCOS-III APIs can directly run on RT-Thread
+# RT-Thread + μC/OS-Ⅲ 会碰出怎样的火花？
+这是一个针对RT-Thread国产操作系统的uCOS-Ⅲ操作系统兼容层，可以让基于美国Micriμm公司的uCOS-Ⅲ操作系统的应用层程序做最小的修改，使项目快速从uCOS-Ⅲ操作系统迁移到RT-Thread操作系统。
 
-这是一个针对RT-Thread操作系统的uCOS-III兼容层，可以让基于uCOS-III的应用层程序做最小的修改，使项目快速从uCOS-III迁移到RT-Thread
-
-目前瞄准uC/OS-III 3.03版本，未来会兼容uC/OS-III 3.08。 
+目前瞄准uC/OS-Ⅲ 3.03版本，未来会兼容uC/OS-Ⅲ 3.08。 
 
 
 
