@@ -10,6 +10,11 @@ uC/CPU          1.30.00 </br>
 uC/LIB            1.37.02 </br>
 RTT nano       3.1.3  </br>
 
+## 1.2 官网
+
+RT-Thread：https://www.rt-thread.org/
+
+uCOS-Ⅲ：https://www.micrium.com/
 
 
 # 2 使用
@@ -57,7 +62,7 @@ typedef  void (*OS_TMR_CALLBACK_PTR)(void *parameter);
 ```c
 #define  OS_CFG_ARG_CHK_EN  1  /* Enable (1) or Disable (0) argument checking */
 ```
-​    本兼容层为了满足uCOS-III的容错要求，封装时，在真正调用RT-Thread接口函数之前，替RT-Thread做了大量的函数参数合法性检查，这些检查如果觉得没有必要，可以使用该宏定义予以关闭。</br>
+​    本兼容层为了满足uCOS-III的容错要求，封装时，在真正调用RT-Thread接口函数之前替RT-Thread做了大量的函数参数合法性检查，这些检查如果觉得没有必要，可以使用该宏定义予以关闭。</br>
 
 
 ## 2.4 运行
@@ -81,7 +86,7 @@ int main(void) /*RT-Thread main线程*/
 # 3 API
 ## 3.1 没有实现的兼容的API
 
-由于RT-Thread没有提供相关接口，以下uCOS-III APi无法实现：
+由于RT-Thread没有提供相关接口，以下uCOS-III API无法实现：
 
 ### 3.1.1 os_core.c
 ```c
