@@ -123,6 +123,10 @@ void  OSStatTaskCPUUsageInit (OS_ERR  *p_err);
 ```c
 void  OSTaskChangePrio (OS_TCB *p_tcb, OS_PRIO prio_new, OS_ERR *p_err);
 void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
+OS_MSG_QTY OSTaskQFlush (OS_TCB *p_tcb, OS_ERR *p_err);
+CPU_BOOLEAN OSTaskQPendAbort (OS_TCB *p_tcb, OS_OPT opt, OS_ERR *p_err);
+CPU_BOOLEAN OSTaskSemPendAbort (OS_TCB *p_tcb, OS_OPT opt, OS_ERR *p_err);
+OS_SEM_CTR OSTaskSemSet (OS_TCB *p_tcb, OS_SEM_CTR cnt, OS_ERR *p_err);
 ```
 
 ### 3.1.8 os_time.c
