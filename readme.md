@@ -8,4 +8,4 @@ A wrapper which can make codes developed by uCOS-III APIs can directly run on RT
 **详细说明请进入工程文件夹内查看**
 
 
-## 施工中 如果您认可这个项目的话 请给个星星 蟹蟹！
+## 如果您认可这个项目的话 请给个Star 蟹蟹！
