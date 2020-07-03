@@ -48,6 +48,8 @@
 #define  OS_CFG_TASK_REG_TBL_SIZE        1u                 /* Number of task specific registers                                     */
 #define  OS_CFG_TMR_TASK_RATE_HZ         100u               /* Rate for timers (100 Hz Typ.)                                         */
 
-#define  OS_CFG_ARG_CHK_EN               1                  /* Enable (1) or Disable (0) argument checking                           */
+#define  OS_CFG_ARG_CHK_EN               1u                 /* Enable (1) or Disable (0) argument checking                           */
+
+#define OS_CFG_TASK_Q_EN                 1u                 /* Include code for OSTaskQXXXX()                                        */
 
 #endif

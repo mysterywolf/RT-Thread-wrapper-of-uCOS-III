@@ -41,17 +41,14 @@
 */
 
 #include <os.h>
+#include <string.h>
 
 /*
 由于RTT没有相关接口，因此以下函数没有实现
 1)任务内建信号量、消息队列
 OSTaskQFlush
-OSTaskQPend
 OSTaskQPendAbort
-OSTaskQPost
-OSTaskSemPend
 OSTaskSemPendAbort
-OSTaskSemPost
 OSTaskSemSet
 
 2)运行过程中修改任务参数
@@ -201,8 +198,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
                     OS_ERR        *p_err)
 {
     rt_err_t rt_err;
+    OS_ERR err;
     
-    (void)q_size;
     (void)opt;
     (void)stk_limit;
     
@@ -270,9 +267,26 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         return;
     }
     
-    p_tcb->StkSize = stk_size;
-    p_tcb->ExtPtr = p_ext;
-    rt_memset(p_tcb->RegTbl,0,sizeof(OS_REG)*OS_CFG_TASK_REG_TBL_SIZE);
+    p_tcb->StkSize = stk_size;/*任务堆栈大小(单位:sizeof(CPU_STK))*/
+    p_tcb->ExtPtr = p_ext;/*用户附加区指针*/
+    
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u   
+    rt_memset(p_tcb->RegTbl,0,sizeof(OS_REG)*OS_CFG_TASK_REG_TBL_SIZE);/*初始化任务内建寄存器*/
+#endif
+    
+#if OS_CFG_TASK_Q_EN > 0u   
+    if(q_size>0)/*开启任务内建消息队列*/
+    {
+        rt_memset(p_tcb->MsgName, 0, sizeof(p_tcb->MsgName));
+        strncat(p_tcb->MsgName, (const char*)p_name, sizeof(p_tcb->MsgName));
+        strncat(p_tcb->MsgName, "_QMsg", sizeof(p_tcb->MsgName));
+        OSQCreate(&p_tcb->MsgQ, (CPU_CHAR*)p_tcb->MsgName, q_size, &err);
+        if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
+        {
+            RT_DEBUG_LOG(RT_DEBUG_UCOSIII,("task qmsg %s create err!\r\n",p_tcb->MsgName));
+        }
+    }
+#endif    
     
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
     rt_err = rt_thread_startup(&p_tcb->task);                 
@@ -336,6 +350,173 @@ void  OSTaskDel (OS_TCB  *p_tcb,
         *p_err = _err_rtt_to_ucosiii(rt_err);   
     }
 }
+
+/*
+************************************************************************************************************************
+*                                                    FLUSH TASK's QUEUE
+*
+* Description: This function is used to flush the task's internal message queue.
+*
+* Arguments  : p_tcb       is a pointer to the task's OS_TCB.  Specifying a NULL pointer indicates that you wish to
+*                          flush the message queue of the calling task.
+*
+*              p_err       is a pointer to a variable that will contain an error code returned by this function.
+*
+*                              OS_ERR_NONE           upon success
+*                              OS_ERR_FLUSH_ISR      if you called this function from an ISR
+*
+* Returns     : The number of entries freed from the queue
+*
+* Note(s)     : 1) You should use this function with great care because, when to flush the queue, you LOOSE the
+*                  references to what the queue entries are pointing to and thus, you could cause 'memory leaks'.  In
+*                  other words, the data you are pointing to that's being referenced by the queue entries should, most
+*                  likely, need to be de-allocated (i.e. freed).
+************************************************************************************************************************
+*/
+
+#if OS_CFG_TASK_Q_EN > 0u
+OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
+                          OS_ERR  *p_err)
+{
+    return 0;
+}
+#endif
+
+/*
+************************************************************************************************************************
+*                                                  WAIT FOR A MESSAGE
+*
+* Description: This function causes the current task to wait for a message to be posted to it.
+*
+* Arguments  : timeout       is an optional timeout period (in clock ticks).  If non-zero, your task will wait for a
+*                            message to arrive up to the amount of time specified by this argument.
+*                            If you specify 0, however, your task will wait forever or, until a message arrives.
+*
+*              opt           determines whether the user wants to block if the task's queue is empty or not:
+*
+*                                OS_OPT_PEND_BLOCKING
+*                                OS_OPT_PEND_NON_BLOCKING
+*
+*              p_msg_size    is a pointer to a variable that will receive the size of the message
+*
+*              p_ts          is a pointer to a variable that will receive the timestamp of when the message was
+*                            received.  If you pass a NULL pointer (i.e. (CPU_TS *)0) then you will not get the
+*                            timestamp.  In other words, passing a NULL pointer is valid and indicates that you don't
+*                            need the timestamp.
+*
+*              p_err         is a pointer to where an error message will be deposited.  Possible error
+*                            messages are:
+*
+*                                OS_ERR_NONE               The call was successful and your task received a message.
+*                              - OS_ERR_PEND_ABORT
+*                                OS_ERR_PEND_ISR           If you called this function from an ISR and the result
+*                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but the queue was not empty
+*                              - OS_ERR_Q_EMPTY
+*                                OS_ERR_SCHED_LOCKED       If the scheduler is locked
+*                                OS_ERR_TIMEOUT            A message was not received within the specified timeout
+*                                                          would lead to a suspension.
+*
+* Returns    : A pointer to the message received or a NULL pointer upon error.
+*
+* Note(s)    : 1) It is possible to receive NULL pointers when there are no errors.
+************************************************************************************************************************
+*/
+
+#if OS_CFG_TASK_Q_EN > 0u
+void  *OSTaskQPend (OS_TICK       timeout,
+                    OS_OPT        opt,
+                    OS_MSG_SIZE  *p_msg_size,
+                    CPU_TS       *p_ts,
+                    OS_ERR       *p_err)
+{
+    rt_thread_t p_thread;
+    
+    p_thread = rt_thread_self();
+    return OSQPend(&((OS_TCB*)p_thread)->MsgQ,timeout,opt,p_msg_size,p_ts,p_err);
+}
+#endif
+
+/*
+************************************************************************************************************************
+*                                              ABORT WAITING FOR A MESSAGE
+*
+* Description: This function aborts & readies the task specified.  This function should be used to fault-abort the wait
+*              for a message, rather than to normally post the message to the task via OSTaskQPost().
+*
+* Arguments  : p_tcb     is a pointer to the task to pend abort
+*
+*              opt       provides options for this function:
+*
+*                            OS_OPT_POST_NONE         No option specified
+*                            OS_OPT_POST_NO_SCHED     Indicates that the scheduler will not be called.
+*
+*              p_err     is a pointer to a variable that will contain an error code returned by this function.
+*
+*                            OS_ERR_NONE              If the task was readied and informed of the aborted wait
+*                            OS_ERR_PEND_ABORT_ISR    If you called this function from an ISR
+*                            OS_ERR_PEND_ABORT_NONE   If task was not pending on a message and thus there is nothing to
+*                                                     abort.
+*                            OS_ERR_PEND_ABORT_SELF   If you passed a NULL pointer for 'p_tcb'
+*
+* Returns    : == DEF_FALSE   if task was not waiting for a message, or upon error.
+*              == DEF_TRUE    if task was waiting for a message and was readied and informed.
+************************************************************************************************************************
+*/
+
+#if (OS_CFG_TASK_Q_EN > 0u) && (OS_CFG_TASK_Q_PEND_ABORT_EN > 0u)
+CPU_BOOLEAN  OSTaskQPendAbort (OS_TCB  *p_tcb,
+                               OS_OPT   opt,
+                               OS_ERR  *p_err)
+{
+    return 0;
+}
+#endif
+
+/*
+************************************************************************************************************************
+*                                               POST MESSAGE TO A TASK
+*
+* Description: This function sends a message to a task
+*
+* Arguments  : p_tcb      is a pointer to the TCB of the task receiving a message.  If you specify a NULL pointer then
+*                         the message will be posted to the task's queue of the calling task.  In other words, you'd be
+*                         posting a message to yourself.
+*
+*              p_void     is a pointer to the message to send.
+*
+*              msg_size   is the size of the message sent (in #bytes)
+*
+*              opt        specifies whether the post will be FIFO or LIFO:
+*
+*                             OS_OPT_POST_FIFO       Post at the end   of the queue
+*                             OS_OPT_POST_LIFO       Post at the front of the queue
+*
+*                             OS_OPT_POST_NO_SCHED   Do not run the scheduler after the post
+*
+*                          Note(s): 1) OS_OPT_POST_NO_SCHED can be added with one of the other options.
+*
+*
+*              p_err      is a pointer to a variable that will hold the error code associated
+*                         with the outcome of this call.  Errors can be:
+*
+*                             OS_ERR_NONE            The call was successful and the message was sent
+*                             OS_ERR_Q_MAX           If the queue is full
+*                             OS_ERR_MSG_POOL_EMPTY  If there are no more OS_MSGs available from the pool
+*
+* Returns    : none
+************************************************************************************************************************
+*/
+
+#if OS_CFG_TASK_Q_EN > 0u
+void  OSTaskQPost (OS_TCB       *p_tcb,
+                   void         *p_void,
+                   OS_MSG_SIZE   msg_size,
+                   OS_OPT        opt,
+                   OS_ERR       *p_err)
+{
+    OSQPost(&p_tcb->MsgQ,p_void,msg_size,opt,p_err);
+}
+#endif
 
 /*
 ************************************************************************************************************************

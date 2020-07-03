@@ -6,9 +6,9 @@
 
 ALIGN(RT_ALIGN_SIZE)
 static CPU_STK thread2_stack[THREAD_STACK_SIZE];
-OS_TCB thread2;
+static OS_TCB thread2;
 
-OS_TMR 	tmr1;		//定时器1
+static OS_TMR 	tmr1;		//定时器1
 
 //定时器1的回调函数
 void tmr1_callback(void *p_tmr, void *p_arg)
@@ -54,17 +54,6 @@ static void thread2_entry(void *param)
         OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);
     }
 }
-rt_err_t _rt_thread_init(struct rt_thread *thread,
-                        const char       *name,
-                        void (*entry)(void *parameter),
-                        void             *parameter,
-                        void             *stack_start,
-                        rt_uint32_t       stack_size,
-                        rt_uint8_t        priority,
-                        rt_uint32_t       tick)
-{
-    return rt_thread_init(thread,name,entry,parameter,stack_start,stack_size,priority,tick);
-}                        
 
 void timer_test (void)
 {
@@ -78,7 +67,7 @@ void timer_test (void)
                thread2_stack,	            //任务堆栈基地址
                THREAD_STACK_SIZE/10,	    //任务堆栈深度限位
                THREAD_STACK_SIZE,		    //任务堆栈大小
-               0,					        //任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息
+               20,					        //任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息
                THREAD_TIMESLICE,			//当使能时间片轮转时的时间片长度，为0时为默认长度，
                0,					        //用户补充的存储区
                OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, //任务选项

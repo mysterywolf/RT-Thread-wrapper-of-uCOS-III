@@ -18,6 +18,7 @@ void timer_test (void);
 void mutex_test (void);
 void queue_test (void);
 void flag_test (void);
+void task_q_test (void);
 
 int main(void)
 {
@@ -28,10 +29,10 @@ int main(void)
     OSStart(&err);/*开始运行uCOS-III操作系统*/
     
 //   sem_test();
-    timer_test();
+//    timer_test();
 //    mutex_test();
 //    queue_test();
 //    flag_test();
-    
+    task_q_test();
 }
 

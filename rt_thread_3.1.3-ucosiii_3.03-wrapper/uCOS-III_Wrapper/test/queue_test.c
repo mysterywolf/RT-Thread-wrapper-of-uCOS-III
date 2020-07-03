@@ -16,7 +16,7 @@ static struct rt_thread thread3;
 static OS_Q DATA_Msg;				//定义一个消息队列，用于发送数据
 #define DATAMSG_Q_NUM	4	//发送数据的消息队列的数量
 
-char buffer[128];
+static char buffer[128];
 
 /* 线程2入口 */
 static void thread2_entry(void *param)

@@ -437,6 +437,30 @@ typedef  enum  os_err {
 /*
 ************************************************************************************************************************
 ************************************************************************************************************************
+*                                                  D A T A   T Y P E S
+************************************************************************************************************************
+************************************************************************************************************************
+*/
+typedef  struct  rt_event            OS_FLAG_GRP;
+
+typedef  struct  os_q                OS_Q;
+
+typedef  struct  rt_mutex            OS_MUTEX;
+
+typedef  struct  rt_semaphore        OS_SEM;
+
+/*注意：RTT的定时器回调函数比uCOS-III的少了一个参数！*/
+//typedef  void                      (*OS_TMR_CALLBACK_PTR)(void *p_tmr, void *p_arg);
+typedef  void                        (*OS_TMR_CALLBACK_PTR)(void *parameter);
+typedef  struct  rt_timer            OS_TMR;
+
+typedef  void                        (*OS_TASK_PTR)        (void *parameter);
+typedef  struct os_tcb               OS_TCB;
+
+
+/*
+************************************************************************************************************************
+************************************************************************************************************************
 *                                          D A T A   S T R U C T U R E S
 ************************************************************************************************************************
 ************************************************************************************************************************
@@ -473,38 +497,20 @@ struct os_q
 */
 struct os_tcb
 {
-    struct rt_thread task;/*任务，要确保该成员位于结构体第一个*/
-    struct rt_semaphore Sem;/*内建信号量*/
-    struct rt_messagequeue MsgQ;/*内建队列*/
-    void *MsgPtr;/*内建队列消息指针*/
-    OS_MSG_SIZE MsgSize;/*内建队列消息大小*/
-    void *ExtPtr;/*指向用户可定义的数据区*/
-    OS_REG RegTbl[OS_CFG_TASK_REG_TBL_SIZE];/*任务寄存器*/
-    CPU_STK StkSize;/*任务堆栈大小*/
+    struct rt_thread task;      /*任务,要确保该成员位于结构体第一个*/
+    OS_SEM           Sem;       /*内建信号量*/
+#if OS_CFG_TASK_Q_EN > 0u      
+    OS_Q             MsgQ;      /*任务内建消息队列*/
+    void            *MsgPtr;    /*任务内建消息队列消息指针*/
+    OS_MSG_SIZE      MsgSize;   /*任务内建消息队列消息大小*/
+    char             MsgName[32];/*任务内建消息队列名称*/
+#endif    
+    void            *ExtPtr;    /*指向用户附加区指针*/
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u       
+    OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];/*任务寄存器*/
+#endif    
+    CPU_STK          StkSize;   /*任务堆栈大小*/
 };
-
-/*
-************************************************************************************************************************
-************************************************************************************************************************
-*                                                  D A T A   T Y P E S
-************************************************************************************************************************
-************************************************************************************************************************
-*/
-typedef  struct  rt_event            OS_FLAG_GRP;
-
-typedef  struct  os_q                OS_Q;
-
-typedef  struct  rt_mutex            OS_MUTEX;
-
-typedef  struct  rt_semaphore        OS_SEM;
-
-/*注意：RTT的定时器回调函数比uCOS-III的少了一个参数！*/
-//typedef  void                      (*OS_TMR_CALLBACK_PTR)(void *p_tmr, void *p_arg);
-typedef  void                        (*OS_TMR_CALLBACK_PTR)(void *parameter);
-typedef  struct  rt_timer            OS_TMR;
-
-typedef  void                        (*OS_TASK_PTR)        (void *parameter);
-typedef  struct os_tcb               OS_TCB;
 
 
 /*
