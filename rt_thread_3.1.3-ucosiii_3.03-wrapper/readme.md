@@ -1,20 +1,20 @@
 # 1 概述
-这是一个针对国产RT-Thread操作系统的uCOS-Ⅲ操作系统兼容层，可以让基于美国Micriμm公司的uCOS-Ⅲ操作系统的应用层程序做最小的修改，使项目快速迁移到RT-Thread操作系统上。
+这是一个针对国产RT-Thread操作系统的μCOS-Ⅲ操作系统兼容层，可以让基于美国Micriμm公司的μCOS-Ⅲ操作系统的应用层程序做最小的修改，使项目快速迁移到RT-Thread操作系统上。
 
-本文件内的兼容层为uCOS-Ⅲ 3.03版本向RT-Thread Nano 3.1.3版本兼容。由于uCOS-Ⅲ支持8、16、32位CPU，而RT-Thread支持32、64位CPU，**因此本兼容层仅能对基于32位CPU的已有工程进行兼容**。
+本文件内的兼容层为μCOS-Ⅲ 3.03版本向RT-Thread Nano 3.1.3版本兼容。由于μCOS-Ⅲ支持8、16、32位CPU，而RT-Thread支持32、64位CPU，**因此本兼容层仅能对基于32位CPU的已有工程进行兼容**。
 
 
 ## 1.1 版本详细信息
-uC/OS-III        3.03.00 </br>
-uC/CPU          1.30.00 </br>
-uC/LIB            1.37.02 </br>
+μC/OS-III        3.03.00 </br>
+μC/CPU          1.30.00 </br>
+μC/LIB            1.37.02 </br>
 RTT nano       3.1.3  </br>
 
 ## 1.2 官网
 
 RT-Thread：https://www.rt-thread.org/
 
-uCOS-Ⅲ：https://www.micrium.com/
+μCOS-Ⅲ：https://www.micrium.com/
 
 
 # 2 使用
