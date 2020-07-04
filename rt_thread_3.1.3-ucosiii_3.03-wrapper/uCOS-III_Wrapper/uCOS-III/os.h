@@ -766,14 +766,18 @@ void          OSMutexPost               (OS_MUTEX              *p_mutex,
 /*                                                   MESSAGE QUEUES                                                   */
 /* ================================================================================================================== */
 
+#if OS_CFG_Q_EN > 0u
+
 void          OSQCreate                 (OS_Q                  *p_q,
                                          CPU_CHAR              *p_name,
                                          OS_MSG_QTY             max_qty,
                                          OS_ERR                *p_err);
 
+#if OS_CFG_Q_DEL_EN > 0u
 OS_OBJ_QTY    OSQDel                    (OS_Q                  *p_q,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
+#endif
 
 #if OS_CFG_Q_FLUSH_EN > 0u
 OS_MSG_QTY    OSQFlush                  (OS_Q                  *p_q,
@@ -798,8 +802,8 @@ void          OSQPost                   (OS_Q                  *p_q,
                                          OS_MSG_SIZE            msg_size,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
+#endif
                                          
-                            
 /* ================================================================================================================== */
 /*                                                     SEMAPHORES                                                     */
 /* ================================================================================================================== */

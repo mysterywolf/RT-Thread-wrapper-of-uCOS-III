@@ -43,21 +43,20 @@
 #include <os.h>
 
 /*
-关于信号量释放(post/release)策略选项的说明:
-    RTT支持：
-        RT_IPC_FLAG_PRIO(相当于OS_OPT_POST_1)
-        RT_IPC_FLAG_FIFO(uCOS-III没有实现,其均是按照优先级排列的)
-    uCOS-III支持：
-        OS_OPT_POST_1 (相当于RT_IPC_FLAG_PRIO)
-        OS_OPT_POST_ALL (RT-Thread未实现)
-        OS_OPT_POST_NO_SCHED (RT-Thread未实现)
-    因此只能实现RT_IPC_FLAG_PRIO与OS_OPT_POST_1作为信号量的兼容
-*/
-
-/*
-由于RTT没有相关接口，因此以下函数没有实现
-OSSemSet
-OSSemPendAbort
+************************************************************************************************************************
+* Note(s)    : 1)关于信号量释放(post/release)策略选项的说明:
+*                   RTT支持：
+*                       RT_IPC_FLAG_PRIO(相当于OS_OPT_POST_1)
+*                       RT_IPC_FLAG_FIFO(uCOS-III没有实现,其均是按照优先级排列的)
+*                   uCOS-III支持：
+*                       OS_OPT_POST_1 (相当于RT_IPC_FLAG_PRIO)
+*                       OS_OPT_POST_ALL (RT-Thread未实现)
+*                       OS_OPT_POST_NO_SCHED (RT-Thread未实现)
+*                   因此只能实现RT_IPC_FLAG_PRIO与OS_OPT_POST_1作为信号量的兼容
+*              2)由于RTT没有相关接口，因此以下函数没有实现
+*                   OSSemSet
+*                   OSSemPendAbort
+************************************************************************************************************************
 */
 
 #if OS_CFG_SEM_EN > 0u
@@ -562,7 +561,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
 ************************************************************************************************************************
 */
 
-#if OS_CFG_SEM_SET_EN > 0u /*RTT没有实现该功能,不是把p_sem->value改一下这么简单*/
+#if OS_CFG_SEM_SET_EN > 0u 
 void  OSSemSet (OS_SEM      *p_sem,
                 OS_SEM_CTR   cnt,
                 OS_ERR      *p_err)
