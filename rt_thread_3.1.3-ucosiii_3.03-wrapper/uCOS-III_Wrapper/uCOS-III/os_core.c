@@ -66,12 +66,14 @@ void  OSInit (OS_ERR  *p_err)
 {
     *p_err = OS_ERR_NONE;
     
+    OSRunning = OS_STATE_OS_STOPPED; /* Indicate that multitasking not started                 */
+    
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
-    OSTaskRegNextAvailID    = (OS_REG_ID)0;
+    OSTaskRegNextAvailID = (OS_REG_ID)0;
 #endif    
     
 #ifdef OS_SAFETY_CRITICAL_IEC61508
-    OSSafetyCriticalStartFlag       =  DEF_FALSE;
+    OSSafetyCriticalStartFlag = DEF_FALSE;
 #endif    
     
 }

@@ -46,37 +46,56 @@
 #include <rtconfig.h>
 
 #define  OS_CFG_ARG_CHK_EN               1u                 /* Enable (1) or Disable (0) argument checking                           */
+#define  OS_CFG_CALLED_FROM_ISR_CHK_EN   1u                 /* Enable (1) or Disable (0) check for called from ISR                   */
+#define  OS_CFG_OBJ_TYPE_CHK_EN          1u                  /* Enable (1) or Disable (0) object type checking                        */
+
 #define  OS_CFG_DBG_EN                   1u                 /* Enable (1) debug code/variables                                       */
 
 #define  OS_CFG_PRIO_MAX        RT_THREAD_PRIORITY_MAX      /* 只读 Defines the maximum number of task priorities                    */
 
 
                                                             /* ----------------------------- EVENT FLAGS --------------------------- */
-#define  OS_CFG_FLAG_EN            RT_USING_EVENT           /* 只读 Enable (1) or Disable (0) code generation for EVENT FLAGS        */
-#define  OS_CFG_FLAG_DEL_EN              1u                 /* Include code for OSFlagDel()                                      */
+#ifdef RT_USING_EVENT
+#define  OS_CFG_FLAG_EN                  1u                 /* 只读 Enable (1) or Disable (0) code generation for EVENT FLAGS        */
+#else
+#define  OS_CFG_FLAG_EN                  0u
+#endif
+#define  OS_CFG_FLAG_DEL_EN              1u                 /* Include code for OSFlagDel()                                          */
 #define  OS_CFG_FLAG_MODE_CLR_EN         0u                 /* 只读,RTT仅能置1为事件发生  Include code for Wait on Clear EVENT FLAGS */
 #define  OS_CFG_FLAG_PEND_ABORT_EN       0u                 /* 只读,该功能无法兼容 Include code for OSFlagPendAbort()                */
 
 
                                                             /* -------------------------- MEMORY MANAGEMENT ------------------------ */
-#define  OS_CFG_MEM_EN                   0u                 /* 只读, 该功能尚未实现 Enable (1) or Disable (0) code generation for MEMORY MANAGER  */
+#define  OS_CFG_MEM_EN                   0u                 /* 只读,该功能尚未实现 Enable (1) or Disable (0) code generation for MEMORY MANAGER  */
 
 
                                                             /* --------------------- MUTUAL EXCLUSION SEMAPHORES ------------------- */
-#define  OS_CFG_MUTEX_EN           RT_USING_MUTEX           /* Enable (1) or Disable (0) code generation for MUTEX                   */
-#define  OS_CFG_MUTEX_DEL_EN             1u                 /* Include code for OSMutexDel()                                     */
+#ifdef RT_USING_MUTEX
+#define  OS_CFG_MUTEX_EN                 1u                 /* 只读 Enable (1) or Disable (0) code generation for MUTE               */
+#else
+#define  OS_CFG_MUTEX_EN                 0u 
+#endif
+#define  OS_CFG_MUTEX_DEL_EN             1u                 /* Include code for OSMutexDel()                                         */
 #define  OS_CFG_MUTEX_PEND_ABORT_EN      0u                 /* 只读,该功能无法兼容 Include code for OSMutexPendAbort()               */
 
 
                                                             /* --------------------------- MESSAGE QUEUES -------------------------- */
-#define  OS_CFG_Q_EN            RT_USING_MESSAGEQUEUE       /* 只读 Enable (1) or Disable (0) code generation for QUEUES             */
+#ifdef RT_USING_MESSAGEQUEUE
+#define  OS_CFG_Q_EN                     1u                 /* 只读 Enable (1) or Disable (0) code generation for QUEUES             */
+#else
+#define  OS_CFG_Q_EN                     0u 
+#endif
 #define  OS_CFG_Q_DEL_EN                 1u                 /* Include code for OSQDel()                                             */
 #define  OS_CFG_Q_FLUSH_EN               0u                 /* 只读,该功能无法兼容 Include code for OSQFlush()                       */
 #define  OS_CFG_Q_PEND_ABORT_EN          0u                 /* 只读,该功能无法兼容 Include code for OSQPendAbort()                   */
 
 
                                                             /* ----------------------------- SEMAPHORES ---------------------------- */
-#define  OS_CFG_SEM_EN            RT_USING_SEMAPHORE        /* 只读 Enable (1) or Disable (0) code generation for SEMAPHORES         */
+#ifdef RT_USING_SEMAPHORE
+#define  OS_CFG_SEM_EN                   1u                 /* 只读 Enable (1) or Disable (0) code generation for SEMAPHORES         */
+#else
+#define  OS_CFG_SEM_EN                   0u
+#endif
 #define  OS_CFG_SEM_DEL_EN               1u                 /* Include code for OSSemDel()                                           */
 #define  OS_CFG_SEM_PEND_ABORT_EN        0u                 /* 只读,该功能无法兼容 Include code for OSSemPendAbort()                 */
 #define  OS_CFG_SEM_SET_EN               0u                 /* 只读,该功能无法兼容 Include code for OSSemSet()                       */
@@ -110,7 +129,7 @@
 #define  OS_CFG_TMR_DEL_EN               1u                 /* Enable (1) or Disable (0) code generation for OSTmrDel()              */
 
 
-/*uCOS-III安全认证相关,已实现*/
+/*----------------------uCOS-III安全认证相关,已实现---------------------*/
 //#define  OS_SAFETY_CRITICAL_IEC61508
 
 //#define  OS_SAFETY_CRITICAL 

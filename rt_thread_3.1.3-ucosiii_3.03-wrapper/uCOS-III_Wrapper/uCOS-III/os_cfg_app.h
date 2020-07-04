@@ -49,12 +49,12 @@
 #define  OS_CFG_STAT_TASK_RATE_HZ         10u               /* Rate of execution (1 to 10 Hz)                         */
 #define  OS_CFG_STAT_TASK_STK_SIZE       128u               /* Stack size (number of CPU_STK elements)                */
 
-#if RT_USING_TIMER_SOFT == 1                                /* ----------------------- TIMERS ----------------------- */
+                                                            /* ----------------------- TIMERS ----------------------- */
 #define  OS_CFG_TMR_TASK_PRIO        RT_TIMER_THREAD_PRIO   /* 只读 Priority of 'Timer Task' 定时任务优先级           */
-#define  OS_CFG_TMR_TASK_RATE_HZ         100u               /* 保持和原版工程一致,用于与RTT定时器兼容转换Rate for timers (100 Hz Typ.)*/
+#define  OS_CFG_TMR_TASK_RATE_HZ         100u               /* 参数要和原版工程一致,用于与RTT定时器兼容转换Rate for timers (100 Hz Typ.)*/
 #define  OS_CFG_TMR_TASK_STK_SIZE \
     RT_TIMER_THREAD_STACK_SIZE/sizeof(CPU_STK)              /* 只读 Stack size (number of CPU_STK elements)           */
-#endif
+
 
                                                             /* ------------------------ TICKS ----------------------- */
 #define  OS_CFG_TICK_RATE_HZ         RT_TICK_PER_SECOND     /* 只读 Tick rate in Hertz (10 to 1000 Hz)                */

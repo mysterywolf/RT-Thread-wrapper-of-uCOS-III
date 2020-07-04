@@ -87,6 +87,49 @@
 
 /*
 ========================================================================================================================
+*                                                      TASK STATUS
+========================================================================================================================
+*/
+
+#define  OS_STATE_OS_STOPPED                    (OS_STATE)(0u)
+#define  OS_STATE_OS_RUNNING                    (OS_STATE)(1u)
+
+#define  OS_STATE_NOT_RDY                    (CPU_BOOLEAN)(0u)
+#define  OS_STATE_RDY                        (CPU_BOOLEAN)(1u)
+
+
+                                                                /* ------------------- TASK STATES ------------------ */
+#define  OS_TASK_STATE_BIT_DLY               (OS_STATE)(0x01u)  /*   /-------- SUSPENDED bit                          */
+                                                                /*   |                                                */
+#define  OS_TASK_STATE_BIT_PEND              (OS_STATE)(0x02u)  /*   | /-----  PEND      bit                          */
+                                                                /*   | |                                              */
+#define  OS_TASK_STATE_BIT_SUSPENDED         (OS_STATE)(0x04u)  /*   | | /---  Delayed/Timeout bit                    */
+                                                                /*   | | |                                            */
+                                                                /*   V V V                                            */
+
+#define  OS_TASK_STATE_RDY                    (OS_STATE)(  0u)  /*   0 0 0     Ready                                  */
+#define  OS_TASK_STATE_DLY                    (OS_STATE)(  1u)  /*   0 0 1     Delayed or Timeout                     */
+#define  OS_TASK_STATE_PEND                   (OS_STATE)(  2u)  /*   0 1 0     Pend                                   */
+#define  OS_TASK_STATE_PEND_TIMEOUT           (OS_STATE)(  3u)  /*   0 1 1     Pend + Timeout                         */
+#define  OS_TASK_STATE_SUSPENDED              (OS_STATE)(  4u)  /*   1 0 0     Suspended                              */
+#define  OS_TASK_STATE_DLY_SUSPENDED          (OS_STATE)(  5u)  /*   1 0 1     Suspended + Delayed or Timeout         */
+#define  OS_TASK_STATE_PEND_SUSPENDED         (OS_STATE)(  6u)  /*   1 1 0     Suspended + Pend                       */
+#define  OS_TASK_STATE_PEND_TIMEOUT_SUSPENDED (OS_STATE)(  7u)  /*   1 1 1     Suspended + Pend + Timeout             */
+#define  OS_TASK_STATE_DEL                    (OS_STATE)(255u)
+
+                                                                /* ----------------- PENDING ON ... ----------------- */
+#define  OS_TASK_PEND_ON_NOTHING              (OS_STATE)(  0u)  /* Pending on nothing                                 */
+#define  OS_TASK_PEND_ON_FLAG                 (OS_STATE)(  1u)  /* Pending on event flag group                        */
+#define  OS_TASK_PEND_ON_TASK_Q               (OS_STATE)(  2u)  /* Pending on message to be sent to task              */
+#define  OS_TASK_PEND_ON_MULTI                (OS_STATE)(  3u)  /* Pending on multiple semaphores and/or queues       */
+#define  OS_TASK_PEND_ON_MUTEX                (OS_STATE)(  4u)  /* Pending on mutual exclusion semaphore              */
+#define  OS_TASK_PEND_ON_Q                    (OS_STATE)(  5u)  /* Pending on queue                                   */
+#define  OS_TASK_PEND_ON_SEM                  (OS_STATE)(  6u)  /* Pending on semaphore                               */
+#define  OS_TASK_PEND_ON_TASK_SEM             (OS_STATE)(  7u)  /* Pending on signal  to be sent to task              */
+
+
+/*
+========================================================================================================================
 *                                           Possible values for 'opt' argument
 ========================================================================================================================
 */
@@ -525,12 +568,19 @@ struct os_tcb
 ************************************************************************************************************************
 ************************************************************************************************************************
 */
+OS_EXT            OS_STATE                  OSRunning;                  /* Flag indicating that kernel is running     */
+
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
 OS_EXT            OS_REG_ID                 OSTaskRegNextAvailID;       /* Next available Task Register ID            */
 #endif
 
 #ifdef OS_SAFETY_CRITICAL_IEC61508
 OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag indicating that all init. done        */
+#endif
+
+#if OS_CFG_STAT_TASK_EN > 0u
+OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsage;         /* CPU Usage in %                             */
+OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsageMax;      /* CPU Usage in % (Peak)                      */
 #endif
 
 /*
@@ -754,6 +804,8 @@ void          OSQPost                   (OS_Q                  *p_q,
 /*                                                     SEMAPHORES                                                     */
 /* ================================================================================================================== */
 
+#if OS_CFG_SEM_EN > 0u
+
 void          OSSemCreate               (OS_SEM                *p_sem,
                                          CPU_CHAR              *p_name,
                                          OS_SEM_CTR             cnt,
@@ -769,18 +821,23 @@ OS_SEM_CTR    OSSemPend                 (OS_SEM                *p_sem,
                                          CPU_TS                *p_ts,
                                          OS_ERR                *p_err);
 
+#if OS_CFG_SEM_PEND_ABORT_EN > 0u
 OS_OBJ_QTY    OSSemPendAbort            (OS_SEM                *p_sem,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
+#endif
 
 OS_SEM_CTR    OSSemPost                 (OS_SEM                *p_sem,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
 
+#if OS_CFG_SEM_SET_EN > 0u
 void          OSSemSet                  (OS_SEM                *p_sem,
                                          OS_SEM_CTR             cnt,
                                          OS_ERR                *p_err);
+#endif
 
+#endif
 
 /* ================================================================================================================== */
 /*                                                    MISCELLANEOUS                                                   */

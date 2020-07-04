@@ -144,7 +144,3 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb, OS_ERR  *p_err);
 OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr, OS_ERR  *p_err);
 ```
 
-
-# 4 TODO
-
-实现任务内建信号量、任务内建消息队列、任务内建寄存器以及任务用户补充的存储区的相关API兼容
