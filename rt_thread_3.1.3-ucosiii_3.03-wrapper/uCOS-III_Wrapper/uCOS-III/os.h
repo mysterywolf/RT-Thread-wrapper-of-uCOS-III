@@ -240,7 +240,7 @@ typedef  enum  os_err {
     OS_ERR_H                         = 17000u,
 
     OS_ERR_I                         = 18000u,
-//    OS_ERR_ILLEGAL_CREATE_RUN_TIME   = 18001u,
+    OS_ERR_ILLEGAL_CREATE_RUN_TIME   = 18001u,
 //    OS_ERR_INT_Q                     = 18002u,
 //    OS_ERR_INT_Q_FULL                = 18003u,
 //    OS_ERR_INT_Q_SIZE                = 18004u,
@@ -528,7 +528,9 @@ struct os_tcb
 OS_EXT            OS_REG_ID                 OSTaskRegNextAvailID;       /* Next available Task Register ID            */
 #endif
 
-
+#ifdef OS_SAFETY_CRITICAL_IEC61508
+OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag indicating that all init. done        */
+#endif
 
 /*
 ************************************************************************************************************************
@@ -675,11 +677,10 @@ void          OSTaskStkChk              (OS_TCB                *p_tcb,
                                          CPU_STK_SIZE          *p_used_max,
                                          OS_ERR                *p_err);
 
-#if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
 void          OSTaskTimeQuantaSet       (OS_TCB                *p_tcb,
                                          OS_TICK                time_quanta,
                                          OS_ERR                *p_err);
-#endif
+
 
 /* ================================================================================================================== */
 /*                                             MUTUAL EXCLUSION SEMAPHORES                                            */
@@ -789,6 +790,10 @@ void          OSInit                    (OS_ERR                *p_err);
 void          OSIntEnter                (void);
 void          OSIntExit                 (void);
 
+#ifdef OS_SAFETY_CRITICAL_IEC61508
+void          OSSafetyCriticalStart     (void);
+#endif
+
 void          OSSchedRoundRobinCfg      (CPU_BOOLEAN            en,
                                          OS_TICK                dflt_time_quanta,
                                          OS_ERR                *p_err);
@@ -802,9 +807,11 @@ void          OSSchedUnlock             (OS_ERR                *p_err);
 
 void          OSStart                   (OS_ERR                *p_err);
 
+#if OS_CFG_STAT_TASK_EN > 0u
 void          OSStatReset               (OS_ERR                *p_err);
 
 void          OSStatTaskCPUUsageInit    (OS_ERR                *p_err);
+#endif
 
 CPU_INT16U    OSVersion                 (OS_ERR                *p_err);
 

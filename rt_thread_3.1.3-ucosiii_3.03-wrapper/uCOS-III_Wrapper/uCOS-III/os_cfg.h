@@ -43,6 +43,7 @@
 #ifndef OS_CFG_H
 #define OS_CFG_H
 
+
 #define  RT_DEBUG_UCOSIII                1                  /* RT-Thread Debug for uCOS-III wrapper                                  */  
 
 #define  OS_CFG_TASK_REG_TBL_SIZE        1u                 /* Number of task specific registers                                     */
@@ -51,5 +52,13 @@
 #define  OS_CFG_ARG_CHK_EN               1u                 /* Enable (1) or Disable (0) argument checking                           */
 
 #define OS_CFG_TASK_Q_EN                 1u                 /* Include code for OSTaskQXXXX()                                        */
+
+
+//#define  OS_SAFETY_CRITICAL_IEC61508
+
+//#define  OS_SAFETY_CRITICAL 
+#ifdef   OS_SAFETY_CRITICAL
+#define  OS_SAFETY_CRITICAL_EXCEPTION()   {}while(0)
+#endif 
 
 #endif

@@ -13,14 +13,7 @@ static OS_TMR 	tmr1;		//定时器1
 //定时器1的回调函数
 void tmr1_callback(void *p_tmr, void *p_arg)
 {
-//    OS_ERR err;
     rt_kprintf("tmr1_callback\r\n");
-   
-//    OSTmrDel(&tmr1,&err);
-//    if(err != OS_ERR_NONE)
-//    {
-//        rt_kprintf("err:%d\r\n",err);
-//    }
 }
 
 /* 线程2入口 */

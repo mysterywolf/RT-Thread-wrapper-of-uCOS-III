@@ -132,6 +132,20 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     rt_uint8_t rt_flag;
     rt_tick_t  time;
     
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+#ifdef OS_SAFETY_CRITICAL_IEC61508
+    if (OSSafetyCriticalStartFlag == DEF_TRUE) {
+       *p_err = OS_ERR_ILLEGAL_CREATE_RUN_TIME;
+        return;
+    }
+#endif   
+    
     /*检查是否在中断中运行*/
     if(rt_interrupt_get_nest()!=0)
     {

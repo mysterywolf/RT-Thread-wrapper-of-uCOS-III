@@ -79,7 +79,7 @@ OSSemPendAbort
 *
 *                                OS_ERR_NONE                    if the call was successful
 *                                OS_ERR_CREATE_ISR              if you called this function from an ISR
-*                              - OS_ERR_ILLEGAL_CREATE_RUN_TIME if you are trying to create the semaphore after you
+*                                OS_ERR_ILLEGAL_CREATE_RUN_TIME if you are trying to create the semaphore after you
 *                                                                 called OSSafetyCriticalStart().
 *                                OS_ERR_NAME                    if 'p_name' is a NULL pointer
 *                                OS_ERR_OBJ_CREATED             if the semaphore has already been created
@@ -102,6 +102,20 @@ void  OSSemCreate (OS_SEM      *p_sem,
                    OS_ERR      *p_err)
 {
     rt_err_t rt_err;
+
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+#ifdef OS_SAFETY_CRITICAL_IEC61508
+    if (OSSafetyCriticalStartFlag == DEF_TRUE) {
+       *p_err = OS_ERR_ILLEGAL_CREATE_RUN_TIME;
+        return;
+    }
+#endif
     
     /*检查是否在中断中运行*/
     if(rt_interrupt_get_nest()!=0)

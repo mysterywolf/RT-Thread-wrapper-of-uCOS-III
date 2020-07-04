@@ -77,11 +77,11 @@ OSTaskTimeQuantaSet
 ************************************************************************************************************************
 */
 
-void  OSTaskChangePrio (OS_TCB   *p_tcb,
-                        OS_PRIO   prio_new,
-                        OS_ERR   *p_err)
-{
-}
+//void  OSTaskChangePrio (OS_TCB   *p_tcb,
+//                        OS_PRIO   prio_new,
+//                        OS_ERR   *p_err)
+//{
+//}
 
 /*
 ************************************************************************************************************************
@@ -158,7 +158,7 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
 *                             to by 'p_err' can be:
 *
 *                                 OS_ERR_NONE                    if the function was successful.
-*                               - OS_ERR_ILLEGAL_CREATE_RUN_TIME if you are trying to create the task after you called
+*                                 OS_ERR_ILLEGAL_CREATE_RUN_TIME if you are trying to create the task after you called
 *                                                                   OSSafetyCriticalStart().
 *                                 OS_ERR_NAME                    if 'p_name' is a NULL pointer
 *                                 OS_ERR_PRIO_INVALID            if the priority you specify is higher that the maximum
@@ -167,7 +167,7 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
 *                                                                   to use priority 0 which is reserved.
 *                                 OS_ERR_STK_INVALID             if you specified a NULL pointer for 'p_stk_base'
 *                                 OS_ERR_STK_SIZE_INVALID        if you specified zero for the 'stk_size'
-*                               - OS_ERR_STK_LIMIT_INVALID       if you specified a 'stk_limit' greater than or equal
+*                                 OS_ERR_STK_LIMIT_INVALID       if you specified a 'stk_limit' greater than or equal
 *                                                                   to 'stk_size'
 *                                 OS_ERR_TASK_CREATE_ISR         if you tried to create a task from an ISR.
 *                                 OS_ERR_TASK_INVALID            if you specified a NULL pointer for 'p_task'
@@ -205,6 +205,20 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     
     (void)opt;
     (void)stk_limit;
+
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+#ifdef OS_SAFETY_CRITICAL_IEC61508
+    if (OSSafetyCriticalStartFlag == DEF_TRUE) {
+       *p_err = OS_ERR_ILLEGAL_CREATE_RUN_TIME;
+        return;
+    }
+#endif
     
     /*检查是否在中断中运行*/
     if(rt_interrupt_get_nest()!=0)
@@ -401,11 +415,10 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 */
 
 #if OS_CFG_TASK_Q_EN > 0u
-OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
-                          OS_ERR  *p_err)
-{
-    return 0;
-}
+//OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
+//                          OS_ERR  *p_err)
+//{
+//}
 #endif
 
 /*
@@ -512,7 +525,6 @@ CPU_BOOLEAN  OSTaskQPendAbort (OS_TCB  *p_tcb,
                                OS_OPT   opt,
                                OS_ERR  *p_err)
 {
-    return 0;
 }
 #endif
 
@@ -1153,8 +1165,8 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
 ************************************************************************************************************************
 */
 
-void  OSTaskTimeQuantaSet (OS_TCB   *p_tcb,
-                           OS_TICK   time_quanta,
-                           OS_ERR   *p_err)
-{
-}
+//void  OSTaskTimeQuantaSet (OS_TCB   *p_tcb,
+//                           OS_TICK   time_quanta,
+//                           OS_ERR   *p_err)
+//{
+//}

@@ -62,8 +62,6 @@ static void thread2_entry(void *param)
 void task_q_test (void)
 {
     OS_ERR err;
-
-        
         
 	OSTaskCreate(&thread2,		            //任务控制块
 			   (CPU_CHAR*)"thread2", 		//任务名字

@@ -46,6 +46,7 @@
 由于RTT没有统计任务，本文件所有函数不予实现
 */
 
+#if OS_CFG_STAT_TASK_EN > 0u
 /*
 ************************************************************************************************************************
 *                                                   RESET STATISTICS
@@ -88,3 +89,5 @@ void  OSStatReset (OS_ERR  *p_err)
 void  OSStatTaskCPUUsageInit (OS_ERR  *p_err)
 {
 }
+
+#endif

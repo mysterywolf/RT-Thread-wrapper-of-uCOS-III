@@ -70,6 +70,10 @@ void  OSInit (OS_ERR  *p_err)
     OSTaskRegNextAvailID    = (OS_REG_ID)0;
 #endif    
     
+#ifdef OS_SAFETY_CRITICAL_IEC61508
+    OSSafetyCriticalStartFlag       =  DEF_FALSE;
+#endif    
+    
 }
 /*
 ************************************************************************************************************************
@@ -129,6 +133,29 @@ void  OSIntExit (void)
 
 /*
 ************************************************************************************************************************
+*                                    INDICATE THAT IT'S NO LONGER SAFE TO CREATE OBJECTS
+*
+* Description: This function is called by the application code to indicate that all initialization has been completed
+*              and that kernel objects are no longer allowed to be created.
+*
+* Arguments  : none
+*
+* Returns    : none
+*
+* Note(s)    : none
+************************************************************************************************************************
+*/
+
+#ifdef OS_SAFETY_CRITICAL_IEC61508
+void  OSSafetyCriticalStart (void)
+{
+    OSSafetyCriticalStartFlag = DEF_TRUE;
+}
+
+#endif
+
+/*
+************************************************************************************************************************
 *                                                      SCHEDULER
 *
 * Description: This function is called by other uC/OS-III services to determine whether a new, high priority task has
@@ -142,6 +169,7 @@ void  OSIntExit (void)
 * Note(s)    : 1) Rescheduling is prevented when the scheduler is locked (see OSSchedLock())
 ************************************************************************************************************************
 */
+
 void  OSSched (void)
 {
     rt_schedule();
@@ -172,6 +200,7 @@ void  OSSched (void)
 *                 call to OSSchedLock() you MUST have a call to OSSchedUnlock().
 ************************************************************************************************************************
 */
+
 void  OSSchedLock (OS_ERR  *p_err)
 {
     /*检查是否在中断中运行*/
@@ -210,6 +239,7 @@ void  OSSchedLock (OS_ERR  *p_err)
 *                 OSSchedLock() you MUST have a call to OSSchedUnlock().
 ************************************************************************************************************************
 */
+
 void  OSSchedUnlock (OS_ERR  *p_err)
 {
     /*检查是否在中断中运行*/
@@ -253,12 +283,12 @@ void  OSSchedUnlock (OS_ERR  *p_err)
 * Returns    : none
 ************************************************************************************************************************
 */
-void  OSSchedRoundRobinCfg (CPU_BOOLEAN   en,
-                            OS_TICK       dflt_time_quanta,
-                            OS_ERR       *p_err)
-{
-    
-}
+
+//void  OSSchedRoundRobinCfg (CPU_BOOLEAN   en,
+//                            OS_TICK       dflt_time_quanta,
+//                            OS_ERR       *p_err)
+//{    
+//}
 
 /*
 ************************************************************************************************************************
@@ -284,6 +314,7 @@ void  OSSchedRoundRobinCfg (CPU_BOOLEAN   en,
 * Note(s)    : 1) This function MUST be called from a task.
 ************************************************************************************************************************
 */
+
 void  OSSchedRoundRobinYield (OS_ERR  *p_err)
 {
     rt_err_t rt_err;
@@ -350,6 +381,7 @@ void  OSStart (OS_ERR  *p_err)
 * Returns    : The version number of uC/OS-III multiplied by 10000.
 ************************************************************************************************************************
 */
+
 CPU_INT16U  OSVersion (OS_ERR  *p_err)
 {
     *p_err = OS_ERR_NONE;
