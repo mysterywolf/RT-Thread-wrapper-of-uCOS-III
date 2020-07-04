@@ -43,6 +43,15 @@
 #include <os.h>
 #include <stdlib.h>
 
+/*uCOS-III原版定时器回调函数就是在定时器线程中调用的,而非在中断中调用,
+因此要使用RTT的RT_TIMER_FLAG_SOFT_TIMER选项,在此之前应将宏定义RT_USING_TIMER_SOFT置1*/
+#ifndef  RT_USING_TIMER_SOFT
+#warning "注意需要定义RT_USING_TIMER_SOFT为1"
+#endif 
+#if RT_USING_TIMER_SOFT == 0
+#warning "注意RT_USING_TIMER_SOFT宏定义要打开" 
+#endif
+
 OS_ERR _err_rtt_to_ucosiii(rt_err_t rt_err)
 {
     int rt_err2 = abs((int)rt_err);/*RTT返回的错误码都是带负号的*/

@@ -43,14 +43,15 @@
 #include <os.h>
 
 /*
-uCOS-III称之为事件标志组(flag group),RTT称之为事件集(event),以下统一使用"事件标志组"称呼
+************************************************************************************************************************
+* Note(s)    : 1)uCOS-III称之为事件标志组(flag group),RTT称之为事件集(event),以下统一使用"事件标志组"称呼
+*              2)由于RTT没有相关接口，因此以下函数没有实现
+*                   OSFlagPendAbort  
+*                   OSFlagPendGetFlagsRdy
+************************************************************************************************************************
 */
 
-/*
-由于RTT没有相关接口，因此以下函数没有实现
-OSFlagPendAbort
-OSFlagPendGetFlagsRdy
-*/
+#if OS_CFG_FLAG_EN > 0u
 
 /*
 ************************************************************************************************************************
@@ -109,37 +110,38 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
     }
 #endif    
     
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_CREATE_ISR;
         return;
     }    
+#endif    
     
-    /*检查事件标志组指针是否为空*/
-    if(p_grp == RT_NULL)
+#if OS_CFG_ARG_CHK_EN > 0u    
+    if(p_grp == RT_NULL)/*检查事件标志组指针是否为空*/
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
-    }          
-    
-    /*检查事件标志组名指针是否为空*/
-    if(p_name == RT_NULL)
+    }
+    if(p_name == RT_NULL)/*检查事件标志组名指针是否为空*/
     {
         *p_err = OS_ERR_NAME;
         return;
     }  
-    
+#endif
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u     
     /*判断内核对象是否已经是事件标志组，即是否已经创建过*/
     if(rt_object_get_type(&p_grp->parent.parent) == RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_CREATED;
         return;       
     }   
-
+#endif
+    
     /*在uCOS中事件是直接被插入到链表,不按照优先级排列*/
     rt_err = rt_event_init(p_grp,(const char*)p_name,RT_IPC_FLAG_FIFO);
-    
     *p_err = _err_rtt_to_ucosiii(rt_err);
 }
 
@@ -183,46 +185,65 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 ************************************************************************************************************************
 */
 
+#if OS_CFG_FLAG_DEL_EN > 0u
 OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
                        OS_OPT        opt,
                        OS_ERR       *p_err)
 {
     rt_err_t rt_err;
     
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((OS_OBJ_QTY)0);
+    }
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0;
     }        
-    
-    /*检查指针是否为空*/
-    if(p_grp == RT_NULL)
+#endif    
+
+#if OS_CFG_ARG_CHK_EN > 0u    
+    if(p_grp == RT_NULL)/*检查指针是否为空*/
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
     }
+    switch (opt) {                                       
+        case OS_OPT_DEL_NO_PEND:
+        case OS_OPT_DEL_ALWAYS:
+             break;
+
+        default:
+            *p_err = OS_ERR_OPT_INVALID;
+             return ((OS_OBJ_QTY)0);
+    }
+    if(opt != OS_OPT_DEL_ALWAYS)/*在RTT中没有实现OS_OPT_DEL_NO_PEND*/
+    {
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagDel: wrapper can't accept this option\r\n"));
+        *p_err = OS_ERR_OPT_INVALID;
+        return 0;
+    }      
+#endif
     
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为事件标志组*/
     if(rt_object_get_type(&p_grp->parent.parent) != RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return 0;       
     }   
-    
-    /*在RTT中没有实现OS_OPT_DEL_NO_PEND*/
-    if(opt != OS_OPT_DEL_ALWAYS)
-    {
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagDel: wrapper can't accept this option\r\n"));
-        *p_err = OS_ERR_OPT_INVALID;
-        return 0;
-    }    
+#endif
     
     rt_err = rt_event_detach(p_grp);
-    
     *p_err = _err_rtt_to_ucosiii(rt_err);
     return 0;/*返回值不可信,由于RTT没有实现查看该事件标志组还有几个任务正在等待的API，因此只能返回0*/
 }
+#endif
 
 /*
 ************************************************************************************************************************
@@ -312,35 +333,28 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     
     (void)p_ts;
     
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((OS_FLAGS)0);
+    }
+#endif
+    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_PEND_ISR;
         return ((OS_OBJ_QTY)0);
     }       
+#endif
     
-    /*检查指针是否为空*/
-    if(p_grp == RT_NULL)
+#if OS_CFG_ARG_CHK_EN > 0u    
+    if(p_grp == RT_NULL)/*检查指针是否为空*/
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return ((OS_OBJ_QTY)0);
     }
-    
-    /*检查调度器是否被锁*/
-    if(rt_critical_level() > 0)
-    {
-        *p_err = OS_ERR_SCHED_LOCKED;
-        return ((OS_OBJ_QTY)0);         
-    }   
-    
-    /*判断内核对象是否为事件标志组*/
-    if(rt_object_get_type(&p_grp->parent.parent) != RT_Object_Class_Event)
-    {
-        *p_err = OS_ERR_OBJ_TYPE;
-        return ((OS_OBJ_QTY)0);       
-    }  
-    
-    switch (opt) {                                          /* Validate 'opt'                                         */
+    switch (opt) {
         case OS_OPT_PEND_FLAG_CLR_ALL:
         case OS_OPT_PEND_FLAG_CLR_ANY:
         case OS_OPT_PEND_FLAG_SET_ALL:
@@ -362,15 +376,25 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         default:
             *p_err = OS_ERR_OPT_INVALID;
              return ((OS_OBJ_QTY)0);
-    }
+    }    
+#endif 
     
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
+    /*判断内核对象是否为事件标志组*/
+    if(rt_object_get_type(&p_grp->parent.parent) != RT_Object_Class_Event)
+    {
+        *p_err = OS_ERR_OBJ_TYPE;
+        return ((OS_OBJ_QTY)0);       
+    }  
+#endif    
+   
     /*提取opt*/
     if ((opt & OS_OPT_PEND_FLAG_CONSUME) != (OS_OPT)0) {    /* See if we need to consume the flags                    */
         consume = DEF_TRUE;
     } else {
         consume = DEF_FALSE;
     }
-    
+
     mode = opt & OS_OPT_PEND_FLAG_MASK;
     switch (mode) {
         /*OS_OPT_PEND_FLAG_CLR_ALL和OS_OPT_PEND_FLAG_SET_ALL意义一样,相当于RTT的RT_EVENT_FLAG_AND*/
@@ -399,6 +423,11 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     这与uCOS-III有所不同,因此需要转换*/
     if((opt & OS_OPT_PEND_NON_BLOCKING) == (OS_OPT)0)
     {
+        if(rt_critical_level() > 0)/*检查调度器是否被锁*/
+        {
+            *p_err = OS_ERR_SCHED_LOCKED;
+            return ((OS_OBJ_QTY)0);         
+        }
         if(timeout == 0)/*在uCOS-III中timeout=0表示永久阻塞*/
         {
             time = RT_WAITING_FOREVER;
@@ -413,14 +442,13 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         time = 0;/*在RTT中timeout为0表示非阻塞*/
     }
     
-    
     rt_err = rt_event_recv(p_grp,
                            flags,
                            rt_option,
                            time,
                            &recved);
-    *p_err = _err_rtt_to_ucosiii(rt_err);
     
+    *p_err = _err_rtt_to_ucosiii(rt_err);  
     return recved;
 }
 
@@ -543,22 +571,44 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     
     (void)opt;
     
-    /*检查指针是否为空*/
-    if(p_grp == RT_NULL)
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((OS_FLAGS)0);
+    }
+#endif    
+    
+#if OS_CFG_ARG_CHK_EN > 0u   
+    if(p_grp == RT_NULL) /*检查指针是否为空*/
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
     }
+    switch (opt) {     
+        case OS_OPT_POST_FLAG_SET:
+        case OS_OPT_POST_FLAG_CLR:
+        case OS_OPT_POST_FLAG_SET | OS_OPT_POST_NO_SCHED:
+        case OS_OPT_POST_FLAG_CLR | OS_OPT_POST_NO_SCHED:
+             break;
+
+        default:
+            *p_err = OS_ERR_OPT_INVALID;
+             return ((OS_FLAGS)0);
+    }
+#endif
     
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为事件标志组*/
     if(rt_object_get_type(&p_grp->parent.parent) != RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return 0;       
     }  
+#endif
     
     rt_err = rt_event_send(p_grp,flags);
     *p_err = _err_rtt_to_ucosiii(rt_err);
-    
     return p_grp->set;/*返回执行后事件标志组的值*/
 }
+
+#endif

@@ -265,9 +265,8 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
     
     dly = hours*3600*1000+minutes*60*1000+seconds*1000+milli;
     
-#if OS_CFG_ARG_CHK_EN > 0u     
-    /*检查是否为0延时*/
-    if(dly == 0)
+#if OS_CFG_ARG_CHK_EN > 0u      
+    if(dly == 0)/*检查是否为0延时*/
     {
         *p_err = OS_ERR_TIME_ZERO_DLY;
         return;         

@@ -37,7 +37,7 @@ static void thread2_entry(void *param)
             rt_kprintf("thread2 mutex err:%d\r\n",err);
         }
         rt_kprintf("thread2 has pended a mutex\r\n");
-        OSTimeDlyHMSM(0,0,0,1000,OS_OPT_TIME_PERIODIC,&err);
+        OSTimeDlyHMSM(0,0,0,900,OS_OPT_TIME_PERIODIC,&err);
         OSMutexPost(&SYNC_SEM,OS_OPT_POST_NONE,&err);//∑¢ÀÕ–≈∫≈¡ø
         //OSMutexDel(&SYNC_SEM,OS_OPT_DEL_ALWAYS,&err);        
     }

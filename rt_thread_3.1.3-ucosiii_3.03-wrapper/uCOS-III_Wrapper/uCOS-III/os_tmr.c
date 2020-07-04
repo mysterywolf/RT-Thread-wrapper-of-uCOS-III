@@ -43,13 +43,9 @@
 #include <os.h>
 
 /*
-由于RTT没有相关接口，因此以下函数没有实现
-OSTmrStateGet
-*/
-
-/*
 ************************************************************************************************************************
-*                                                     CONSTANTS
+* Note(s)    : 1)由于RTT没有相关接口，因此以下函数没有实现
+*                   OSTmrStateGet
 ************************************************************************************************************************
 */
 
@@ -146,35 +142,52 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     }
 #endif   
     
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TMR_ISR;
         return;
     }
+#endif 
     
-    /*检查指针是否为空*/
-    if(p_tmr == RT_NULL)
+#if OS_CFG_ARG_CHK_EN > 0u    
+    if(p_tmr == RT_NULL)/*检查指针是否为空*/
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
     }
-    
+    switch (opt) {
+        case OS_OPT_TMR_PERIODIC:
+             if (period == (OS_TICK)0) {
+                *p_err = OS_ERR_TMR_INVALID_PERIOD;
+                 return;
+             }
+             break;
+
+        case OS_OPT_TMR_ONE_SHOT:
+             if (dly == (OS_TICK)0) {
+                *p_err = OS_ERR_TMR_INVALID_DLY;
+                 return;
+             }
+             break;
+
+        default:
+            *p_err = OS_ERR_OPT_INVALID;
+             return;
+    }    
+#endif
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u 
     /*判断内核对象是否已经是定时器，即是否已经创建过*/
     if(rt_object_get_type(&p_tmr->parent) == RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_CREATED;
         return;       
     }
+#endif
     
     /*uCOS-III原版定时器回调函数就是在定时器线程中调用的,而非在中断中调用,
     因此要使用RTT的RT_TIMER_FLAG_SOFT_TIMER选项,在此之前应将宏定义RT_USING_TIMER_SOFT置1*/
-#ifndef  RT_USING_TIMER_SOFT
-#warning "注意需要定义RT_USING_TIMER_SOFT为1"
-#endif 
-#if RT_USING_TIMER_SOFT == 0
-#warning "注意RT_USING_TIMER_SOFT宏定义要打开" 
-#endif
     if(opt == OS_OPT_TMR_ONE_SHOT)
     {
         rt_flag = RT_TIMER_FLAG_ONE_SHOT|RT_TIMER_FLAG_SOFT_TIMER;
@@ -239,34 +252,46 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 *              DEF_FALSE  if not or upon an error
 ************************************************************************************************************************
 */
+
+#if OS_CFG_TMR_DEL_EN > 0u
 CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
                        OS_ERR  *p_err)
 {
     rt_err_t rt_err;
     
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return (DEF_FALSE);
+    }
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u   
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TMR_ISR;
         return DEF_FALSE;
     }  
+#endif 
     
-    /*检查指针是否为空*/
-    if(p_tmr == RT_NULL)
+#if OS_CFG_ARG_CHK_EN > 0u    
+    if(p_tmr == RT_NULL)/*检查指针是否为空*/
     {
         *p_err = OS_ERR_TMR_INVALID;
         return DEF_FALSE;
     }
-
+#endif
+    
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为定时器*/
     if(rt_object_get_type(&p_tmr->parent) != RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return DEF_FALSE;       
     }
+#endif
     
     rt_err = rt_timer_detach(p_tmr);
-    
     *p_err = _err_rtt_to_ucosiii(rt_err);
     if(rt_err == RT_EOK)
     {
@@ -277,6 +302,7 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
         return DEF_FALSE;
     }
 }
+#endif
 
 /*
 ************************************************************************************************************************
@@ -309,29 +335,39 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
 OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
                          OS_ERR  *p_err)
 {
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((OS_TICK)0);
+    }
+#endif   
+    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TMR_ISR;
         return 0;
     }  
-    
-    /*检查指针是否为空*/
-    if(p_tmr == RT_NULL)
+#endif   
+
+#if OS_CFG_ARG_CHK_EN > 0u    
+    if(p_tmr == RT_NULL)/*检查指针是否为空*/
     {
         *p_err = OS_ERR_TMR_INVALID;
         return 0;
     }
+#endif
     
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为定时器*/
     if(rt_object_get_type(&p_tmr->parent) != RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return 0;       
     }
+#endif
     
-    *p_err = OS_ERR_NONE;
-    
+    *p_err = OS_ERR_NONE;  
     return rt_tick_get() - p_tmr->timeout_tick;
 }
 
@@ -368,29 +404,39 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
 {
     rt_err_t rt_err;
     
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return (DEF_FALSE);
+    }
+#endif
+    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TMR_ISR;
         return DEF_FALSE;
     }  
+#endif  
     
-    /*检查指针是否为空*/
-    if(p_tmr == RT_NULL)
+#if OS_CFG_ARG_CHK_EN > 0u   
+    if(p_tmr == RT_NULL)/*检查指针是否为空*/
     {
         *p_err = OS_ERR_TMR_INVALID;
         return DEF_FALSE;
     }
-    
+#endif
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为定时器*/
     if(rt_object_get_type(&p_tmr->parent) != RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return DEF_FALSE;       
     }
+#endif
     
     rt_err = rt_timer_start(p_tmr);
-    
     *p_err = _err_rtt_to_ucosiii(rt_err);
     if(rt_err == RT_EOK)
     {
@@ -489,26 +535,37 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
     
     (void)p_callback_arg;/*由于RTT并没有实现回调函数的功能,因此p_callback_arg无用*/
     
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return (DEF_FALSE);
+    }
+#endif
+    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u   
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TMR_ISR;
         return DEF_FALSE;
     }  
+#endif   
     
-    /*检查指针是否为空*/
-    if(p_tmr == RT_NULL)
+#if OS_CFG_ARG_CHK_EN > 0u    
+    if(p_tmr == RT_NULL)/*检查指针是否为空*/
     {
         *p_err = OS_ERR_TMR_INVALID;
         return DEF_FALSE;
     }
-
+#endif
+    
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为定时器*/
     if(rt_object_get_type(&p_tmr->parent) != RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return DEF_FALSE;       
     }
+#endif
     
     /*由于RTT并没有实现回调函数的功能,因此OS_OPT_TMR_CALLBACK和OS_OPT_TMR_CALLBACK_ARG选项无效*/
     if(opt != OS_OPT_TMR_NONE)

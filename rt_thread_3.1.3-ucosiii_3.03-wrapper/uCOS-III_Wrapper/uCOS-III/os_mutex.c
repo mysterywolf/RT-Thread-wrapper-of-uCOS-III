@@ -43,9 +43,13 @@
 #include <os.h>
 
 /*
-由于RTT没有相关接口，因此以下函数没有实现
-OSMutexPendAbort
+************************************************************************************************************************
+* Note(s)    : 1)由于RTT没有相关接口，因此以下函数没有实现
+*                   OSMutexPendAbort
+************************************************************************************************************************
 */
+
+#if OS_CFG_MUTEX_EN > 0u
 
 /*
 ************************************************************************************************************************
@@ -97,34 +101,36 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
     }
 #endif
     
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_CREATE_ISR;
         return; 
     }
+#endif
     
-    /*检查互斥量指针是否为NULL*/
-    if(p_mutex == RT_NULL)
+#if OS_CFG_ARG_CHK_EN > 0u    
+    if(p_mutex == RT_NULL)/*检查互斥量指针是否为NULL*/
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
     }
-    
-    /*检查互斥量名称指针是否为NULL*/
-    if(p_name == RT_NULL)
+    if(p_name == RT_NULL)/*检查互斥量名称指针是否为NULL*/
     {
         *p_err = OS_ERR_NAME;
         return;
-    }
-    
+    }    
+#endif
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u     
     /*判断内核对象是否已经是信号量，即是否已经创建过*/
     if(rt_object_get_type(&p_mutex->parent.parent) == RT_Object_Class_Mutex)
     {
         *p_err = OS_ERR_OBJ_CREATED;
         return;       
     }    
-
+#endif
+    
     rt_err = rt_mutex_init(p_mutex,(const char *)p_name,RT_IPC_FLAG_PRIO);/*uCOS-III仅支持以优先级进行排列*/
     *p_err = _err_rtt_to_ucosiii(rt_err);
 }
@@ -175,45 +181,65 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 ************************************************************************************************************************
 */
 
+#if OS_CFG_MUTEX_DEL_EN > 0u
 OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
                         OS_OPT     opt,
                         OS_ERR    *p_err)
 {
     rt_err_t rt_err;
 
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((OS_OBJ_QTY)0);
+    }
+#endif
+    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0;
     }
-    
-    /*检查指针是否为空*/
-    if(p_mutex == RT_NULL)
+#endif    
+
+#if OS_CFG_ARG_CHK_EN > 0u    
+    if(p_mutex == RT_NULL)/*检查指针是否为空*/
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
     }  
+    switch (opt) {
+        case OS_OPT_DEL_NO_PEND:
+        case OS_OPT_DEL_ALWAYS:
+             break;
 
+        default:
+            *p_err =  OS_ERR_OPT_INVALID;
+             return ((OS_OBJ_QTY)0);
+    }  
+    if(opt != OS_OPT_DEL_ALWAYS)/*在RTT中没有实现OS_OPT_DEL_NO_PEND*/
+    {
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSMutexDel: wrapper can't accept this option\r\n"));
+        *p_err = OS_ERR_OPT_INVALID;
+        return 0;
+    }  
+#endif
+    
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为互斥量*/
     if(rt_object_get_type(&p_mutex->parent.parent) != RT_Object_Class_Mutex)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return 0;       
     }
-    
-    /*在RTT中没有实现OS_OPT_DEL_NO_PEND*/
-    if(opt != OS_OPT_DEL_ALWAYS)
-    {
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSMutexDel: wrapper can't accept this option\r\n"));
-        *p_err = OS_ERR_OPT_INVALID;
-        return 0;
-    }   
-    
+#endif
+
     rt_err = rt_mutex_detach(p_mutex);
     *p_err = _err_rtt_to_ucosiii(rt_err);
     return 0;/*返回值不可信,RTT没有实现查看该互斥量还有几个任务正在等待的API，因此只能返回0*/
 }
+#endif
 
 /*
 ************************************************************************************************************************
@@ -279,39 +305,57 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     rt_err_t rt_err;
     
     (void)p_ts;
+ 
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
     
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_PEND_ISR;
         return;
     }
+#endif  
     
-    /*检查互斥量指针是否为空*/
-    if(p_mutex == RT_NULL)
+#if OS_CFG_ARG_CHK_EN > 0u    
+    if(p_mutex == RT_NULL)/*检查互斥量指针是否为空*/
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
     }  
-    
-    /*检查调度器是否被锁*/
-    if(rt_critical_level() > 0)
-    {
-        *p_err = OS_ERR_SCHED_LOCKED;
-        return;         
+    switch (opt) {
+        case OS_OPT_PEND_BLOCKING:
+        case OS_OPT_PEND_NON_BLOCKING:
+             break;
+
+        default:
+            *p_err = OS_ERR_OPT_INVALID;
+             return;
     }
+#endif
     
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为互斥量*/
     if(rt_object_get_type(&p_mutex->parent.parent) != RT_Object_Class_Mutex)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return;       
     }    
+#endif
     
     /*在RTT中timeout为0表示不阻塞,为RT_WAITING_FOREVER表示永久阻塞,
     这与uCOS-III有所不同,因此需要转换*/
     if(opt == OS_OPT_PEND_BLOCKING)
     {
+        if(rt_critical_level() > 0)/*检查调度器是否被锁*/
+        {
+            *p_err = OS_ERR_SCHED_LOCKED;
+            return;         
+        }        
         if(timeout == 0)/*在uCOS-III中timeout=0表示永久阻塞*/
         {
             time = RT_WAITING_FOREVER;
@@ -419,37 +463,54 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
 {
     rt_err_t rt_err;
     
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_POST_ISR;
         return;
     }      
+#endif 
     
-    /*检查指针是否为空*/
-    if(p_mutex == RT_NULL)
+#if OS_CFG_ARG_CHK_EN > 0u    
+    if(p_mutex == RT_NULL)/*检查指针是否为空*/
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
-    }  
-    
+    }
+    switch (opt) {
+        case OS_OPT_POST_NONE:
+        case OS_OPT_POST_NO_SCHED:
+             break;
+
+        default:
+            *p_err =  OS_ERR_OPT_INVALID;
+             return;
+    }
+    if(opt != OS_OPT_POST_NONE)/*此opt选项只能为OS_OPT_POST_NONE*/
+    {
+        *p_err = OS_ERR_OPT_INVALID;
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSMutexPost: wrapper can't accept this option\r\n"));
+        return;
+    }    
+#endif  
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u   
     /*判断内核对象是否为信号量*/
     if(rt_object_get_type(&p_mutex->parent.parent) != RT_Object_Class_Mutex)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return;       
     }
-    
-    /*此opt选项只能为OS_OPT_POST_NONE*/
-    if(opt != OS_OPT_POST_NONE)
-    {
-        *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSMutexPost: wrapper can't accept this option\r\n"));
-        return;
-    }    
-    
+#endif
+        
     rt_err = rt_mutex_release(p_mutex);
-    
     *p_err = _err_rtt_to_ucosiii(rt_err);
     /*只有已经拥有互斥量控制权的线程才能释放*/
     if(rt_err == -RT_ERROR)/*rt_mutex_release返回-RT_ERROR表示该线程非掌握互斥量的线程*/
@@ -457,3 +518,5 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
         *p_err = OS_ERR_MUTEX_NOT_OWNER;
     }
 }
+
+#endif

@@ -601,14 +601,18 @@ OS_ERR        _err_rtt_to_ucosiii       (rt_err_t rt_err);
 /*                                                    EVENT FLAGS                                                     */
 /* ================================================================================================================== */
 
+#if OS_CFG_FLAG_EN > 0u
+
 void          OSFlagCreate              (OS_FLAG_GRP           *p_grp,
                                          CPU_CHAR              *p_name,
                                          OS_FLAGS               flags,
                                          OS_ERR                *p_err);
 
+#if OS_CFG_FLAG_DEL_EN > 0u
 OS_OBJ_QTY    OSFlagDel                 (OS_FLAG_GRP           *p_grp,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
+#endif
 
 OS_FLAGS      OSFlagPend                (OS_FLAG_GRP           *p_grp,
                                          OS_FLAGS               flags,
@@ -629,7 +633,7 @@ OS_FLAGS      OSFlagPost                (OS_FLAG_GRP           *p_grp,
                                          OS_FLAGS               flags,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
-
+#endif
 
 /* ================================================================================================================== */
 /*                                                 TASK MANAGEMENT                                                    */
@@ -737,13 +741,17 @@ void          OSTaskTimeQuantaSet       (OS_TCB                *p_tcb,
 /*                                             MUTUAL EXCLUSION SEMAPHORES                                            */
 /* ================================================================================================================== */
 
+#if OS_CFG_MUTEX_EN > 0u
+
 void          OSMutexCreate             (OS_MUTEX              *p_mutex,
                                          CPU_CHAR              *p_name,
                                          OS_ERR                *p_err);
 
+#if OS_CFG_MUTEX_DEL_EN > 0u
 OS_OBJ_QTY    OSMutexDel                (OS_MUTEX              *p_mutex,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
+#endif
 
 void          OSMutexPend               (OS_MUTEX              *p_mutex,
                                          OS_TICK                timeout,
@@ -760,7 +768,7 @@ OS_OBJ_QTY    OSMutexPendAbort          (OS_MUTEX              *p_mutex,
 void          OSMutexPost               (OS_MUTEX              *p_mutex,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
-
+#endif
 
 /* ================================================================================================================== */
 /*                                                   MESSAGE QUEUES                                                   */
@@ -908,6 +916,7 @@ void          OSTimeTick                (void);
 /*                                                 TIMER MANAGEMENT                                                   */
 /* ================================================================================================================== */
 
+#if OS_CFG_TMR_EN > 0u
 void          OSTmrCreate               (OS_TMR                *p_tmr,
                                          CPU_CHAR              *p_name,
                                          OS_TICK                dly,
@@ -933,6 +942,7 @@ CPU_BOOLEAN   OSTmrStop                 (OS_TMR                *p_tmr,
                                          OS_OPT                 opt,
                                          void                  *p_callback_arg,
                                          OS_ERR                *p_err);
-
-
+#endif
+  
+                                         
 #endif
