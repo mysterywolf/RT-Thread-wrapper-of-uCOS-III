@@ -213,7 +213,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
     /*在RTT中没有实现OS_OPT_DEL_NO_PEND*/
     if(opt != OS_OPT_DEL_ALWAYS)
     {
-        RT_DEBUG_LOG(RT_DEBUG_UCOSIII,("OSFlagDel: wrapper can't accept this option\r\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagDel: wrapper can't accept this option\r\n"));
         *p_err = OS_ERR_OPT_INVALID;
         return 0;
     }    

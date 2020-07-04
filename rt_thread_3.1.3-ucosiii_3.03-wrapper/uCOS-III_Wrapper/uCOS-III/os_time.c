@@ -129,7 +129,7 @@ void  OSTimeDly (OS_TICK   dly,
     {
         /*这三种opts无法实现*/
         *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(RT_DEBUG_UCOSIII,("OSTimeDly: wrapper can't accept this option\r\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSTimeDly: wrapper can't accept this option\r\n"));
         return;
     }
     

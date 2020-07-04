@@ -303,7 +303,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
         {
             p_tcb->MsgCreateSuc = RT_FALSE;
-            RT_DEBUG_LOG(RT_DEBUG_UCOSIII,("task qmsg %s create err!\r\n",name));
+            RT_DEBUG_LOG(OS_CFG_DBG_EN,("task qmsg %s create err!\r\n",name));
         }
         else
         {
@@ -319,7 +319,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
     {
         p_tcb->SemCreateSuc = RT_FALSE;
-        RT_DEBUG_LOG(RT_DEBUG_UCOSIII,("task sem %s create err!\r\n",name));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("task sem %s create err!\r\n",name));
     }
     else
     {

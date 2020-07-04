@@ -43,22 +43,81 @@
 #ifndef OS_CFG_H
 #define OS_CFG_H
 
-
-#define  RT_DEBUG_UCOSIII                1                  /* RT-Thread Debug for uCOS-III wrapper                                  */  
-
-#define  OS_CFG_TASK_REG_TBL_SIZE        1u                 /* Number of task specific registers                                     */
-#define  OS_CFG_TMR_TASK_RATE_HZ         100u               /* Rate for timers (100 Hz Typ.)                                         */
+#include <rtconfig.h>
 
 #define  OS_CFG_ARG_CHK_EN               1u                 /* Enable (1) or Disable (0) argument checking                           */
+#define  OS_CFG_DBG_EN                   1u                 /* Enable (1) debug code/variables                                       */
 
-#define OS_CFG_TASK_Q_EN                 1u                 /* Include code for OSTaskQXXXX()                                        */
+#define  OS_CFG_PRIO_MAX        RT_THREAD_PRIORITY_MAX      /* 只读 Defines the maximum number of task priorities                    */
 
 
+                                                            /* ----------------------------- EVENT FLAGS --------------------------- */
+#define  OS_CFG_FLAG_EN            RT_USING_EVENT           /* 只读 Enable (1) or Disable (0) code generation for EVENT FLAGS        */
+#define  OS_CFG_FLAG_DEL_EN              1u                 /* Include code for OSFlagDel()                                      */
+#define  OS_CFG_FLAG_MODE_CLR_EN         0u                 /* 只读,RTT仅能置1为事件发生  Include code for Wait on Clear EVENT FLAGS */
+#define  OS_CFG_FLAG_PEND_ABORT_EN       0u                 /* 只读,该功能无法兼容 Include code for OSFlagPendAbort()                */
+
+
+                                                            /* -------------------------- MEMORY MANAGEMENT ------------------------ */
+#define  OS_CFG_MEM_EN                   0u                 /* 只读, 该功能尚未实现 Enable (1) or Disable (0) code generation for MEMORY MANAGER  */
+
+
+                                                            /* --------------------- MUTUAL EXCLUSION SEMAPHORES ------------------- */
+#define  OS_CFG_MUTEX_EN           RT_USING_MUTEX           /* Enable (1) or Disable (0) code generation for MUTEX                   */
+#define  OS_CFG_MUTEX_DEL_EN             1u                 /* Include code for OSMutexDel()                                     */
+#define  OS_CFG_MUTEX_PEND_ABORT_EN      0u                 /* 只读,该功能无法兼容 Include code for OSMutexPendAbort()               */
+
+
+                                                            /* --------------------------- MESSAGE QUEUES -------------------------- */
+#define  OS_CFG_Q_EN            RT_USING_MESSAGEQUEUE       /* 只读 Enable (1) or Disable (0) code generation for QUEUES             */
+#define  OS_CFG_Q_DEL_EN                 1u                 /* Include code for OSQDel()                                             */
+#define  OS_CFG_Q_FLUSH_EN               0u                 /* 只读,该功能无法兼容 Include code for OSQFlush()                       */
+#define  OS_CFG_Q_PEND_ABORT_EN          0u                 /* 只读,该功能无法兼容 Include code for OSQPendAbort()                   */
+
+
+                                                            /* ----------------------------- SEMAPHORES ---------------------------- */
+#define  OS_CFG_SEM_EN            RT_USING_SEMAPHORE        /* 只读 Enable (1) or Disable (0) code generation for SEMAPHORES         */
+#define  OS_CFG_SEM_DEL_EN               1u                 /* Include code for OSSemDel()                                           */
+#define  OS_CFG_SEM_PEND_ABORT_EN        0u                 /* 只读,该功能无法兼容 Include code for OSSemPendAbort()                 */
+#define  OS_CFG_SEM_SET_EN               0u                 /* 只读,该功能无法兼容 Include code for OSSemSet()                       */
+
+
+                                                            /* -------------------------- TASK MANAGEMENT -------------------------- */
+#define  OS_CFG_STAT_TASK_EN             0u                 /* Enable (1) or Disable(0) the statistics task                          */
+#define  OS_CFG_STAT_TASK_STK_CHK_EN     0u                 /* Check task stacks from statistic task                                 */
+
+#define  OS_CFG_TASK_CHANGE_PRIO_EN      0u                 /* 只读,该功能无法兼容 Include code for OSTaskChangePrio()               */
+#define  OS_CFG_TASK_DEL_EN              1u                 /* Include code for OSTaskDel()                                          */
+#define  OS_CFG_TASK_Q_EN                1u                 /* Include code for OSTaskQXXXX()                                        */
+#define  OS_CFG_TASK_Q_PEND_ABORT_EN     0u                 /* 只读,该功能无法兼容 Include code for OSTaskQPendAbort()               */
+#define  OS_CFG_TASK_PROFILE_EN          0u                 /* 只读,该功能尚未实现 Include variables in OS_TCB for profiling         */
+#define  OS_CFG_TASK_REG_TBL_SIZE        3u                 /* Number of task specific registers                                     */
+#define  OS_CFG_TASK_SEM_PEND_ABORT_EN   0u                 /* 只读,该功能无法兼容 Include code for OSTaskSemPendAbort()             */
+#define  OS_CFG_TASK_SUSPEND_EN          1u                 /* Include code for OSTaskSuspend() and OSTaskResume()                   */
+
+
+                                                            /* -------------------------- TIME MANAGEMENT -------------------------- */
+#define  OS_CFG_TIME_DLY_HMSM_EN         1u                 /* Include code for OSTimeDlyHMSM()                                      */
+#define  OS_CFG_TIME_DLY_RESUME_EN       0u                 /* 只读,该功能无法兼容 Include code for OSTimeDlyResume()                */
+
+
+                                                            /* ------------------- TASK LOCAL STORAGE MANAGEMENT ------------------- */
+#define  OS_CFG_TLS_TBL_SIZE             0u                 /* 只读,该功能尚未实现 Include code for Task Local Storage (TLS) registers*/
+
+
+                                                            /* ------------------------- TIMER MANAGEMENT -------------------------- */
+#define  OS_CFG_TMR_EN                   1u                 /* 只读,软件定时器在RTT是必选项 Enable (1) or Disable (0) code generation for TIMERS */
+#define  OS_CFG_TMR_DEL_EN               1u                 /* Enable (1) or Disable (0) code generation for OSTmrDel()              */
+
+
+/*uCOS-III安全认证相关,已实现*/
 //#define  OS_SAFETY_CRITICAL_IEC61508
 
 //#define  OS_SAFETY_CRITICAL 
 #ifdef   OS_SAFETY_CRITICAL
 #define  OS_SAFETY_CRITICAL_EXCEPTION()   {}while(0)
+
+
 #endif 
 
 #endif

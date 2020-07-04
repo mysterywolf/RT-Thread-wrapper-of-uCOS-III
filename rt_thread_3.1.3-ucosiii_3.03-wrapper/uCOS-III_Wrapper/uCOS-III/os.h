@@ -61,6 +61,7 @@
 #include <rtthread.h>
 #include <os_type.h>
 #include <os_cfg.h>
+#include <os_cfg_app.h>
 #include <lib_def.h>
 
 /*

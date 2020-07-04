@@ -514,7 +514,7 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
     if(opt != OS_OPT_TMR_NONE)
     {
         *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(RT_DEBUG_UCOSIII,("OSTmrStop: wrapper can't accept this option\r\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSTmrStop: wrapper can't accept this option\r\n"));
         return DEF_FALSE;
     }
     

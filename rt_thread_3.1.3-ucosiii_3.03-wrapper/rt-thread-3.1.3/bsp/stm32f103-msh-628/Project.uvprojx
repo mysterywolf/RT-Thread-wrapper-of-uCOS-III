@@ -509,6 +509,11 @@
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg.h</FilePath>
             </File>
             <File>
+              <FileName>os_cfg_app.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg_app.h</FilePath>
+            </File>
+            <File>
               <FileName>os_type.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_type.h</FilePath>

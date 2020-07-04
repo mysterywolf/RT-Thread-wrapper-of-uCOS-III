@@ -205,7 +205,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
     /*在RTT中没有实现OS_OPT_DEL_NO_PEND*/
     if(opt != OS_OPT_DEL_ALWAYS)
     {
-        RT_DEBUG_LOG(RT_DEBUG_UCOSIII,("OSMutexDel: wrapper can't accept this option\r\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSMutexDel: wrapper can't accept this option\r\n"));
         *p_err = OS_ERR_OPT_INVALID;
         return 0;
     }   
@@ -444,7 +444,7 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
     if(opt != OS_OPT_POST_NONE)
     {
         *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(RT_DEBUG_UCOSIII,("OSMutexPost: wrapper can't accept this option\r\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSMutexPost: wrapper can't accept this option\r\n"));
         return;
     }    
     

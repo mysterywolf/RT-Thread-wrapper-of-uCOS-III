@@ -259,7 +259,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
     if(opt != OS_OPT_DEL_ALWAYS)
     {
         *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(RT_DEBUG_UCOSIII,("OSQDel: wrapper can't accept this option\r\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSQDel: wrapper can't accept this option\r\n"));
         return 0;
     }
     
@@ -571,7 +571,7 @@ void  OSQPost (OS_Q         *p_q,
     else
     {
         *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(RT_DEBUG_UCOSIII,("OSQPost: wrapper can't accept this option\r\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSQPost: wrapper can't accept this option\r\n"));
         return;
     }
     *p_err = _err_rtt_to_ucosiii(rt_err); 
