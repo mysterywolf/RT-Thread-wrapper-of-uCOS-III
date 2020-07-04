@@ -336,6 +336,8 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
 *                            if no message was received or,
 *                            if 'p_q' is a NULL pointer or,
 *                            if you didn't pass a pointer to a queue.
+*
+* Note(s)    : 1) RTT在非阻塞模式下不区分OS_ERR_PEND_WOULD_BLOCK还是OS_ERR_TIMEOUT，都按照OS_ERR_TIMEOUT处理
 ************************************************************************************************************************
 */
 
@@ -356,28 +358,28 @@ void  *OSQPend (OS_Q         *p_q,
     if(rt_interrupt_get_nest()!=0)
     {
         *p_err = OS_ERR_PEND_ISR;
-        return 0; 
+        return RT_NULL; 
     }   
     
     /*检查调度器是否被锁*/
     if(rt_critical_level() > 0)
     {
         *p_err = OS_ERR_SCHED_LOCKED;
-        return 0;         
+        return RT_NULL;         
     }  
     
     /*检查消息队列指针是否为NULL*/
     if(p_q == RT_NULL)
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
-        return 0;
+        return RT_NULL;
     }    
     
     /*判断内核对象是否为消息队列*/
     if(rt_object_get_type(&p_q->rt_msg.parent.parent) != RT_Object_Class_MessageQueue)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return 0;       
+        return RT_NULL;       
     } 
 
     /*在RTT中timeout为0表示不阻塞,为RT_WAITING_FOREVER表示永久阻塞,

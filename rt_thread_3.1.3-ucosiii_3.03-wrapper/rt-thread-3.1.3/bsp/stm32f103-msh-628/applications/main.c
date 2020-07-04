@@ -19,6 +19,7 @@ void mutex_test (void);
 void queue_test (void);
 void flag_test (void);
 void task_q_test (void);
+void task_sem_test (void);
 
 int main(void)
 {
@@ -33,6 +34,7 @@ int main(void)
 //    mutex_test();
 //    queue_test();
 //    flag_test();
-    task_q_test();
+//    task_q_test();
+    task_sem_test();
 }
 

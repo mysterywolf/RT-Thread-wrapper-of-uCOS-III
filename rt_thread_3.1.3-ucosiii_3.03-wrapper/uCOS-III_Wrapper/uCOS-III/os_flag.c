@@ -277,6 +277,8 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 *
 * Returns    : The flags in the event flag group that made the task ready or, 0 if a timeout or an error
 *              occurred.
+*
+* Note(s)    : 1) RTT在非阻塞模式下不区分OS_ERR_PEND_WOULD_BLOCK还是OS_ERR_TIMEOUT，都按照OS_ERR_TIMEOUT处理
 ************************************************************************************************************************
 */
 

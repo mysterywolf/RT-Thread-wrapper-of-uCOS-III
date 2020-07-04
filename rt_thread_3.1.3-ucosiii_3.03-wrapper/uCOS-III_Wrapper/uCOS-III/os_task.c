@@ -197,8 +197,11 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
                     OS_OPT         opt,
                     OS_ERR        *p_err)
 {
+#define NAME_SIZE 32    
+    
     rt_err_t rt_err;
     OS_ERR err;
+    char name[NAME_SIZE];
     
     (void)opt;
     (void)stk_limit;
@@ -267,6 +270,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         return;
     }
     
+    p_tcb->MsgCreateSuc = RT_FALSE;
+    p_tcb->SemCreateSuc = RT_FALSE;
     p_tcb->StkSize = stk_size;/*任务堆栈大小(单位:sizeof(CPU_STK))*/
     p_tcb->ExtPtr = p_ext;/*用户附加区指针*/
     
@@ -277,20 +282,41 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #if OS_CFG_TASK_Q_EN > 0u   
     if(q_size>0)/*开启任务内建消息队列*/
     {
-        rt_memset(p_tcb->MsgName, 0, sizeof(p_tcb->MsgName));
-        strncat(p_tcb->MsgName, (const char*)p_name, sizeof(p_tcb->MsgName));
-        strncat(p_tcb->MsgName, "_QMsg", sizeof(p_tcb->MsgName));
-        OSQCreate(&p_tcb->MsgQ, (CPU_CHAR*)p_tcb->MsgName, q_size, &err);
+        rt_memset(name, 0, sizeof(name));
+        strncat(name, (const char*)p_name, NAME_SIZE);
+        strncat(name, "_QMsg", NAME_SIZE);
+        OSQCreate(&p_tcb->MsgQ, (CPU_CHAR*)name, q_size, &err);
         if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
         {
-            RT_DEBUG_LOG(RT_DEBUG_UCOSIII,("task qmsg %s create err!\r\n",p_tcb->MsgName));
+            p_tcb->MsgCreateSuc = RT_FALSE;
+            RT_DEBUG_LOG(RT_DEBUG_UCOSIII,("task qmsg %s create err!\r\n",name));
+        }
+        else
+        {
+            p_tcb->MsgCreateSuc = RT_TRUE;
         }
     }
-#endif    
+#endif  
+    
+    rt_memset(name, 0, sizeof(name));
+    strncat(name, (const char*)p_name, NAME_SIZE);
+    strncat(name, "_Sem", NAME_SIZE);  
+    OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)name,0,&err);
+    if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
+    {
+        p_tcb->SemCreateSuc = RT_FALSE;
+        RT_DEBUG_LOG(RT_DEBUG_UCOSIII,("task sem %s create err!\r\n",name));
+    }
+    else
+    {
+        p_tcb->SemCreateSuc = RT_TRUE;
+    }
     
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
     rt_err = rt_thread_startup(&p_tcb->task);                 
     *p_err = _err_rtt_to_ucosiii(rt_err);
+    
+#undef NAME_SIZE
 }
 
 /*
@@ -415,10 +441,17 @@ OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
 *                                OS_ERR_SCHED_LOCKED       If the scheduler is locked
 *                                OS_ERR_TIMEOUT            A message was not received within the specified timeout
 *                                                          would lead to a suspension.
+*                              + OS_ERR_TASK_Q_CREATE_FALSE 任务内建消息队列创建失败
+*                            -------------说明-------------
+*                                OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
+*                              - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
+*                              + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
+*                              应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : A pointer to the message received or a NULL pointer upon error.
 *
 * Note(s)    : 1) It is possible to receive NULL pointers when there are no errors.
+*              2) RTT在非阻塞模式下不区分OS_ERR_PEND_WOULD_BLOCK还是OS_ERR_TIMEOUT，都按照OS_ERR_TIMEOUT处理
 ************************************************************************************************************************
 */
 
@@ -430,9 +463,20 @@ void  *OSTaskQPend (OS_TICK       timeout,
                     OS_ERR       *p_err)
 {
     rt_thread_t p_thread;
+    OS_TCB  *p_tcb;
     
     p_thread = rt_thread_self();
-    return OSQPend(&((OS_TCB*)p_thread)->MsgQ,timeout,opt,p_msg_size,p_ts,p_err);
+    p_tcb = (OS_TCB*)p_thread;
+    
+    if(p_tcb->MsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
+    {
+        return OSQPend(&p_tcb->MsgQ,timeout,opt,p_msg_size,p_ts,p_err);
+    }
+    else
+    {
+        *p_err = OS_ERR_TASK_Q_CREATE_FALSE;
+        return RT_NULL;
+    }
 }
 #endif
 
@@ -501,7 +545,13 @@ CPU_BOOLEAN  OSTaskQPendAbort (OS_TCB  *p_tcb,
 *
 *                             OS_ERR_NONE            The call was successful and the message was sent
 *                             OS_ERR_Q_MAX           If the queue is full
-*                             OS_ERR_MSG_POOL_EMPTY  If there are no more OS_MSGs available from the pool
+*                           - OS_ERR_MSG_POOL_EMPTY  If there are no more OS_MSGs available from the pool
+*                           + OS_ERR_TASK_Q_CREATE_FALSE 任务内建消息队列创建失败
+*                         -------------说明-------------
+*                             OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
+*                           - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
+*                           + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
+*                           应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : none
 ************************************************************************************************************************
@@ -513,8 +563,20 @@ void  OSTaskQPost (OS_TCB       *p_tcb,
                    OS_MSG_SIZE   msg_size,
                    OS_OPT        opt,
                    OS_ERR       *p_err)
-{
-    OSQPost(&p_tcb->MsgQ,p_void,msg_size,opt,p_err);
+{   
+    if(p_tcb == RT_NULL)
+    {
+        p_tcb = (OS_TCB*)rt_thread_self();
+    }
+    
+    if(p_tcb->MsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
+    {
+        OSQPost(&p_tcb->MsgQ,p_void,msg_size,opt,p_err);
+    }
+    else
+    {
+        *p_err = OS_ERR_TASK_Q_CREATE_FALSE;
+    }  
 }
 #endif
 
@@ -733,6 +795,176 @@ void  OSTaskResume (OS_TCB  *p_tcb,
     
     *p_err = _err_rtt_to_ucosiii(rt_err);
 }
+
+/*
+************************************************************************************************************************
+*                                              WAIT FOR A TASK SEMAPHORE
+*
+* Description: This function is called to block the current task until a signal is sent by another task or ISR.
+*
+* Arguments  : timeout       is the amount of time you are will to wait for the signal
+*
+*              opt           determines whether the user wants to block if a semaphore post was not received:
+*
+*                                OS_OPT_PEND_BLOCKING
+*                                OS_OPT_PEND_NON_BLOCKING
+*
+*              p_ts          is a pointer to a variable that will receive the timestamp of when the semaphore was posted
+*                            or pend aborted.  If you pass a NULL pointer (i.e. (CPU_TS *)0) then you will not get the
+*                            timestamp.  In other words, passing a NULL pointer is valid and indicates that you don't
+*                            need the timestamp.
+*
+*              p_err         is a pointer to an error code that will be set by this function
+*
+*                                OS_ERR_NONE               The call was successful and your task received a message.
+*                              - OS_ERR_PEND_ABORT
+*                                OS_ERR_PEND_ISR           If you called this function from an ISR and the result
+*                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but no signal was received
+*                                OS_ERR_SCHED_LOCKED       If the scheduler is locked
+*                                OS_ERR_STATUS_INVALID     If the pend status is invalid
+*                                OS_ERR_TIMEOUT            A message was not received within the specified timeout
+*                                                          would lead to a suspension.
+*                              + OS_ERR_TASK_SEM_CREATE_FALSE 任务内建信号量创建失败
+*                            -------------说明-------------
+*                                OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
+*                              - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
+*                              + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
+*                              应用层需要对API返回的错误码判断做出相应的修改
+*
+* Returns    : The current count of signals the task received, 0 if none.
+************************************************************************************************************************
+*/
+
+OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
+                           OS_OPT    opt,
+                           CPU_TS   *p_ts,
+                           OS_ERR   *p_err)
+{    
+    OS_TCB *p_tcb;
+    
+    p_tcb = (OS_TCB*)rt_thread_self();
+    
+    if(p_tcb->SemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
+    {
+        return OSSemPend(&p_tcb->Sem,timeout,opt,p_ts,p_err); 
+    }
+    else
+    {
+        *p_err = OS_ERR_TASK_SEM_CREATE_FALSE;
+        return 0;
+    }
+}
+
+/*
+************************************************************************************************************************
+*                                               ABORT WAITING FOR A SIGNAL
+*
+* Description: This function aborts & readies the task specified.  This function should be used to fault-abort the wait
+*              for a signal, rather than to normally post the signal to the task via OSTaskSemPost().
+*
+* Arguments  : p_tcb     is a pointer to the task to pend abort
+*
+*              opt       provides options for this function:
+*
+*                            OS_OPT_POST_NONE         No option selected
+*                            OS_OPT_POST_NO_SCHED     Indicates that the scheduler will not be called.
+*
+*              p_err     is a pointer to a variable that will contain an error code returned by this function.
+*
+*                            OS_ERR_NONE              If the task was readied and informed of the aborted wait
+*                            OS_ERR_PEND_ABORT_ISR    If you tried calling this function from an ISR
+*                            OS_ERR_PEND_ABORT_NONE   If the task was not waiting for a signal
+*                            OS_ERR_PEND_ABORT_SELF   If you attempted to pend abort the calling task.  This is not
+*                                                     possible since the calling task cannot be pending because it's
+*                                                     running.
+*
+* Returns    : == DEF_FALSE   if task was not waiting for a message, or upon error.
+*              == DEF_TRUE    if task was waiting for a message and was readied and informed.
+************************************************************************************************************************
+*/
+
+//#if OS_CFG_TASK_SEM_PEND_ABORT_EN > 0u
+//CPU_BOOLEAN  OSTaskSemPendAbort (OS_TCB  *p_tcb,
+//                                 OS_OPT   opt,
+//                                 OS_ERR  *p_err)
+//{
+//}
+//#endif
+
+/*
+************************************************************************************************************************
+*                                                    SIGNAL A TASK
+*
+* Description: This function is called to signal a task waiting for a signal.
+*
+* Arguments  : p_tcb     is the pointer to the TCB of the task to signal.  A NULL pointer indicates that you are sending
+*                        a signal to yourself.
+*
+*              opt       determines the type of POST performed:
+*
+*                             OS_OPT_POST_NONE         No option
+*                             OS_OPT_POST_NO_SCHED     Do not call the scheduler
+*
+*              p_err     is a pointer to an error code returned by this function:
+*
+*                            OS_ERR_NONE              If the requested task is signaled
+*                            OS_ERR_SEM_OVF           If the post would cause the semaphore count to overflow.
+*                          + OS_ERR_TASK_SEM_CREATE_FALSE 任务内建信号量创建失败
+*                        -------------说明-------------
+*                            OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
+*                          - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
+*                          + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
+*                          应用层需要对API返回的错误码判断做出相应的修改
+*
+* Returns    : The current value of the task's signal counter or 0 if called from an ISR
+************************************************************************************************************************
+*/
+
+OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
+                           OS_OPT   opt,
+                           OS_ERR  *p_err)
+{   
+    if(p_tcb == RT_NULL)
+    {
+        p_tcb = (OS_TCB*)rt_thread_self();
+    }
+    
+    if(p_tcb->SemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
+    {
+        return OSSemPost(&p_tcb->Sem,opt,p_err);
+    }
+    else
+    {
+        *p_err = OS_ERR_TASK_SEM_CREATE_FALSE;
+        return 0;
+    }
+}
+
+/*
+************************************************************************************************************************
+*                                            SET THE SIGNAL COUNTER OF A TASK
+*
+* Description: This function is called to clear the signal counter
+*
+* Arguments  : p_tcb      is the pointer to the TCB of the task to clear the counter.  If you specify a NULL pointer
+*                         then the signal counter of the current task will be cleared.
+*
+*              cnt        is the desired value of the semaphore counter
+*
+*              p_err      is a pointer to an error code returned by this function
+*
+*                             OS_ERR_NONE        if the signal counter of the requested task is cleared
+*                             OS_ERR_SET_ISR     if the function was called from an ISR
+*
+* Returns    : none
+************************************************************************************************************************
+*/
+
+//OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
+//                          OS_SEM_CTR   cnt,
+//                          OS_ERR      *p_err)
+//{
+//}
 
 /*
 ************************************************************************************************************************

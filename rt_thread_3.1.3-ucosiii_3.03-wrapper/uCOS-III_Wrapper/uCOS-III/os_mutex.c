@@ -250,6 +250,8 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 *                              应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : none
+*
+* Note(s)    : 1) RTT在非阻塞模式下不区分OS_ERR_PEND_WOULD_BLOCK还是OS_ERR_TIMEOUT，都按照OS_ERR_TIMEOUT处理
 ************************************************************************************************************************
 */
 

@@ -270,6 +270,8 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
 *                              应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : The current value of the semaphore counter or 0 if not available.
+*
+* Note(s)    : 1) RTT在非阻塞模式下不区分OS_ERR_PEND_WOULD_BLOCK还是OS_ERR_TIMEOUT，都按照OS_ERR_TIMEOUT处理
 ************************************************************************************************************************
 */
 

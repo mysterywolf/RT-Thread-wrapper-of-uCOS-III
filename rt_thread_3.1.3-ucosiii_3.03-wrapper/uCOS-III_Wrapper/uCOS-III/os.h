@@ -429,8 +429,11 @@ typedef  enum  os_err {
     OS_ERR_RT_ENOSYS                 = 36004u,/* 系统不支持   */
     OS_ERR_RT_EBUSY                  = 36005u,/* 系统忙       */
     OS_ERR_RT_EIO                    = 36006u,/* IO 错误      */
-    OS_ERR_RT_EINTR                  = 36007u /* 中断系统调用 */
+    OS_ERR_RT_EINTR                  = 36007u,/* 中断系统调用 */
 
+    /*兼容层新增错误码*/
+    OS_ERR_TASK_SEM_CREATE_FALSE     = 37001u,/*任务内建信号量创建失败*/
+    OS_ERR_TASK_Q_CREATE_FALSE       = 37002u,/*任务内建消息队列创建失败*/
 } OS_ERR;
 
 
@@ -498,12 +501,13 @@ struct os_q
 struct os_tcb
 {
     struct rt_thread task;      /*任务,要确保该成员位于结构体第一个*/
-    OS_SEM           Sem;       /*内建信号量*/
+    OS_SEM           Sem;       /*任务内建信号量*/
+    CPU_BOOLEAN      SemCreateSuc;/*标记任务内建信号量是否创建成功*/
 #if OS_CFG_TASK_Q_EN > 0u      
     OS_Q             MsgQ;      /*任务内建消息队列*/
     void            *MsgPtr;    /*任务内建消息队列消息指针*/
     OS_MSG_SIZE      MsgSize;   /*任务内建消息队列消息大小*/
-    char             MsgName[32];/*任务内建消息队列名称*/
+    CPU_BOOLEAN      MsgCreateSuc;/*标记任务内建消息队列是否创建成功*/
 #endif    
     void            *ExtPtr;    /*指向用户附加区指针*/
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u       

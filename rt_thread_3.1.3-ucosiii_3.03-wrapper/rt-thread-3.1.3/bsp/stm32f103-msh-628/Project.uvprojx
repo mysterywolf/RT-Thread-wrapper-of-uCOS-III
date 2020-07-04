@@ -614,6 +614,11 @@
               <FilePath>..\..\..\uCOS-III_Wrapper\test\task_q_test.c</FilePath>
             </File>
             <File>
+              <FileName>task_sem_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\test\task_sem_test.c</FilePath>
+            </File>
+            <File>
               <FileName>readme.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\test\readme.txt</FilePath>
