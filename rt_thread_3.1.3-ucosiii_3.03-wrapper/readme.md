@@ -45,9 +45,10 @@ typedef  void  (*OS_TMR_CALLBACK_PTR)(void *p_tmr, void *p_arg);
 typedef  void (*OS_TMR_CALLBACK_PTR)(void *parameter);
 ```
 
+4) 配置os_cfg.h和os_cfg_app.h
+
 
 ## 2.3 os_cfg.h配置文件
-**该文件合并了原版os_cfg.h文件和os_cfg_app.h文件**
 
 ```c
 #define  RT_DEBUG_UCOSIII  1 /* RT-Thread Debug for uCOS-III wrapper */  
@@ -65,7 +66,11 @@ typedef  void (*OS_TMR_CALLBACK_PTR)(void *parameter);
 ​    本兼容层为了满足uCOS-III的容错要求，封装时，在真正调用RT-Thread接口函数之前替RT-Thread做了大量的函数参数合法性检查，这些检查如果觉得没有必要，可以使用该宏定义予以关闭。</br>
 
 
-## 2.4 运行
+## 2.4 os_cfg_app.h配置文件
+
+
+
+## 2.5 运行
 
 ```c
 int main(void) /*RT-Thread main线程*/
@@ -115,15 +120,8 @@ void  OSSemSet (OS_SEM *p_sem, OS_SEM_CTR cnt, OS_ERR *p_err);
 OS_OBJ_QTY  OSSemPendAbort (OS_SEM *p_sem, OS_OPT opt, OS_ERR *p_err);
 ```
 
-### 3.1.6 os_stat.c
-由于RTT没有统计任务，本文件**所有函数**不予实现
 
-```c
-void  OSStatReset (OS_ERR  *p_err);
-void  OSStatTaskCPUUsageInit (OS_ERR  *p_err);
-```
-
-### 3.1.7 os_task.c
+### 3.1.6 os_task.c
 
 ```c
 void  OSTaskChangePrio (OS_TCB *p_tcb, OS_PRIO prio_new, OS_ERR *p_err);
@@ -134,12 +132,12 @@ CPU_BOOLEAN OSTaskSemPendAbort (OS_TCB *p_tcb, OS_OPT opt, OS_ERR *p_err);
 OS_SEM_CTR OSTaskSemSet (OS_TCB *p_tcb, OS_SEM_CTR cnt, OS_ERR *p_err);
 ```
 
-### 3.1.8 os_time.c
+### 3.1.7 os_time.c
 ```c
 void  OSTimeDlyResume (OS_TCB  *p_tcb, OS_ERR  *p_err);
 ```
 
-### 3.1.9 os_tmr.c
+### 3.1.8 os_tmr.c
 ```c
 OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr, OS_ERR  *p_err);
 ```
