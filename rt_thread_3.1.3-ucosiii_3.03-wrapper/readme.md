@@ -48,13 +48,13 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
    uCOS-III原版软件定时器回调函数定义：</br>
 
    ```c
-   	typedef  void  (*OS_TMR_CALLBACK_PTR)(void *p_tmr, void *p_arg);
+   typedef  void  (*OS_TMR_CALLBACK_PTR)(void *p_tmr, void *p_arg);
    ```
 
    本兼容层软件定时器回调函数定义：</br>
 
     ```c
-   	typedef  void (*OS_TMR_CALLBACK_PTR)(void *parameter);
+   typedef  void (*OS_TMR_CALLBACK_PTR)(void *parameter);
     ```
 
 
@@ -66,40 +66,41 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
    
 5. 注意：uCOS-III的任务堆栈大小单位是sizeof(CPU_STK),而RT-Thread的线程堆栈大小单位是Byte,虽然在兼容层已经做了转换，但是在填写时一定要注意，所有涉及到uCOS-III的API、宏定义全部是按照uCOS-III的标准，即堆栈大小为sizeof(CPU_STK)，切勿混搭！这种错误极其隐晦，一定要注意！**下面是混搭的错误示例**：</br>
     ```c
-        ALIGN(RT_ALIGN_SIZE)
-        static char thread2_stack[1024]; //错误：混搭RT-Thread的数据类型定义线程堆栈
+    ALIGN(RT_ALIGN_SIZE)
+    static char thread2_stack[1024]; 		//错误：混搭RT-Thread的数据类型定义线程堆栈
     
-        OSTaskCreate(&thread2,		            //任务控制块
-                   (CPU_CHAR*)"thread2", 		//任务名字
-                   thread2_entry, 			    //任务函数
-                   0,					        //传递给任务函数的参数
-                   THREAD_PRIORITY,             //任务优先级
-                   thread2_stack,	            //任务堆栈基地址
-                   sizeof(thread2_stack)/10,	//任务堆栈深度限位(错误：这个参数的单位是sizeof(CPU_STK))
-                   sizeof(thread2_stack),	    //任务堆栈大小(错误：这个参数的单位是sizeof(CPU_STK))
-                   0,					        //任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息
-                   THREAD_TIMESLICE,			//当使能时间片轮转时的时间片长度，为0时为默认长度，
-                   0,					        //用户补充的存储区
-                   OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, //任务选项
-                   &err);
+    OSTaskCreate(&thread2,					//任务控制块
+                 (CPU_CHAR*)"thread2",		//任务名字
+                 thread2_entry,				//任务函数
+                 0,							//传递给任务函数的参数
+                 THREAD_PRIORITY,			//任务优先级
+                 thread2_stack,				//任务堆栈基地址
+                 sizeof(thread2_stack)/10,	//任务堆栈深度限位(错误：这个参数的单位是sizeof(CPU_STK))
+                 sizeof(thread2_stack),		//任务堆栈大小(错误：这个参数的单位是sizeof(CPU_STK))
+                 0,							//任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息
+                 THREAD_TIMESLICE,			//当使能时间片轮转时的时间片长度，为0时为默认长度，
+                 0,							//用户补充的存储区
+                 OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, //任务选项
+                 &err);
     ```
     **下面是正确写法**：</br>
+    
     ```c
-        #define THREAD_STACK_SIZE       256 //正确，要通过宏定义单独定义堆栈大小，单位为sizeof(CPU_STK)
+        #define THREAD_STACK_SIZE       256 	//正确，要通过宏定义单独定义堆栈大小，单位为sizeof(CPU_STK)
         ALIGN(RT_ALIGN_SIZE)
         static CPU_STK thread2_stack[THREAD_STACK_SIZE];//正确，使用uCOS-III自己的数据类型定义任务堆栈
     
-        OSTaskCreate(&thread2,		            //任务控制块
-                   (CPU_CHAR*)"thread2", 		//任务名字
-                   thread2_entry, 			    //任务函数
-                   0,					        //传递给任务函数的参数
-                   THREAD_PRIORITY-1,           //任务优先级
-                   thread2_stack,	            //任务堆栈基地址
-                   THREAD_STACK_SIZE/10,	    //任务堆栈深度限位(正确)
-                   THREAD_STACK_SIZE,		    //任务堆栈大小(正确)
-                   20,					        //任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息
+        OSTaskCreate(&thread2,					//任务控制块
+                   (CPU_CHAR*)"thread2",		//任务名字
+                   thread2_entry,				//任务函数
+                   0,							//传递给任务函数的参数
+                   THREAD_PRIORITY,				//任务优先级
+                   thread2_stack,				//任务堆栈基地址
+                   THREAD_STACK_SIZE/10,		//任务堆栈深度限位(正确)
+                   THREAD_STACK_SIZE,			//任务堆栈大小(正确)
+                   20,							//任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息
                    THREAD_TIMESLICE,			//当使能时间片轮转时的时间片长度，为0时为默认长度，
-                   0,					        //用户补充的存储区
+                   0,							//用户补充的存储区
                    OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, //任务选项
                    &err);
     ```
@@ -109,7 +110,7 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 ## 2.3 os_cfg.h配置文件
 
 ```c
-#define  OS_CFG_DBG_EN  1 /* Enable (1) debug code/variables  */  
+#define  OS_CFG_DBG_EN  1     /* Enable (1) debug code/variables  */  
 ```
 ​    该宏定义定义是否启用兼容层调试，建议在第一次迁移时打开，因为在兼容层内部，一部分uCOS-III原版功能没有实现，如果用户用到了这部分没有实现的功能，将会通过调试的方式输出，予以提示。用户务必对业务逻辑予以修改。
 
