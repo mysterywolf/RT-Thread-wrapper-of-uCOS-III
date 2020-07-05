@@ -89,23 +89,23 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
     **下面是正确写法**：</br>
     
     ```c
-        #define THREAD_STACK_SIZE       256 //正确，要通过宏定义单独定义堆栈大小，单位为sizeof(CPU_STK)
-        ALIGN(RT_ALIGN_SIZE)
+    #define THREAD_STACK_SIZE       256 //正确，要通过宏定义单独定义堆栈大小，单位为sizeof(CPU_STK)
+    ALIGN(RT_ALIGN_SIZE)
         static CPU_STK thread2_stack[THREAD_STACK_SIZE];//正确，使用uCOS-III自己的数据类型定义任务堆栈
     
-        OSTaskCreate(&thread2,
-                   (CPU_CHAR*)"thread2",
-                   thread2_entry,
-                   RT_NULL,
-                   THREAD_PRIORITY,
-                   thread2_stack,
-                   THREAD_STACK_SIZE/10,//任务堆栈深度限位(正确)
-                   THREAD_STACK_SIZE,//任务堆栈大小(正确)
-                   0,
-                   THREAD_TIMESLICE,
-                   0,
-                   OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR,
-                   &err);
+    OSTaskCreate(&thread2,
+                 (CPU_CHAR*)"thread2",
+                 thread2_entry,
+                 RT_NULL,
+                 THREAD_PRIORITY,
+                 thread2_stack,
+                 THREAD_STACK_SIZE/10,//任务堆栈深度限位(正确)
+                 THREAD_STACK_SIZE,//任务堆栈大小(正确)
+                 0,
+                 THREAD_TIMESLICE,
+                 0,
+                 OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR,
+                 &err);
     ```
 
 
