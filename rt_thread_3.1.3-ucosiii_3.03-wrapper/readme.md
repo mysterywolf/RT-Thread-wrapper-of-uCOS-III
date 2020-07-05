@@ -48,7 +48,7 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 
 3. 软件定时器：μCOS-III原版的软件定时器回调函数是两个参数，本兼容层由于RT-Thread的回调函数仅为一个参数，因此改为一个参数（详见μCOS-III/os.h）。
 
-   uCOS-III原版软件定时器回调函数定义：</br>
+   μCOS-III原版软件定时器回调函数定义：</br>
 
    ```c
    typedef  void  (*OS_TMR_CALLBACK_PTR)(void *p_tmr, void *p_arg);
@@ -63,7 +63,7 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 
 4. 配置os_cfg.h和os_cfg_app.h
    每个选项的配置说明和原版μCOS-III一致，若有不同，我已经在注释中有所解释。</br>
-   **原版uCOS-III配置**说明可参见：</br>
+   **原版μCOS-III配置**说明可参见：</br>
    a)《嵌入式实时操作系统μC/OS-III》北京航空航天大学出版社 宫辉等译 邵贝贝审校 </br>
    b) Micriμm公司文档中心: https://doc.micrium.com/display/kernel304/uC-OS-III+Features+os_cfg.h
    
