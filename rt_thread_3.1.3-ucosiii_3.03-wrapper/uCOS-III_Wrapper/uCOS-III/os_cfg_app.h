@@ -44,6 +44,13 @@
 #define OS_CFG_APP_H
 
 #include <rtconfig.h>
+
+/*
+************************************************************************************************************************
+*                                                      CONSTANTS
+************************************************************************************************************************
+*/
+
                                                             /* ------------------- STATISTIC TASK ------------------- */
 #define  OS_CFG_STAT_TASK_PRIO  	(OS_CFG_PRIO_MAX-2u)   	/* Priority 统计任务优先级                                */
 #define  OS_CFG_STAT_TASK_RATE_HZ         10u               /* Rate of execution (1 to 10 Hz)                         */
@@ -58,9 +65,6 @@
 
                                                             /* ------------------------ TICKS ----------------------- */
 #define  OS_CFG_TICK_RATE_HZ         RT_TICK_PER_SECOND     /* 只读 Tick rate in Hertz (10 to 1000 Hz)                */
-//#define  OS_CFG_TICK_TASK_PRIO             1u               /* Priority 时钟节拍任务，一般设置一个相对较高的优先级  */
-//#define  OS_CFG_TICK_TASK_STK_SIZE       128u               /* Stack size (number of CPU_STK elements)                */
-//#define  OS_CFG_TICK_WHEEL_SIZE           17u               /* Number of 'spokes' in tick  wheel; SHOULD be prime     */
 
-    
+
 #endif

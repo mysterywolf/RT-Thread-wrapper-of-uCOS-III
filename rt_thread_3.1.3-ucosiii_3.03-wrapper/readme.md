@@ -1,7 +1,7 @@
 # 1 概述
-这是一个针对国产RT-Thread操作系统的μCOS-Ⅲ操作系统兼容层，可以让基于美国Micriμm公司的μCOS-Ⅲ操作系统的应用层程序做最小的修改，使项目快速迁移到RT-Thread操作系统上。
+这是一个针对国产RT-Thread操作系统的μCOS-III操作系统兼容层，可以让基于美国Micriμm公司的μCOS-III操作系统的应用层程序做最小的修改，使项目快速迁移到RT-Thread操作系统上。
 
-本文件内的兼容层为μCOS-Ⅲ 3.03版本向RT-Thread Nano 3.1.3版本兼容。由于μCOS-Ⅲ支持8、16、32位CPU，而RT-Thread支持32、64位CPU，**因此本兼容层仅能对基于32位CPU的已有工程进行兼容**。
+本文件内的兼容层为μCOS-III 3.03版本向RT-Thread Nano 3.1.3版本兼容。由于μCOS-III支持8、16、32位CPU，而RT-Thread支持32、64位CPU，**因此本兼容层仅能对基于32位CPU的已有工程进行兼容**。
 
 
 
@@ -18,8 +18,7 @@ RTT nano       3.1.3  </br>
 RT-Thread：https://www.rt-thread.org/  </br>
 文档中心：https://www.rt-thread.org/document/site/tutorial/nano/an0038-nano-introduction/
 
-
-μCOS-Ⅲ：https://www.micrium.com/  </br>
+μCOS-III：https://www.micrium.com/  </br>
 文档中心：https://doc.micrium.com/display/kernel304/uC-OS-III+Documentation+Home
 
 
@@ -36,14 +35,14 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 
 
 ## 2.2 迁移步骤
-1. 浏览一下uC-CPU/cpu.h文件，看一下头文件中的定义是否符合你的CPU，一般不需要改这个文件
+1. 浏览一下μC-CPU/cpu.h文件，看一下头文件中的定义是否符合你的CPU，一般不需要改这个文件
 
 
-2. 浏览一下uCOS-III/os.h文件，看一下错误代码，这个错误代码和原版uCOS是有一定区别的。</br>
+2. 浏览一下μCOS-III/os.h文件，看一下错误代码，这个错误代码和原版μCOS-III是有一定区别的。</br>
    **注意:** 请勿随意打开注释掉的枚举体成员,如果用户使用到了这些注释掉的成员,则会在迁移时编译报错,用以提醒用户这些错误代码在兼容层已经不可用。
 
 
-3. 软件定时器：uCOS-III原版的软件定时器回调函数是两个参数，本兼容层由于RT-Thread的回调函数仅为一个参数，因此改为一个参数（详见uCOS-III/os.h）。
+3. 软件定时器：μCOS-III原版的软件定时器回调函数是两个参数，本兼容层由于RT-Thread的回调函数仅为一个参数，因此改为一个参数（详见μCOS-III/os.h）。
 
    uCOS-III原版软件定时器回调函数定义：</br>
 
@@ -59,15 +58,15 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 
 
 4. 配置os_cfg.h和os_cfg_app.h
-   每个选项的配置说明和原版uCOS-III一致，若有不同，我已经在注释中有所解释。</br>
+   每个选项的配置说明和原版μCOS-III一致，若有不同，我已经在注释中有所解释。</br>
    **原版uCOS-III配置**说明可参见：</br>
-   a)《嵌入式实时操作系统μC/OS-Ⅲ应用开发:基于STM32微控制器》北京航空航天大学出版社 宫辉等译 邵贝贝审校 </br>
+   a)《嵌入式实时操作系统μC/OS-III应用开发:基于STM32微控制器》北京航空航天大学出版社 宫辉等译 邵贝贝审校 </br>
    b) Micriμm公司文档中心: https://doc.micrium.com/display/kernel304/uC-OS-III+Features+os_cfg.h
    
-5. 注意：uCOS-III的任务堆栈大小单位是sizeof(CPU_STK),而RT-Thread的线程堆栈大小单位是Byte,虽然在兼容层已经做了转换，但是在填写时一定要注意，所有涉及到uCOS-III的API、宏定义全部是按照uCOS-III的标准，即堆栈大小为sizeof(CPU_STK)，切勿混搭！这种错误极其隐晦，一定要注意！**下面是混搭的错误示例**：</br>
+5. 注意：μCOS-III的任务堆栈大小单位是sizeof(CPU_STK),而RT-Thread的线程堆栈大小单位是Byte,虽然在兼容层已经做了转换，但是在填写时一定要注意，所有涉及到μCOS-III的API、宏定义全部是按照μCOS-III的标准，即堆栈大小为sizeof(CPU_STK)，切勿混搭！这种错误极其隐晦，一定要注意！**下面是混搭的错误示例**：</br>
     ```c
     ALIGN(RT_ALIGN_SIZE)
-    static char thread2_stack[1024];//错误：混搭RT-Thread的数据类型定义线程堆栈
+    static rt_uint8_t thread2_stack[1024];//错误：混搭RT-Thread的数据类型定义线程堆栈
     
     OSTaskCreate(&thread2,
                  (CPU_CHAR*)"thread2",
@@ -117,13 +116,13 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 ```c
 #define  OS_CFG_TMR_TASK_RATE_HZ 100u /* Rate for timers (100 Hz Typ.) */
 ```
-​    在原版uCOS-III中，该宏定义定义了软件定时器的时基信号，这与RT-Thread的软件定时器有本质的不同，在RT-Thread中，软件定时器的时基信号就等于OS ticks。因此为了能够将uCOS-III软件定时器时间参数转为RT-Thread软件定时器的时间参数，需要用到该宏定义。请使该宏定义与原工程使用uCOS-III时的该宏定义参数一致。
+​    在原版μCOS-III中，该宏定义定义了软件定时器的时基信号，这与RT-Thread的软件定时器有本质的不同，在RT-Thread中，软件定时器的时基信号就等于OS ticks。因此为了能够将μCOS-III软件定时器时间参数转为RT-Thread软件定时器的时间参数，需要用到该宏定义。请使该宏定义与原工程使用μCOS-III时的该宏定义参数一致。
 
 
 
 ## 2.4 os_cfg_app.h配置文件
 
-无特别说明
+RT-Thread无需实现μCOS-III的中断任务，因此相关配置予以取消。
 
 
 
@@ -149,7 +148,7 @@ int main(void) /*RT-Thread main线程*/
 # 3 API
 ## 3.1 没有实现的兼容的API
 
-由于RT-Thread没有提供相关接口，以下uCOS-III API无法实现：
+由于RT-Thread没有提供相关接口，以下μCOS-III API无法实现：
 
 ### 3.1.1 os_core.c
 ```c
