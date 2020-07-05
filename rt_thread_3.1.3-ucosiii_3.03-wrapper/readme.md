@@ -49,10 +49,9 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 
 4. 配置os_cfg.h和os_cfg_app.h
    每个选项的配置说明和原版uCOS-III一致，若有不同，我已经在注释中有所解释。</br>
-   原版uCOS-III配置说明可参见：</br>
+   **原版uCOS-III配置**说明可参见：</br>
    a)《嵌入式实时操作系统μC/OS-Ⅲ应用开发:基于STM32微控制器》北京航空航天大学出版社 宫辉等译 邵贝贝审校 </br>
    b) Micriμm公司文档中心: https://doc.micrium.com/display/kernel304/uC-OS-III+Features+os_cfg.h
-   
 
 ## 2.3 os_cfg.h配置文件
 
