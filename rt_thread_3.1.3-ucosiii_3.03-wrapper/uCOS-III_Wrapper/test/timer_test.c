@@ -44,7 +44,7 @@ static void thread2_entry(void *param)
     {
         OSTaskStkChk(RT_NULL,&free,&used,&used_max,&err);
         rt_kprintf("free:%d,used:%d,used_max:%d\r\n",free,used,used_max);
-        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);
+        OSTimeDlyHMSM(0,0,0,1000,OS_OPT_TIME_PERIODIC|OS_OPT_TIME_HMSM_NON_STRICT,&err);
     }
 }
 

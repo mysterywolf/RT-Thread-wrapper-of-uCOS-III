@@ -43,8 +43,10 @@
 #include <os.h>
 
 /*
-由于RTT没有相关接口，因此以下函数没有实现
-OSSchedRoundRobinCfg
+************************************************************************************************************************
+* Note(s)    : 1)由于RTT没有相关接口，因此以下函数没有实现
+*                   OSSchedRoundRobinCfg
+************************************************************************************************************************
 */
 
 /*
@@ -66,6 +68,13 @@ void  OSInit (OS_ERR  *p_err)
 {
     *p_err = OS_ERR_NONE;
     
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif    
+    
     OSRunning = OS_STATE_OS_STOPPED; /* Indicate that multitasking not started                 */
     
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
@@ -77,6 +86,7 @@ void  OSInit (OS_ERR  *p_err)
 #endif    
     
 }
+
 /*
 ************************************************************************************************************************
 *                                                      ENTER ISR
@@ -104,6 +114,7 @@ void  OSInit (OS_ERR  *p_err)
 *              5) You are allowed to nest interrupts up to 250 levels deep.
 ************************************************************************************************************************
 */
+
 void  OSIntEnter (void)
 {
     rt_interrupt_enter();
@@ -128,6 +139,7 @@ void  OSIntEnter (void)
 *              2) Rescheduling is prevented when the scheduler is locked (see OSSchedLock())
 ************************************************************************************************************************
 */
+
 void  OSIntExit (void)
 {
     rt_interrupt_leave();
@@ -188,7 +200,7 @@ void  OSSched (void)
 *
 *                            OS_ERR_NONE                 The scheduler is locked
 *                          - OS_ERR_LOCK_NESTING_OVF     If you attempted to nest call to this function > 250 levels
-*                          - OS_ERR_OS_NOT_RUNNING       If uC/OS-III is not running yet.
+*                            OS_ERR_OS_NOT_RUNNING       If uC/OS-III is not running yet.
 *                            OS_ERR_SCHED_LOCK_ISR       If you called this function from an ISR.
 *                        -------------说明-------------
 *                            OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
@@ -205,12 +217,25 @@ void  OSSched (void)
 
 void  OSSchedLock (OS_ERR  *p_err)
 {
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif    
+    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
+    if(rt_interrupt_get_nest()!=0) /*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_SCHED_LOCK_ISR;
         return; 
     }  
+#endif
+    
+    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Make sure multitasking is running                      */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return;
+    }
     
     *p_err = OS_ERR_NONE;/*rt_enter_critical没有返回错误码*/    
     rt_enter_critical();
@@ -225,7 +250,7 @@ void  OSSchedLock (OS_ERR  *p_err)
 * Arguments  : p_err     is a pointer to a variable that will contain an error code returned by this function.
 *
 *                            OS_ERR_NONE
-*                          - OS_ERR_OS_NOT_RUNNING       The scheduler has been enabled
+*                            OS_ERR_OS_NOT_RUNNING       The scheduler has been enabled
 *                            OS_ERR_SCHED_LOCKED         The scheduler is still locked, still nested
 *                            OS_ERR_SCHED_NOT_LOCKED     The scheduler was not locked
 *                            OS_ERR_SCHED_UNLOCK_ISR     If you called this function from an ISR.
@@ -244,19 +269,31 @@ void  OSSchedLock (OS_ERR  *p_err)
 
 void  OSSchedUnlock (OS_ERR  *p_err)
 {
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u   
+    if(rt_interrupt_get_nest()!=0) /*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_SCHED_LOCK_ISR;
         return; 
     }
+#endif  
     
-    /*检查调度器是否已经完全解锁*/
-    if(rt_critical_level() == 0)
+    if(rt_critical_level() == 0)/*检查调度器是否已经完全解锁*/
     {
         *p_err = OS_ERR_SCHED_NOT_LOCKED;
         return;         
     }
+    
+    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Make sure multitasking is running                      */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return;
+    }  
     
     *p_err = OS_ERR_NONE;/*rt_exit_critical没有返回错误码*/
     rt_exit_critical();
@@ -286,11 +323,13 @@ void  OSSchedUnlock (OS_ERR  *p_err)
 ************************************************************************************************************************
 */
 
-//void  OSSchedRoundRobinCfg (CPU_BOOLEAN   en,
-//                            OS_TICK       dflt_time_quanta,
-//                            OS_ERR       *p_err)
-//{    
-//}
+#if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
+void  OSSchedRoundRobinCfg (CPU_BOOLEAN   en,
+                            OS_TICK       dflt_time_quanta,
+                            OS_ERR       *p_err)
+{    
+}
+#endif
 
 /*
 ************************************************************************************************************************
@@ -317,19 +356,27 @@ void  OSSchedUnlock (OS_ERR  *p_err)
 ************************************************************************************************************************
 */
 
+#if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
 void  OSSchedRoundRobinYield (OS_ERR  *p_err)
 {
     rt_err_t rt_err;
     
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_YIELD_ISR;
         return; 
     }
+#endif
     
-    /*检查调度器是否被锁*/
-    if(rt_critical_level() > 0)
+    if(rt_critical_level() > 0)/*检查调度器是否被锁*/
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;         
@@ -338,6 +385,7 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
     rt_err = rt_thread_yield();
     *p_err = _err_rtt_to_ucosiii(rt_err); 
 }
+#endif
 
 /*
 ************************************************************************************************************************
@@ -364,8 +412,29 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
 */
 
 void  OSStart (OS_ERR  *p_err)
-{
-    *p_err = OS_ERR_OS_RUNNING; 
+{  
+    CPU_SR_ALLOC();    
+    
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+    
+    CPU_CRITICAL_ENTER();
+    if (OSRunning == OS_STATE_OS_STOPPED) {
+//        OSPrioHighRdy   = OS_PrioGetHighest();              /* Find the highest priority                              */
+//        OSPrioCur       = OSPrioHighRdy;
+//        OSTCBHighRdyPtr = OSRdyList[OSPrioHighRdy].HeadPtr;
+//        OSTCBCurPtr     = OSTCBHighRdyPtr;
+        OSRunning       = OS_STATE_OS_RUNNING;
+//        OSStartHighRdy();                                   /* Execute target specific code to start task             */
+       *p_err           = OS_ERR_FATAL_RETURN;              /* OSStart() is not supposed to return                    */
+    } else {
+       *p_err           = OS_ERR_OS_RUNNING;                /* OS is already running                                  */
+    }
+    CPU_CRITICAL_EXIT();
 }
 
 /*
@@ -386,6 +455,13 @@ void  OSStart (OS_ERR  *p_err)
 
 CPU_INT16U  OSVersion (OS_ERR  *p_err)
 {
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((CPU_INT16U)0u);
+    }
+#endif
+    
     *p_err = OS_ERR_NONE;
     return RTTHREAD_VERSION;
 }

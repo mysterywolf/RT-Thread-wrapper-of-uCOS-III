@@ -272,7 +272,7 @@ typedef  enum  os_err {
     OS_ERR_E                         = 14000u,
 
     OS_ERR_F                         = 15000u,
-//    OS_ERR_FATAL_RETURN              = 15001u,
+    OS_ERR_FATAL_RETURN              = 15001u,
 
 //    OS_ERR_FLAG_GRP_DEPLETED         = 15101u,
 //    OS_ERR_FLAG_NOT_RDY              = 15102u,
@@ -330,7 +330,7 @@ typedef  enum  os_err {
 
     OS_ERR_OPT_INVALID               = 24101u,
 
-//    OS_ERR_OS_NOT_RUNNING            = 24201u,
+    OS_ERR_OS_NOT_RUNNING            = 24201u,
     OS_ERR_OS_RUNNING                = 24202u,
 
     OS_ERR_P                         = 25000u,
@@ -726,16 +726,19 @@ OS_SEM_CTR    OSTaskSemSet              (OS_TCB                *p_tcb,
                                          OS_SEM_CTR             cnt,
                                          OS_ERR                *p_err);
 
+#if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
 void          OSTaskStkChk              (OS_TCB                *p_tcb,
                                          CPU_STK_SIZE          *p_free,
                                          CPU_STK_SIZE          *p_used,
                                          CPU_STK_SIZE          *p_used_max,
                                          OS_ERR                *p_err);
+#endif
 
+#if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
 void          OSTaskTimeQuantaSet       (OS_TCB                *p_tcb,
                                          OS_TICK                time_quanta,
                                          OS_ERR                *p_err);
-
+#endif
 
 /* ================================================================================================================== */
 /*                                             MUTUAL EXCLUSION SEMAPHORES                                            */
@@ -864,11 +867,14 @@ void          OSIntExit                 (void);
 void          OSSafetyCriticalStart     (void);
 #endif
 
+#if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
 void          OSSchedRoundRobinCfg      (CPU_BOOLEAN            en,
                                          OS_TICK                dflt_time_quanta,
                                          OS_ERR                *p_err);
 
 void          OSSchedRoundRobinYield    (OS_ERR                *p_err);
+
+#endif
 
 void          OSSched                   (void);
 
@@ -885,6 +891,34 @@ void          OSStatTaskCPUUsageInit    (OS_ERR                *p_err);
 
 CPU_INT16U    OSVersion                 (OS_ERR                *p_err);
 
+/* ================================================================================================================== */
+/*                                          TASK LOCAL STORAGE (TLS) SUPPORT                                          */
+/* ================================================================================================================== */
+
+#if defined(OS_CFG_TLS_TBL_SIZE) && (OS_CFG_TLS_TBL_SIZE > 0u)
+OS_TLS_ID  OS_TLS_GetID       (OS_ERR              *p_err);
+
+OS_TLS     OS_TLS_GetValue    (OS_TCB              *p_tcb,
+                               OS_TLS_ID            id,
+                               OS_ERR              *p_err);
+
+void       OS_TLS_Init        (OS_ERR              *p_err);
+
+void       OS_TLS_SetValue    (OS_TCB              *p_tcb,
+                               OS_TLS_ID            id,
+                               OS_TLS               value,
+                               OS_ERR              *p_err);
+
+void       OS_TLS_SetDestruct (OS_TLS_ID            id,
+                               OS_TLS_DESTRUCT_PTR  p_destruct,
+                               OS_ERR              *p_err);
+
+void       OS_TLS_TaskCreate  (OS_TCB              *p_tcb);
+
+void       OS_TLS_TaskDel     (OS_TCB              *p_tcb);
+
+void       OS_TLS_TaskSw      (void);
+#endif
 
 /* ================================================================================================================== */
 /*                                                 TIME MANAGEMENT                                                    */
@@ -894,15 +928,19 @@ void          OSTimeDly                 (OS_TICK                dly,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
 
+#if OS_CFG_TIME_DLY_HMSM_EN > 0u
 void          OSTimeDlyHMSM             (CPU_INT16U             hours,
                                          CPU_INT16U             minutes,
                                          CPU_INT16U             seconds,
                                          CPU_INT32U             milli,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
+#endif
 
+#if OS_CFG_TIME_DLY_RESUME_EN > 0u
 void          OSTimeDlyResume           (OS_TCB                *p_tcb,
                                          OS_ERR                *p_err);
+#endif
 
 OS_TICK       OSTimeGet                 (OS_ERR                *p_err);
 
@@ -910,7 +948,6 @@ void          OSTimeSet                 (OS_TICK                ticks,
                                          OS_ERR                *p_err);
 
 void          OSTimeTick                (void);
-
 
 /* ================================================================================================================== */
 /*                                                 TIMER MANAGEMENT                                                   */

@@ -43,8 +43,10 @@
 #include <os.h>
 
 /*
-由于RTT没有相关接口，因此以下函数没有实现
-OSTimeDlyResume
+************************************************************************************************************************
+* Note(s)    : 1)由于RTT没有相关接口，因此以下函数没有实现
+*                   OSTimeDlyResume
+************************************************************************************************************************
 */
 
 /*
@@ -101,25 +103,49 @@ void  OSTimeDly (OS_TICK   dly,
 {
     rt_err_t rt_err;
     
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TIME_DLY_ISR;
         return; 
     }
+#endif
     
-    /*检查调度器是否被锁*/
-    if(rt_critical_level() > 0)
+    if(rt_critical_level() > 0)/*检查调度器是否被锁*/
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;         
-    }   
+    } 
     
-    /*检查是否为0延时*/
-    if(dly == 0)
+#if OS_CFG_ARG_CHK_EN > 0u      
+    if(dly == 0)/*检查是否为0延时*/
     {
         *p_err = OS_ERR_TIME_ZERO_DLY;
         return;         
+    }
+    switch (opt) {
+        case OS_OPT_TIME_DLY:
+        case OS_OPT_TIME_TIMEOUT:
+        case OS_OPT_TIME_PERIODIC:
+             if (dly == (OS_TICK)0u) {                      /* 0 means no delay!                                      */
+                *p_err = OS_ERR_TIME_ZERO_DLY;
+                 return;
+             }
+             break;
+
+        case OS_OPT_TIME_MATCH:
+             break;
+
+        default:
+            *p_err = OS_ERR_OPT_INVALID;
+             return;
     }
     
     /*检查opts*/
@@ -132,6 +158,7 @@ void  OSTimeDly (OS_TICK   dly,
         RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSTimeDly: wrapper can't accept this option\r\n"));
         return;
     }
+#endif
     
     rt_err = rt_thread_delay(dly);
     *p_err = _err_rtt_to_ucosiii(rt_err); 
@@ -162,7 +189,7 @@ void  OSTimeDly (OS_TICK   dly,
 *                            OS_OPT_TIME_PERIODIC   indicates that the delay specifies the periodic value that OSTickCtr
 *                                                   must reach before the task will be resumed.
 *
-*                          - OS_OPT_TIME_HMSM_STRICT            strictly allow only hours        (0...99)
+*                            OS_OPT_TIME_HMSM_STRICT            strictly allow only hours        (0...99)
 *                                                                                   minutes      (0...59)
 *                                                                                   seconds      (0...59)
 *                                                                                   milliseconds (0...999)
@@ -199,6 +226,8 @@ void  OSTimeDly (OS_TICK   dly,
 *                 a task to sleep for that long.
 ************************************************************************************************************************
 */
+
+#if OS_CFG_TIME_DLY_HMSM_EN > 0u
 void  OSTimeDlyHMSM (CPU_INT16U   hours,
                      CPU_INT16U   minutes,
                      CPU_INT16U   seconds,
@@ -208,31 +237,38 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
 {
     rt_err_t rt_err;
     rt_int32_t dly;
-    
 #if OS_CFG_ARG_CHK_EN > 0u     
     CPU_BOOLEAN  opt_invalid;
     CPU_BOOLEAN  opt_non_strict;
- 
-    /*检查是否在中断中运行*/
-    if(rt_interrupt_get_nest()!=0)
+#endif
+    
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TIME_DLY_ISR;
         return; 
     }
-    
-    /*检查调度器是否被锁*/
-    if(rt_critical_level() > 0)
+#endif
+      
+    if(rt_critical_level() > 0)/*检查调度器是否被锁*/
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;         
-    }   
-
+    } 
+    
+#if OS_CFG_ARG_CHK_EN > 0u  
     opt_invalid = DEF_BIT_IS_SET_ANY(opt, ~OS_OPT_TIME_OPTS_MASK);
     if (opt_invalid == DEF_YES) {
        *p_err = OS_ERR_OPT_INVALID;
         return;
     }
-
     opt_non_strict = DEF_BIT_IS_SET(opt, OS_OPT_TIME_HMSM_NON_STRICT);
     if (opt_non_strict != DEF_YES) {
          if (milli   > (CPU_INT32U)999u) {
@@ -276,6 +312,7 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
     rt_err = rt_thread_mdelay(dly);   
     *p_err = _err_rtt_to_ucosiii(rt_err);
 }
+#endif
 
 /*
 ************************************************************************************************************************
@@ -299,10 +336,12 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
 ************************************************************************************************************************
 */
 
-//void  OSTimeDlyResume (OS_TCB  *p_tcb,
-//                       OS_ERR  *p_err)
-//{
-//}
+#if OS_CFG_TIME_DLY_RESUME_EN > 0u
+void  OSTimeDlyResume (OS_TCB  *p_tcb,
+                       OS_ERR  *p_err)
+{
+}
+#endif
 
 /*
 ************************************************************************************************************************

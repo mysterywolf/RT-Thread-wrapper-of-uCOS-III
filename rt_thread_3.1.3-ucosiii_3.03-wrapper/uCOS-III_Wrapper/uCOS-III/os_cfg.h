@@ -47,11 +47,14 @@
 
 #define  OS_CFG_ARG_CHK_EN               1u                 /* Enable (1) or Disable (0) argument checking                           */
 #define  OS_CFG_CALLED_FROM_ISR_CHK_EN   1u                 /* Enable (1) or Disable (0) check for called from ISR                   */
-#define  OS_CFG_OBJ_TYPE_CHK_EN          1u                  /* Enable (1) or Disable (0) object type checking                        */
+#define  OS_CFG_OBJ_TYPE_CHK_EN          1u                 /* Enable (1) or Disable (0) object type checking                        */
 
 #define  OS_CFG_DBG_EN                   1u                 /* Enable (1) debug code/variables                                       */
 
 #define  OS_CFG_PRIO_MAX        RT_THREAD_PRIORITY_MAX      /* 只读 Defines the maximum number of task priorities                    */
+#define  OS_CFG_STK_SIZE_MIN            64u                 /* Minimum allowable task stack size                                     */
+
+#define  OS_CFG_SCHED_ROUND_ROBIN_EN     1u                 /* 只读,RTT时间片轮转为必选项 Include code for Round-Robin scheduling    */
 
 
                                                             /* ----------------------------- EVENT FLAGS --------------------------- */
@@ -103,7 +106,7 @@
 
                                                             /* -------------------------- TASK MANAGEMENT -------------------------- */
 #define  OS_CFG_STAT_TASK_EN             0u                 /* Enable (1) or Disable(0) the statistics task                          */
-#define  OS_CFG_STAT_TASK_STK_CHK_EN     0u                 /* Check task stacks from statistic task                                 */
+#define  OS_CFG_STAT_TASK_STK_CHK_EN     1u                 /* Check task stacks from statistic task                                 */
 
 #define  OS_CFG_TASK_CHANGE_PRIO_EN      0u                 /* 只读,该功能无法兼容 Include code for OSTaskChangePrio()               */
 #define  OS_CFG_TASK_DEL_EN              1u                 /* Include code for OSTaskDel()                                          */
