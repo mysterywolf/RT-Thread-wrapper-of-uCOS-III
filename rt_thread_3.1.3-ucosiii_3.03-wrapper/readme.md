@@ -28,25 +28,31 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 
 
 ## 2.2 迁移步骤
-1) 浏览一下uC-CPU/cpu.h文件，看一下头文件中的定义是否符合你的CPU，一般不需要改这个文件
+1. 浏览一下uC-CPU/cpu.h文件，看一下头文件中的定义是否符合你的CPU，一般不需要改这个文件
 
-2) 浏览一下uCOS-III/os.h文件，看一下错误代码，这个错误代码和原版uCOS是有一定区别的。</br>
-**注意:** 请勿随意打开注释掉的枚举体成员,如果用户使用到了这些注释掉的成员,则会在迁移时编译报错,用以提醒用户这些错误代码在兼容层已经不可用。
+2. 浏览一下uCOS-III/os.h文件，看一下错误代码，这个错误代码和原版uCOS是有一定区别的。</br>
+   **注意:** 请勿随意打开注释掉的枚举体成员,如果用户使用到了这些注释掉的成员,则会在迁移时编译报错,用以提醒用户这些错误代码在兼容层已经不可用。
 
-3) 软件定时器：uCOS-III原版的软件定时器回调函数是两个参数，本兼容层由于RT-Thread的回调函数仅为一个参数，因此改为一个参数（详见uCOS-III/os.h）。
+3. 软件定时器：uCOS-III原版的软件定时器回调函数是两个参数，本兼容层由于RT-Thread的回调函数仅为一个参数，因此改为一个参数（详见uCOS-III/os.h）。
 
-uCOS-III原版软件定时器回调函数定义：</br>
+   uCOS-III原版软件定时器回调函数定义：</br>
 
-```c
-typedef  void  (*OS_TMR_CALLBACK_PTR)(void *p_tmr, void *p_arg);
-```
-本兼容层软件定时器回调函数定义：</br>
-```c
-typedef  void (*OS_TMR_CALLBACK_PTR)(void *parameter);
-```
+   ```c
+   typedef  void  (*OS_TMR_CALLBACK_PTR)(void *p_tmr, void *p_arg);
+   ```
 
-4) 配置os_cfg.h和os_cfg_app.h
+   本兼容层软件定时器回调函数定义：</br>
 
+    ```c
+    typedef  void (*OS_TMR_CALLBACK_PTR)(void *parameter);
+    ```
+
+4. 配置os_cfg.h和os_cfg_app.h
+   每个选项的配置说明和原版uCOS-III一致，若有不同，我已经在注释中有所解释。</br>
+   原版uCOS-III配置说明可参见：
+   a)《嵌入式实时操作系统μC/OS-Ⅲ应用开发:基于STM32微控制器》北京航空航天大学出版社 宫辉等译 邵贝贝审校 
+   b) Micriμm公司文档中心: https://doc.micrium.com/display/kernel304/uC-OS-III+Features+os_cfg.h
+   
 
 ## 2.3 os_cfg.h配置文件
 
