@@ -143,17 +143,14 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
 *              opt            contains additional information (or options) about the behavior of the task.
 *                             See OS_OPT_TASK_xxx in OS.H.  Current choices are:
 *
-*                               - OS_OPT_TASK_NONE            No option selected
-*                               - OS_OPT_TASK_STK_CHK         Stack checking to be allowed for the task
-*                               - OS_OPT_TASK_STK_CLR         Clear the stack when the task is created
+*                                 OS_OPT_TASK_NONE            No option selected
+*                                 OS_OPT_TASK_STK_CHK         Stack checking to be allowed for the task
+*                                 OS_OPT_TASK_STK_CLR         Clear the stack when the task is created
 *                               - OS_OPT_TASK_SAVE_FP         If the CPU has floating-point registers, save them
 *                                                             during a context switch.
 *                               - OS_OPT_TASK_NO_TLS          If the caller doesn't want or need TLS (Thread Local 
 *                                                             Storage) support for the task.  If you do not include this
 *                                                             option, TLS will be supported by default.
-*                            -------------说明-------------
-*                             该参数在本兼容层中没有意义，填什么都行
-*
 *
 *              p_err          is a pointer to an error code that will be set during this call.  The value pointer
 *                             to by 'p_err' can be:
@@ -212,7 +209,6 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     CPU_STK       *p_sp;
     CPU_STK_SIZE   i;
     
-    (void)opt;
     (void)stk_limit;
 
 #ifdef OS_SAFETY_CRITICAL
@@ -1113,11 +1109,9 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
 void  OSTaskStkChk (OS_TCB        *p_tcb,
                     CPU_STK_SIZE  *p_free,
                     CPU_STK_SIZE  *p_used,
-                    CPU_STK_SIZE  *p_used_max,
                     OS_ERR        *p_err)
 {
     rt_uint32_t stack_size;
-    rt_uint32_t stack_used_max;
     rt_uint32_t stack_used;
     rt_uint32_t stack_free;
     rt_uint8_t *ptr;
@@ -1150,9 +1144,7 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     
 #if OS_CFG_ARG_CHK_EN > 0u
     if(p_free == RT_NULL ||
-       p_used == RT_NULL ||
-       p_used_max == RT_NULL
-    )
+       p_used == RT_NULL)
     {
         *p_err = OS_ERR_PTR_INVALID;
         return;
@@ -1167,21 +1159,19 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     *p_err = OS_ERR_NONE;
     
 #if CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO    
-    /*计算堆栈最大使用情况*/
+    /*计算RT-Thread堆栈最大使用情况*/
     ptr = (rt_uint8_t *)thread->stack_addr;
     while (*ptr == '#')ptr ++;
     stack_size = thread->stack_size;
-    stack_used_max = thread->stack_size - ((rt_ubase_t) ptr - (rt_ubase_t) thread->stack_addr);
-    
-    /*计算堆栈实时使用情况*/
-    stack_used = (rt_ubase_t)thread->stack_addr +thread->stack_size - (rt_ubase_t)thread->sp;
+    stack_used = thread->stack_size - ((rt_ubase_t) ptr - (rt_ubase_t) thread->stack_addr);
     stack_free = stack_size - stack_used;
-    
-    *p_used_max = stack_used_max / sizeof(CPU_STK_SIZE);
     *p_used = stack_used / sizeof(CPU_STK_SIZE);
     *p_free = stack_free / sizeof(CPU_STK_SIZE);
+    
+    /*计算RT-Thread堆栈实时使用情况,uCOS未使用*/
+//    stack_used = (rt_ubase_t)thread->stack_addr +thread->stack_size - (rt_ubase_t)thread->sp;
 #else
-#errror "本函数不支持堆栈向上增长的计算情况"
+#errror "本函数不支持堆栈向上增长的情况"
 #endif
 
 }

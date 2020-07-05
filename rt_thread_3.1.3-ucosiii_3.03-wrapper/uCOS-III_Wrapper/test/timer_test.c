@@ -22,7 +22,7 @@ static void thread2_entry(void *param)
     OS_ERR err;
     OS_REG_ID id;
     
-    CPU_STK_SIZE free,used,used_max;
+    CPU_STK_SIZE free,used;
 	//创建定时器1
 	OSTmrCreate((OS_TMR		*)&tmr1,		//定时器1
                 (CPU_CHAR	*)"tmr1",		//定时器名字
@@ -42,8 +42,8 @@ static void thread2_entry(void *param)
                 
     while(1)
     {
-        OSTaskStkChk(RT_NULL,&free,&used,&used_max,&err);
-        rt_kprintf("free:%d,used:%d,used_max:%d\r\n",free,used,used_max);
+        OSTaskStkChk(RT_NULL,&free,&used,&err);
+        rt_kprintf("free:%d,used:%d\r\n",free,used);
         OSTimeDlyHMSM(0,0,0,1000,OS_OPT_TIME_PERIODIC|OS_OPT_TIME_HMSM_NON_STRICT,&err);
     }
 }

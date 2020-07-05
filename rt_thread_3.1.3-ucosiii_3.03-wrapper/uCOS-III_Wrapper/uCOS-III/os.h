@@ -730,7 +730,6 @@ OS_SEM_CTR    OSTaskSemSet              (OS_TCB                *p_tcb,
 void          OSTaskStkChk              (OS_TCB                *p_tcb,
                                          CPU_STK_SIZE          *p_free,
                                          CPU_STK_SIZE          *p_used,
-                                         CPU_STK_SIZE          *p_used_max,
                                          OS_ERR                *p_err);
 #endif
 
