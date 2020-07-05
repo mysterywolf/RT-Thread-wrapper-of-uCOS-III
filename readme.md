@@ -1,7 +1,6 @@
-# RT-Thread + μC/OS-Ⅲ 会碰出怎样的火花？
-这是一个针对国产RT-Thread操作系统的μCOS-Ⅲ操作系统兼容层，可以让基于美国Micriμm公司的μCOS-Ⅲ操作系统的应用层程序做最小的修改，使项目快速迁移到RT-Thread操作系统上。
-
-目前瞄准μC/OS-Ⅲ 3.03版本，未来会兼容μC/OS-Ⅲ 3.08版本 (其实这两个版本API没有太大差别)。 
+# RT-Thread操作系统μC/OS-III兼容层
+## RT-Thread + μC/OS-III 会碰出怎样的火花？
+这是一个针对国产RT-Thread操作系统的μCOS-III操作系统兼容层，可以让基于美国Micriμm公司的μCOS-III操作系统的项目快速迁移到RT-Thread操作系统上。
 
 
 
