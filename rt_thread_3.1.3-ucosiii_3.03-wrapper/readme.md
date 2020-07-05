@@ -1,5 +1,9 @@
+# RT-Thread操作系统μC/OS-III(3.03/3.04)兼容层
+## μCOS-III Wrapper
+------
+
 # 1 概述
-这是一个针对国产RT-Thread操作系统的μCOS-III操作系统兼容层，可以让基于美国Micriμm公司的μCOS-III操作系统的应用层程序做最小的修改，使项目快速迁移到RT-Thread操作系统上。
+这是一个针对国产RT-Thread操作系统的μCOS-III操作系统兼容层，可以让基于美国Micriμm公司的μCOS-III操作系统的项目快速迁移到RT-Thread操作系统上。
 
 本文件内的兼容层为μCOS-III 3.03版本向RT-Thread Nano 3.1.3版本兼容。由于μCOS-III支持8、16、32位CPU，而RT-Thread支持32、64位CPU，**因此本兼容层仅能对基于32位CPU的已有工程进行兼容**。
 
