@@ -64,7 +64,7 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 4. 配置os_cfg.h和os_cfg_app.h
    每个选项的配置说明和原版μCOS-III一致，若有不同，我已经在注释中有所解释。</br>
    **原版uCOS-III配置**说明可参见：</br>
-   a)《嵌入式实时操作系统μC/OS-III应用开发:基于STM32微控制器》北京航空航天大学出版社 宫辉等译 邵贝贝审校 </br>
+   a)《嵌入式实时操作系统μC/OS-III》北京航空航天大学出版社 宫辉等译 邵贝贝审校 </br>
    b) Micriμm公司文档中心: https://doc.micrium.com/display/kernel304/uC-OS-III+Features+os_cfg.h
    
 5. 注意：μCOS-III的任务堆栈大小单位是sizeof(CPU_STK),而RT-Thread的线程堆栈大小单位是Byte,虽然在兼容层已经做了转换，但是在填写时一定要注意，所有涉及到μCOS-III的API、宏定义全部是按照μCOS-III的标准，即堆栈大小为sizeof(CPU_STK)，切勿混搭！这种错误极其隐晦，一定要注意！**下面是混搭的错误示例**：</br>

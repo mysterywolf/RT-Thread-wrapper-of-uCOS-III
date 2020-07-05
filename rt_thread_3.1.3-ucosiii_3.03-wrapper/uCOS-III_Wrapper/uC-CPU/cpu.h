@@ -215,32 +215,8 @@ typedef  rt_base_t                  CPU_SR;                     /* Defines   CPU
 *********************************************************************************************************
 */
 
-//void        CPU_IntDis       (void);
-//void        CPU_IntEn        (void);
-
-//void        CPU_IntSrcDis    (CPU_INT08U  pos);
-//void        CPU_IntSrcEn     (CPU_INT08U  pos);
-//void        CPU_IntSrcPendClr(CPU_INT08U  pos);
-//CPU_INT16S  CPU_IntSrcPrioGet(CPU_INT08U  pos);
-//void        CPU_IntSrcPrioSet(CPU_INT08U  pos,
-//                              CPU_INT08U  prio);
-
-
 CPU_SR      CPU_SR_Save      (void);
 void        CPU_SR_Restore   (CPU_SR      cpu_sr);
-
-
-//void        CPU_WaitForInt   (void);
-//void        CPU_WaitForExcept(void);
-
-
-//CPU_DATA    CPU_RevBits      (CPU_DATA    val);
-
-//void        CPU_BitBandClr   (CPU_ADDR    addr,
-//                              CPU_INT08U  bit_nbr);
-//void        CPU_BitBandSet   (CPU_ADDR    addr,
-//                              CPU_INT08U  bit_nbr);
-
 
 #ifdef __cplusplus
 }
