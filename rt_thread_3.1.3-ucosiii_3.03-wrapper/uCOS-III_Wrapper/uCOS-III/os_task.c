@@ -1220,7 +1220,13 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     *p_used = stack_used / sizeof(CPU_STK_SIZE);
     *p_free = stack_free / sizeof(CPU_STK_SIZE);
 #else
-#errror "本函数不支持堆栈向上增长的情况"
+    ptr = (rt_uint8_t *)thread->stack_addr + thread->stack_size - 1;
+    while (*ptr == '#')ptr --;
+    stack_size = thread->stack_size;
+    stack_used = (rt_ubase_t)ptr - (rt_ubase_t)thread->stack_addr
+    stack_free = stack_size - stack_used;
+    *p_used = stack_used / sizeof(CPU_STK_SIZE);
+    *p_free = stack_free / sizeof(CPU_STK_SIZE);    
 #endif
 
 }

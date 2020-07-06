@@ -68,6 +68,7 @@ extern  "C" {
 
 #include <rtdef.h>
 #include <cpu_def.h>
+#include <rtconfig.h>
 
 /*
 *********************************************************************************************************
@@ -164,7 +165,11 @@ typedef  CPU_ADDR    CPU_SIZE_T;                                /* Defines CPU s
 *********************************************************************************************************
 */
 
-#define  CPU_CFG_STK_GROWTH     CPU_STK_GROWTH_HI_TO_LO         /* Defines CPU stack growth order (see Note #1).        */
+#if defined(ARCH_CPU_STACK_GROWS_UPWARD)                        /* Defines CPU stack growth order (see Note #1).        */
+#define  CPU_CFG_STK_GROWTH     CPU_STK_GROWTH_LO_TO_HI    
+#else
+#define  CPU_CFG_STK_GROWTH     CPU_STK_GROWTH_HI_TO_LO         
+#endif
 
 typedef  rt_base_t              CPU_STK;                        /* Defines CPU stack word size (in octets).             */
 typedef  CPU_ADDR               CPU_STK_SIZE;                   /* Defines CPU stack      size (in number of CPU_STKs). */
