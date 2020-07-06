@@ -59,10 +59,12 @@
 ************************************************************************************************************************
 */
 #include <rtthread.h>
+#include <cpu.h>
 #include <os_type.h>
 #include <os_cfg.h>
 #include <os_cfg_app.h>
 #include <lib_def.h>
+
 
 /*
 ************************************************************************************************************************
@@ -75,6 +77,20 @@
 #else
 #define  OS_EXT  extern
 #endif
+
+
+/*
+************************************************************************************************************************
+*                                               CRITICAL SECTION HANDLING
+************************************************************************************************************************
+*/
+#define  OS_CRITICAL_ENTER()                    CPU_CRITICAL_ENTER()
+
+#define  OS_CRITICAL_ENTER_CPU_CRITICAL_EXIT()
+
+#define  OS_CRITICAL_EXIT()                     CPU_CRITICAL_EXIT()
+
+#define  OS_CRITICAL_EXIT_NO_SCHED()            CPU_CRITICAL_EXIT()
 
 
 /*
@@ -300,16 +316,16 @@ typedef  enum  os_err {
 
     OS_ERR_M                         = 22000u,
 
-//    OS_ERR_MEM_CREATE_ISR            = 22201u,
+    OS_ERR_MEM_CREATE_ISR            = 22201u,
     OS_ERR_MEM_FULL                  = 22202u,
-//    OS_ERR_MEM_INVALID_P_ADDR        = 22203u,
-//    OS_ERR_MEM_INVALID_BLKS          = 22204u,
-//    OS_ERR_MEM_INVALID_PART          = 22205u,
-//    OS_ERR_MEM_INVALID_P_BLK         = 22206u,
-//    OS_ERR_MEM_INVALID_P_MEM         = 22207u,
-//    OS_ERR_MEM_INVALID_P_DATA        = 22208u,
-//    OS_ERR_MEM_INVALID_SIZE          = 22209u,
-//    OS_ERR_MEM_NO_FREE_BLKS          = 22210u,
+    OS_ERR_MEM_INVALID_P_ADDR        = 22203u,
+    OS_ERR_MEM_INVALID_BLKS          = 22204u,
+    OS_ERR_MEM_INVALID_PART          = 22205u,
+    OS_ERR_MEM_INVALID_P_BLK         = 22206u,
+    OS_ERR_MEM_INVALID_P_MEM         = 22207u,
+    OS_ERR_MEM_INVALID_P_DATA        = 22208u,
+    OS_ERR_MEM_INVALID_SIZE          = 22209u,
+    OS_ERR_MEM_NO_FREE_BLKS          = 22210u,
 
 //    OS_ERR_MSG_POOL_EMPTY            = 22301u,
 //    OS_ERR_MSG_POOL_NULL_PTR         = 22302u,
@@ -488,6 +504,8 @@ typedef  enum  os_err {
 ************************************************************************************************************************
 ************************************************************************************************************************
 */
+typedef  struct  os_mem              OS_MEM;
+
 typedef  struct  rt_event            OS_FLAG_GRP;
 
 typedef  struct  os_q                OS_Q;
@@ -570,6 +588,27 @@ struct os_tcb
 #endif
 };
 
+/*
+------------------------------------------------------------------------------------------------------------------------
+*                                                   MEMORY PARTITIONS
+------------------------------------------------------------------------------------------------------------------------
+*/
+
+struct os_mem {                                             /* MEMORY CONTROL BLOCK                                   */
+//    OS_OBJ_TYPE          Type;                              /* Should be set to OS_OBJ_TYPE_MEM                       */
+    void                *AddrPtr;                           /* Pointer to beginning of memory partition               */
+    CPU_CHAR            *NamePtr;
+    void                *FreeListPtr;                       /* Pointer to list of free memory blocks                  */
+    OS_MEM_SIZE          BlkSize;                           /* Size (in bytes) of each block of memory                */
+    OS_MEM_QTY           NbrMax;                            /* Total number of blocks in this partition               */
+    OS_MEM_QTY           NbrFree;                           /* Number of memory blocks remaining in this partition    */
+#if OS_CFG_DBG_EN > 0u
+    OS_MEM              *DbgPrevPtr;
+    OS_MEM              *DbgNextPtr;
+#endif
+};
+
+
 
 /*
 ************************************************************************************************************************
@@ -598,6 +637,14 @@ OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag 
 OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsage;         /* CPU Usage in %                             */
 OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsageMax;      /* CPU Usage in % (Peak)                      */
 #endif
+
+#if OS_CFG_MEM_EN > 0u
+#if OS_CFG_DBG_EN > 0u
+OS_EXT            OS_MEM                   *OSMemDbgListPtr;
+#endif
+OS_EXT            OS_OBJ_QTY                OSMemQty;                   /* Number of memory partitions created        */
+#endif
+
 
 /*
 ************************************************************************************************************************
@@ -996,6 +1043,35 @@ CPU_BOOLEAN   OSTmrStop                 (OS_TMR                *p_tmr,
                                          OS_ERR                *p_err);
 #endif
   
+/* ================================================================================================================== */
+/*                                          FIXED SIZE MEMORY BLOCK MANAGEMENT                                        */
+/* ================================================================================================================== */
+
+#if OS_CFG_MEM_EN > 0u
+
+void          OSMemCreate               (OS_MEM                *p_mem,
+                                         CPU_CHAR              *p_name,
+                                         void                  *p_addr,
+                                         OS_MEM_QTY             n_blks,
+                                         OS_MEM_SIZE            blk_size,
+                                         OS_ERR                *p_err);
+
+void         *OSMemGet                  (OS_MEM                *p_mem,
+                                         OS_ERR                *p_err);
+
+void          OSMemPut                  (OS_MEM                *p_mem,
+                                         void                  *p_blk,
+                                         OS_ERR                *p_err);
+
+/* ------------------------------------------------ INTERNAL FUNCTIONS ---------------------------------------------- */
+
+#if OS_CFG_DBG_EN > 0u
+void          OS_MemDbgListAdd          (OS_MEM                *p_mem);
+#endif
+
+void          OS_MemInit                (OS_ERR                *p_err);
+
+#endif
                                          
                                          
 /*

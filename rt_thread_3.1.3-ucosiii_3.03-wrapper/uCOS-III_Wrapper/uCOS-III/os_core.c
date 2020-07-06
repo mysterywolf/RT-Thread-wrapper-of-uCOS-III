@@ -465,5 +465,5 @@ CPU_INT16U  OSVersion (OS_ERR  *p_err)
 #endif
     
     *p_err = OS_ERR_NONE;
-    return RTTHREAD_VERSION;
+    return OS_VERSION;
 }

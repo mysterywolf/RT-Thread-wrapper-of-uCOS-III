@@ -81,7 +81,7 @@
 
 
                                                             /* -------------------------- MEMORY MANAGEMENT ------------------------ */
-#define  OS_CFG_MEM_EN                   0u                 /* 只读,该功能尚未实现 Enable (1) or Disable (0) code generation for MEMORY MANAGER  */
+#define  OS_CFG_MEM_EN                   1u                 /* 只读,该功能尚未实现 Enable (1) or Disable (0) code generation for MEMORY MANAGER  */
 
 
                                                             /* --------------------- MUTUAL EXCLUSION SEMAPHORES ------------------- */
