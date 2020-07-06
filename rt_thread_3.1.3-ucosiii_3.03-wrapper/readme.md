@@ -96,12 +96,19 @@ int main(void) /*RT-Thread main线程*/
 {
     OS_ERR err;
     
-    OSInit(&err); /*uCOS-III操作系统初始化*/
+    OSInit(&err);                                   /*uCOS-III操作系统初始化*/
     
-    OSStart(&err);/*开始运行uCOS-III操作系统*/
+    OSStart(&err);                                  /*开始运行uCOS-III操作系统*/
     
-    //.....
-        
+#if OS_CFG_APP_HOOKS_EN > 0u
+    App_OS_SetAllHooks();                           /*设置钩子函数*/
+#endif  
+    
+#if OS_CFG_STAT_TASK_EN > 0u
+    OSStatTaskCPUUsageInit(&err);  	                /*统计任务*/    
+    OSStatReset(&err);                              /*复位统计数据*/    
+#endif	  
+
 }
 
 ```
@@ -188,8 +195,9 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q *p_q, OS_OPT opt, OS_ERR *p_err);
 OS_OBJ_QTY  OSSemPendAbort (OS_SEM *p_sem, OS_OPT opt, OS_ERR *p_err);
 ```
 
-
 ### 3.1.6 os_task.c
+
+虽然RT-Thread没有任务内建消息队列、任务内建信号量、任务内建寄存器机制，但是本兼容层均已实现上述功能，可以正常兼容。
 
 ```c
 void  OSTaskChangePrio (OS_TCB *p_tcb, OS_PRIO prio_new, OS_ERR *p_err);
@@ -236,3 +244,10 @@ void  App_OS_TaskSwHook (void);
 void  App_OS_TimeTickHook (void);
 ```
 
+
+
+## 3.3 统计任务（OS_StatTask()、os_stat.c）
+
+​	在μCOS-III中，统计任务是一个系统任务，可以在系统运行时做一些统计工作，例如统计总的CPU使用率（0.00%~100.00%）、各任务的CPU使用率（0.00%~100.00%）以及各任务的堆栈使用量。从内核版本V3.03.00起，CPU的利用率用一个0~10000之间的整数表示（对应0.00%~100.00%）。
+
+​	但是RT-Thread并没有统计任务，因此需要创建一个任务来兼容原版μCOS-III的统计任务，完成上述功能。
