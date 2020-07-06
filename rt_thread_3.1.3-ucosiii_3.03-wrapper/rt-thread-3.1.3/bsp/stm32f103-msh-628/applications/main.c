@@ -30,11 +30,11 @@ int main(void)
     OSStart(&err);/*开始运行uCOS-III操作系统*/
     
 //    sem_test();
-    timer_test();
-//   mutex_test();
+//    timer_test();
+//    mutex_test();
 //    queue_test();
 //    flag_test();
-//    task_q_test();
+    task_q_test();
 //    task_sem_test();
 }
 

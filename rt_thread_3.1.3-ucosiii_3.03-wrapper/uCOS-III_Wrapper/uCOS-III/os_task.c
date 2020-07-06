@@ -209,6 +209,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     CPU_STK       *p_sp;
     CPU_STK_SIZE   i;
     
+    CPU_SR_ALLOC();
+    
     (void)stk_limit;
 
 #ifdef OS_SAFETY_CRITICAL
@@ -281,17 +283,19 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
             }
         }
     }
-        
+    
+    CPU_CRITICAL_ENTER();        
     p_tcb->MsgCreateSuc = RT_FALSE;
     p_tcb->SemCreateSuc = RT_FALSE;
     p_tcb->StkSize = stk_size;/*任务堆栈大小(单位:sizeof(CPU_STK))*/
     p_tcb->ExtPtr = p_ext;/*用户附加区指针*/
-    
+    p_tcb->SuspendCtr = 0;/*嵌套挂起为0层*/   
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     for (reg_nbr = 0u; reg_nbr < OS_CFG_TASK_REG_TBL_SIZE; reg_nbr++) {
         p_tcb->RegTbl[reg_nbr] = (OS_REG)0;
     }
 #endif
+    CPU_CRITICAL_EXIT();
     
 #if OS_CFG_TASK_Q_EN > 0u   
     if(q_size>0)/*开启任务内建消息队列*/
@@ -302,12 +306,17 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         OSQCreate(&p_tcb->MsgQ, (CPU_CHAR*)name, q_size, &err);
         if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
         {
+            CPU_CRITICAL_ENTER(); 
             p_tcb->MsgCreateSuc = RT_FALSE;
+            CPU_CRITICAL_EXIT();
+            
             RT_DEBUG_LOG(OS_CFG_DBG_EN,("task qmsg %s create err!\r\n",name));
         }
         else
         {
+            CPU_CRITICAL_ENTER(); 
             p_tcb->MsgCreateSuc = RT_TRUE;
+            CPU_CRITICAL_EXIT();
         }
     }
 #else
@@ -320,12 +329,17 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)name,0,&err);
     if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
     {
+        CPU_CRITICAL_ENTER(); 
         p_tcb->SemCreateSuc = RT_FALSE;
+        CPU_CRITICAL_EXIT();
+        
         RT_DEBUG_LOG(OS_CFG_DBG_EN,("task sem %s create err!\r\n",name));
     }
     else
     {
+        CPU_CRITICAL_ENTER(); 
         p_tcb->SemCreateSuc = RT_TRUE;
+        CPU_CRITICAL_EXIT();
     }
 
 #if defined(OS_CFG_TLS_TBL_SIZE) && (OS_CFG_TLS_TBL_SIZE > 0u)/*线程私有变量暂时没有实现*/
@@ -834,9 +848,6 @@ void  OSTaskRegSet (OS_TCB     *p_tcb,
 *                          应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : none
-*
-* Note(s)    : 1) uCOS-III是支持嵌套挂起/解挂,即挂起5次,解挂5次,任务即可正常运行
-*                 但是RTT并不支持嵌套挂起/解挂,因此该函数无法实现嵌套解挂
 ************************************************************************************************************************
 */
 
@@ -845,6 +856,8 @@ void  OSTaskResume (OS_TCB  *p_tcb,
                     OS_ERR  *p_err)
 {
     rt_err_t rt_err;
+    
+    CPU_SR_ALLOC();
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -861,18 +874,17 @@ void  OSTaskResume (OS_TCB  *p_tcb,
     }
 #endif
     
-#if OS_CFG_ARG_CHK_EN > 0u
     if(p_tcb == RT_NULL)/*检查TCB指针是否为空*/
     {
-        /*尊重uCOS-III源码,这种情况属于试图挂起自己的行为*/
-        *p_err = OS_ERR_TASK_RESUME_SELF;
-        return;
+        p_tcb = (OS_TCB*)rt_thread_self();
     }
+    
+#if OS_CFG_ARG_CHK_EN > 0u
     if(rt_thread_self() == &p_tcb->task)/*检查任务是否企图自己恢复自己*/
     {
         *p_err = OS_ERR_TASK_RESUME_SELF;
         return;
-    }    
+    }
     /*检查任务是否没有被挂起*/
     if((p_tcb->task.stat & RT_THREAD_STAT_MASK) != RT_THREAD_SUSPEND)
     {
@@ -881,8 +893,19 @@ void  OSTaskResume (OS_TCB  *p_tcb,
     }
 #endif
     
-    rt_err = rt_thread_resume(&p_tcb->task);
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    if(p_tcb->SuspendCtr>0)
+    {
+        CPU_CRITICAL_ENTER();
+        p_tcb->SuspendCtr--;
+        CPU_CRITICAL_EXIT();
+        *p_err = OS_ERR_NONE;
+    }
+    else
+    {
+        rt_err = rt_thread_resume(&p_tcb->task);
+        *p_err = _err_rtt_to_ucosiii(rt_err);       
+    }
+
 }
 #endif
 
@@ -1062,11 +1085,40 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
 ************************************************************************************************************************
 */
 
-//OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
-//                          OS_SEM_CTR   cnt,
-//                          OS_ERR      *p_err)
-//{
-//}
+OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
+                          OS_SEM_CTR   cnt,
+                          OS_ERR      *p_err)
+{
+    OS_SEM_CTR  ctr;
+    CPU_SR_ALLOC();
+    
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((OS_SEM_CTR)0);
+    }
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u      
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    {
+        *p_err = OS_ERR_SET_ISR;
+        return ((OS_SEM_CTR)0);
+    }
+#endif
+    
+    if(p_tcb == RT_NULL)
+    {
+        p_tcb = (OS_TCB*)rt_thread_self();
+    }
+    
+    CPU_CRITICAL_ENTER();
+    ctr = p_tcb->Sem.value;
+    p_tcb->Sem.value = (OS_SEM_CTR)cnt;
+    CPU_CRITICAL_EXIT();
+    *p_err = OS_ERR_NONE;
+    return ctr;
+}
 
 /*
 ************************************************************************************************************************
@@ -1167,9 +1219,6 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     stack_free = stack_size - stack_used;
     *p_used = stack_used / sizeof(CPU_STK_SIZE);
     *p_free = stack_free / sizeof(CPU_STK_SIZE);
-    
-    /*计算RT-Thread堆栈实时使用情况,uCOS未使用*/
-//    stack_used = (rt_ubase_t)thread->stack_addr +thread->stack_size - (rt_ubase_t)thread->sp;
 #else
 #errror "本函数不支持堆栈向上增长的情况"
 #endif
@@ -1206,8 +1255,6 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
 * Note(s)    : 1) You should use this function with great care.  If you suspend a task that is waiting for an event
 *                 (i.e. a message, a semaphore, a queue ...) you will prevent this task from running when the event
 *                 arrives.
-*              2) uCOS-III是支持嵌套挂起/解挂,即挂起5次,解挂5次,任务即可正常运行
-*                 但是RTT并不支持嵌套挂起/解挂,因此该函数无法实现嵌套挂起
 ************************************************************************************************************************
 */
 
@@ -1215,6 +1262,8 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
                       OS_ERR  *p_err)
 {
     rt_err_t rt_err;
+    
+    CPU_SR_ALLOC();
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -1237,22 +1286,34 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
         return;         
     }
     
-    /*TCB指针是否为空,若为空表示删除当前线程*/
+    /*TCB指针是否为空,若为空则为当前线程*/
     if(p_tcb == RT_NULL)
     {
-        rt_err = rt_thread_suspend(rt_thread_self());
-        rt_schedule();/* 根据RTT的要求,若挂起自己需要立即调用rt_shedule进行调度*/
+        p_tcb = (OS_TCB*)rt_thread_self();
     } 
-    else
+    
+    if((p_tcb->task.stat & RT_THREAD_STAT_MASK) == RT_THREAD_SUSPEND)
     {
+        /*如果任务是挂起状态*/
+        CPU_CRITICAL_ENTER();
+        p_tcb->SuspendCtr++;
+        CPU_CRITICAL_EXIT();
+        *p_err = OS_ERR_NONE;
+    }
+    else if((p_tcb->task.stat & RT_THREAD_STAT_MASK) == RT_THREAD_READY)
+    {
+        /*任务处于运行态才能被挂起*/
         rt_err = rt_thread_suspend(&p_tcb->task);
         if(rt_thread_self() == &p_tcb->task)/*是否要将自己挂起*/
         {
             rt_schedule();/* 根据RTT的要求,若挂起自己需要立即调用rt_shedule进行调度*/
-        }
+        }    
+        *p_err = _err_rtt_to_ucosiii(rt_err);        
     }
-        
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    else
+    {
+        *p_err = OS_ERR_STATE_INVALID;
+    }
 }
 
 /*

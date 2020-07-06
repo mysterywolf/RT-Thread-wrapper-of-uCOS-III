@@ -49,6 +49,7 @@ static void thread3_entry(void *param)
 	char  *p;
 	OS_MSG_SIZE size;
 	OS_ERR err; 
+    
     while(1)
     {
 		//ÇëÇóÏûÏ¢

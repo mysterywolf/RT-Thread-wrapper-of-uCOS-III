@@ -32,7 +32,7 @@ static void thread1_entry(void *param)
             rt_kprintf("queue post err:%d!\r\n",err);
         }      
         
-        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);
+        OSTimeDlyHMSM(0,0,0,100,OS_OPT_TIME_PERIODIC,&err);
     }
 }
     
@@ -54,7 +54,20 @@ static void thread2_entry(void *param)
         else
         {
             rt_kprintf("pended: str:%s,size:%d\r\n",p,size);
-        }            
+        }   
+
+        /*²âÊÔÇ¶Ì×¹ÒÆð*/
+        OSTaskSuspend(&thread1,&err);
+        OSTaskSuspend(&thread1,&err);
+        OSTaskSuspend(&thread1,&err);
+        OSTaskSuspend(&thread1,&err);
+        OSTaskSuspend(&thread1,&err);
+        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);
+        OSTaskResume(&thread1,&err);
+        OSTaskResume(&thread1,&err);
+        OSTaskResume(&thread1,&err);
+        OSTaskResume(&thread1,&err);
+        OSTaskResume(&thread1,&err);
     }
 }
                  

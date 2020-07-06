@@ -66,47 +66,6 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
    **原版μCOS-III配置**说明可参见：</br>
    a)《嵌入式实时操作系统μC/OS-III》北京航空航天大学出版社 宫辉等译 邵贝贝审校 </br>
    b) Micriμm公司文档中心: https://doc.micrium.com/display/kernel304/uC-OS-III+Features+os_cfg.h
-   
-5. 注意：μCOS-III的任务堆栈大小单位是sizeof(CPU_STK),而RT-Thread的线程堆栈大小单位是Byte,虽然在兼容层已经做了转换，但是在填写时一定要注意，所有涉及到μCOS-III的API、宏定义全部是按照μCOS-III的标准，即堆栈大小为sizeof(CPU_STK)，切勿混搭！这种错误极其隐晦，一定要注意！**下面是混搭的错误示例**：</br>
-    ```c
-    ALIGN(RT_ALIGN_SIZE)
-    static rt_uint8_t thread2_stack[1024];//错误：混搭RT-Thread的数据类型定义线程堆栈
-    
-    OSTaskCreate(&thread2,
-                 (CPU_CHAR*)"thread2",
-                 thread2_entry,	
-                 RT_NULL,
-                 THREAD_PRIORITY,
-                 thread2_stack,
-                 sizeof(thread2_stack)/10,//任务堆栈深度限位(错误：这个参数的单位是sizeof(CPU_STK))
-                 sizeof(thread2_stack),//任务堆栈大小(错误：这个参数的单位是sizeof(CPU_STK))
-                 0,
-                 THREAD_TIMESLICE,
-                 0,
-                 OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR,
-                 &err);
-    ```
-    **下面是正确写法**：</br>
-    
-    ```c
-    #define THREAD_STACK_SIZE       256 //正确，要通过宏定义单独定义堆栈大小，单位为sizeof(CPU_STK)
-    ALIGN(RT_ALIGN_SIZE)
-        static CPU_STK thread2_stack[THREAD_STACK_SIZE];//正确，使用uCOS-III自己的数据类型定义任务堆栈
-    
-    OSTaskCreate(&thread2,
-                 (CPU_CHAR*)"thread2",
-                 thread2_entry,
-                 RT_NULL,
-                 THREAD_PRIORITY,
-                 thread2_stack,
-                 THREAD_STACK_SIZE/10,//任务堆栈深度限位(正确)
-                 THREAD_STACK_SIZE,//任务堆栈大小(正确)
-                 0,
-                 THREAD_TIMESLICE,
-                 0,
-                 OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR,
-                 &err);
-    ```
 
 
 
@@ -149,6 +108,55 @@ int main(void) /*RT-Thread main线程*/
 
 
 
+## 2.6 注意
+1. μCOS-III的任务堆栈大小单位是sizeof(CPU_STK),而RT-Thread的线程堆栈大小单位是Byte,虽然在兼容层已经做了转换，但是在填写时一定要注意，所有涉及到μCOS-III的API、宏定义全部是按照μCOS-III的标准，即堆栈大小为sizeof(CPU_STK)，**切勿混搭**！这种错误极其隐晦，一定要注意！**下面是混搭的错误示例**：</br>
+    ```c
+    ALIGN(RT_ALIGN_SIZE)
+    static rt_uint8_t thread2_stack[1024];//错误：混搭RT-Thread的数据类型定义线程堆栈
+    
+    OSTaskCreate(&thread2,
+                 (CPU_CHAR*)"thread2",
+                 thread2_entry,	
+                 RT_NULL,
+                 THREAD_PRIORITY,
+                 thread2_stack,
+                 sizeof(thread2_stack)/10,//任务堆栈深度限位(错误：这个参数的单位是sizeof(CPU_STK))
+                 sizeof(thread2_stack),//任务堆栈大小(错误：这个参数的单位是sizeof(CPU_STK))
+                 0,
+                 THREAD_TIMESLICE,
+                 0,
+                 OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR,
+                 &err);
+    ```
+    **下面是正确写法**：</br>
+    
+    ```c
+    #define THREAD_STACK_SIZE       256 //正确，要通过宏定义单独定义堆栈大小，单位为sizeof(CPU_STK)
+    ALIGN(RT_ALIGN_SIZE)
+        static CPU_STK thread2_stack[THREAD_STACK_SIZE];//正确，使用uCOS-III自己的数据类型定义任务堆栈
+    
+    OSTaskCreate(&thread2,
+                 (CPU_CHAR*)"thread2",
+                 thread2_entry,
+                 RT_NULL,
+                 THREAD_PRIORITY,
+                 thread2_stack,
+                 THREAD_STACK_SIZE/10,//任务堆栈深度限位(正确)
+                 THREAD_STACK_SIZE,//任务堆栈大小(正确)
+                 0,
+                 THREAD_TIMESLICE,
+                 0,
+                 OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR,
+                 &err);
+    ```
+
+
+
+2.**切勿将RT-Thread和μCOS-III的API混搭使用**，因为部分RTT的API函数不具备μCOS-III对应API的功能。
+    例如RTT中的rt_thread_suspend / rt_thread_resume仅支持一次挂起/解挂；而μCOS-III的OSTaskSuspend / OSTaskResume是支持嵌套挂起/解挂的，为此需要继承struct rt_thread结构体并在其基础上增加成员.SuspendCtr变量实现该功能。若采用rt_thread_init初始化线程，该函数并不会管理μCOS-III兼容层的成员变量，.SuspendCtr也不会创建和初始化，若此时调用OSTaskSuspend / OSTaskResume函数试图指向.SuspendCtr成员变量，将会访问非法内存地址(因为rt_thread_init初始化的线程.SuspendCtr成员变量根本不存在)！
+
+
+
 # 3 API
 ## 3.1 没有实现的兼容的API
 
@@ -177,7 +185,6 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q *p_q, OS_OPT opt, OS_ERR *p_err);
 
 ### 3.1.5 os_sem.c
 ```c
-void  OSSemSet (OS_SEM *p_sem, OS_SEM_CTR cnt, OS_ERR *p_err);
 OS_OBJ_QTY  OSSemPendAbort (OS_SEM *p_sem, OS_OPT opt, OS_ERR *p_err);
 ```
 
@@ -190,7 +197,6 @@ void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
 OS_MSG_QTY OSTaskQFlush (OS_TCB *p_tcb, OS_ERR *p_err);
 CPU_BOOLEAN OSTaskQPendAbort (OS_TCB *p_tcb, OS_OPT opt, OS_ERR *p_err);
 CPU_BOOLEAN OSTaskSemPendAbort (OS_TCB *p_tcb, OS_OPT opt, OS_ERR *p_err);
-OS_SEM_CTR OSTaskSemSet (OS_TCB *p_tcb, OS_SEM_CTR cnt, OS_ERR *p_err);
 ```
 
 ### 3.1.7 os_time.c

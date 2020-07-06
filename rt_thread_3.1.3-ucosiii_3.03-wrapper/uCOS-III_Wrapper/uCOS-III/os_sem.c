@@ -552,11 +552,6 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
 *                            OS_ERR_OBJ_PTR_NULL   If 'p_sem' is a NULL pointer.
 *                            OS_ERR_OBJ_TYPE       If 'p_sem' is not pointing to a semaphore.
 *                            OS_ERR_TASK_WAITING   If tasks are waiting on the semaphore.
-*                        -------------说明-------------
-*                            OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                          - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                          + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                          应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : None
 ************************************************************************************************************************
@@ -567,6 +562,57 @@ void  OSSemSet (OS_SEM      *p_sem,
                 OS_SEM_CTR   cnt,
                 OS_ERR      *p_err)
 {
+    CPU_SR_ALLOC();
+    
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif    
+    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u      
+    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    {
+        *p_err = OS_ERR_SET_ISR;
+        return;
+    }
+#endif  
+    
+#if OS_CFG_ARG_CHK_EN > 0u
+    if (p_sem == (OS_SEM *)0) { 
+       *p_err = OS_ERR_OBJ_PTR_NULL;
+        return;
+    }
+#endif
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u   
+    /*判断内核对象是否为信号量*/
+    if(rt_object_get_type(&p_sem->parent.parent) != RT_Object_Class_Semaphore)
+    {
+        *p_err = OS_ERR_OBJ_TYPE;
+        return;       
+    }
+#endif
+    
+    CPU_CRITICAL_ENTER();
+    *p_err = OS_ERR_NONE;
+    if (p_sem->value>0)
+    {
+        p_sem->value = cnt;
+    }
+    else
+    {
+        if(rt_list_isempty(&(p_sem->parent.suspend_thread)))/*若没有线程等待信号量*/
+        {
+            p_sem->value = cnt;
+        }
+        else
+        {
+             *p_err = OS_ERR_TASK_WAITING;
+        }
+    }
+    CPU_CRITICAL_EXIT();
 }
 #endif
 

@@ -371,13 +371,13 @@ typedef  enum  os_err {
     OS_ERR_SCHED_UNLOCK_ISR          = 28005u,
 
 //    OS_ERR_SEM_OVF                   = 28101u,
-//    OS_ERR_SET_ISR                   = 28102u,
+    OS_ERR_SET_ISR                   = 28102u,
 
 //    OS_ERR_STAT_RESET_ISR            = 28201u,
 //    OS_ERR_STAT_PRIO_INVALID         = 28202u,
 //    OS_ERR_STAT_STK_INVALID          = 28203u,
 //    OS_ERR_STAT_STK_SIZE_INVALID     = 28204u,
-//    OS_ERR_STATE_INVALID             = 28205u,
+    OS_ERR_STATE_INVALID             = 28205u,
 //    OS_ERR_STATUS_INVALID            = 28206u,
     OS_ERR_STK_INVALID               = 28207u,
     OS_ERR_STK_SIZE_INVALID          = 28208u,
@@ -406,7 +406,7 @@ typedef  enum  os_err {
 //    OS_ERR_TASK_SUSPEND_INT_HANDLER  = 29020u,
     OS_ERR_TASK_SUSPEND_ISR          = 29021u,
 //    OS_ERR_TASK_SUSPEND_PRIO         = 29022u,
-//    OS_ERR_TASK_WAITING              = 29023u,
+    OS_ERR_TASK_WAITING              = 29023u,
 
     OS_ERR_TCB_INVALID               = 29101u,
 
@@ -558,6 +558,9 @@ struct os_tcb
     OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];/*任务寄存器*/
 #endif    
     CPU_STK          StkSize;   /*任务堆栈大小*/
+#if OS_CFG_TASK_SUSPEND_EN > 0u
+    OS_NESTING_CTR       SuspendCtr;    /* Nesting counter for OSTaskSuspend()  */
+#endif
 };
 
 
