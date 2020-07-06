@@ -52,13 +52,13 @@
 */
 
                                                             /* ---------------------------- MISCELLANEOUS -------------------------- */
-#define  OS_CFG_APP_HOOKS_EN             0u                 /*只读,尚未实现该功能 Enable (1) or Disable (0) application specific hooks*/
+#define  OS_CFG_APP_HOOKS_EN             0u                 /* 只读,尚未实现该功能 Enable (1) or Disable (0) application specific hooks*/
 #define  OS_CFG_ARG_CHK_EN               1u                 /* Enable (1) or Disable (0) argument checking                           */
 #define  OS_CFG_CALLED_FROM_ISR_CHK_EN   1u                 /* Enable (1) or Disable (0) check for called from ISR                   */
 #define  OS_CFG_DBG_EN                   1u                 /* Enable (1) debug code/variables                                       */
-#define  OS_CFG_ISR_POST_DEFERRED_EN     0u                 /*只读,RTT没有该功能 Enable (1) or Disable (0) Deferred ISR posts        */
+#define  OS_CFG_ISR_POST_DEFERRED_EN     0u                 /* 只读,RTT没有该功能 Enable (1) or Disable (0) Deferred ISR posts       */
 #define  OS_CFG_OBJ_TYPE_CHK_EN          1u                 /* Enable (1) or Disable (0) object type checking                        */
-#define  OS_CFG_TS_EN                    0u                 /*只读,未实现该功能 Enable (1) or Disable (0) time stamping              */
+#define  OS_CFG_TS_EN                    0u                 /* 只读,未实现该功能 Enable (1) or Disable (0) time stamping             */
 
 #define  OS_CFG_PEND_MULTI_EN            0u                 /* 只读,RTT没有等待多内核对象的功能 且在后续版本中uCOS-III也取消了该功能 */
 
@@ -70,10 +70,10 @@
 
 
                                                             /* ----------------------------- EVENT FLAGS --------------------------- */
-#ifdef RT_USING_EVENT
+#ifdef RT_USING_EVENT                                       /* 是否开启由RT-Thread接管                                               */
 #define  OS_CFG_FLAG_EN                  1u                 /* 只读 Enable (1) or Disable (0) code generation for EVENT FLAGS        */
 #else
-#define  OS_CFG_FLAG_EN                  0u
+#define  OS_CFG_FLAG_EN                  0u                 /* 只读 Enable (1) or Disable (0) code generation for EVENT FLAGS        */
 #endif
 #define  OS_CFG_FLAG_DEL_EN              1u                 /* Include code for OSFlagDel()                                          */
 #define  OS_CFG_FLAG_MODE_CLR_EN         0u                 /* 只读,RTT仅能置1为事件发生  Include code for Wait on Clear EVENT FLAGS */
@@ -85,20 +85,20 @@
 
 
                                                             /* --------------------- MUTUAL EXCLUSION SEMAPHORES ------------------- */
-#ifdef RT_USING_MUTEX
+#ifdef RT_USING_MUTEX                                       /* 是否开启由RT-Thread接管                                               */
 #define  OS_CFG_MUTEX_EN                 1u                 /* 只读 Enable (1) or Disable (0) code generation for MUTE               */
 #else
-#define  OS_CFG_MUTEX_EN                 0u 
+#define  OS_CFG_MUTEX_EN                 0u                 /* 只读 Enable (1) or Disable (0) code generation for MUTE               */
 #endif
 #define  OS_CFG_MUTEX_DEL_EN             1u                 /* Include code for OSMutexDel()                                         */
 #define  OS_CFG_MUTEX_PEND_ABORT_EN      0u                 /* 只读,该功能无法兼容 Include code for OSMutexPendAbort()               */
 
 
                                                             /* --------------------------- MESSAGE QUEUES -------------------------- */
-#ifdef RT_USING_MESSAGEQUEUE
+#ifdef RT_USING_MESSAGEQUEUE                                /* 是否开启由RT-Thread接管                                               */
 #define  OS_CFG_Q_EN                     1u                 /* 只读 Enable (1) or Disable (0) code generation for QUEUES             */
 #else
-#define  OS_CFG_Q_EN                     0u 
+#define  OS_CFG_Q_EN                     0u                 /* 只读 Enable (1) or Disable (0) code generation for QUEUES             */
 #endif
 #define  OS_CFG_Q_DEL_EN                 1u                 /* Include code for OSQDel()                                             */
 #define  OS_CFG_Q_FLUSH_EN               0u                 /* 只读,该功能无法兼容 Include code for OSQFlush()                       */
@@ -106,10 +106,10 @@
 
 
                                                             /* ----------------------------- SEMAPHORES ---------------------------- */
-#ifdef RT_USING_SEMAPHORE
+#ifdef RT_USING_SEMAPHORE                                   /* 是否开启由RT-Thread接管                                               */
 #define  OS_CFG_SEM_EN                   1u                 /* 只读 Enable (1) or Disable (0) code generation for SEMAPHORES         */
 #else
-#define  OS_CFG_SEM_EN                   0u
+#define  OS_CFG_SEM_EN                   0u                 /* 只读 Enable (1) or Disable (0) code generation for SEMAPHORES         */
 #endif
 #define  OS_CFG_SEM_DEL_EN               1u                 /* Include code for OSSemDel()                                           */
 #define  OS_CFG_SEM_PEND_ABORT_EN        0u                 /* 只读,该功能无法兼容 Include code for OSSemPendAbort()                 */
