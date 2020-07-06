@@ -105,7 +105,7 @@ int main(void) /*RT-Thread main线程*/
 #endif  
     
 #if OS_CFG_STAT_TASK_EN > 0u
-    OSStatTaskCPUUsageInit(&err);  	                /*统计任务*/    
+    OSStatTaskCPUUsageInit(&err);                   /*统计任务*/    
     OSStatReset(&err);                              /*复位统计数据*/    
 #endif	  
 
