@@ -519,6 +519,21 @@
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_type.h</FilePath>
             </File>
             <File>
+              <FileName>os_app_hooks.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_app_hooks.h</FilePath>
+            </File>
+            <File>
+              <FileName>os_app_hooks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_app_hooks.c</FilePath>
+            </File>
+            <File>
+              <FileName>os_cpu_c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cpu_c.c</FilePath>
+            </File>
+            <File>
               <FileName>os_core.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_core.c</FilePath>

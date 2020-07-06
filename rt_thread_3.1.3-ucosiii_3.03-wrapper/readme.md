@@ -150,7 +150,7 @@ int main(void) /*RT-Thread main线程*/
                  &err);
     ```
 
-2.**切勿将RT-Thread和μCOS-III的API混搭使用**，因为部分RTT的API函数不具备μCOS-III对应API的功能。
+2.**切勿将RT-Thread和μCOS-III的API混搭使用。**
     例如RTT中的rt_thread_suspend / rt_thread_resume仅支持一次挂起/解挂；而μCOS-III的OSTaskSuspend / OSTaskResume是支持嵌套挂起/解挂的，为此需要继承struct rt_thread结构体并在其基础上增加成员.SuspendCtr变量实现该功能。若采用rt_thread_init初始化线程，该函数并不会管理μCOS-III兼容层的成员变量，.SuspendCtr也不会创建和初始化，若此时调用OSTaskSuspend / OSTaskResume函数试图指向.SuspendCtr成员变量，将会访问非法内存地址(因为rt_thread_init初始化的线程.SuspendCtr成员变量根本不存在)！
 
 3.μCOS-III的钩子函数仅对μCOS-III兼容层负责。即如果你注册了OSTaskDelHook函数，他仅会在调用OSTaskDel函数时被调用，不会在调用rt_thread_detach函数时被调用(这个由RTT的钩子函数负责)。这样做是为了层次分明，防止μCOS-III兼容层插手RT-Thread内部事务。

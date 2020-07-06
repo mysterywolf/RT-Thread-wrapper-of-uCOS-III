@@ -74,6 +74,8 @@ void  OSInit (OS_ERR  *p_err)
         return;
     }
 #endif    
+
+    OSInitHook();                                           /* Call port specific initialization code                 */
     
     OSRunning = OS_STATE_OS_STOPPED; /* Indicate that multitasking not started                 */
     

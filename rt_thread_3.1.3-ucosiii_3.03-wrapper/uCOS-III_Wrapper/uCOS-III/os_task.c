@@ -205,7 +205,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #endif
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     OS_REG_ID      reg_nbr;
-#endif    
+#endif
     CPU_STK       *p_sp;
     CPU_STK_SIZE   i;
     
@@ -364,6 +364,9 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     {
         return;
     }
+     
+    /*调用钩子函数*/
+    OSTaskCreateHook(p_tcb);
     
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
     rt_err = rt_thread_startup(&p_tcb->task);                 
@@ -437,6 +440,8 @@ void  OSTaskDel (OS_TCB  *p_tcb,
         rt_err = rt_thread_detach(&p_tcb->task);
         *p_err = _err_rtt_to_ucosiii(rt_err);   
     }
+    
+    OSTaskDelHook(p_tcb);/*调用钩子函数*/
 }
 #endif
 

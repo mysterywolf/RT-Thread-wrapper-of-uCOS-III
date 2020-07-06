@@ -497,13 +497,16 @@ typedef  struct  rt_mutex            OS_MUTEX;
 typedef  struct  rt_semaphore        OS_SEM;
 
 /*注意：RTT的定时器回调函数比uCOS-III的少了一个参数！*/
-//typedef  void                      (*OS_TMR_CALLBACK_PTR)(void *p_tmr, void *p_arg);
 typedef  void                        (*OS_TMR_CALLBACK_PTR)(void *parameter);
 typedef  struct  rt_timer            OS_TMR;
 
 typedef  void                        (*OS_TASK_PTR)        (void *parameter);
 typedef  struct os_tcb               OS_TCB;
 
+#if OS_CFG_APP_HOOKS_EN > 0u
+typedef  void                      (*OS_APP_HOOK_VOID)(void);
+typedef  void                      (*OS_APP_HOOK_TCB)(OS_TCB *p_tcb);
+#endif
 
 /*
 ************************************************************************************************************************
@@ -575,6 +578,12 @@ struct os_tcb
 ************************************************************************************************************************
 ************************************************************************************************************************
 */
+#if OS_CFG_APP_HOOKS_EN > 0u
+OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskCreateHookPtr;    /* Application hooks                          */
+OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskDelHookPtr;
+OS_EXT           OS_APP_HOOK_VOID           OS_AppStatTaskHookPtr;
+#endif
+
 OS_EXT            OS_STATE                  OSRunning;                  /* Flag indicating that kernel is running     */
 
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
@@ -987,5 +996,30 @@ CPU_BOOLEAN   OSTmrStop                 (OS_TMR                *p_tmr,
                                          OS_ERR                *p_err);
 #endif
   
+                                         
+                                         
+/*
+************************************************************************************************************************
+************************************************************************************************************************
+*                                    T A R G E T   S P E C I F I C   F U N C T I O N S
+************************************************************************************************************************
+************************************************************************************************************************
+*/
+
+void          OSInitHook                (void);
+
+void          OSTaskCreateHook          (OS_TCB                *p_tcb);
+void          OSTaskDelHook             (OS_TCB                *p_tcb);
+
+void          OSStatTaskHook            (void);
+
+CPU_STK      *OSTaskStkInit             (OS_TASK_PTR            p_task,
+                                         void                  *p_arg,
+                                         CPU_STK               *p_stk_base,
+                                         CPU_STK               *p_stk_limit,
+                                         CPU_STK_SIZE           stk_size,
+                                         OS_OPT                 opt);
+
+                                         
                                          
 #endif
