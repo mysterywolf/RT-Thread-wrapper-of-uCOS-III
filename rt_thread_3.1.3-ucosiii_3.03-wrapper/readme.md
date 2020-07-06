@@ -150,10 +150,10 @@ int main(void) /*RT-Thread main线程*/
                  &err);
     ```
 
+
+
 2.**切勿将RT-Thread和μCOS-III的API混搭使用。**
     例如RTT中的rt_thread_suspend / rt_thread_resume仅支持一次挂起/解挂；而μCOS-III的OSTaskSuspend / OSTaskResume是支持嵌套挂起/解挂的，为此需要继承struct rt_thread结构体并在其基础上增加成员.SuspendCtr变量实现该功能。若采用rt_thread_init初始化线程，该函数并不会管理μCOS-III兼容层的成员变量，.SuspendCtr也不会创建和初始化，若此时调用OSTaskSuspend / OSTaskResume函数试图指向.SuspendCtr成员变量，将会访问非法内存地址(因为rt_thread_init初始化的线程.SuspendCtr成员变量根本不存在)！
-
-3.μCOS-III的钩子函数仅对μCOS-III兼容层负责。即如果你注册了OSTaskDelHook函数，他仅会在调用OSTaskDel函数时被调用，不会在调用rt_thread_detach函数时被调用(这个由RTT的钩子函数负责)。这样做是为了层次分明，防止μCOS-III兼容层插手RT-Thread内部事务。
 
 
 
@@ -207,5 +207,32 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb, OS_ERR  *p_err);
 ### 3.1.8 os_tmr.c
 ```c
 OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr, OS_ERR  *p_err);
+```
+
+
+
+## 3.2 钩子函数
+
+​	μCOS-III的钩子函数仅对μCOS-III兼容层负责。即如果你注册了OSTaskDelHook函数，他仅会在调用OSTaskDel函数时被调用，不会在调用rt_thread_detach函数时被调用(这个由RTT的钩子函数负责)。这样做是为了层次分明，防止μCOS-III兼容层插手RT-Thread内部事务。
+
+​	μCOS-III的钩子函数在两个文件中实现：os_cpu_c.c和os_app_hooks.c 。按照μCOS-III的思想，os_cpu_c.c提供原始的钩子函数（即这些钩子函数被相应的函数直接调用），该文件以及其内部的钩子函数是移植工程师编写的内容，应用工程师不应该操作这个文件的内容，os_cpu_c.c文件的钩子函数提供相应的函数指针供os_app_hooks.c文件内的钩子函数注册和使用，这个文件内的钩子函数应用工程师是可以操作的。换句话说，我们有什么需要在钩子函数中调用的函数，应该放在os_app_hooks.c文件中。
+
+​	以下原版μCOS-III钩子函数将予以取消，由RT-Thread接管相关钩子函数接管：
+
+```c
+void          OSIdleTaskHook            (void);
+void          OSTaskReturnHook          (OS_TCB *p_tcb);
+void          OSTaskSwHook              (void);
+void          OSTimeTickHook            (void);
+```
+
+​	同时，上述钩子函数对应的应用级钩子函数也被取消：
+
+```c
+void  App_OS_TaskReturnHook (OS_TCB  *p_tcb);
+void  App_OS_IdleTaskHook (void);
+void  App_OS_InitHook (void);/*按照手册要求OS初始化的钩子函数不应该出现在应用层,在3.03版本中出现应该是失误,在3.08版本中已经将该应用级钩子函数取消*/
+void  App_OS_TaskSwHook (void);
+void  App_OS_TimeTickHook (void);
 ```
 
