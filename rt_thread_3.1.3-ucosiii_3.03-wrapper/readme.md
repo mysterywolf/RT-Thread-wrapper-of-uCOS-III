@@ -197,7 +197,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM *p_sem, OS_OPT opt, OS_ERR *p_err);
 
 ### 3.1.6 os_task.c
 
-虽然RT-Thread没有任务内建消息队列、任务内建信号量、任务内建寄存器机制，但是本兼容层均已实现上述功能，可以正常兼容。
+虽然RT-Thread没有任务内建消息队列、任务内建信号量、任务内建寄存器机制，但是本兼容层均已实现，可以正常兼容。
 
 ```c
 void  OSTaskChangePrio (OS_TCB *p_tcb, OS_PRIO prio_new, OS_ERR *p_err);
@@ -221,7 +221,7 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr, OS_ERR  *p_err);
 
 ## 3.2 钩子函数
 
-​	μCOS-III的钩子函数仅对μCOS-III兼容层负责。即如果你注册了OSTaskDelHook函数，他仅会在调用OSTaskDel函数时被调用，不会在调用rt_thread_detach函数时被调用(这个由RTT的钩子函数负责)。这样做是为了层次分明，防止μCOS-III兼容层插手RT-Thread内部事务。
+​	**μCOS-III的钩子函数仅对μCOS-III兼容层负责。**即如果你注册了OSTaskDelHook函数，他仅会在调用OSTaskDel函数时被调用，不会在调用rt_thread_detach函数时被调用(这个由RTT的钩子函数负责)。这样做是为了层次分明，防止μCOS-III兼容层插手RT-Thread内部事务。
 
 ​	μCOS-III的钩子函数在两个文件中实现：os_cpu_c.c和os_app_hooks.c 。按照μCOS-III的思想，os_cpu_c.c提供原始的钩子函数（即这些钩子函数被相应的函数直接调用），该文件以及其内部的钩子函数是移植工程师编写的内容，应用工程师不应该操作这个文件的内容，os_cpu_c.c文件的钩子函数提供相应的函数指针供os_app_hooks.c文件内的钩子函数注册和使用，这个文件内的钩子函数应用工程师是可以操作的。换句话说，我们有什么需要在钩子函数中调用的函数，应该放在os_app_hooks.c文件中。
 
@@ -248,6 +248,6 @@ void  App_OS_TimeTickHook (void);
 
 ## 3.3 统计任务（OS_StatTask()、os_stat.c）
 
-​	在μCOS-III中，统计任务是一个系统任务，可以在系统运行时做一些统计工作，例如统计总的CPU使用率（0.00%-100.00%）、各任务的CPU使用率（0.00%-100.00%）以及各任务的堆栈使用量。从内核版本V3.03.00起，CPU的利用率用一个0~10000之间的整数表示（对应0.00%-100.00%）。
+​	在μCOS-III中，统计任务是一个系统任务，可以在系统运行时做一些统计工作，例如统计总的CPU使用率（0.00%-100.00%）、各任务的CPU使用率（0.00%-100.00%）以及各任务的堆栈使用量。从内核版本V3.03.00起，CPU的利用率用一个0-10000之间的整数表示（对应0.00%-100.00%）。
 
 ​	但是RT-Thread并没有统计任务，因此需要创建一个任务来兼容原版μCOS-III的统计任务，完成上述功能。
