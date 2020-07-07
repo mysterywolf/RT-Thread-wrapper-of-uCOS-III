@@ -94,7 +94,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 {
     rt_err_t rt_err;
     
-    (void)flags;
+    CPU_VAL_UNUSED(flags);
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -133,7 +133,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u     
     /*判断内核对象是否已经是事件标志组，即是否已经创建过*/
-    if(rt_object_get_type(&p_grp->parent.parent) == RT_Object_Class_Event)
+    if(rt_object_get_type(&p_grp->FlagGrp.parent.parent) == RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_CREATED;
         return;       
@@ -141,7 +141,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 #endif
     
     /*在uCOS中事件是直接被插入到链表,不按照优先级排列*/
-    rt_err = rt_event_init(p_grp,(const char*)p_name,RT_IPC_FLAG_FIFO);
+    rt_err = rt_event_init(&p_grp->FlagGrp,(const char*)p_name,RT_IPC_FLAG_FIFO);
     *p_err = _err_rtt_to_ucosiii(rt_err);
 }
 
@@ -232,14 +232,14 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为事件标志组*/
-    if(rt_object_get_type(&p_grp->parent.parent) != RT_Object_Class_Event)
+    if(rt_object_get_type(&p_grp->FlagGrp.parent.parent) != RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return 0;       
     }   
 #endif
     
-    rt_err = rt_event_detach(p_grp);
+    rt_err = rt_event_detach(&p_grp->FlagGrp);
     *p_err = _err_rtt_to_ucosiii(rt_err);
     return 0;/*返回值不可信,由于RTT没有实现查看该事件标志组还有几个任务正在等待的API，因此只能返回0*/
 }
@@ -331,7 +331,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     rt_uint8_t      rt_option;
     rt_uint32_t     recved;
     
-    (void)p_ts;
+    CPU_VAL_UNUSED(p_ts);
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -381,7 +381,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为事件标志组*/
-    if(rt_object_get_type(&p_grp->parent.parent) != RT_Object_Class_Event)
+    if(rt_object_get_type(&p_grp->FlagGrp.parent.parent) != RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return ((OS_OBJ_QTY)0);       
@@ -442,7 +442,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         time = 0;/*在RTT中timeout为0表示非阻塞*/
     }
     
-    rt_err = rt_event_recv(p_grp,
+    rt_err = rt_event_recv(&p_grp->FlagGrp,
                            flags,
                            rt_option,
                            time,
@@ -569,7 +569,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
 {
     rt_err_t rt_err;
     
-    (void)opt;
+    CPU_VAL_UNUSED(opt);
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -599,16 +599,16 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为事件标志组*/
-    if(rt_object_get_type(&p_grp->parent.parent) != RT_Object_Class_Event)
+    if(rt_object_get_type(&p_grp->FlagGrp.parent.parent) != RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return 0;       
     }  
 #endif
     
-    rt_err = rt_event_send(p_grp,flags);
+    rt_err = rt_event_send(&p_grp->FlagGrp,flags);
     *p_err = _err_rtt_to_ucosiii(rt_err);
-    return p_grp->set;/*返回执行后事件标志组的值*/
+    return p_grp->FlagGrp.set;/*返回执行后事件标志组的值*/
 }
 
 #endif

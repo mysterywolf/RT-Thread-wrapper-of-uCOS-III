@@ -60,7 +60,6 @@
 */
 
 #if OS_CFG_SEM_EN > 0u
-
 /*
 ************************************************************************************************************************
 *                                                  CREATE A SEMAPHORE
@@ -141,14 +140,14 @@ void  OSSemCreate (OS_SEM      *p_sem,
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u 
     /*判断内核对象是否已经是信号量，即是否已经创建过*/
-    if(rt_object_get_type(&p_sem->parent.parent) == RT_Object_Class_Semaphore)
+    if(rt_object_get_type(&p_sem->Sem.parent.parent) == RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_CREATED;
         return;       
     }    
 #endif
 
-    rt_err = rt_sem_init(p_sem,(const char*)p_name,cnt,RT_IPC_FLAG_PRIO);   
+    rt_err = rt_sem_init(&p_sem->Sem,(const char*)p_name,cnt,RT_IPC_FLAG_PRIO);   
     *p_err = _err_rtt_to_ucosiii(rt_err); 
 }
 
@@ -237,7 +236,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u   
     /*判断内核对象是否为信号量*/
-    if(rt_object_get_type(&p_sem->parent.parent) != RT_Object_Class_Semaphore)
+    if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return 0;       
@@ -252,7 +251,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
         return 0;
     }
     
-    rt_err = rt_sem_detach(p_sem);
+    rt_err = rt_sem_detach(&p_sem->Sem);
     *p_err = _err_rtt_to_ucosiii(rt_err); 
     return 0;/*返回值不可信,RTT没有实现查看该信号量还有几个任务正在等待的API，因此只能返回0*/
 }
@@ -322,7 +321,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     rt_err_t rt_err;
     rt_int32_t time;
     
-    (void)p_ts;
+    CPU_VAL_UNUSED(p_ts);
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -358,7 +357,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为信号量*/
-    if(rt_object_get_type(&p_sem->parent.parent) != RT_Object_Class_Semaphore)
+    if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return 0;       
@@ -394,9 +393,9 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
         *p_err = OS_ERR_OPT_INVALID;/*给定的opt参数无效*/
     }
     
-    rt_err = rt_sem_take(p_sem,time);
+    rt_err = rt_sem_take(&p_sem->Sem,time);
     *p_err = _err_rtt_to_ucosiii(rt_err); 
-    return p_sem->value;/*返回信号量还剩多少value*/
+    return p_sem->Sem.value;/*返回信号量还剩多少value*/
 }
 
 /*
@@ -520,16 +519,16 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为信号量*/
-    if(rt_object_get_type(&p_sem->parent.parent) != RT_Object_Class_Semaphore)
+    if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return 0;       
     }
 #endif
  
-    rt_err = rt_sem_release(p_sem);
+    rt_err = rt_sem_release(&p_sem->Sem);
     *p_err = _err_rtt_to_ucosiii(rt_err); 
-    return p_sem->value;/*返回信号量还剩多少value*/
+    return p_sem->Sem.value;/*返回信号量还剩多少value*/
 }
 
 /*
@@ -588,7 +587,7 @@ void  OSSemSet (OS_SEM      *p_sem,
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u   
     /*判断内核对象是否为信号量*/
-    if(rt_object_get_type(&p_sem->parent.parent) != RT_Object_Class_Semaphore)
+    if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return;       
@@ -597,15 +596,15 @@ void  OSSemSet (OS_SEM      *p_sem,
     
     CPU_CRITICAL_ENTER();
     *p_err = OS_ERR_NONE;
-    if (p_sem->value>0)
+    if (p_sem->Sem.value>0)
     {
-        p_sem->value = cnt;
+        p_sem->Sem.value = cnt;
     }
     else
     {
-        if(rt_list_isempty(&(p_sem->parent.suspend_thread)))/*若没有线程等待信号量*/
+        if(rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))/*若没有线程等待信号量*/
         {
-            p_sem->value = cnt;
+            p_sem->Sem.value = cnt;
         }
         else
         {

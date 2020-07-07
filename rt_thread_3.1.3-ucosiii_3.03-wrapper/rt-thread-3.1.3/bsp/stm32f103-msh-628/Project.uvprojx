@@ -489,6 +489,11 @@
               <FilePath>..\..\..\uCOS-III_Wrapper\uC-CPU\cpu_def.h</FilePath>
             </File>
             <File>
+              <FileName>cpu_core.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uC-CPU\cpu_core.h</FilePath>
+            </File>
+            <File>
               <FileName>cpu_a.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uC-CPU\cpu_a.c</FilePath>

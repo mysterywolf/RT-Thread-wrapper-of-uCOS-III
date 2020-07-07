@@ -211,7 +211,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     
     CPU_SR_ALLOC();
     
-    (void)stk_limit;
+    CPU_VAL_UNUSED(stk_limit);
 
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -285,8 +285,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     }
     
     CPU_CRITICAL_ENTER();        
-    p_tcb->MsgCreateSuc = RT_FALSE;
-    p_tcb->SemCreateSuc = RT_FALSE;
+    p_tcb->TaskMsgCreateSuc = RT_FALSE;
+    p_tcb->TaskSemCreateSuc = RT_FALSE;
     p_tcb->StkSize = stk_size;/*任务堆栈大小(单位:sizeof(CPU_STK))*/
     p_tcb->ExtPtr = p_ext;/*用户附加区指针*/
     p_tcb->SuspendCtr = 0;/*嵌套挂起为0层*/   
@@ -303,11 +303,11 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         rt_memset(name, 0, sizeof(name));
         strncat(name, (const char*)p_name, NAME_SIZE);
         strncat(name, "_QMsg", NAME_SIZE);
-        OSQCreate(&p_tcb->MsgQ, (CPU_CHAR*)name, q_size, &err);
+        OSQCreate(&p_tcb->TaskMsgQ, (CPU_CHAR*)name, q_size, &err);
         if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
         {
             CPU_CRITICAL_ENTER(); 
-            p_tcb->MsgCreateSuc = RT_FALSE;
+            p_tcb->TaskMsgCreateSuc = RT_FALSE;
             CPU_CRITICAL_EXIT();
             
             RT_DEBUG_LOG(OS_CFG_DBG_EN,("task qmsg %s create err!\r\n",name));
@@ -315,22 +315,22 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         else
         {
             CPU_CRITICAL_ENTER(); 
-            p_tcb->MsgCreateSuc = RT_TRUE;
+            p_tcb->TaskMsgCreateSuc = RT_TRUE;
             CPU_CRITICAL_EXIT();
         }
     }
 #else
-    (void)&q_size;
+    CPU_VAL_UNUSED(q_size);
 #endif
     
     rt_memset(name, 0, sizeof(name));
     strncat(name, (const char*)p_name, NAME_SIZE);
     strncat(name, "_Sem", NAME_SIZE);  
-    OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)name,0,&err);
+    OSSemCreate(&p_tcb->TaskSem,(CPU_CHAR*)name,0,&err);
     if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
     {
         CPU_CRITICAL_ENTER(); 
-        p_tcb->SemCreateSuc = RT_FALSE;
+        p_tcb->TaskSemCreateSuc = RT_FALSE;
         CPU_CRITICAL_EXIT();
         
         RT_DEBUG_LOG(OS_CFG_DBG_EN,("task sem %s create err!\r\n",name));
@@ -338,7 +338,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     else
     {
         CPU_CRITICAL_ENTER(); 
-        p_tcb->SemCreateSuc = RT_TRUE;
+        p_tcb->TaskSemCreateSuc = RT_TRUE;
         CPU_CRITICAL_EXIT();
     }
 
@@ -350,7 +350,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #endif
     
     /*创建线程*/
-    rt_err = rt_thread_init(&p_tcb->task,
+    rt_err = rt_thread_init(&p_tcb->Task,
                             (const char*)p_name,
                             p_task,
                             p_arg,
@@ -369,7 +369,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     OSTaskCreateHook(p_tcb);
     
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
-    rt_err = rt_thread_startup(&p_tcb->task);                 
+    rt_err = rt_thread_startup(&p_tcb->Task);                 
     *p_err = _err_rtt_to_ucosiii(rt_err);
     
 #undef NAME_SIZE
@@ -437,7 +437,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     } 
     else
     {
-        rt_err = rt_thread_detach(&p_tcb->task);
+        rt_err = rt_thread_detach(&p_tcb->Task);
         *p_err = _err_rtt_to_ucosiii(rt_err);   
     }
     
@@ -542,9 +542,9 @@ void  *OSTaskQPend (OS_TICK       timeout,
     p_thread = rt_thread_self();
     p_tcb = (OS_TCB*)p_thread;
     
-    if(p_tcb->MsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
+    if(p_tcb->TaskMsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
     {
-        return OSQPend(&p_tcb->MsgQ,timeout,opt,p_msg_size,p_ts,p_err);
+        return OSQPend(&p_tcb->TaskMsgQ,timeout,opt,p_msg_size,p_ts,p_err);
     }
     else
     {
@@ -649,9 +649,9 @@ void  OSTaskQPost (OS_TCB       *p_tcb,
         p_tcb = (OS_TCB*)rt_thread_self();
     }
     
-    if(p_tcb->MsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
+    if(p_tcb->TaskMsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
     {
-        OSQPost(&p_tcb->MsgQ,p_void,msg_size,opt,p_err);
+        OSQPost(&p_tcb->TaskMsgQ,p_void,msg_size,opt,p_err);
     }
     else
     {
@@ -712,7 +712,7 @@ OS_REG  OSTaskRegGet (OS_TCB     *p_tcb,
         p_thread = rt_thread_self();
     }
     else{
-        p_thread = &p_tcb->task;
+        p_thread = &p_tcb->Task;
     }
     value = ((OS_TCB*)p_thread)->RegTbl[id];
     CPU_CRITICAL_EXIT();
@@ -822,7 +822,7 @@ void  OSTaskRegSet (OS_TCB     *p_tcb,
         p_thread = rt_thread_self();
     }
     else{
-        p_thread = &p_tcb->task;
+        p_thread = &p_tcb->Task;
     }
     ((OS_TCB*)p_thread)->RegTbl[id] = value;
     CPU_CRITICAL_EXIT();
@@ -885,13 +885,13 @@ void  OSTaskResume (OS_TCB  *p_tcb,
     }
     
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(rt_thread_self() == &p_tcb->task)/*检查任务是否企图自己恢复自己*/
+    if(rt_thread_self() == &p_tcb->Task)/*检查任务是否企图自己恢复自己*/
     {
         *p_err = OS_ERR_TASK_RESUME_SELF;
         return;
     }
     /*检查任务是否没有被挂起*/
-    if((p_tcb->task.stat & RT_THREAD_STAT_MASK) != RT_THREAD_SUSPEND)
+    if((p_tcb->Task.stat & RT_THREAD_STAT_MASK) != RT_THREAD_SUSPEND)
     {
         *p_err = OS_ERR_TASK_NOT_SUSPENDED;
         return;
@@ -907,7 +907,7 @@ void  OSTaskResume (OS_TCB  *p_tcb,
     }
     else
     {
-        rt_err = rt_thread_resume(&p_tcb->task);
+        rt_err = rt_thread_resume(&p_tcb->Task);
         *p_err = _err_rtt_to_ucosiii(rt_err);       
     }
 
@@ -968,9 +968,9 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
 #endif
     
     p_tcb = (OS_TCB*)rt_thread_self();
-    if(p_tcb->SemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
+    if(p_tcb->TaskSemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
     {
-        return OSSemPend(&p_tcb->Sem,timeout,opt,p_ts,p_err); 
+        return OSSemPend(&p_tcb->TaskSem,timeout,opt,p_ts,p_err); 
     }
     else
     {
@@ -1059,9 +1059,9 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
     {
         p_tcb = (OS_TCB*)rt_thread_self();
     }
-    if(p_tcb->SemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
+    if(p_tcb->TaskSemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
     {
-        return OSSemPost(&p_tcb->Sem,opt,p_err);
+        return OSSemPost(&p_tcb->TaskSem,opt,p_err);
     }
     else
     {
@@ -1118,8 +1118,8 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
     }
     
     CPU_CRITICAL_ENTER();
-    ctr = p_tcb->Sem.value;
-    p_tcb->Sem.value = (OS_SEM_CTR)cnt;
+    ctr = p_tcb->TaskSem.Sem.value;
+    p_tcb->TaskSem.Sem.value = (OS_SEM_CTR)cnt;
     CPU_CRITICAL_EXIT();
     *p_err = OS_ERR_NONE;
     return ctr;
@@ -1196,7 +1196,7 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     }
     else
     {
-        thread = &p_tcb->task;
+        thread = &p_tcb->Task;
     }        
     
 #if OS_CFG_ARG_CHK_EN > 0u
@@ -1303,7 +1303,7 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
         p_tcb = (OS_TCB*)rt_thread_self();
     } 
     
-    if((p_tcb->task.stat & RT_THREAD_STAT_MASK) == RT_THREAD_SUSPEND)
+    if((p_tcb->Task.stat & RT_THREAD_STAT_MASK) == RT_THREAD_SUSPEND)
     {
         /*如果任务是挂起状态*/
         CPU_CRITICAL_ENTER();
@@ -1311,11 +1311,11 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
         CPU_CRITICAL_EXIT();
         *p_err = OS_ERR_NONE;
     }
-    else if((p_tcb->task.stat & RT_THREAD_STAT_MASK) == RT_THREAD_READY)
+    else if((p_tcb->Task.stat & RT_THREAD_STAT_MASK) == RT_THREAD_READY)
     {
         /*任务处于运行态才能被挂起*/
-        rt_err = rt_thread_suspend(&p_tcb->task);
-        if(rt_thread_self() == &p_tcb->task)/*是否要将自己挂起*/
+        rt_err = rt_thread_suspend(&p_tcb->Task);
+        if(rt_thread_self() == &p_tcb->Task)/*是否要将自己挂起*/
         {
             rt_schedule();/* 根据RTT的要求,若挂起自己需要立即调用rt_shedule进行调度*/
         }    

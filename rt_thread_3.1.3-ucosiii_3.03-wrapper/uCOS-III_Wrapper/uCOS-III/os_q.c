@@ -66,7 +66,6 @@
 */
 
 #if OS_CFG_Q_EN > 0u
-
 /*
 ************************************************************************************************************************
 *                                               CREATE A MESSAGE QUEUE
@@ -154,7 +153,7 @@ void  OSQCreate (OS_Q        *p_q,
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u     
     /*判断内核对象是否已经是消息队列，即是否已经创建过*/
-    if(rt_object_get_type(&p_q->rt_msg.parent.parent) == RT_Object_Class_MessageQueue)
+    if(rt_object_get_type(&p_q->Msg.parent.parent) == RT_Object_Class_MessageQueue)
     {
         *p_err = OS_ERR_OBJ_CREATED;
         return;       
@@ -172,7 +171,7 @@ void  OSQCreate (OS_Q        *p_q,
         return;
     }
     
-    rt_err = rt_mq_init(&p_q->rt_msg,
+    rt_err = rt_mq_init(&p_q->Msg,
                         (const char *)p_name,
                          p_q->p_pool,
                          msg_size,
@@ -274,14 +273,14 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为消息队列*/
-    if(rt_object_get_type(&p_q->rt_msg.parent.parent) != RT_Object_Class_MessageQueue)
+    if(rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return 0;       
     }
 #endif
         
-    rt_err = rt_mq_detach(&p_q->rt_msg);
+    rt_err = rt_mq_detach(&p_q->Msg);
     RT_KERNEL_FREE(p_q->p_pool);/*释放消息池空间*/
     *p_err = _err_rtt_to_ucosiii(rt_err);
     return 0;/*返回值不可信,由于RTT没有实现查看该消息队列还有几个任务正在等待的API，因此只能返回0*/
@@ -384,7 +383,7 @@ void  *OSQPend (OS_Q         *p_q,
     rt_int32_t  time;
     ucos_msg_t  ucos_msg;
     
-    (void)p_ts;
+    CPU_VAL_UNUSED(p_ts);
 
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -424,7 +423,7 @@ void  *OSQPend (OS_Q         *p_q,
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为消息队列*/
-    if(rt_object_get_type(&p_q->rt_msg.parent.parent) != RT_Object_Class_MessageQueue)
+    if(rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return RT_NULL;       
@@ -461,7 +460,7 @@ void  *OSQPend (OS_Q         *p_q,
     }
     
     /*开始消息接收以及处理*/
-    rt_err = rt_mq_recv(&p_q->rt_msg,
+    rt_err = rt_mq_recv(&p_q->Msg,
                         (void*)&ucos_msg,/*uCOS消息段*/
                          sizeof(ucos_msg_t),/*uCOS消息段长度*/
                          time);
@@ -616,7 +615,7 @@ void  OSQPost (OS_Q         *p_q,
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为消息队列*/
-    if(rt_object_get_type(&p_q->rt_msg.parent.parent) != RT_Object_Class_MessageQueue)
+    if(rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return;       
@@ -629,11 +628,11 @@ void  OSQPost (OS_Q         *p_q,
     
     if(opt == OS_OPT_POST_FIFO)
     {
-        rt_err = rt_mq_send(&p_q->rt_msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
+        rt_err = rt_mq_send(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
     }
     else if(opt == OS_OPT_POST_LIFO)
     {
-        rt_err = rt_mq_urgent(&p_q->rt_msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
+        rt_err = rt_mq_urgent(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
     }
     else
     {

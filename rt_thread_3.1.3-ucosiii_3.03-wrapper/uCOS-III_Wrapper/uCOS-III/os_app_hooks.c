@@ -107,8 +107,8 @@ void  App_OS_ClrAllHooks (void)
 
 void  App_OS_TaskCreateHook (OS_TCB  *p_tcb)
 {
-    (void)&p_tcb;
-    rt_kprintf("App_OS_TaskCreateHook\r\n");
+    CPU_VAL_UNUSED(p_tcb);
+
 }
 
 /*
@@ -125,8 +125,8 @@ void  App_OS_TaskCreateHook (OS_TCB  *p_tcb)
 
 void  App_OS_TaskDelHook (OS_TCB  *p_tcb)
 {
-    (void)&p_tcb;
-    rt_kprintf("App_OS_TaskDelHook\r\n");
+    CPU_VAL_UNUSED(p_tcb);
+
 }
 
 /*
@@ -144,5 +144,5 @@ void  App_OS_TaskDelHook (OS_TCB  *p_tcb)
 
 void  App_OS_StatTaskHook (void)
 {
-    rt_kprintf("App_OS_StatTaskHook\r\n");
+
 }

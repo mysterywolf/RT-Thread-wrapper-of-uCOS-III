@@ -179,7 +179,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u 
     /*判断内核对象是否已经是定时器，即是否已经创建过*/
-    if(rt_object_get_type(&p_tmr->parent) == RT_Object_Class_Timer)
+    if(rt_object_get_type(&p_tmr->Tmr.parent) == RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_CREATED;
         return;       
@@ -216,7 +216,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
         return;
     }
     
-    rt_timer_init(p_tmr,
+    rt_timer_init(&p_tmr->Tmr,
                   (const char*)p_name,
                   p_callback,
                   p_callback_arg,
@@ -284,14 +284,14 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为定时器*/
-    if(rt_object_get_type(&p_tmr->parent) != RT_Object_Class_Timer)
+    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return DEF_FALSE;       
     }
 #endif
     
-    rt_err = rt_timer_detach(p_tmr);
+    rt_err = rt_timer_detach(&p_tmr->Tmr);
     *p_err = _err_rtt_to_ucosiii(rt_err);
     if(rt_err == RT_EOK)
     {
@@ -360,7 +360,7 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为定时器*/
-    if(rt_object_get_type(&p_tmr->parent) != RT_Object_Class_Timer)
+    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return 0;       
@@ -368,7 +368,7 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
 #endif
     
     *p_err = OS_ERR_NONE;  
-    return rt_tick_get() - p_tmr->timeout_tick;
+    return rt_tick_get() - p_tmr->Tmr.timeout_tick;
 }
 
 /*
@@ -429,14 +429,14 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为定时器*/
-    if(rt_object_get_type(&p_tmr->parent) != RT_Object_Class_Timer)
+    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return DEF_FALSE;       
     }
 #endif
     
-    rt_err = rt_timer_start(p_tmr);
+    rt_err = rt_timer_start(&p_tmr->Tmr);
     *p_err = _err_rtt_to_ucosiii(rt_err);
     if(rt_err == RT_EOK)
     {
@@ -533,7 +533,7 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
 {
     rt_err_t rt_err;
     
-    (void)p_callback_arg;/*由于RTT并没有实现回调函数的功能,因此p_callback_arg无用*/
+    CPU_VAL_IGNORED(p_callback_arg);/*由于RTT并没有实现回调函数的功能,因此p_callback_arg无用*/
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -560,7 +560,7 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为定时器*/
-    if(rt_object_get_type(&p_tmr->parent) != RT_Object_Class_Timer)
+    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return DEF_FALSE;       
@@ -575,7 +575,7 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
         return DEF_FALSE;
     }
     
-    rt_err = rt_timer_stop(p_tmr);
+    rt_err = rt_timer_stop(&p_tmr->Tmr);
     
     if(rt_err == -RT_ERROR)
     {

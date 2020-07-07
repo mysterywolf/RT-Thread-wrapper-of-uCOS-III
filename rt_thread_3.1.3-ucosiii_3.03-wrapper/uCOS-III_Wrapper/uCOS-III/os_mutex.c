@@ -50,7 +50,6 @@
 */
 
 #if OS_CFG_MUTEX_EN > 0u
-
 /*
 ************************************************************************************************************************
 *                                                   CREATE A MUTEX
@@ -124,14 +123,14 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u     
     /*判断内核对象是否已经是信号量，即是否已经创建过*/
-    if(rt_object_get_type(&p_mutex->parent.parent) == RT_Object_Class_Mutex)
+    if(rt_object_get_type(&p_mutex->Mutex.parent.parent) == RT_Object_Class_Mutex)
     {
         *p_err = OS_ERR_OBJ_CREATED;
         return;       
     }    
 #endif
     
-    rt_err = rt_mutex_init(p_mutex,(const char *)p_name,RT_IPC_FLAG_PRIO);/*uCOS-III仅支持以优先级进行排列*/
+    rt_err = rt_mutex_init(&p_mutex->Mutex,(const char *)p_name,RT_IPC_FLAG_PRIO);/*uCOS-III仅支持以优先级进行排列*/
     *p_err = _err_rtt_to_ucosiii(rt_err);
 }
 
@@ -228,14 +227,14 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为互斥量*/
-    if(rt_object_get_type(&p_mutex->parent.parent) != RT_Object_Class_Mutex)
+    if(rt_object_get_type(&p_mutex->Mutex.parent.parent) != RT_Object_Class_Mutex)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return 0;       
     }
 #endif
 
-    rt_err = rt_mutex_detach(p_mutex);
+    rt_err = rt_mutex_detach(&p_mutex->Mutex);
     *p_err = _err_rtt_to_ucosiii(rt_err);
     return 0;/*返回值不可信,RTT没有实现查看该互斥量还有几个任务正在等待的API，因此只能返回0*/
 }
@@ -304,7 +303,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     rt_int32_t time;
     rt_err_t rt_err;
     
-    (void)p_ts;
+    CPU_VAL_UNUSED(p_ts);
  
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -340,7 +339,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为互斥量*/
-    if(rt_object_get_type(&p_mutex->parent.parent) != RT_Object_Class_Mutex)
+    if(rt_object_get_type(&p_mutex->Mutex.parent.parent) != RT_Object_Class_Mutex)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return;       
@@ -374,7 +373,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
         *p_err = OS_ERR_OPT_INVALID;/*给定的opt参数无效*/
     }    
     
-    rt_err = rt_mutex_take(p_mutex,time);
+    rt_err = rt_mutex_take(&p_mutex->Mutex,time);
     *p_err = _err_rtt_to_ucosiii(rt_err);
 }
 
@@ -503,14 +502,14 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u   
     /*判断内核对象是否为信号量*/
-    if(rt_object_get_type(&p_mutex->parent.parent) != RT_Object_Class_Mutex)
+    if(rt_object_get_type(&p_mutex->Mutex.parent.parent) != RT_Object_Class_Mutex)
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return;       
     }
 #endif
         
-    rt_err = rt_mutex_release(p_mutex);
+    rt_err = rt_mutex_release(&p_mutex->Mutex);
     *p_err = _err_rtt_to_ucosiii(rt_err);
     /*只有已经拥有互斥量控制权的线程才能释放*/
     if(rt_err == -RT_ERROR)/*rt_mutex_release返回-RT_ERROR表示该线程非掌握互斥量的线程*/

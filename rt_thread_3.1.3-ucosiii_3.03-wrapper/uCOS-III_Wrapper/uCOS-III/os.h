@@ -60,6 +60,7 @@
 */
 #include <rtthread.h>
 #include <cpu.h>
+#include <cpu_core.h>
 #include <os_type.h>
 #include <os_cfg.h>
 #include <os_cfg_app.h>
@@ -142,6 +143,41 @@
 #define  OS_TASK_PEND_ON_Q                    (OS_STATE)(  5u)  /* Pending on queue                                   */
 #define  OS_TASK_PEND_ON_SEM                  (OS_STATE)(  6u)  /* Pending on semaphore                               */
 #define  OS_TASK_PEND_ON_TASK_SEM             (OS_STATE)(  7u)  /* Pending on signal  to be sent to task              */
+
+/*
+------------------------------------------------------------------------------------------------------------------------
+*                                                    TASK PEND STATUS
+*                                      (Status codes for OS_TCBs field .PendStatus)
+------------------------------------------------------------------------------------------------------------------------
+*/
+
+#define  OS_STATUS_PEND_OK                   (OS_STATUS)(  0u)  /* Pending status OK, !pending, or pending complete   */
+#define  OS_STATUS_PEND_ABORT                (OS_STATUS)(  1u)  /* Pending aborted                                    */
+#define  OS_STATUS_PEND_DEL                  (OS_STATUS)(  2u)  /* Pending object deleted                             */
+#define  OS_STATUS_PEND_TIMEOUT              (OS_STATUS)(  3u)  /* Pending timed out                                  */
+
+/*
+========================================================================================================================
+*                                                   OS OBJECT TYPES
+*
+* Note(s) : (1) OS_OBJ_TYPE_&&& #define values specifically chosen as ASCII representations of the kernel
+*               object types.  Memory displays of kernel objects will display the kernel object TYPEs with
+*               their chosen ASCII names.
+========================================================================================================================
+*/
+
+#define  OS_OBJ_TYPE_NONE                    (OS_OBJ_TYPE)CPU_TYPE_CREATE('N', 'O', 'N', 'E')
+#define  OS_OBJ_TYPE_FLAG                    (OS_OBJ_TYPE)CPU_TYPE_CREATE('F', 'L', 'A', 'G')
+#define  OS_OBJ_TYPE_MEM                     (OS_OBJ_TYPE)CPU_TYPE_CREATE('M', 'E', 'M', ' ')
+#define  OS_OBJ_TYPE_MUTEX                   (OS_OBJ_TYPE)CPU_TYPE_CREATE('M', 'U', 'T', 'X')
+#define  OS_OBJ_TYPE_Q                       (OS_OBJ_TYPE)CPU_TYPE_CREATE('Q', 'U', 'E', 'U')
+#define  OS_OBJ_TYPE_SEM                     (OS_OBJ_TYPE)CPU_TYPE_CREATE('S', 'E', 'M', 'A')
+#define  OS_OBJ_TYPE_TASK_MSG                (OS_OBJ_TYPE)CPU_TYPE_CREATE('T', 'M', 'S', 'G')
+#define  OS_OBJ_TYPE_TASK_RESUME             (OS_OBJ_TYPE)CPU_TYPE_CREATE('T', 'R', 'E', 'S')
+#define  OS_OBJ_TYPE_TASK_SIGNAL             (OS_OBJ_TYPE)CPU_TYPE_CREATE('T', 'S', 'I', 'G')
+#define  OS_OBJ_TYPE_TASK_SUSPEND            (OS_OBJ_TYPE)CPU_TYPE_CREATE('T', 'S', 'U', 'S')
+#define  OS_OBJ_TYPE_TICK                    (OS_OBJ_TYPE)CPU_TYPE_CREATE('T', 'I', 'C', 'K')
+#define  OS_OBJ_TYPE_TMR                     (OS_OBJ_TYPE)CPU_TYPE_CREATE('T', 'M', 'R', ' ')
 
 
 /*
@@ -506,24 +542,24 @@ typedef  enum  os_err {
 */
 typedef  struct  os_mem              OS_MEM;
 
-typedef  struct  rt_event            OS_FLAG_GRP;
-
 typedef  struct  os_q                OS_Q;
 
-typedef  struct  rt_mutex            OS_MUTEX;
+typedef  struct  os_mutex            OS_MUTEX;
 
-typedef  struct  rt_semaphore        OS_SEM;
+typedef  struct  os_sem              OS_SEM;
+
+typedef  struct  os_flag_grp         OS_FLAG_GRP;
 
 /*注意：RTT的定时器回调函数比uCOS-III的少了一个参数！*/
 typedef  void                        (*OS_TMR_CALLBACK_PTR)(void *parameter);
-typedef  struct  rt_timer            OS_TMR;
+typedef  struct  os_tmr              OS_TMR;
 
 typedef  void                        (*OS_TASK_PTR)        (void *parameter);
-typedef  struct os_tcb               OS_TCB;
+typedef  struct  os_tcb              OS_TCB;
 
 #if OS_CFG_APP_HOOKS_EN > 0u
-typedef  void                      (*OS_APP_HOOK_VOID)(void);
-typedef  void                      (*OS_APP_HOOK_TCB)(OS_TCB *p_tcb);
+typedef  void                        (*OS_APP_HOOK_VOID)   (void);
+typedef  void                        (*OS_APP_HOOK_TCB)    (OS_TCB *p_tcb);
 #endif
 
 /*
@@ -556,11 +592,30 @@ typedef  struct
 
 struct os_q
 {
-    struct  rt_messagequeue rt_msg;
+    struct  rt_messagequeue Msg;
     void    *p_pool;
     ucos_msg_t ucos_msg;
 };
 #endif
+
+/*
+------------------------------------------------------------------------------------------------------------------------
+*                                                      SEMAPHORES
+------------------------------------------------------------------------------------------------------------------------
+*/
+
+struct  os_sem { 
+    struct  rt_semaphore  Sem;
+};
+/*
+------------------------------------------------------------------------------------------------------------------------
+*                                                     EVENT FLAGS
+------------------------------------------------------------------------------------------------------------------------
+*/
+
+struct  os_flag_grp {
+    struct  rt_event FlagGrp;
+};
 
 /*
 ------------------------------------------------------------------------------------------------------------------------
@@ -569,22 +624,22 @@ struct os_q
 */
 struct os_tcb
 {
-    struct rt_thread task;      /*任务,要确保该成员位于结构体第一个*/
-    OS_SEM           Sem;       /*任务内建信号量*/
-    CPU_BOOLEAN      SemCreateSuc;/*标记任务内建信号量是否创建成功*/
+    struct rt_thread Task;          /*任务,要确保该成员位于结构体第一个*/
+    OS_SEM           TaskSem;       /*任务内建信号量*/
+    CPU_BOOLEAN      TaskSemCreateSuc;/*标记任务内建信号量是否创建成功*/
 #if OS_CFG_TASK_Q_EN > 0u      
-    OS_Q             MsgQ;      /*任务内建消息队列*/
-    void            *MsgPtr;    /*任务内建消息队列消息指针*/
-    OS_MSG_SIZE      MsgSize;   /*任务内建消息队列消息大小*/
-    CPU_BOOLEAN      MsgCreateSuc;/*标记任务内建消息队列是否创建成功*/
+    OS_Q             TaskMsgQ;      /*任务内建消息队列*/
+    void            *TaskMsgPtr;    /*任务内建消息队列消息指针*/
+    OS_MSG_SIZE      TaskMsgSize;   /*任务内建消息队列消息大小*/
+    CPU_BOOLEAN      TaskMsgCreateSuc;/*标记任务内建消息队列是否创建成功*/
 #endif    
-    void            *ExtPtr;    /*指向用户附加区指针*/
+    void            *ExtPtr;        /*指向用户附加区指针*/
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u       
     OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];/*任务寄存器*/
 #endif    
-    CPU_STK          StkSize;   /*任务堆栈大小*/
+    CPU_STK          StkSize;       /*任务堆栈大小*/
 #if OS_CFG_TASK_SUSPEND_EN > 0u
-    OS_NESTING_CTR       SuspendCtr;    /* Nesting counter for OSTaskSuspend()  */
+    OS_NESTING_CTR   SuspendCtr;    /* Nesting counter for OSTaskSuspend()  */
 #endif
 };
 
@@ -595,7 +650,7 @@ struct os_tcb
 */
 
 struct os_mem {                                             /* MEMORY CONTROL BLOCK                                   */
-//    OS_OBJ_TYPE          Type;                              /* Should be set to OS_OBJ_TYPE_MEM                       */
+    OS_OBJ_TYPE          Type;                              /* Should be set to OS_OBJ_TYPE_MEM                       */
     void                *AddrPtr;                           /* Pointer to beginning of memory partition               */
     CPU_CHAR            *NamePtr;
     void                *FreeListPtr;                       /* Pointer to list of free memory blocks                  */
@@ -606,6 +661,26 @@ struct os_mem {                                             /* MEMORY CONTROL BL
     OS_MEM              *DbgPrevPtr;
     OS_MEM              *DbgNextPtr;
 #endif
+};
+
+/*
+------------------------------------------------------------------------------------------------------------------------
+*                                              MUTUAL EXCLUSION SEMAPHORES
+------------------------------------------------------------------------------------------------------------------------
+*/
+
+struct  os_mutex {
+    struct rt_mutex     Mutex;
+};
+
+/*
+------------------------------------------------------------------------------------------------------------------------
+*                                                   TIMER DATA TYPES
+------------------------------------------------------------------------------------------------------------------------
+*/
+
+struct  os_tmr {
+    struct  rt_timer Tmr;
 };
 
 

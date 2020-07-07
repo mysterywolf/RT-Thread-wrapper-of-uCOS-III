@@ -119,7 +119,7 @@ void  OSTaskCreateHook (OS_TCB  *p_tcb)
         (*OS_AppTaskCreateHookPtr)(p_tcb);
     }
 #else
-    (void)p_tcb;                                            /* Prevent compiler warning                               */
+    CPU_VAL_UNUSED(p_tcb);                                            /* Prevent compiler warning                               */
 #endif
 }
 
@@ -142,7 +142,7 @@ void  OSTaskDelHook (OS_TCB  *p_tcb)
         (*OS_AppTaskDelHookPtr)(p_tcb);
     }
 #else
-    (void)p_tcb;                                            /* Prevent compiler warning                               */
+    CPU_VAL_UNUSED(p_tcb);                                            /* Prevent compiler warning                               */
 #endif
 }
 

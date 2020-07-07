@@ -109,7 +109,6 @@ typedef  volatile  CPU_INT16U  CPU_REG16;                       /* 16-bit regist
 typedef  volatile  CPU_INT32U  CPU_REG32;                       /* 32-bit register                                      */
 typedef  volatile  CPU_INT64U  CPU_REG64;                       /* 64-bit register                                      */
 
-typedef      CPU_INT32U        CPU_TS;                          /* Req'd for backwards-compatibility.                   */
 
 /*
 *********************************************************************************************************
