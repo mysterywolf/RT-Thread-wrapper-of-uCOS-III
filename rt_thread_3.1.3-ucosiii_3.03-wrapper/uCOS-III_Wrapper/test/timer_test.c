@@ -21,14 +21,14 @@ static void thread2_entry(void *param)
 {
     OS_ERR err;
     OS_REG_ID id;
-    
+    OS_STATE state;
     CPU_STK_SIZE free,used;
 	//创建定时器1
 	OSTmrCreate((OS_TMR		*)&tmr1,		//定时器1
                 (CPU_CHAR	*)"tmr1",		//定时器名字
                 (OS_TICK	 )20,			//20*10=200ms
                 (OS_TICK	 )100,          //100*10=1000ms
-                (OS_OPT		 )OS_OPT_TMR_PERIODIC, //周期模式
+                (OS_OPT		 )OS_OPT_TMR_ONE_SHOT, //周期模式
                 (OS_TMR_CALLBACK_PTR)tmr1_callback,//定时器1回调函数
                 (void	    *)0,			//参数为0
                 (OS_ERR	    *)&err);		//返回的错误码   
@@ -39,12 +39,26 @@ static void thread2_entry(void *param)
     id =  OSTaskRegGetID(&err);
     OSTaskRegSet(RT_NULL,id,323,&err); 
     rt_kprintf("TaskRegGet:%d\r\n",OSTaskRegGet(RT_NULL,id,&err));           
-                
+    
+    //测试堆栈信息获取函数            
+    OSTaskStkChk(RT_NULL,&free,&used,&err);
+    rt_kprintf("free:%d,used:%d\r\n",free,used);                
     while(1)
     {
-        OSTaskStkChk(RT_NULL,&free,&used,&err);
-        rt_kprintf("free:%d,used:%d\r\n",free,used);
-        OSTimeDlyHMSM(0,0,0,1000,OS_OPT_TIME_PERIODIC|OS_OPT_TIME_HMSM_NON_STRICT,&err);
+        state = OSTmrStateGet(&tmr1,&err);
+        if(state == OS_TMR_STATE_STOPPED)
+        {
+            rt_kprintf("OS_TMR_STATE_STOPPED\r\n");
+        }
+        else if(state == OS_TMR_STATE_COMPLETED)
+        {
+            rt_kprintf("OS_TMR_COMPLETED\r\n");
+        }
+        else if(state == OS_TMR_STATE_RUNNING)
+        {
+            rt_kprintf("OS_TMR_STATE_RUNNING\r\n");
+        }
+        OSTimeDlyHMSM(0,0,0,100,OS_OPT_TIME_PERIODIC|OS_OPT_TIME_HMSM_NON_STRICT,&err);
     }
 }
 

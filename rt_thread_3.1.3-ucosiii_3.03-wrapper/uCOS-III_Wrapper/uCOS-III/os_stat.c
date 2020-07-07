@@ -43,6 +43,12 @@
 #include <os.h>
 
 #if OS_CFG_STAT_TASK_EN > 0u
+
+#define  OS_CFG_TASK_STK_LIMIT_PCT_EMPTY  10u               /* Stack limit position in percentage to empty            */
+#define  OS_CFG_STAT_TASK_STK_LIMIT      ((OS_CFG_STAT_TASK_STK_SIZE  * OS_CFG_TASK_STK_LIMIT_PCT_EMPTY) / 100u)
+
+static CPU_STK        OSCfg_StatTaskStk   [OS_CFG_STAT_TASK_STK_SIZE];
+
 /*
 ************************************************************************************************************************
 *                                                   RESET STATISTICS
@@ -88,6 +94,43 @@ void  OSStatTaskCPUUsageInit (OS_ERR  *p_err)
 
 /*
 ************************************************************************************************************************
+*                                                    STATISTICS TASK
+*
+* Description: This task is internal to uC/OS-III and is used to compute some statistics about the multitasking
+*              environment.  Specifically, OS_StatTask() computes the CPU usage.  CPU usage is determined by:
+*
+*                                                   OSStatTaskCtr
+*                 OSStatTaskCPUUsage = 100 * (1 - ------------------)     (units are in %)
+*                                                  OSStatTaskCtrMax
+*
+* Arguments  : p_arg     this pointer is not used at this time.
+*
+* Returns    : none
+*
+* Note(s)    : 1) This task runs at a priority level higher than the idle task.
+*
+*              2) You can disable this task by setting the configuration #define OS_CFG_STAT_TASK_EN to 0.
+*
+*              3) You MUST have at least a delay of 2/10 seconds to allow for the system to establish the maximum value
+*                 for the idle counter.
+*
+*              4) This function is INTERNAL to uC/OS-III and your application should not call it.
+************************************************************************************************************************
+*/
+
+void  OS_StatTask (void  *p_arg)
+{
+    OS_ERR err;
+    
+    while(1)
+    {
+
+        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);
+    }
+}
+
+/*
+************************************************************************************************************************
 *                                              INITIALIZE THE STATISTICS
 *
 * Description: This function is called by OSInit() to initialize the statistic task.
@@ -122,17 +165,17 @@ void  OS_StatTaskInit (OS_ERR  *p_err)
     OSStatResetFlag  = DEF_FALSE;
 
                                                             /* ---------------- CREATE THE STAT TASK ---------------- */
-    if (OSCfg_StatTaskStkBasePtr == (CPU_STK *)0) {
+    if (OSCfg_StatTaskStk == (CPU_STK *)0) {
        *p_err = OS_ERR_STAT_STK_INVALID;
         return;
     }
 
-    if (OSCfg_StatTaskStkSize < OSCfg_StkSizeMin) {
+    if (OS_CFG_STAT_TASK_STK_SIZE < OS_CFG_STK_SIZE_MIN) {
        *p_err = OS_ERR_STAT_STK_SIZE_INVALID;
         return;
     }
 
-    if (OSCfg_StatTaskPrio >= (OS_CFG_PRIO_MAX - 1u)) {
+    if (OS_CFG_STAT_TASK_PRIO >= (OS_CFG_PRIO_MAX - 1u)) {
        *p_err = OS_ERR_STAT_PRIO_INVALID;
         return;
     }
@@ -141,10 +184,10 @@ void  OS_StatTaskInit (OS_ERR  *p_err)
                  (CPU_CHAR   *)((void *)"uC/OS-III Stat Task"),
                  (OS_TASK_PTR )OS_StatTask,
                  (void       *)0,
-                 (OS_PRIO     )OSCfg_StatTaskPrio,
-                 (CPU_STK    *)OSCfg_StatTaskStkBasePtr,
-                 (CPU_STK_SIZE)OSCfg_StatTaskStkLimit,
-                 (CPU_STK_SIZE)OSCfg_StatTaskStkSize,
+                 (OS_PRIO     )OS_CFG_STAT_TASK_PRIO,
+                 (CPU_STK    *)OSCfg_StatTaskStk,
+                 (CPU_STK_SIZE)OS_CFG_STAT_TASK_STK_LIMIT,
+                 (CPU_STK_SIZE)OS_CFG_STAT_TASK_STK_SIZE,
                  (OS_MSG_QTY  )0,
                  (OS_TICK     )0,
                  (void       *)0,

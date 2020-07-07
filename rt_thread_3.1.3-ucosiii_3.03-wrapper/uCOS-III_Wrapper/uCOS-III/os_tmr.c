@@ -456,8 +456,8 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
 *
 *                  OS_TMR_STATE_UNUSED     the timer has not been created
 *                  OS_TMR_STATE_STOPPED    the timer has been created but has not been started or has been stopped
-*                  OS_TMR_COMPLETED        the timer is in ONE-SHOT mode and has completed it's timeout
-*                  OS_TMR_RUNNING          the timer is currently running
+*                  OS_TMR_STATE_COMPLETED  the timer is in ONE-SHOT mode and has completed it's timeout
+*                  OS_TMR_STATE_RUNNING    the timer is currently running
 *
 * Arguments  : p_tmr    Is a pointer to the desired timer
 *
@@ -478,10 +478,65 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
 ************************************************************************************************************************
 */
 
-//OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
-//                         OS_ERR  *p_err)
-//{
-//}
+OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
+                         OS_ERR  *p_err)
+{
+    rt_uint8_t state;
+    
+    CPU_SR_ALLOC();
+    
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return (OS_TMR_STATE_UNUSED);
+    }
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
+    if (rt_interrupt_get_nest() > (OS_NESTING_CTR)0){
+       *p_err = OS_ERR_TMR_ISR;
+        return (OS_TMR_STATE_UNUSED);
+    }
+#endif
+
+#if OS_CFG_ARG_CHK_EN > 0u
+    if (p_tmr == (OS_TMR *)0) {
+       *p_err = OS_ERR_TMR_INVALID;
+        return (OS_TMR_STATE_UNUSED);
+    }
+#endif 
+    
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
+    /*判断内核对象是否为定时器*/
+    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)
+    {
+        *p_err = OS_ERR_OBJ_TYPE;
+        return DEF_FALSE;       
+    }
+    
+    CPU_CRITICAL_ENTER();
+    state = (p_tmr->Tmr.parent.flag);
+    CPU_CRITICAL_EXIT();
+    
+    *p_err  = OS_ERR_NONE;
+    if(!(state&RT_TIMER_FLAG_ACTIVATED)&&!(state&RT_TIMER_FLAG_PERIODIC))
+    {
+        return OS_TMR_STATE_COMPLETED;
+    }
+    else if(state&RT_TIMER_FLAG_ACTIVATED)
+    {
+        return OS_TMR_STATE_RUNNING;
+    }
+    else
+    {
+        return OS_TMR_STATE_STOPPED;
+    }
+    
+#endif    
+    
+    
+    
+}
 
 /*
 ************************************************************************************************************************

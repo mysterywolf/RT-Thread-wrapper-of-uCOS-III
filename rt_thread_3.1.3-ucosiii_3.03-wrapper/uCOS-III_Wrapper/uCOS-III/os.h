@@ -291,6 +291,17 @@
 #define  OS_OPT_TMR_CALLBACK                      (OS_OPT)(3u)  /* OSTmrStop() option to call 'callback' w/ timer arg */
 #define  OS_OPT_TMR_CALLBACK_ARG                  (OS_OPT)(4u)  /* OSTmrStop() option to call 'callback' w/ new   arg */
 
+/*
+------------------------------------------------------------------------------------------------------------------------
+*                                                     TIMER STATES
+------------------------------------------------------------------------------------------------------------------------
+*/
+
+#define  OS_TMR_STATE_UNUSED                    (OS_STATE)(0u)
+#define  OS_TMR_STATE_STOPPED                   (OS_STATE)(1u)
+#define  OS_TMR_STATE_RUNNING                   (OS_STATE)(2u)
+#define  OS_TMR_STATE_COMPLETED                 (OS_STATE)(3u)
+
 
 /*
 ************************************************************************************************************************
@@ -462,11 +473,11 @@ typedef  enum  os_err {
 
     OS_ERR_TCB_INVALID               = 29101u,
 
-//    OS_ERR_TLS_ID_INVALID            = 29120u,
-//    OS_ERR_TLS_ISR                   = 29121u,
-//    OS_ERR_TLS_NO_MORE_AVAIL         = 29122u,
-//    OS_ERR_TLS_NOT_EN                = 29123u,
-//    OS_ERR_TLS_DESTRUCT_ASSIGNED     = 29124u,
+    OS_ERR_TLS_ID_INVALID            = 29120u,
+    OS_ERR_TLS_ISR                   = 29121u,
+    OS_ERR_TLS_NO_MORE_AVAIL         = 29122u,
+    OS_ERR_TLS_NOT_EN                = 29123u,
+    OS_ERR_TLS_DESTRUCT_ASSIGNED     = 29124u,
 
 //    OS_ERR_TICK_PRIO_INVALID         = 29201u,
 //    OS_ERR_TICK_STK_INVALID          = 29202u,
@@ -490,7 +501,7 @@ typedef  enum  os_err {
 //    OS_ERR_TMR_INVALID_DEST          = 29502u,
     OS_ERR_TMR_INVALID_DLY           = 29503u,
     OS_ERR_TMR_INVALID_PERIOD        = 29504u,
-//    OS_ERR_TMR_INVALID_STATE         = 29505u,
+    OS_ERR_TMR_INVALID_STATE         = 29505u,
     OS_ERR_TMR_INVALID               = 29506u,
     OS_ERR_TMR_ISR                   = 29507u,
 //    OS_ERR_TMR_NO_CALLBACK           = 29508u,
@@ -593,6 +604,7 @@ typedef  struct
 struct os_q
 {
     struct  rt_messagequeue Msg;
+    OS_OBJ_TYPE  Type;
     void    *p_pool;
     ucos_msg_t ucos_msg;
 };
@@ -606,6 +618,7 @@ struct os_q
 
 struct  os_sem { 
     struct  rt_semaphore  Sem;
+    OS_OBJ_TYPE           Type;
 };
 /*
 ------------------------------------------------------------------------------------------------------------------------
@@ -614,7 +627,8 @@ struct  os_sem {
 */
 
 struct  os_flag_grp {
-    struct  rt_event FlagGrp;
+    struct  rt_event     FlagGrp;
+    OS_OBJ_TYPE          Type;
 };
 
 /*
@@ -625,6 +639,7 @@ struct  os_flag_grp {
 struct os_tcb
 {
     struct rt_thread Task;          /*任务,要确保该成员位于结构体第一个*/
+    OS_OBJ_TYPE      Type;
     OS_SEM           TaskSem;       /*任务内建信号量*/
     CPU_BOOLEAN      TaskSemCreateSuc;/*标记任务内建信号量是否创建成功*/
 #if OS_CFG_TASK_Q_EN > 0u      
@@ -671,6 +686,7 @@ struct os_mem {                                             /* MEMORY CONTROL BL
 
 struct  os_mutex {
     struct rt_mutex     Mutex;
+    OS_OBJ_TYPE         Type;
 };
 
 /*
@@ -681,6 +697,7 @@ struct  os_mutex {
 
 struct  os_tmr {
     struct  rt_timer Tmr;
+    OS_OBJ_TYPE      Type;
 };
 
 
@@ -720,6 +737,17 @@ OS_EXT            OS_MEM                   *OSMemDbgListPtr;
 OS_EXT            OS_OBJ_QTY                OSMemQty;                   /* Number of memory partitions created        */
 #endif
 
+#if OS_CFG_STAT_TASK_EN > 0u
+OS_EXT            CPU_BOOLEAN               OSStatResetFlag;            /* Force the reset of the computed statistics */
+OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsage;         /* CPU Usage in %                             */
+OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsageMax;      /* CPU Usage in % (Peak)                      */
+OS_EXT            OS_TICK                   OSStatTaskCtr;
+OS_EXT            OS_TICK                   OSStatTaskCtrMax;
+OS_EXT            OS_TICK                   OSStatTaskCtrRun;
+OS_EXT            CPU_BOOLEAN               OSStatTaskRdy;
+OS_EXT            OS_TCB                    OSStatTaskTCB;
+OS_EXT            CPU_TS                    OSStatTaskTimeMax;
+#endif
 
 /*
 ************************************************************************************************************************
@@ -1027,6 +1055,13 @@ void          OSStatTaskCPUUsageInit    (OS_ERR                *p_err);
 #endif
 
 CPU_INT16U    OSVersion                 (OS_ERR                *p_err);
+
+/* ------------------------------------------------ INTERNAL FUNCTIONS ---------------------------------------------- */
+
+#if OS_CFG_STAT_TASK_EN > 0u
+void          OS_StatTaskInit           (OS_ERR                *p_err);
+#endif
+
 
 /* ================================================================================================================== */
 /*                                          TASK LOCAL STORAGE (TLS) SUPPORT                                          */

@@ -77,7 +77,7 @@ void  OSInit (OS_ERR  *p_err)
 
     OSInitHook();                                           /* Call port specific initialization code                 */
     
-    OSRunning = OS_STATE_OS_STOPPED; /* Indicate that multitasking not started                 */
+    OSRunning = OS_STATE_OS_STOPPED;                        /* Indicate that multitasking not started                 */
     
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     OSTaskRegNextAvailID = (OS_REG_ID)0;
@@ -85,8 +85,17 @@ void  OSInit (OS_ERR  *p_err)
     
 #ifdef OS_SAFETY_CRITICAL_IEC61508
     OSSafetyCriticalStartFlag = DEF_FALSE;
+#endif  
+
+
+
+
+#if OS_CFG_STAT_TASK_EN > 0u                                /* Initialize the Statistic Task                          */
+    OS_StatTaskInit(p_err);
+    if (*p_err != OS_ERR_NONE) {
+        return;
+    }
 #endif    
-    
 }
 
 /*

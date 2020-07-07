@@ -162,12 +162,13 @@ int main(void) /*RT-Thread main线程*/
 
 
 2.**切勿将RT-Thread和μCOS-III的API混搭使用。**
-    例如RTT中的rt_thread_suspend / rt_thread_resume仅支持一次挂起/解挂；而μCOS-III的OSTaskSuspend / OSTaskResume是支持嵌套挂起/解挂的，为此需要继承struct rt_thread结构体并在其基础上增加成员.SuspendCtr变量实现该功能。若采用rt_thread_init初始化线程，该函数并不会管理μCOS-III兼容层的成员变量，.SuspendCtr也不会创建和初始化，若此时调用OSTaskSuspend / OSTaskResume函数试图指向.SuspendCtr成员变量，将会访问非法内存地址(因为rt_thread_init初始化的线程.SuspendCtr成员变量根本不存在)！
+
+​    例如RTT中的rt_thread_suspend / rt_thread_resume仅支持一次挂起/解挂；而μCOS-III的OSTaskSuspend / OSTaskResume是支持嵌套挂起/解挂的，为此需要继承struct rt_thread结构体并在其基础上增加成员.SuspendCtr变量实现该功能。若采用rt_thread_init初始化线程，该函数并不会管理μCOS-III兼容层的成员变量，.SuspendCtr也不会创建和初始化，若此时调用OSTaskSuspend / OSTaskResume函数试图指向.SuspendCtr成员变量，将会访问非法内存地址(因为rt_thread_init初始化的线程.SuspendCtr成员变量根本不存在)！
 
 
 
 # 3 API
-## 3.1 没有实现的兼容的API（共14个）
+## 3.1 没有实现的兼容的API（共13个）
 
 由于RT-Thread没有提供相关接口，以下μCOS-III API无法实现：
 
@@ -214,11 +215,6 @@ CPU_BOOLEAN OSTaskSemPendAbort (OS_TCB *p_tcb, OS_OPT opt, OS_ERR *p_err);
 void  OSTimeDlyResume (OS_TCB  *p_tcb, OS_ERR  *p_err);
 ```
 
-### 3.1.8 os_tmr.c
-```c
-OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr, OS_ERR  *p_err);
-```
-
 
 
 ## 3.2 钩子函数
@@ -248,8 +244,8 @@ void  App_OS_TimeTickHook (void);
 
 
 
-## ~~3.3 统计任务（OS_StatTask()、os_stat.c）~~
+## 3.3 统计任务（OS_StatTask()、os_stat.c）
 
-​	在μCOS-III中，统计任务是一个系统任务，可以在系统运行时做一些统计工作，例如统计总的CPU使用率（0.00%-100.00%）、各任务的CPU使用率（0.00%-100.00%）以及各任务的堆栈使用量。从内核版本V3.03.00起，CPU的利用率用一个0-10000之间的整数表示（对应0.00%-100.00%）。
+​	在μCOS-III中，统计任务是一个系统任务，可以在系统运行时做一些统计工作，例如统计总的CPU使用率（0.00% - 100.00%）、各任务的CPU使用率（0.00% - 100.00%）以及各任务的堆栈使用量。从内核版本V3.03.00起，CPU的利用率用一个0-10000之间的整数表示（对应0.00% - 100.00%）。
 
 ​	但是RT-Thread并没有统计任务，因此需要创建一个任务来兼容原版μCOS-III的统计任务，完成上述功能。
