@@ -1,4 +1,14 @@
 /*
+ * Copyright (c) 2006-2018, RT-Thread Development Team
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Change Logs:
+ * Date           Author       Notes
+ * 2020-07-07     Meco Man     the first verion
+ */
+
+/*
 *********************************************************************************************************
 *                                                uC/CPU
 *                                    CPU CONFIGURATION & PORT LAYER
@@ -25,7 +35,7 @@
 *                                           CORE CPU MODULE
 *
 * Filename      : cpu_core.h
-* Version       : V1.29.02
+* Version       : V1.30.00
 * Programmer(s) : SR
 *                 ITJ
 *********************************************************************************************************
@@ -71,12 +81,6 @@
 
 #include  <cpu.h>
 #include  <lib_def.h>
-
-#if (CPU_CFG_NAME_EN == DEF_ENABLED)
-#include  <lib_mem.h>
-#include  <lib_str.h>
-#endif
-
 
 /*
 *********************************************************************************************************

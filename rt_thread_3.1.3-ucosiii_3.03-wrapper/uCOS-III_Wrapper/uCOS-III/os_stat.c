@@ -5,7 +5,7 @@
  *
  * Change Logs:
  * Date           Author       Notes
- * 2020-07-07     Meco Man     the first verion
+ * 2020-07-08     Meco Man     the first verion
  */
  
 /*
@@ -84,6 +84,72 @@ void  OSStatReset (OS_ERR  *p_err)
 
 void  OSStatTaskCPUUsageInit (OS_ERR  *p_err)
 {
+}
+
+/*
+************************************************************************************************************************
+*                                              INITIALIZE THE STATISTICS
+*
+* Description: This function is called by OSInit() to initialize the statistic task.
+*
+* Argument(s): p_err     is a pointer to a variable that will contain an error code returned by this function.
+*
+*                            OS_ERR_STK_INVALID       If you specified a NULL stack pointer during configuration
+*                            OS_ERR_STK_SIZE_INVALID  If you didn't specify a large enough stack.
+*                            OS_ERR_PRIO_INVALID      If you specified a priority for the statistic task equal to or
+*                                                     lower (i.e. higher number) than the idle task.
+*                            OS_ERR_xxx               An error code returned by OSTaskCreate()
+*
+* Returns    : none
+*
+* Note(s)    : This function is INTERNAL to uC/OS-III and your application should not call it.
+************************************************************************************************************************
+*/
+
+void  OS_StatTaskInit (OS_ERR  *p_err)
+{
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+    OSStatTaskCtr    = (OS_TICK)0;
+    OSStatTaskCtrRun = (OS_TICK)0;
+    OSStatTaskCtrMax = (OS_TICK)0;
+    OSStatTaskRdy    = OS_STATE_NOT_RDY;                    /* Statistic task is not ready                            */
+    OSStatResetFlag  = DEF_FALSE;
+
+                                                            /* ---------------- CREATE THE STAT TASK ---------------- */
+    if (OSCfg_StatTaskStkBasePtr == (CPU_STK *)0) {
+       *p_err = OS_ERR_STAT_STK_INVALID;
+        return;
+    }
+
+    if (OSCfg_StatTaskStkSize < OSCfg_StkSizeMin) {
+       *p_err = OS_ERR_STAT_STK_SIZE_INVALID;
+        return;
+    }
+
+    if (OSCfg_StatTaskPrio >= (OS_CFG_PRIO_MAX - 1u)) {
+       *p_err = OS_ERR_STAT_PRIO_INVALID;
+        return;
+    }
+
+    OSTaskCreate((OS_TCB     *)&OSStatTaskTCB,
+                 (CPU_CHAR   *)((void *)"uC/OS-III Stat Task"),
+                 (OS_TASK_PTR )OS_StatTask,
+                 (void       *)0,
+                 (OS_PRIO     )OSCfg_StatTaskPrio,
+                 (CPU_STK    *)OSCfg_StatTaskStkBasePtr,
+                 (CPU_STK_SIZE)OSCfg_StatTaskStkLimit,
+                 (CPU_STK_SIZE)OSCfg_StatTaskStkSize,
+                 (OS_MSG_QTY  )0,
+                 (OS_TICK     )0,
+                 (void       *)0,
+                 (OS_OPT      )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                 (OS_ERR     *)p_err);
 }
 
 #endif
