@@ -219,7 +219,7 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb, OS_ERR  *p_err);
 
 ## 3.2 钩子函数
 
-​	**μCOS-III的钩子函数仅对μCOS-III兼容层负责。**即如果你注册了OSTaskDelHook函数，他仅会在调用OSTaskDel函数时被调用，不会在调用rt_thread_detach函数时被调用(这个由RTT的钩子函数负责)。这样做是为了层次分明，防止μCOS-III兼容层插手RT-Thread内部事务。
+​	**μCOS-III的钩子函数仅对μCOS-III兼容层负责。** 即如果你注册了OSTaskDelHook函数，他仅会在调用OSTaskDel函数时被调用，不会在调用rt_thread_detach函数时被调用(这个由RTT的钩子函数负责)。这样做是为了层次分明，防止μCOS-III兼容层插手RT-Thread内部事务。
 
 ​	μCOS-III的钩子函数在两个文件中实现：os_cpu_c.c和os_app_hooks.c 。按照μCOS-III的思想，os_cpu_c.c提供原始的钩子函数（即这些钩子函数被相应的函数直接调用），该文件以及其内部的钩子函数是移植工程师编写的内容，应用工程师不应该操作这个文件的内容，os_cpu_c.c文件的钩子函数提供相应的函数指针供os_app_hooks.c文件内的钩子函数注册和使用，这个文件内的钩子函数应用工程师是可以操作的。换句话说，我们有什么需要在钩子函数中调用的函数，应该放在os_app_hooks.c文件中。
 
