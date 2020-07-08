@@ -1513,7 +1513,7 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgPrevPtr         = (OS_TCB        *)0;
     p_tcb->DbgNextPtr         = (OS_TCB        *)0;
-#endif      
+#endif
     OS_CRITICAL_EXIT();
 }
 

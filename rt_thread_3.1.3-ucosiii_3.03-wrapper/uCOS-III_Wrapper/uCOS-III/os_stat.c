@@ -65,19 +65,44 @@ static CPU_STK        OSCfg_StatTaskStk   [OS_CFG_STAT_TASK_STK_SIZE];
 
 void  OSStatReset (OS_ERR  *p_err)
 {
+#if (OS_CFG_DBG_EN > 0u)
+    OS_TCB      *p_tcb;
+#endif
 
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
 #endif
-
-
-   *p_err = OS_ERR_NONE;
+    
+    CPU_CRITICAL_ENTER();
+#if OS_CFG_STAT_TASK_EN > 0u
+    OSStatTaskCPUUsageMax = 0u;
+    OSStatTaskCPUUsage    = 0u;
+#endif
+    CPU_CRITICAL_EXIT();
+  
+#if OS_CFG_DBG_EN > 0u
+    CPU_CRITICAL_ENTER();
+    p_tcb = OSTaskDbgListPtr;
+    CPU_CRITICAL_EXIT();
+    while (p_tcb != (OS_TCB *)0) {                          /* Reset per-Task statistics                              */
+        CPU_CRITICAL_ENTER();
+#if OS_CFG_TASK_PROFILE_EN > 0u        
+        p_tcb->CPUUsage         = (OS_CPU_USAGE)0;
+        p_tcb->CPUUsageMax      = (OS_CPU_USAGE)0;    
+#endif
+        
+        p_tcb                   = p_tcb->DbgNextPtr;
+        CPU_CRITICAL_EXIT();    
+    }
+#endif
+    *p_err = OS_ERR_NONE;
 }
 
-/*$PAGE*/
 /*
 ************************************************************************************************************************
 *                                                DETERMINE THE CPU CAPACITY
@@ -101,6 +126,9 @@ void  OSStatReset (OS_ERR  *p_err)
 
 void  OSStatTaskCPUUsageInit (OS_ERR  *p_err)
 {
+    OS_ERR err;
+    OS_TICK  dly;
+    
     CPU_SR_ALLOC();
 
 #ifdef OS_SAFETY_CRITICAL
@@ -109,6 +137,27 @@ void  OSStatTaskCPUUsageInit (OS_ERR  *p_err)
         return;
     }
 #endif
+    OSTimeDly((OS_TICK )2,                                  /* Synchronize with clock tick                            */
+              (OS_OPT  )OS_OPT_TIME_PERIODIC,
+              (OS_ERR *)&err);
+    if (err != OS_ERR_NONE) {
+       *p_err = err;
+        return;
+    }
+    CPU_CRITICAL_ENTER();
+    OSStatTaskCtr = (OS_TICK)0;                             /* Clear idle counter                                     */
+    CPU_CRITICAL_EXIT();
+
+    dly = (OS_TICK)0;
+    if (OS_CFG_TICK_RATE_HZ > OS_CFG_STAT_TASK_RATE_HZ) {
+        dly = (OS_TICK)(OS_CFG_TICK_RATE_HZ / OS_CFG_STAT_TASK_RATE_HZ);
+    }
+    if (dly == (OS_TICK)0) {
+        dly =  (OS_TICK)(OS_CFG_TICK_RATE_HZ / (OS_RATE_HZ)10);
+    } 
+    OSTimeDly(dly,                                          /* Determine MAX. idle counter value                      */
+              OS_OPT_TIME_PERIODIC,
+              &err);
 
     CPU_CRITICAL_ENTER();
     OSStatTaskCtrMax  = OSStatTaskCtr;                      /* Store maximum idle counter count                       */
@@ -148,9 +197,9 @@ void  OS_StatTask (void  *p_arg)
 #if OS_CFG_DBG_EN > 0u
     OS_TCB      *p_tcb;
 #endif
-//    OS_TICK      ctr_max;
-//    OS_TICK      ctr_mult;
-//    OS_TICK      ctr_div;
+    OS_TICK      ctr_max;
+    OS_TICK      ctr_mult;
+    OS_TICK      ctr_div;
     OS_ERR       err;
     OS_TICK      dly;
 
@@ -179,40 +228,39 @@ void  OS_StatTask (void  *p_arg)
         OSStatTaskCtr      = (OS_TICK)0;                    /* Reset the stat counter for the next .1 second          */
         CPU_CRITICAL_EXIT();
 
-//        if (OSStatTaskCtrMax > OSStatTaskCtrRun) {          /* Compute CPU Usage with best resolution                 */
-//            if (OSStatTaskCtrMax < 400000u) {                                        /*            1 to       400,000 */
-//                ctr_mult = 10000u;
-//                ctr_div  =     1u;
-//            } else if (OSStatTaskCtrMax <   4000000u) {                              /*      400,000 to     4,000,000 */
-//                ctr_mult =  1000u;
-//                ctr_div  =    10u;
-//            } else if (OSStatTaskCtrMax <  40000000u) {                              /*    4,000,000 to    40,000,000 */
-//                ctr_mult =   100u;
-//                ctr_div  =   100u;
-//            } else if (OSStatTaskCtrMax < 400000000u) {                              /*   40,000,000 to   400,000,000 */
-//                ctr_mult =    10u;
-//                ctr_div  =  1000u;
-//            } else {                                                                 /*  400,000,000 and up           */
-//                ctr_mult =     1u;
-//                ctr_div  = 10000u;
-//            }
-//            ctr_max            = OSStatTaskCtrMax / ctr_div;
-//            OSStatTaskCPUUsage = (OS_CPU_USAGE)((OS_TICK)10000u - ctr_mult * OSStatTaskCtrRun / ctr_max);
-//            if (OSStatTaskCPUUsageMax < OSStatTaskCPUUsage) {
-//                OSStatTaskCPUUsageMax = OSStatTaskCPUUsage;
-//            }
-//        } else {
-//            OSStatTaskCPUUsage = (OS_CPU_USAGE)10000u;
-//        }
+        if (OSStatTaskCtrMax > OSStatTaskCtrRun) {          /* Compute CPU Usage with best resolution                 */
+            if (OSStatTaskCtrMax < 400000u) {                                        /*            1 to       400,000 */
+                ctr_mult = 10000u;
+                ctr_div  =     1u;
+            } else if (OSStatTaskCtrMax <   4000000u) {                              /*      400,000 to     4,000,000 */
+                ctr_mult =  1000u;
+                ctr_div  =    10u;
+            } else if (OSStatTaskCtrMax <  40000000u) {                              /*    4,000,000 to    40,000,000 */
+                ctr_mult =   100u;
+                ctr_div  =   100u;
+            } else if (OSStatTaskCtrMax < 400000000u) {                              /*   40,000,000 to   400,000,000 */
+                ctr_mult =    10u;
+                ctr_div  =  1000u;
+            } else {                                                                 /*  400,000,000 and up           */
+                ctr_mult =     1u;
+                ctr_div  = 10000u;
+            }
+            ctr_max            = OSStatTaskCtrMax / ctr_div;
+            OSStatTaskCPUUsage = (OS_CPU_USAGE)((OS_TICK)10000u - ctr_mult * OSStatTaskCtrRun / ctr_max);
+            if (OSStatTaskCPUUsageMax < OSStatTaskCPUUsage) {
+                OSStatTaskCPUUsageMax = OSStatTaskCPUUsage;
+            }
+        } else {
+            OSStatTaskCPUUsage = (OS_CPU_USAGE)10000u;
+        }
 
         OSStatTaskHook();                                   /* Invoke user definable hook                             */
-
 
 #if OS_CFG_DBG_EN > 0u
         CPU_CRITICAL_ENTER();
         p_tcb = OSTaskDbgListPtr;
         CPU_CRITICAL_EXIT();
-        while (p_tcb != (OS_TCB *)0) {  /*开始沿着TCB链表对每一个任务进行遍历*/
+        while (p_tcb != (OS_TCB *)0) {                      /* 开始沿着TCB链表对每一个任务进行遍历                    */
 #if OS_CFG_STAT_TASK_STK_CHK_EN > 0u           
             OSTaskStkChk( p_tcb,                            /* Compute stack usage of active tasks only               */
                          &p_tcb->StkFree,
@@ -221,9 +269,8 @@ void  OS_StatTask (void  *p_arg)
 #endif
 
             
-            
             CPU_CRITICAL_ENTER();
-            p_tcb = p_tcb->DbgNextPtr;/*指向下一个TCB结构体*/
+            p_tcb = p_tcb->DbgNextPtr;                      /* 指向下一个TCB结构体                                    */
             CPU_CRITICAL_EXIT();
         }
 #endif

@@ -33,8 +33,10 @@
 	修改OSTaskDel函数没有删除任务内建信号量、任务内建队列的bug；
 	移植OS_TaskDbgListAdd、OS_TaskDbgListRemove函数；
 	实现OS_TaskInitTCB函数；
-	实现Idle任务（实则为RTT Idle任务的回调函数）
-	实现Idle任务钩子函数OSIdleTaskHook()
+	实现Idle任务（实则为RTT Idle任务的回调函数）；
+	实现Idle任务钩子函数OSIdleTaskHook()；
+2020-7-9
+	实现uCOS-III内部任务——统计任务，可以正确计算CPU使用率、每个任务的使用堆栈；
 
 
 v0.1.0
@@ -45,7 +47,8 @@ v0.2.0 (尚未发布)
 [add] 实现OSTmrStateGet函数（目前仅有13个uCOS-III API无法兼容）；
 [add] 实现Idle任务（实则为RTT Idle任务的回调函数）
 [add] 实现Idle任务钩子函数OSIdleTaskHook()
+[add] 实现uCOS-III内部任务——统计任务
 
 
 TODO:
-1.实现统计任务os_stat.c相关函数以及相关的统计数据
+1.继续完善统计任务的其他统计项

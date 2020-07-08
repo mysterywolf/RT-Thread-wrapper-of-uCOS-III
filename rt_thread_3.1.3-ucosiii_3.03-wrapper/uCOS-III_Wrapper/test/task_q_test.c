@@ -60,13 +60,15 @@ static void thread2_entry(void *param)
         rt_kprintf("thread1: used:%d,free:%d\r\n",thread1.StkUsed,thread1.StkFree);
         rt_kprintf("thread2: used:%d,free:%d\r\n",thread2.StkUsed,thread2.StkFree);
         
+        /*测试CPU使用率*/
+        rt_kprintf("CPU usage:%d.%d%%\r\n",OSStatTaskCPUUsage/100,OSStatTaskCPUUsage%100);
+        
         /*测试嵌套挂起*/
         OSTaskSuspend(&thread1,&err);
         OSTaskSuspend(&thread1,&err);
         OSTaskSuspend(&thread1,&err);
         OSTaskSuspend(&thread1,&err);
         OSTaskSuspend(&thread1,&err);
-        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);
         OSTaskResume(&thread1,&err);
         OSTaskResume(&thread1,&err);
         OSTaskResume(&thread1,&err);

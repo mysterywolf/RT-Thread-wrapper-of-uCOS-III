@@ -733,11 +733,6 @@ OS_EXT            OS_TCB                   *OSTaskDbgListPtr;
 OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag indicating that all init. done        */
 #endif
 
-#if OS_CFG_STAT_TASK_EN > 0u
-OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsage;         /* CPU Usage in %                             */
-OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsageMax;      /* CPU Usage in % (Peak)                      */
-#endif
-
 #if OS_CFG_MEM_EN > 0u
 #if OS_CFG_DBG_EN > 0u
 OS_EXT            OS_MEM                   *OSMemDbgListPtr;
@@ -757,7 +752,6 @@ OS_EXT            OS_TICK                   OSStatTaskCtrRun;
 OS_EXT            CPU_BOOLEAN               OSStatTaskRdy;
 OS_EXT            OS_TCB                    OSStatTaskTCB;
 #endif
-
 
 /*
 ************************************************************************************************************************
