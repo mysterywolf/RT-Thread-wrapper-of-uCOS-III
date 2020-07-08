@@ -63,6 +63,7 @@ void  App_OS_SetAllHooks (void)
     CPU_CRITICAL_ENTER();
     OS_AppTaskCreateHookPtr = App_OS_TaskCreateHook;
     OS_AppTaskDelHookPtr    = App_OS_TaskDelHook;
+    OS_AppIdleTaskHookPtr   = App_OS_IdleTaskHook;
     OS_AppStatTaskHookPtr   = App_OS_StatTaskHook;
     CPU_CRITICAL_EXIT();
 #endif
@@ -88,6 +89,7 @@ void  App_OS_ClrAllHooks (void)
     CPU_CRITICAL_ENTER();
     OS_AppTaskCreateHookPtr = (OS_APP_HOOK_TCB)0;
     OS_AppTaskDelHookPtr    = (OS_APP_HOOK_TCB)0;
+    OS_AppIdleTaskHookPtr   = (OS_APP_HOOK_VOID)0; 
     OS_AppStatTaskHookPtr   = (OS_APP_HOOK_VOID)0;
     CPU_CRITICAL_EXIT();
 #endif
@@ -126,6 +128,24 @@ void  App_OS_TaskCreateHook (OS_TCB  *p_tcb)
 void  App_OS_TaskDelHook (OS_TCB  *p_tcb)
 {
     CPU_VAL_UNUSED(p_tcb);
+
+}
+
+/*
+************************************************************************************************************************
+*                                              APPLICATION IDLE TASK HOOK
+*
+* Description: This function is called by the idle task.  This hook has been added to allow you to do such things as
+*              STOP the CPU to conserve power.
+*
+* Arguments  : none
+*
+* Note(s)    : none
+************************************************************************************************************************
+*/
+
+void  App_OS_IdleTaskHook (void)
+{
 
 }
 

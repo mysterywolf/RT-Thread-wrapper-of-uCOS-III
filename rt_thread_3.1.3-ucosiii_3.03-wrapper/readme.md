@@ -230,7 +230,6 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb, OS_ERR  *p_err);
 ​	以下原版μCOS-III钩子函数将予以取消，由RT-Thread接管相关钩子函数接管：
 
 ```c
-void          OSIdleTaskHook            (void);
 void          OSTaskReturnHook          (OS_TCB *p_tcb);
 void          OSTaskSwHook              (void);
 void          OSTimeTickHook            (void);
@@ -240,7 +239,6 @@ void          OSTimeTickHook            (void);
 
 ```c
 void  App_OS_TaskReturnHook (OS_TCB  *p_tcb);
-void  App_OS_IdleTaskHook (void);
 void  App_OS_InitHook (void);/*按照手册要求OS初始化的钩子函数不应该出现在应用层,在3.03版本中出现应该是失误,在3.08版本中已经将该应用级钩子函数取消*/
 void  App_OS_TaskSwHook (void);
 void  App_OS_TimeTickHook (void);

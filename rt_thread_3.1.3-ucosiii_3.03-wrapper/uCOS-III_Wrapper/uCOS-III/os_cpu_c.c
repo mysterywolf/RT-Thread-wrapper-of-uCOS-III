@@ -80,6 +80,28 @@ void  OSInitHook (void)
 
 /*
 *********************************************************************************************************
+*                                           IDLE TASK HOOK
+*
+* Description: This function is called by the idle task.  This hook has been added to allow you to do
+*              such things as STOP the CPU to conserve power.
+*
+* Arguments  : None.
+*
+* Note(s)    : None.
+*********************************************************************************************************
+*/
+
+void  OSIdleTaskHook (void)
+{
+#if OS_CFG_APP_HOOKS_EN > 0u
+    if (OS_AppIdleTaskHookPtr != (OS_APP_HOOK_VOID)0) {
+        (*OS_AppIdleTaskHookPtr)();
+    }
+#endif
+}
+
+/*
+*********************************************************************************************************
 *                                         STATISTIC TASK HOOK
 *
 * Description: This function is called every second by uC/OS-III's statistics task.  This allows your

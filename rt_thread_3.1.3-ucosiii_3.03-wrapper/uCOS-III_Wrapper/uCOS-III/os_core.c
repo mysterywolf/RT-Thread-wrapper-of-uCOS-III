@@ -93,6 +93,11 @@ void  OSInit (OS_ERR  *p_err)
     if (*p_err != OS_ERR_NONE) {
         return;
     }
+    
+    OS_IdleTaskInit(p_err);                                 /* Initialize the Idle Task                               */
+    if (*p_err != OS_ERR_NONE) {
+        return;
+    }
 
 #if OS_CFG_STAT_TASK_EN > 0u                                /* Initialize the Statistic Task                          */
     OS_StatTaskInit(p_err);
@@ -479,4 +484,75 @@ CPU_INT16U  OSVersion (OS_ERR  *p_err)
     
     *p_err = OS_ERR_NONE;
     return OS_VERSION;
+}
+
+/*
+************************************************************************************************************************
+*                                                      IDLE TASK
+*
+* Description: This task is internal to uC/OS-III and executes whenever no other higher priority tasks executes because
+*              they are ALL waiting for event(s) to occur.
+*
+* Arguments  : p_arg    is an argument passed to the task when the task is created.
+*
+* Returns    : none
+*
+* Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
+*
+*              2) OSIdleTaskHook() is called after the critical section to ensure that interrupts will be enabled for at
+*                 least a few instructions.  On some processors (ex. Philips XA), enabling and then disabling interrupts
+*                 doesn't allow the processor enough time to have interrupts enabled before they were disabled again.
+*                 uC/OS-III would thus never recognize interrupts.
+*
+*              3) This hook has been added to allow you to do such things as STOP the CPU to conserve power.
+*
+*              4) 在μCOS-III兼容层中，OS_IdleTask不再是一个函数，而是一个RT-Thread操作系统Idle任务的回调函数
+************************************************************************************************************************
+*/
+
+void  OS_IdleTask (void)
+{
+    CPU_SR_ALLOC();
+
+
+    CPU_CRITICAL_ENTER();
+    OSIdleTaskCtr++;
+#if OS_CFG_STAT_TASK_EN > 0u
+    OSStatTaskCtr++;
+#endif
+    CPU_CRITICAL_EXIT();
+
+    OSIdleTaskHook();                                   /* Call user definable HOOK                               */
+
+}
+
+/*
+************************************************************************************************************************
+*                                               INITIALIZE THE IDLE TASK
+*
+* Description: This function initializes the idle task
+*
+* Arguments  : p_err    is a pointer to a variable that will contain an error code returned by this function.
+*
+* Returns    : none
+*
+* Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
+*              2) 在μCOS-III兼容层中，OS_IdleTask不再是一个函数，而是一个RT-Thread操作系统Idle任务的回调函数
+************************************************************************************************************************
+*/
+
+void  OS_IdleTaskInit (OS_ERR  *p_err)
+{
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+    OSIdleTaskCtr = (OS_IDLE_CTR)0;
+    
+    /*向RTT注册μCOS-III兼容层空闲任务(实则为回调函数)*/      
+    rt_thread_idle_sethook(OS_IdleTask);
+    
 }

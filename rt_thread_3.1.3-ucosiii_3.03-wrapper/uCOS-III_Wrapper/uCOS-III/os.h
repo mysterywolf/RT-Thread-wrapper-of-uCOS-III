@@ -714,6 +714,7 @@ struct  os_tmr {
 #if OS_CFG_APP_HOOKS_EN > 0u
 OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskCreateHookPtr;    /* Application hooks                          */
 OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskDelHookPtr;
+OS_EXT           OS_APP_HOOK_VOID           OS_AppIdleTaskHookPtr;
 OS_EXT           OS_APP_HOOK_VOID           OS_AppStatTaskHookPtr;
 #endif
 
@@ -744,7 +745,9 @@ OS_EXT            OS_MEM                   *OSMemDbgListPtr;
 OS_EXT            OS_OBJ_QTY                OSMemQty;                   /* Number of memory partitions created        */
 #endif
 
-#if OS_CFG_STAT_TASK_EN > 0u
+OS_EXT            OS_IDLE_CTR               OSIdleTaskCtr;              /* IDLE TASK -------------------------------- */
+
+#if OS_CFG_STAT_TASK_EN > 0u                                            /* STATISTICS ------------------------------- */
 OS_EXT            CPU_BOOLEAN               OSStatResetFlag;            /* Force the reset of the computed statistics */
 OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsage;         /* CPU Usage in %                             */
 OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsageMax;      /* CPU Usage in % (Peak)                      */
@@ -1078,7 +1081,11 @@ CPU_INT16U    OSVersion                 (OS_ERR                *p_err);
 
 /* ------------------------------------------------ INTERNAL FUNCTIONS ---------------------------------------------- */
 
+void          OS_IdleTask               (void);
+void          OS_IdleTaskInit           (OS_ERR                *p_err);
+
 #if OS_CFG_STAT_TASK_EN > 0u
+void          OS_StatTask               (void                  *p_arg);
 void          OS_StatTaskInit           (OS_ERR                *p_err);
 #endif
 
@@ -1216,16 +1223,8 @@ void          OSInitHook                (void);
 
 void          OSTaskCreateHook          (OS_TCB                *p_tcb);
 void          OSTaskDelHook             (OS_TCB                *p_tcb);
-
+void          OSIdleTaskHook            (void);
 void          OSStatTaskHook            (void);
-
-CPU_STK      *OSTaskStkInit             (OS_TASK_PTR            p_task,
-                                         void                  *p_arg,
-                                         CPU_STK               *p_stk_base,
-                                         CPU_STK               *p_stk_limit,
-                                         CPU_STK_SIZE           stk_size,
-                                         OS_OPT                 opt);
-
                                          
                                          
 #endif

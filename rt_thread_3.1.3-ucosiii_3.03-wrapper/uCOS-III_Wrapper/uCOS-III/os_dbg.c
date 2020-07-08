@@ -43,6 +43,14 @@
 #include <os.h>
 #include <stdlib.h>
 
+#ifndef RT_USING_IDLE_HOOK
+#error "μCOS-III兼容层必须开启要求RT_USING_IDLE_HOOK宏定义"
+#endif
+
+#ifndef RT_USING_TIMER_SOFT
+#warning "RT_USING_TIMER_SOFT宏没有开启,μCOS-III兼容层将无法启用软件定时器,如果您确认这么做的话请将本警告注释掉"
+#endif
+
 OS_ERR _err_rtt_to_ucosiii(rt_err_t rt_err)
 {
     int rt_err2 = abs((int)rt_err);/*RTT返回的错误码都是带负号的*/
