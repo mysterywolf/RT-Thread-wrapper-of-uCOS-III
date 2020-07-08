@@ -161,16 +161,20 @@ int main(void) /*RT-Thread main线程*/
 
 
 
-2.**切勿将RT-Thread和μCOS-III的API混搭使用。**
+2. **切勿将RT-Thread和μCOS-III的API混搭使用。**
 
-​    例如RTT中的rt_thread_suspend / rt_thread_resume仅支持一次挂起/解挂；而μCOS-III的OSTaskSuspend / OSTaskResume是支持嵌套挂起/解挂的，为此需要继承struct rt_thread结构体并在其基础上增加成员.SuspendCtr变量实现该功能。若采用rt_thread_init初始化线程，该函数并不会管理μCOS-III兼容层的成员变量，.SuspendCtr也不会创建和初始化，若此时调用OSTaskSuspend / OSTaskResume函数试图指向.SuspendCtr成员变量，将会访问非法内存地址(因为rt_thread_init初始化的线程.SuspendCtr成员变量根本不存在)！
+   ​    例如RTT中的rt_thread_suspend / rt_thread_resume仅支持一次挂起/解挂；而μCOS-III的OSTaskSuspend / OSTaskResume是支持嵌套挂起/解挂的，为此需要继承struct rt_thread结构体并在其基础上增加成员.SuspendCtr变量实现该功能。若采用rt_thread_init初始化线程，该函数并不会管理μCOS-III兼容层的成员变量，.SuspendCtr也不会创建和初始化，若此时调用OSTaskSuspend / OSTaskResume函数试图指向.SuspendCtr成员变量，将会访问非法内存地址(因为rt_thread_init初始化的线程.SuspendCtr成员变量根本不存在)！
 
+3. 兼容层取消了原版μCOS-III中的时间戳功能
 
+   ​	在μCOS-III中，时间戳主要用于测量中断关闭时间，以及任务单次执行时间以及最大时间等涉及到精度较高的时长测量。该特性在μCOS-II以及RT-Thread中均没有，因此不予实现。
+
+4. μCOS-III原版定时器回调函数就是在定时器线程中调用的，而非在中断中调用,因此要使用μCOS-III兼容层的软件定时器，需要将rtconfig.h中的宏定义RT_USING_TIMER_SOFT置1。
 
 # 3 API
-## 3.1 没有实现的兼容的API（共13个）
+## 3.1 没有实现的兼容的API（仅13个）
 
-由于RT-Thread没有提供相关接口，以下μCOS-III API无法实现：
+由于RT-Thread没有提供相关接口，以下μCOS-III API无法兼容：
 
 ### 3.1.1 os_core.c
 ```c
@@ -248,4 +252,4 @@ void  App_OS_TimeTickHook (void);
 
 ​	在μCOS-III中，统计任务是一个系统任务，可以在系统运行时做一些统计工作，例如统计总的CPU使用率（0.00% - 100.00%）、各任务的CPU使用率（0.00% - 100.00%）以及各任务的堆栈使用量。从内核版本V3.03.00起，CPU的利用率用一个0-10000之间的整数表示（对应0.00% - 100.00%）。
 
-​	但是RT-Thread并没有统计任务，因此需要创建一个任务来兼容原版μCOS-III的统计任务，完成上述功能。
+​	但是RT-Thread并没有统计任务，因此需要创建一个任务来兼容原版μCOS-III的统计任务，完成上述功能。该统计任务会在兼容层初始化时自动创建，用户无需干预。

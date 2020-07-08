@@ -654,7 +654,15 @@ struct os_tcb
 #endif    
     CPU_STK          StkSize;       /*任务堆栈大小*/
 #if OS_CFG_TASK_SUSPEND_EN > 0u
-    OS_NESTING_CTR   SuspendCtr;    /* Nesting counter for OSTaskSuspend()  */
+    OS_NESTING_CTR   SuspendCtr;    /* Nesting counter for OSTaskSuspend() */
+#endif
+#if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
+    CPU_STK_SIZE     StkUsed;       /* Number of stack elements used from the stack */
+    CPU_STK_SIZE     StkFree;       /* Number of stack elements free on   the stack */
+#endif
+#if OS_CFG_DBG_EN > 0u
+    OS_TCB              *DbgPrevPtr;
+    OS_TCB              *DbgNextPtr;  
 #endif
 };
 
@@ -746,7 +754,6 @@ OS_EXT            OS_TICK                   OSStatTaskCtrMax;
 OS_EXT            OS_TICK                   OSStatTaskCtrRun;
 OS_EXT            CPU_BOOLEAN               OSStatTaskRdy;
 OS_EXT            OS_TCB                    OSStatTaskTCB;
-OS_EXT            CPU_TS                    OSStatTaskTimeMax;
 #endif
 
 /*
