@@ -661,8 +661,8 @@ struct os_tcb
     CPU_STK_SIZE     StkFree;       /* Number of stack elements free on   the stack */
 #endif
 #if OS_CFG_DBG_EN > 0u
-    OS_TCB              *DbgPrevPtr;
-    OS_TCB              *DbgNextPtr;  
+    OS_TCB          *DbgPrevPtr;
+    OS_TCB          *DbgNextPtr;  
 #endif
 };
 
