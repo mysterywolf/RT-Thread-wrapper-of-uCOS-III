@@ -49,7 +49,6 @@
 *                   OSTaskQFlush
 *                   OSTaskQPendAbort
 *                   OSTaskSemPendAbort
-*                   OSTaskSemSet
 *                   OSTaskChangePrio
 *                   OSTaskTimeQuantaSet
 ************************************************************************************************************************
