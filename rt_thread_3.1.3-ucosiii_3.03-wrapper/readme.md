@@ -169,7 +169,7 @@ int main(void) /*RT-Thread main线程*/
 
    ​	在μCOS-III中，时间戳主要用于测量中断关闭时间，以及任务单次执行时间以及最大时间等涉及到精度较高的时长测量。该特性在μCOS-II以及RT-Thread中均没有，因此不予实现。
 
-4. μCOS-III原版定时器回调函数就是在定时器线程中调用的，而非在中断中调用,因此要使用μCOS-III兼容层的软件定时器，需要将rtconfig.h中的宏定义RT_USING_TIMER_SOFT置1。
+4. μCOS-III原版定时器回调函数就是在定时器线程中调用的，而非在中断中调用，因此要使用μCOS-III兼容层的软件定时器，需要将rtconfig.h中的宏定义RT_USING_TIMER_SOFT置1。
 
 # 3 API
 ## 3.1 没有实现的兼容的API（仅13个）
