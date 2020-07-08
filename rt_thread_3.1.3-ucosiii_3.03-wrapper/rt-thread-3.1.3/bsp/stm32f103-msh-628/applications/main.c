@@ -40,11 +40,11 @@ int main(void)
 #endif	  
 
 //    sem_test();
-    timer_test();
+//    timer_test();
 //    mutex_test();
 //    queue_test();
 //    flag_test();
-//    task_q_test();
+    task_q_test();
 //    task_sem_test();
 }
 

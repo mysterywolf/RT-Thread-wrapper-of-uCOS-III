@@ -265,13 +265,14 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         *p_err = OS_ERR_STK_SIZE_INVALID;
         return;
     }   
-//    if (prio == (OS_CFG_PRIO_MAX - 1u)) {
-//        if (p_tcb != &OSIdleTaskTCB) {
-//           *p_err = OS_ERR_PRIO_INVALID;                    /* Not allowed to use same priority as idle task          */
-//            return;
-//        }
-//    } 
+    if (prio == (OS_CFG_PRIO_MAX - 1u)) {
+       *p_err = OS_ERR_PRIO_INVALID;                        /* Not allowed to use same priority as idle task          */
+        return;
+    } 
 #endif
+    
+    OS_TaskInitTCB(p_tcb);                                  /* Initialize the TCB to default values                   */
+    *p_err = OS_ERR_NONE;
                                                             /* --------------- CLEAR THE TASK'S STACK --------------- */
     if ((opt & OS_OPT_TASK_STK_CHK) != (OS_OPT)0) {         /* See if stack checking has been enabled                 */
         if ((opt & OS_OPT_TASK_STK_CLR) != (OS_OPT)0) {     /* See if stack needs to be cleared                       */
@@ -367,6 +368,13 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     /*调用钩子函数*/
     OSTaskCreateHook(p_tcb);
     
+    OS_CRITICAL_ENTER();
+#if OS_CFG_DBG_EN > 0u
+    OS_TaskDbgListAdd(p_tcb);/*将任务加入到Debug链表中*/
+#endif    
+    OSTaskQty++; /* Increment the #tasks counter */
+    OS_CRITICAL_EXIT();
+    
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
     rt_err = rt_thread_startup(&p_tcb->Task);                 
     *p_err = _err_rtt_to_ucosiii(rt_err);
@@ -411,7 +419,10 @@ void  OSTaskDel (OS_TCB  *p_tcb,
                  OS_ERR  *p_err)
 {
     rt_err_t rt_err;
-
+    OS_ERR err;
+    
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -427,8 +438,14 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     }
 #endif
     
-    /*若为NULL表示删除当前任务*/
-    if(p_tcb == RT_NULL)
+    OS_CRITICAL_ENTER();
+#if OS_CFG_DBG_EN > 0u
+    OS_TaskDbgListRemove(p_tcb);
+#endif
+    OSTaskQty--;                                            /* One less task being managed                            */
+    OS_CRITICAL_EXIT();
+     
+    if(p_tcb == RT_NULL)/*若为NULL表示删除当前任务*/
     {
         rt_err = rt_thread_detach(rt_thread_self());
         *p_err = _err_rtt_to_ucosiii(rt_err);   
@@ -440,7 +457,10 @@ void  OSTaskDel (OS_TCB  *p_tcb,
         *p_err = _err_rtt_to_ucosiii(rt_err);   
     }
     
-    OSTaskDelHook(p_tcb);/*调用钩子函数*/
+    OSSemDel(&p_tcb->TaskSem,OS_OPT_DEL_ALWAYS,&err);/*删除任务内建信号量*/
+    OSQDel(&p_tcb->TaskMsgQ,OS_OPT_DEL_ALWAYS,&err);/*删除任务内建消息队列*/
+    OSTaskDelHook(p_tcb);/*调用钩子函数*/ 
+    OS_TaskInitTCB(p_tcb);                                  /* Initialize the TCB to default values                   */
 }
 #endif
 
@@ -1353,3 +1373,147 @@ void  OSTaskTimeQuantaSet (OS_TCB   *p_tcb,
 {
 }
 #endif
+
+/*
+************************************************************************************************************************
+*                                            ADD/REMOVE TASK TO/FROM DEBUG LIST
+*
+* Description: These functions are called by uC/OS-III to add or remove an OS_TCB from the debug list.
+*
+* Arguments  : p_tcb     is a pointer to the OS_TCB to add/remove
+*
+* Returns    : none
+*
+* Note(s)    : These functions are INTERNAL to uC/OS-III and your application should not call it.
+************************************************************************************************************************
+*/
+
+#if OS_CFG_DBG_EN > 0u
+void  OS_TaskDbgListAdd (OS_TCB  *p_tcb)
+{
+    p_tcb->DbgPrevPtr                = (OS_TCB *)0;
+    if (OSTaskDbgListPtr == (OS_TCB *)0) {
+        p_tcb->DbgNextPtr            = (OS_TCB *)0;
+    } else {
+        p_tcb->DbgNextPtr            =  OSTaskDbgListPtr;
+        OSTaskDbgListPtr->DbgPrevPtr =  p_tcb;
+    }
+    OSTaskDbgListPtr                 =  p_tcb;
+}
+
+
+
+void  OS_TaskDbgListRemove (OS_TCB  *p_tcb)
+{
+    OS_TCB  *p_tcb_next;
+    OS_TCB  *p_tcb_prev;
+
+
+    p_tcb_prev = p_tcb->DbgPrevPtr;
+    p_tcb_next = p_tcb->DbgNextPtr;
+
+    if (p_tcb_prev == (OS_TCB *)0) {
+        OSTaskDbgListPtr = p_tcb_next;
+        if (p_tcb_next != (OS_TCB *)0) {
+            p_tcb_next->DbgPrevPtr = (OS_TCB *)0;
+        }
+        p_tcb->DbgNextPtr = (OS_TCB *)0;
+
+    } else if (p_tcb_next == (OS_TCB *)0) {
+        p_tcb_prev->DbgNextPtr = (OS_TCB *)0;
+        p_tcb->DbgPrevPtr      = (OS_TCB *)0;
+
+    } else {
+        p_tcb_prev->DbgNextPtr =  p_tcb_next;
+        p_tcb_next->DbgPrevPtr =  p_tcb_prev;
+        p_tcb->DbgNextPtr      = (OS_TCB *)0;
+        p_tcb->DbgPrevPtr      = (OS_TCB *)0;
+    }
+}
+#endif
+
+/*
+************************************************************************************************************************
+*                                             TASK MANAGER INITIALIZATION
+*
+* Description: This function is called by OSInit() to initialize the task management.
+*
+
+* Argument(s): p_err        is a pointer to a variable that will contain an error code returned by this function.
+*
+*                                OS_ERR_NONE     the call was successful
+*
+* Returns    : none
+*
+* Note(s)    : This function is INTERNAL to uC/OS-III and your application should not call it.
+************************************************************************************************************************
+*/
+
+void  OS_TaskInit (OS_ERR  *p_err)
+{
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+#if OS_CFG_DBG_EN > 0u
+    OSTaskDbgListPtr = (OS_TCB      *)0;
+#endif
+
+    OSTaskQty        = (OS_OBJ_QTY   )0;                    /* Clear the number of tasks                              */
+    
+    *p_err            = OS_ERR_NONE;
+}
+
+/*
+************************************************************************************************************************
+*                                               INITIALIZE TCB FIELDS
+*
+* Description: This function is called to initialize a TCB to default values
+*
+* Arguments  : p_tcb    is a pointer to the TCB to initialize
+*
+* Returns    : none
+*
+* Note(s)    : This function is INTERNAL to uC/OS-III and your application should not call it.
+************************************************************************************************************************
+*/
+
+void  OS_TaskInitTCB (OS_TCB  *p_tcb)
+{
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u
+    OS_REG_ID   reg_id;
+#endif
+    
+    CPU_SR_ALLOC();    
+    
+    CPU_CRITICAL_ENTER();        
+    p_tcb->TaskSemCreateSuc   = (CPU_BOOLEAN    )RT_FALSE;
+#if OS_CFG_TASK_Q_EN > 0u      
+    p_tcb->TaskMsgPtr         = (void          *)0u;
+    p_tcb->TaskMsgSize        = (OS_MSG_SIZE    )0u;
+    p_tcb->TaskMsgCreateSuc   = (CPU_BOOLEAN    )RT_FALSE;
+#endif
+    p_tcb->ExtPtr             = (void          *)0u;  
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u
+    for (reg_id = 0u; reg_id < OS_CFG_TASK_REG_TBL_SIZE; reg_id++) {
+        p_tcb->RegTbl[reg_id] = (OS_REG)0u;
+    }
+#endif
+    p_tcb->StkSize            = (CPU_STK        )0u;
+#if OS_CFG_TASK_SUSPEND_EN > 0u
+    p_tcb->SuspendCtr         = (OS_NESTING_CTR )0u;
+#endif
+#if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
+    p_tcb->StkFree            = (CPU_STK_SIZE   )0u;
+    p_tcb->StkUsed            = (CPU_STK_SIZE   )0u;
+#endif
+#if OS_CFG_DBG_EN > 0u
+    p_tcb->DbgPrevPtr         = (OS_TCB        *)0;
+    p_tcb->DbgNextPtr         = (OS_TCB        *)0;
+#endif      
+    OS_CRITICAL_EXIT();
+}
+

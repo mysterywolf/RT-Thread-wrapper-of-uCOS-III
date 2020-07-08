@@ -7,7 +7,15 @@
 2020-7-5  完成os_flag.c os_mutex.c os_tmr.c os_task.c os_time.c os_core.c文件宏定义检查以及流程的确认；优化os_cfg_app.h、os_cfg.h
 2020-7-6  充实readme.md；实现OSSemSet、OSTaskSemSet函数；优化OSTaskSuspend、OSTaskResume函数，使其具备嵌套挂起/解挂能力；实现钩子函数
 2020-7-7  移植os_mem.c文件；优化了内核对象的结构体；
-2020-7-8  实现OSTmrStateGet函数；
+2020-7-8  实现OSTmrStateGet函数；构建统计任务框架；修改OSTaskDel函数没有删除任务内建信号量、任务内建队列的bug；移植OS_TaskDbgListAdd、OS_TaskDbgListRemove函数；实现OS_TaskInitTCB函数；
+
+
+v0.1.0
+所有内核对象兼容已经全部实现，可以满足正常的兼容需求。本版本尚未实现μCOS-III的统计任务，该功能将在后续版本中发布。
+
+v0.2.0 (尚未发布)
+[bug fix] 修改OSTaskDel函数没有删除任务内建信号量、任务内建队列的bug
+
 
 TODO:
 1.实现统计任务os_stat.c相关函数以及相关的统计数据

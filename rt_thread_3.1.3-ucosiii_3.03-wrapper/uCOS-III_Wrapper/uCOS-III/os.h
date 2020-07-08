@@ -66,6 +66,18 @@
 #include <os_cfg_app.h>
 #include <lib_def.h>
 
+/*
+************************************************************************************************************************
+*                                               CRITICAL SECTION HANDLING
+************************************************************************************************************************
+*/
+#define  OS_CRITICAL_ENTER()                    CPU_CRITICAL_ENTER()
+
+#define  OS_CRITICAL_ENTER_CPU_CRITICAL_EXIT()
+
+#define  OS_CRITICAL_EXIT()                     CPU_CRITICAL_EXIT()
+
+#define  OS_CRITICAL_EXIT_NO_SCHED()            CPU_CRITICAL_EXIT()
 
 /*
 ************************************************************************************************************************
@@ -79,19 +91,7 @@
 #define  OS_EXT  extern
 #endif
 
-
-/*
-************************************************************************************************************************
-*                                               CRITICAL SECTION HANDLING
-************************************************************************************************************************
-*/
-#define  OS_CRITICAL_ENTER()                    CPU_CRITICAL_ENTER()
-
-#define  OS_CRITICAL_ENTER_CPU_CRITICAL_EXIT()
-
-#define  OS_CRITICAL_EXIT()                     CPU_CRITICAL_EXIT()
-
-#define  OS_CRITICAL_EXIT_NO_SCHED()            CPU_CRITICAL_EXIT()
+#define  OS_MSG_EN                 (((OS_CFG_TASK_Q_EN > 0u) || (OS_CFG_Q_EN > 0u)) ? 1u : 0u)
 
 
 /*
@@ -172,11 +172,6 @@
 #define  OS_OBJ_TYPE_MUTEX                   (OS_OBJ_TYPE)CPU_TYPE_CREATE('M', 'U', 'T', 'X')
 #define  OS_OBJ_TYPE_Q                       (OS_OBJ_TYPE)CPU_TYPE_CREATE('Q', 'U', 'E', 'U')
 #define  OS_OBJ_TYPE_SEM                     (OS_OBJ_TYPE)CPU_TYPE_CREATE('S', 'E', 'M', 'A')
-#define  OS_OBJ_TYPE_TASK_MSG                (OS_OBJ_TYPE)CPU_TYPE_CREATE('T', 'M', 'S', 'G')
-#define  OS_OBJ_TYPE_TASK_RESUME             (OS_OBJ_TYPE)CPU_TYPE_CREATE('T', 'R', 'E', 'S')
-#define  OS_OBJ_TYPE_TASK_SIGNAL             (OS_OBJ_TYPE)CPU_TYPE_CREATE('T', 'S', 'I', 'G')
-#define  OS_OBJ_TYPE_TASK_SUSPEND            (OS_OBJ_TYPE)CPU_TYPE_CREATE('T', 'S', 'U', 'S')
-#define  OS_OBJ_TYPE_TICK                    (OS_OBJ_TYPE)CPU_TYPE_CREATE('T', 'I', 'C', 'K')
 #define  OS_OBJ_TYPE_TMR                     (OS_OBJ_TYPE)CPU_TYPE_CREATE('T', 'M', 'R', ' ')
 
 
@@ -639,7 +634,6 @@ struct  os_flag_grp {
 struct os_tcb
 {
     struct rt_thread Task;          /*任务,要确保该成员位于结构体第一个*/
-    OS_OBJ_TYPE      Type;
     OS_SEM           TaskSem;       /*任务内建信号量*/
     CPU_BOOLEAN      TaskSemCreateSuc;/*标记任务内建信号量是否创建成功*/
 #if OS_CFG_TASK_Q_EN > 0u      
@@ -724,9 +718,14 @@ OS_EXT           OS_APP_HOOK_VOID           OS_AppStatTaskHookPtr;
 #endif
 
 OS_EXT            OS_STATE                  OSRunning;                  /* Flag indicating that kernel is running     */
+OS_EXT            OS_OBJ_QTY                OSTaskQty;                  /* Number of tasks created                    */
 
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
 OS_EXT            OS_REG_ID                 OSTaskRegNextAvailID;       /* Next available Task Register ID            */
+#endif
+
+#if OS_CFG_DBG_EN > 0u
+OS_EXT            OS_TCB                   *OSTaskDbgListPtr;
 #endif
 
 #ifdef OS_SAFETY_CRITICAL_IEC61508
@@ -755,6 +754,7 @@ OS_EXT            OS_TICK                   OSStatTaskCtrRun;
 OS_EXT            CPU_BOOLEAN               OSStatTaskRdy;
 OS_EXT            OS_TCB                    OSStatTaskTCB;
 #endif
+
 
 /*
 ************************************************************************************************************************
@@ -911,6 +911,19 @@ void          OSTaskTimeQuantaSet       (OS_TCB                *p_tcb,
                                          OS_TICK                time_quanta,
                                          OS_ERR                *p_err);
 #endif
+
+/* ------------------------------------------------ INTERNAL FUNCTIONS ---------------------------------------------- */
+
+#if OS_CFG_DBG_EN > 0u
+void          OS_TaskDbgListAdd         (OS_TCB                *p_tcb);
+
+void          OS_TaskDbgListRemove      (OS_TCB                *p_tcb);
+#endif
+
+void          OS_TaskInit               (OS_ERR                *p_err);
+
+void          OS_TaskInitTCB            (OS_TCB                *p_tcb);
+
 
 /* ================================================================================================================== */
 /*                                             MUTUAL EXCLUSION SEMAPHORES                                            */

@@ -56,6 +56,10 @@ static void thread2_entry(void *param)
             rt_kprintf("pended: str:%s,size:%d\r\n",p,size);
         }   
 
+        /*测试统计任务之任务堆栈*/
+        rt_kprintf("thread1: used:%d,free:%d\r\n",thread1.StkUsed,thread1.StkFree);
+        rt_kprintf("thread2: used:%d,free:%d\r\n",thread2.StkUsed,thread2.StkFree);
+        
         /*测试嵌套挂起*/
         OSTaskSuspend(&thread1,&err);
         OSTaskSuspend(&thread1,&err);
