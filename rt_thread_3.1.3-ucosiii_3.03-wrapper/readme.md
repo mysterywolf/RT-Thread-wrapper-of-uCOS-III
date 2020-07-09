@@ -260,12 +260,12 @@ void  App_OS_TimeTickHook (void);
 
 ​	在μCOS-III中，统计任务是一个系统任务，可以在系统运行时做一些统计工作，例如统计总的CPU使用率（0.00% - 100.00%）、各任务的CPU使用率（0.00% - 100.00%）以及各任务的堆栈使用量。从内核版本V3.03.00起，CPU的利用率用一个0-10000之间的整数表示（对应0.00% - 100.00%）。
 
-​	但是RT-Thread并没有统计任务，因此需要创建一个任务来兼容原版μCOS-III的统计任务，完成上述功能。该统计任务会在兼容层初始化时自动创建，用户无需干预。**用户仅需调用OSStatTaskCPUUsage全局变量即可获取当前的CPU使用率(OS_CFG_STAT_TASK_EN需要置1)。**
+​	但是RT-Thread并没有统计任务，因此需要创建一个任务来兼容原版μCOS-III的统计任务，完成上述功能。该统计任务会在兼容层初始化时自动创建，用户无需干预。**用户仅需调用OSStatTaskCPUUsage全局变量即可获取当前的CPU使用率（OS_CFG_STAT_TASK_EN需要置1）。**
 
 ​	目前统计任务实现的功能：
 
-	1.  计算全局CPU使用率
- 	2.  计算每个任务的任务堆栈使用情况（当OS_CFG_DBG_EN和OS_CFG_STAT_TASK_STK_CHK_EN为1）
+1. 计算全局CPU使用率
+2. 计算每个任务的任务堆栈使用情况（当 OS_CFG_DBG_EN 和 OS_CFG_STAT_TASK_STK_CHK_EN 为1）
 
 
 
