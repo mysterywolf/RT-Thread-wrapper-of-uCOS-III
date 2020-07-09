@@ -267,7 +267,7 @@ void  App_OS_TimeTickHook (void);
 1. 计算全局CPU使用率
 2. 计算每个任务的任务堆栈使用情况（当 OS_CFG_DBG_EN 和 OS_CFG_STAT_TASK_STK_CHK_EN 为1）
 
-注意：一旦开启统计任务，则该优先级强烈建议不要被其他任务使用，建议统计任务的优先级为OS_CFG_PRIO_MAX-2u 。
+注意：一旦开启统计任务，则该优先级强烈建议不要被其他任务使用，统计任务的优先级总是为OS_CFG_PRIO_MAX-2u 。
 
 
 
