@@ -22,6 +22,7 @@ void flag_test (void);
 void task_q_test (void);
 void task_sem_test (void);
 
+
 int main(void)
 {
     OS_ERR err;
@@ -37,8 +38,8 @@ int main(void)
 #if OS_CFG_STAT_TASK_EN > 0u
     OSStatTaskCPUUsageInit(&err);  	                /*统计任务*/    
     OSStatReset(&err);                              /*复位统计数据*/    
-#endif	  
-
+#endif
+    
 //    sem_test();
 //    timer_test();
 //    mutex_test();
@@ -46,5 +47,6 @@ int main(void)
 //    flag_test();
     task_q_test();
 //    task_sem_test();
+
 }
 

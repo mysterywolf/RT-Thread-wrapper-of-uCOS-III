@@ -1503,6 +1503,7 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     }
 #endif
     p_tcb->StkSize            = (CPU_STK        )0u;
+    p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
 #if OS_CFG_TASK_SUSPEND_EN > 0u
     p_tcb->SuspendCtr         = (OS_NESTING_CTR )0u;
 #endif
@@ -1513,6 +1514,7 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgPrevPtr         = (OS_TCB        *)0;
     p_tcb->DbgNextPtr         = (OS_TCB        *)0;
+    p_tcb->DbgNamePtr         = (CPU_CHAR      *)((void *)" ");
 #endif
     OS_CRITICAL_EXIT();
 }

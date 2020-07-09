@@ -647,6 +647,7 @@ struct os_tcb
     OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];/*任务寄存器*/
 #endif    
     CPU_STK          StkSize;       /*任务堆栈大小*/
+    OS_STATE         PendOn;        /* Indicates what task is pending on */
 #if OS_CFG_TASK_SUSPEND_EN > 0u
     OS_NESTING_CTR   SuspendCtr;    /* Nesting counter for OSTaskSuspend() */
 #endif
@@ -657,6 +658,7 @@ struct os_tcb
 #if OS_CFG_DBG_EN > 0u
     OS_TCB          *DbgPrevPtr;
     OS_TCB          *DbgNextPtr;  
+    CPU_CHAR        *DbgNamePtr;    
 #endif
 };
 

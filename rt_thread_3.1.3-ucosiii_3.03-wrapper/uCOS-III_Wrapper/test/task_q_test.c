@@ -32,7 +32,7 @@ static void thread1_entry(void *param)
             rt_kprintf("queue post err:%d!\r\n",err);
         }      
         
-        OSTimeDlyHMSM(0,0,0,100,OS_OPT_TIME_PERIODIC,&err);
+        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);
     }
 }
     
