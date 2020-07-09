@@ -634,13 +634,13 @@ struct  os_flag_grp {
 struct os_tcb
 {
     struct rt_thread Task;          /*任务,要确保该成员位于结构体第一个*/
-    OS_SEM           TaskSem;       /*任务内建信号量*/
-    CPU_BOOLEAN      TaskSemCreateSuc;/*标记任务内建信号量是否创建成功*/
+    OS_SEM           Sem;           /*任务内建信号量*/
+    CPU_BOOLEAN      SemCreateSuc;  /*标记任务内建信号量是否创建成功*/
 #if OS_CFG_TASK_Q_EN > 0u      
-    OS_Q             TaskMsgQ;      /*任务内建消息队列*/
-    void            *TaskMsgPtr;    /*任务内建消息队列消息指针*/
-    OS_MSG_SIZE      TaskMsgSize;   /*任务内建消息队列消息大小*/
-    CPU_BOOLEAN      TaskMsgCreateSuc;/*标记任务内建消息队列是否创建成功*/
+    OS_Q             MsgQ;          /*任务内建消息队列*/
+    void            *MsgPtr;        /*任务内建消息队列消息指针*/
+    OS_MSG_SIZE      MsgSize;       /*任务内建消息队列消息大小*/
+    CPU_BOOLEAN      MsgCreateSuc;  /*标记任务内建消息队列是否创建成功*/
 #endif    
     void            *ExtPtr;        /*指向用户附加区指针*/
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u       

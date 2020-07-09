@@ -474,13 +474,13 @@ ARM Macro Assembler    Page 8
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
 ork --depend=.\build\startup_stm32f103xb.d -o.\build\startup_stm32f103xb.o -I.\
-RTE\RTOS -I.\RTE\_stm32f103-led -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.7.0\CMSIS\Cor
-e\Include -IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include -IC:\Ke
-il_v5\ARM\PACK\RealThread\RT-Thread\3.1.3\components\finsh -IC:\Keil_v5\ARM\PAC
-K\RealThread\RT-Thread\3.1.3\include --predefine="__UVISION_VERSION SETA 530" -
--predefine="_RTE_ SETA 1" --predefine="STM32F10X_MD SETA 1" --predefine="_RTE_ 
-SETA 1" --list=startup_stm32f103xb.lst libraries\CMSIS\Device\ST\STM32F1xx\Sour
-ce\Templates\arm\startup_stm32f103xb.s
+RTE\RTOS -I.\RTE\_STM32F103RB -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.7.0\CMSIS\Core\
+Include -IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include -IC:\Keil
+_v5\ARM\PACK\RealThread\RT-Thread\3.1.3\components\finsh -IC:\Keil_v5\ARM\PACK\
+RealThread\RT-Thread\3.1.3\include --predefine="__UVISION_VERSION SETA 530" --p
+redefine="_RTE_ SETA 1" --predefine="STM32F10X_MD SETA 1" --predefine="_RTE_ SE
+TA 1" --list=startup_stm32f103xb.lst libraries\CMSIS\Device\ST\STM32F1xx\Source
+\Templates\arm\startup_stm32f103xb.s
 
 
 

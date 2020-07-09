@@ -285,8 +285,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     }
     
     CPU_CRITICAL_ENTER();        
-    p_tcb->TaskMsgCreateSuc = RT_FALSE;
-    p_tcb->TaskSemCreateSuc = RT_FALSE;
+    p_tcb->MsgCreateSuc = RT_FALSE;
+    p_tcb->SemCreateSuc = RT_FALSE;
     p_tcb->StkSize = stk_size;/*任务堆栈大小(单位:sizeof(CPU_STK))*/
     p_tcb->ExtPtr = p_ext;/*用户附加区指针*/
     p_tcb->SuspendCtr = 0;/*嵌套挂起为0层*/   
@@ -303,11 +303,11 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         rt_memset(name, 0, sizeof(name));
         strncat(name, (const char*)p_name, NAME_SIZE);
         strncat(name, "_QMsg", NAME_SIZE);
-        OSQCreate(&p_tcb->TaskMsgQ, (CPU_CHAR*)name, q_size, &err);
+        OSQCreate(&p_tcb->MsgQ, (CPU_CHAR*)name, q_size, &err);
         if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
         {
             CPU_CRITICAL_ENTER(); 
-            p_tcb->TaskMsgCreateSuc = RT_FALSE;
+            p_tcb->MsgCreateSuc = RT_FALSE;
             CPU_CRITICAL_EXIT();
             
             RT_DEBUG_LOG(OS_CFG_DBG_EN,("task qmsg %s create err!\r\n",name));
@@ -315,7 +315,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         else
         {
             CPU_CRITICAL_ENTER(); 
-            p_tcb->TaskMsgCreateSuc = RT_TRUE;
+            p_tcb->MsgCreateSuc = RT_TRUE;
             CPU_CRITICAL_EXIT();
         }
     }
@@ -326,11 +326,11 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     rt_memset(name, 0, sizeof(name));
     strncat(name, (const char*)p_name, NAME_SIZE);
     strncat(name, "_Sem", NAME_SIZE);  
-    OSSemCreate(&p_tcb->TaskSem,(CPU_CHAR*)name,0,&err);
+    OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)name,0,&err);
     if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
     {
         CPU_CRITICAL_ENTER(); 
-        p_tcb->TaskSemCreateSuc = RT_FALSE;
+        p_tcb->SemCreateSuc = RT_FALSE;
         CPU_CRITICAL_EXIT();
         
         RT_DEBUG_LOG(OS_CFG_DBG_EN,("task sem %s create err!\r\n",name));
@@ -338,7 +338,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     else
     {
         CPU_CRITICAL_ENTER(); 
-        p_tcb->TaskSemCreateSuc = RT_TRUE;
+        p_tcb->SemCreateSuc = RT_TRUE;
         CPU_CRITICAL_EXIT();
     }
 
@@ -457,8 +457,8 @@ void  OSTaskDel (OS_TCB  *p_tcb,
         *p_err = _err_rtt_to_ucosiii(rt_err);   
     }
     
-    OSSemDel(&p_tcb->TaskSem,OS_OPT_DEL_ALWAYS,&err);/*删除任务内建信号量*/
-    OSQDel(&p_tcb->TaskMsgQ,OS_OPT_DEL_ALWAYS,&err);/*删除任务内建消息队列*/
+    OSSemDel(&p_tcb->Sem,OS_OPT_DEL_ALWAYS,&err);/*删除任务内建信号量*/
+    OSQDel(&p_tcb->MsgQ,OS_OPT_DEL_ALWAYS,&err);/*删除任务内建消息队列*/
     OSTaskDelHook(p_tcb);/*调用钩子函数*/ 
     OS_TaskInitTCB(p_tcb);                                  /* Initialize the TCB to default values                   */
 }
@@ -561,9 +561,9 @@ void  *OSTaskQPend (OS_TICK       timeout,
     p_thread = rt_thread_self();
     p_tcb = (OS_TCB*)p_thread;
     
-    if(p_tcb->TaskMsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
+    if(p_tcb->MsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
     {
-        return OSQPend(&p_tcb->TaskMsgQ,timeout,opt,p_msg_size,p_ts,p_err);
+        return OSQPend(&p_tcb->MsgQ,timeout,opt,p_msg_size,p_ts,p_err);
     }
     else
     {
@@ -668,9 +668,9 @@ void  OSTaskQPost (OS_TCB       *p_tcb,
         p_tcb = (OS_TCB*)rt_thread_self();
     }
     
-    if(p_tcb->TaskMsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
+    if(p_tcb->MsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
     {
-        OSQPost(&p_tcb->TaskMsgQ,p_void,msg_size,opt,p_err);
+        OSQPost(&p_tcb->MsgQ,p_void,msg_size,opt,p_err);
     }
     else
     {
@@ -987,9 +987,9 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
 #endif
     
     p_tcb = (OS_TCB*)rt_thread_self();
-    if(p_tcb->TaskSemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
+    if(p_tcb->SemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
     {
-        return OSSemPend(&p_tcb->TaskSem,timeout,opt,p_ts,p_err); 
+        return OSSemPend(&p_tcb->Sem,timeout,opt,p_ts,p_err); 
     }
     else
     {
@@ -1078,9 +1078,9 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
     {
         p_tcb = (OS_TCB*)rt_thread_self();
     }
-    if(p_tcb->TaskSemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
+    if(p_tcb->SemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
     {
-        return OSSemPost(&p_tcb->TaskSem,opt,p_err);
+        return OSSemPost(&p_tcb->Sem,opt,p_err);
     }
     else
     {
@@ -1137,8 +1137,8 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
     }
     
     CPU_CRITICAL_ENTER();
-    ctr = p_tcb->TaskSem.Sem.value;
-    p_tcb->TaskSem.Sem.value = (OS_SEM_CTR)cnt;
+    ctr = p_tcb->Sem.Sem.value;
+    p_tcb->Sem.Sem.value = (OS_SEM_CTR)cnt;
     CPU_CRITICAL_EXIT();
     *p_err = OS_ERR_NONE;
     return ctr;
@@ -1490,11 +1490,11 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     CPU_SR_ALLOC();    
     
     CPU_CRITICAL_ENTER();        
-    p_tcb->TaskSemCreateSuc   = (CPU_BOOLEAN    )RT_FALSE;
+    p_tcb->SemCreateSuc   = (CPU_BOOLEAN    )RT_FALSE;
 #if OS_CFG_TASK_Q_EN > 0u      
-    p_tcb->TaskMsgPtr         = (void          *)0u;
-    p_tcb->TaskMsgSize        = (OS_MSG_SIZE    )0u;
-    p_tcb->TaskMsgCreateSuc   = (CPU_BOOLEAN    )RT_FALSE;
+    p_tcb->MsgPtr         = (void          *)0u;
+    p_tcb->MsgSize        = (OS_MSG_SIZE    )0u;
+    p_tcb->MsgCreateSuc   = (CPU_BOOLEAN    )RT_FALSE;
 #endif
     p_tcb->ExtPtr             = (void          *)0u;  
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u

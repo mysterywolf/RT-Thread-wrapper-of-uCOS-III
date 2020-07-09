@@ -22,7 +22,7 @@
   </DaveTm>
 
   <Target>
-    <TargetName>stm32f103-led</TargetName>
+    <TargetName>STM32F103RB</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>
