@@ -182,7 +182,7 @@ int main(void) /*RT-Thread main线程*/
 
 
 # 3 接口
-## 3.1 没有实现的兼容的API（仅13个）
+## 3.1 没有实现兼容的API（仅13个）
 
 由于RT-Thread没有提供相关接口，以下μCOS-III API无法兼容：
 
