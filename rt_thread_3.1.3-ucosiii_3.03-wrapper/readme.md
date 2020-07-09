@@ -5,11 +5,16 @@
 # 1 概述
 这是一个针对国产RT-Thread操作系统的μCOS-III操作系统兼容层，可以让基于美国Micriμm公司的μCOS-III操作系统的项目快速迁移到RT-Thread操作系统上。
 
-本文件内的兼容层为μCOS-III 3.03版本向RT-Thread Nano 3.1.3版本兼容。由于μCOS-III支持8、16、32位CPU，而RT-Thread支持32、64位CPU，**因此本兼容层仅能对基于32位CPU的已有工程进行兼容**。
+
+
+## 1.1 本兼容层适合于：
+
+1. 老项目需要从μCOS-III操作系统向RT-Thread操作系统迁移
+2. 之前学习过μCOS-III操作系统，意图转向学习RT-Thread国产操作系统。本兼容层可以帮您用已有的μCOS-III编程经验和习惯快速将项目跑起来，日后再慢慢深入熟悉RT-Thread的API函数，逐步向RT-Thread转移。降低您的学习门槛和时间成本。**有了本兼容层，对RT-Thread API以及编程风格的不熟悉再也不是您学习RT-Thread的阻力！
 
 
 
-## 1.1 版本详细信息
+## 1.2 版本详细信息
 μC/OS-III        3.03.00 </br>
 μC/CPU          1.30.00 </br>
 μC/LIB            1.37.02 </br>
@@ -17,7 +22,7 @@ RTT nano       3.1.3  </br>
 
 
 
-## 1.2 官网
+## 1.3 官网
 
 RT-Thread：https://www.rt-thread.org/  </br>
 文档中心：https://www.rt-thread.org/document/site/tutorial/nano/an0038-nano-introduction/
@@ -118,7 +123,10 @@ int main(void) /*RT-Thread main线程*/
 
 
 ## 2.6 注意
-1. μCOS-III的任务堆栈大小单位是sizeof(CPU_STK)，而RT-Thread的线程堆栈大小单位是Byte，虽然在兼容层已经做了转换，但是在填写时一定要注意，所有涉及到μCOS-III的API、宏定义全部是按照μCOS-III的标准，即堆栈大小为sizeof(CPU_STK)，**切勿混搭**！这种错误极其隐晦，一定要注意！**下面是混搭的错误示例**：</br>
+1. 由于μCOS-III支持8、16、32位CPU，而RT-Thread支持32、64位CPU，**因此本兼容层仅能对基于32位CPU的已有工程进行兼容**。
+   
+2. μCOS-III的任务堆栈大小单位是sizeof(CPU_STK)，而RT-Thread的线程堆栈大小单位是Byte，虽然在兼容层已经做了转换，但是在填写时一定要注意，所有涉及到μCOS-III的API、宏定义全部是按照μCOS-III的标准，即堆栈大小为sizeof(CPU_STK)，**切勿混搭**！这种错误极其隐晦，一定要注意！**下面是混搭的错误示例**：</br>
+
     ```c
     ALIGN(RT_ALIGN_SIZE)
     static rt_uint8_t thread2_stack[1024];//错误：混搭RT-Thread的数据类型定义线程堆栈
@@ -138,7 +146,7 @@ int main(void) /*RT-Thread main线程*/
                  &err);
     ```
     **下面是正确写法**：</br>
-    
+
     ```c
     #define THREAD_STACK_SIZE       256 //正确，要通过宏定义单独定义堆栈大小，单位为sizeof(CPU_STK)
     ALIGN(RT_ALIGN_SIZE)
@@ -159,19 +167,21 @@ int main(void) /*RT-Thread main线程*/
                  &err);
     ```
 
-
-
-2. **切勿将RT-Thread和μCOS-III的API混搭使用。**
+3. **切勿将RT-Thread和μCOS-III的API混搭使用。**
 
    ​    例如RTT中的rt_thread_suspend / rt_thread_resume仅支持一次挂起/解挂；而μCOS-III的OSTaskSuspend / OSTaskResume是支持嵌套挂起/解挂的，为此需要继承struct rt_thread结构体并在其基础上增加成员.SuspendCtr变量实现该功能。若采用rt_thread_init初始化线程，该函数并不会管理μCOS-III兼容层的成员变量，.SuspendCtr也不会创建和初始化，若此时调用OSTaskSuspend / OSTaskResume函数试图指向.SuspendCtr成员变量，将会访问非法内存地址(因为rt_thread_init初始化的线程.SuspendCtr成员变量根本不存在)！
 
-3. 兼容层取消了原版μCOS-III中的时间戳功能
+4. 兼容层取消了原版μCOS-III中的时间戳功能
 
    ​	在μCOS-III中，时间戳主要用于测量中断关闭时间，以及任务单次执行时间以及最大时间等涉及到精度较高的时长测量。该特性在μCOS-II以及RT-Thread中均没有，因此不予实现。
 
-4. μCOS-III原版定时器回调函数是在定时器线程中调用的，而非在中断中调用，因此要使用μCOS-III兼容层的软件定时器，需要将rtconfig.h中的宏定义RT_USING_TIMER_SOFT置1。
+5. μCOS-III原版定时器回调函数是在定时器线程中调用的，而非在中断中调用，因此要使用μCOS-III兼容层的软件定时器，需要将rtconfig.h中的宏定义RT_USING_TIMER_SOFT置1。
 
-# 3 API
+
+
+
+
+# 3 接口
 ## 3.1 没有实现的兼容的API（仅13个）
 
 由于RT-Thread没有提供相关接口，以下μCOS-III API无法兼容：
@@ -250,4 +260,61 @@ void  App_OS_TimeTickHook (void);
 
 ​	在μCOS-III中，统计任务是一个系统任务，可以在系统运行时做一些统计工作，例如统计总的CPU使用率（0.00% - 100.00%）、各任务的CPU使用率（0.00% - 100.00%）以及各任务的堆栈使用量。从内核版本V3.03.00起，CPU的利用率用一个0-10000之间的整数表示（对应0.00% - 100.00%）。
 
-​	但是RT-Thread并没有统计任务，因此需要创建一个任务来兼容原版μCOS-III的统计任务，完成上述功能。该统计任务会在兼容层初始化时自动创建，用户无需干预。
+​	但是RT-Thread并没有统计任务，因此需要创建一个任务来兼容原版μCOS-III的统计任务，完成上述功能。该统计任务会在兼容层初始化时自动创建，用户无需干预。**用户仅需调用OSStatTaskCPUUsage全局变量即可获取当前的CPU使用率(OS_CFG_STAT_TASK_EN需要置1)。**
+
+​	目前统计任务实现的功能：
+
+	1.  计算全局CPU使用率
+ 	2.  计算每个任务的任务堆栈使用情况（当OS_CFG_DBG_EN和OS_CFG_STAT_TASK_STK_CHK_EN为1）
+
+
+
+## 3.4 全局变量
+
+目前，本兼容层可以使用以下μCOS-III原版全局变量（位于os.h）。这些全局变量的具体含义请参见2.2节中所列举出的参考资料。
+
+```c
+#if OS_CFG_APP_HOOKS_EN > 0u
+OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskCreateHookPtr;    /* Application hooks                          */
+OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskDelHookPtr;
+OS_EXT           OS_APP_HOOK_VOID           OS_AppIdleTaskHookPtr;
+OS_EXT           OS_APP_HOOK_VOID           OS_AppStatTaskHookPtr;
+#endif
+
+OS_EXT            OS_STATE                  OSRunning;                  /* Flag indicating that kernel is running     */
+OS_EXT            OS_OBJ_QTY                OSTaskQty;                  /* Number of tasks created                    */
+
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u
+OS_EXT            OS_REG_ID                 OSTaskRegNextAvailID;       /* Next available Task Register ID            */
+#endif
+
+#if OS_CFG_DBG_EN > 0u
+OS_EXT            OS_TCB                   *OSTaskDbgListPtr;
+#endif
+
+#ifdef OS_SAFETY_CRITICAL_IEC61508
+OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag indicating that all init. done        */
+#endif
+
+#if OS_CFG_MEM_EN > 0u
+#if OS_CFG_DBG_EN > 0u
+OS_EXT            OS_MEM                   *OSMemDbgListPtr;
+#endif
+OS_EXT            OS_OBJ_QTY                OSMemQty;                   /* Number of memory partitions created        */
+#endif
+
+OS_EXT            OS_IDLE_CTR               OSIdleTaskCtr;              /* IDLE TASK -------------------------------- */
+
+#if OS_CFG_STAT_TASK_EN > 0u                                            /* STATISTICS ------------------------------- */
+OS_EXT            CPU_BOOLEAN               OSStatResetFlag;            /* Force the reset of the computed statistics */
+OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsage;         /* CPU Usage in %                             */
+OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsageMax;      /* CPU Usage in % (Peak)                      */
+OS_EXT            OS_TICK                   OSStatTaskCtr;
+OS_EXT            OS_TICK                   OSStatTaskCtrMax;
+OS_EXT            OS_TICK                   OSStatTaskCtrRun;
+OS_EXT            CPU_BOOLEAN               OSStatTaskRdy;
+OS_EXT            OS_TCB                    OSStatTaskTCB;
+#endif
+
+```
+
