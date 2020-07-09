@@ -705,7 +705,6 @@ struct  os_tmr {
 };
 
 
-
 /*
 ************************************************************************************************************************
 ************************************************************************************************************************
@@ -713,6 +712,9 @@ struct  os_tmr {
 ************************************************************************************************************************
 ************************************************************************************************************************
 */
+
+#define          OSSchedLockNestingCtr      rt_critical_level()         /* Lock nesting level                         */
+
 #if OS_CFG_APP_HOOKS_EN > 0u
 OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskCreateHookPtr;    /* Application hooks                          */
 OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskDelHookPtr;
@@ -721,15 +723,6 @@ OS_EXT           OS_APP_HOOK_VOID           OS_AppStatTaskHookPtr;
 #endif
 
 OS_EXT            OS_STATE                  OSRunning;                  /* Flag indicating that kernel is running     */
-OS_EXT            OS_OBJ_QTY                OSTaskQty;                  /* Number of tasks created                    */
-
-#if OS_CFG_TASK_REG_TBL_SIZE > 0u
-OS_EXT            OS_REG_ID                 OSTaskRegNextAvailID;       /* Next available Task Register ID            */
-#endif
-
-#if OS_CFG_DBG_EN > 0u
-OS_EXT            OS_TCB                   *OSTaskDbgListPtr;
-#endif
 
 #ifdef OS_SAFETY_CRITICAL_IEC61508
 OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag indicating that all init. done        */
@@ -741,8 +734,17 @@ OS_EXT            OS_MEM                   *OSMemDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSMemQty;                   /* Number of memory partitions created        */
 #endif
+                                                                        /* TASKS ------------------------------------ */
+#if OS_CFG_DBG_EN > 0u
+OS_EXT            OS_TCB                   *OSTaskDbgListPtr;
+#endif
+OS_EXT            OS_OBJ_QTY                OSTaskQty;                  /* Number of tasks created                    */
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u
+OS_EXT            OS_REG_ID                 OSTaskRegNextAvailID;       /* Next available Task Register ID            */
+#endif
 
-OS_EXT            OS_IDLE_CTR               OSIdleTaskCtr;              /* IDLE TASK -------------------------------- */
+                                                                        /* IDLE TASK -------------------------------- */
+OS_EXT            OS_IDLE_CTR               OSIdleTaskCtr;              
 
 #if OS_CFG_STAT_TASK_EN > 0u                                            /* STATISTICS ------------------------------- */
 OS_EXT            CPU_BOOLEAN               OSStatResetFlag;            /* Force the reset of the computed statistics */
@@ -754,6 +756,7 @@ OS_EXT            OS_TICK                   OSStatTaskCtrRun;
 OS_EXT            CPU_BOOLEAN               OSStatTaskRdy;
 OS_EXT            OS_TCB                    OSStatTaskTCB;
 #endif
+
 
 /*
 ************************************************************************************************************************
