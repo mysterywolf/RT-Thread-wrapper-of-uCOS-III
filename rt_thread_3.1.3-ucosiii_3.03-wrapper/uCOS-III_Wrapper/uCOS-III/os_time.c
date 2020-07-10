@@ -44,13 +44,6 @@
 
 /*
 ************************************************************************************************************************
-* Note(s)    : 1)由于RTT没有相关接口，因此以下函数没有实现
-*                   OSTimeDlyResume
-************************************************************************************************************************
-*/
-
-/*
-************************************************************************************************************************
 *                                                  DELAY TASK 'n' TICKS
 *
 * Description: This function is called to delay execution of the currently running task until the specified number of
@@ -87,11 +80,6 @@
 *                            OS_ERR_SCHED_LOCKED    can't delay when the scheduler is locked.
 *                            OS_ERR_TIME_DLY_ISR    if you called this function from an ISR.
 *                            OS_ERR_TIME_ZERO_DLY   if you specified a delay of zero.
-*                        -------------说明-------------
-*                            OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                          - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                          + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                         应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : none
 ************************************************************************************************************************
@@ -214,10 +202,6 @@ void  OSTimeDly (OS_TICK   dly,
 *                            OS_ERR_TIME_INVALID_SECONDS        If you didn't specify a valid value for 'seconds'
 *                            OS_ERR_TIME_INVALID_MILLISECONDS   If you didn't specify a valid value for 'milli'
 *                            OS_ERR_TIME_ZERO_DLY               If hours, minutes, seconds and milli are all 0
-*                        -------------说明-------------
-*                            OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                          - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                          + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
 *
 * Returns    : none
 *

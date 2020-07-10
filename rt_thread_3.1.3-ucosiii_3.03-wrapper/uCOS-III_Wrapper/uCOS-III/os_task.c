@@ -126,8 +126,6 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
 *                             available on the stack.
 *
 *              q_size         is the maximum number of messages that can be sent to the task
-*                            -------------说明-------------
-*                             该参数在本兼容层中没有意义，填什么都行
 *
 *              time_quanta    amount of time (in ticks) for time slice when round-robin between tasks.  Specify 0 to use
 *                             the default.
@@ -136,8 +134,6 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
 *                             For example, this user memory can hold the contents of floating-point registers
 *                             during a context switch, the time each task takes to execute, the number of times
 *                             the task has been switched-in, etc.
-*                            -------------说明-------------
-*                             该参数在本兼容层中没有意义，填什么都行
 *
 *              opt            contains additional information (or options) about the behavior of the task.
 *                             See OS_OPT_TASK_xxx in OS.H.  Current choices are:
