@@ -323,3 +323,12 @@ OS_EXT            OS_TCB                    OSStatTaskTCB;
 #endif
 ```
 
+
+
+# 4 联系方式&致谢
+
+感谢RT-Thread工程师Willian Chan的技术支持：https://github.com/willianchanlovegithub
+
+维护：Meco Man
+
+联系方式：jiantingman@foxmail.com

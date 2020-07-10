@@ -1,3 +1,5 @@
+# 维护日志
+
 2020-6-29 
 	初步搭建框架；完成信号量兼容；完成os_time.c系统延时有关兼容
 2020-6-30 
@@ -39,16 +41,25 @@
 	实现uCOS-III内部任务——统计任务，可以正确计算CPU使用率、每个任务的使用堆栈；
 
 
-v0.1.0
+
+# Release
+
+## v0.1.0
+
 所有内核对象兼容已经全部实现，可以满足正常的兼容需求。本版本尚未实现μCOS-III的统计任务，该功能将在后续版本中发布。
 
-v0.2.0 
-[bug fix] 修改OSTaskDel函数没有删除任务内建信号量、任务内建队列的bug；
-[add] 实现OSTmrStateGet函数（目前仅有13个uCOS-III API无法兼容）；
-[add] 实现Idle任务（实则为RTT Idle任务的回调函数）
-[add] 实现Idle任务钩子函数OSIdleTaskHook()
-[add] 实现uCOS-III内部任务——统计任务
 
 
-TODO:
-1.继续完善统计任务的其他统计项
+## v0.2.0 
+
+**[bug fix]** 修改OSTaskDel函数没有删除任务内建信号量、任务内建队列的bug；</br>
+**[add]** 实现OSTmrStateGet函数（目前仅有13个uCOS-III API无法兼容）；</br>
+**[add]*** 实现Idle任务（实则为RTT Idle任务的回调函数）；</br>
+**[add]** 实现Idle任务钩子函数OSIdleTaskHook()；</br>
+**[add]** 实现uCOS-III内部任务——统计任务；<br>
+
+
+
+# TODO
+
+- [ ] 继续完善统计任务的其他统计项
