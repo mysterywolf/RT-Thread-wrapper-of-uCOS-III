@@ -99,7 +99,7 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 
 ## 2.4 os_cfg_app.h配置文件
 
-RT-Thread无需实现μCOS-III的中断任务，因此相关配置予以取消。
+该文件仅保留了OS tick频率的配置、定时器任务以及统计任务的配置。其他配置项本兼容层用不到（例如中断任务），予以删除。
 
 
 
