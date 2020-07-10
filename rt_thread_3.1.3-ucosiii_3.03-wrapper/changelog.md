@@ -96,9 +96,9 @@
 
 
 
-## v0.3.0
+## v0.3.0（尚未发布）
 
-**[add]** 实现OSTimeDlyResume函数（目前仅有13个uCOS-III API无法兼容）；
+**[add]** 实现OSTimeDlyResume函数（目前仅有12个uCOS-III API无法兼容）；
 
 
 
