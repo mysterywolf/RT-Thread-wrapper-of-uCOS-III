@@ -77,11 +77,6 @@
 *                                 OS_ERR_NAME                    if 'p_name' is a NULL pointer
 *                                 OS_ERR_OBJ_CREATED             if the event flag group has already been created
 *                                 OS_ERR_OBJ_PTR_NULL            if 'p_grp' is a NULL pointer
-*                             -------------说明-------------
-*                                 OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                               - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                               + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                               应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : none
 ************************************************************************************************************************
@@ -560,11 +555,6 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
 *                                OS_ERR_OBJ_PTR_NULL        You passed a NULL pointer
 *                                OS_ERR_OBJ_TYPE            You are not pointing to an event flag group
 *                                OS_ERR_OPT_INVALID         You specified an invalid option
-*                            -------------说明-------------
-*                                OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                              - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                              + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                              应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : the new value of the event flags bits that are still set.
 *

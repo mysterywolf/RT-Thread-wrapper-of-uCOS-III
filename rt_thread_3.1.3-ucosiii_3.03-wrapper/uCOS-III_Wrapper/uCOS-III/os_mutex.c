@@ -70,11 +70,6 @@
 *                                OS_ERR_NAME                    if 'p_name'  is a NULL pointer
 *                                OS_ERR_OBJ_CREATED             if the mutex has already been created
 *                                OS_ERR_OBJ_PTR_NULL            if 'p_mutex' is a NULL pointer
-*                            -------------说明-------------
-*                                OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                              - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                              + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                              应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : none
 ************************************************************************************************************************
@@ -417,11 +412,6 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
 *                            OS_ERR_OPT_INVALID           If you specified an invalid option
 *                            OS_ERR_PEND_ABORT_ISR        If you attempted to call this function from an ISR
 *                            OS_ERR_PEND_ABORT_NONE       No task were pending
-*                        -------------说明-------------
-*                            OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                          - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                          + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                          应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : == 0          if no tasks were waiting on the mutex, or upon error.
 *              >  0          if one or more tasks waiting on the mutex are now readied and informed.

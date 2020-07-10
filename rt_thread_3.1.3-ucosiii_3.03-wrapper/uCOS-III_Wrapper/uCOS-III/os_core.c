@@ -274,11 +274,6 @@ void  OSSchedLock (OS_ERR  *p_err)
 *                            OS_ERR_SCHED_LOCKED         The scheduler is still locked, still nested
 *                            OS_ERR_SCHED_NOT_LOCKED     The scheduler was not locked
 *                            OS_ERR_SCHED_UNLOCK_ISR     If you called this function from an ISR.
-*                        -------------说明-------------
-*                            OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                          - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                          + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                          应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : none
 *
