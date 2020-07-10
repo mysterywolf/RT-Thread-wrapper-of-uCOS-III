@@ -106,6 +106,8 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 ## 2.5 运行
 
 ```c
+#include <os.h> /*头文件保持和原版μCOS-III相同*/
+
 int main(void) /*RT-Thread main线程*/
 {
     OS_ERR err;
@@ -233,7 +235,19 @@ CPU_BOOLEAN OSTaskSemPendAbort (OS_TCB *p_tcb, OS_OPT opt, OS_ERR *p_err);
 
 
 
-## 3.2 钩子函数
+## 3.2 功能受限函数
+
+功能受限函数是指该函数虽然在兼容层中实现了，但是实现不完全。即本兼容层无法完全实现该函数在原版μCOS-III中的所有功能，予以列出：
+
+```c
+
+```
+
+
+
+
+
+## 3.3 钩子函数
 
 ​	**μCOS-III的钩子函数仅对μCOS-III兼容层负责。** 即如果你注册了OSTaskDelHook函数，他仅会在调用OSTaskDel函数时被调用，不会在调用rt_thread_detach函数时被调用(这个由RTT的钩子函数负责)。这样做是为了层次分明，防止μCOS-III兼容层插手RT-Thread内部事务。
 
@@ -258,7 +272,7 @@ void  App_OS_TimeTickHook (void);
 
 
 
-## 3.3 统计任务（OS_StatTask()、os_stat.c）
+## 3.4 统计任务（OS_StatTask()、os_stat.c）
 
 ​	在μCOS-III中，统计任务是一个系统任务，通过OS_CFG_STAT_TASK_EN宏决定是否开启，可以在系统运行时做一些统计工作。例如统计总的CPU使用率（0.00% - 100.00%）、各任务的CPU使用率（0.00% - 100.00%）以及各任务的堆栈使用量。从内核版本V3.03.00起，CPU的利用率用一个0-10000之间的整数表示（对应0.00% - 100.00%）。
 
@@ -273,12 +287,13 @@ void  App_OS_TimeTickHook (void);
 
 
 
-## 3.4 全局变量
+## 3.5 全局变量
 
 目前，本兼容层可以使用以下μCOS-III原版全局变量（位于os.h）。这些全局变量的具体含义请参见2.2节中所列举出的参考资料。
 
 ```c
 #define          OSSchedLockNestingCtr      rt_critical_level()         /* Lock nesting level                         */
+#define          OSIntNestingCtr            rt_interrupt_get_nest()     /* Interrupt nesting level                    */
 
 #if OS_CFG_APP_HOOKS_EN > 0u
 OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskCreateHookPtr;    /* Application hooks                          */
