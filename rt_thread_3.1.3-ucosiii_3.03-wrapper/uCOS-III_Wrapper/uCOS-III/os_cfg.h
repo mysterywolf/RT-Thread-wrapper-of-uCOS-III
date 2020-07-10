@@ -136,7 +136,7 @@
 
                                                             /* -------------------------- TIME MANAGEMENT -------------------------- */
 #define  OS_CFG_TIME_DLY_HMSM_EN         1u                 /* Include code for OSTimeDlyHMSM()                                      */
-#define  OS_CFG_TIME_DLY_RESUME_EN       0u                 /* 只读,该功能无法兼容 Include code for OSTimeDlyResume()                */
+#define  OS_CFG_TIME_DLY_RESUME_EN       1u                 /* Include code for OSTimeDlyResume()                                    */
 
 
                                                             /* ------------------- TASK LOCAL STORAGE MANAGEMENT ------------------- */

@@ -67,7 +67,9 @@
 
 - 实现uCOS-III内部任务——统计任务，可以正确计算CPU使用率、每个任务的使用堆栈；
 
+### 2020-7-10
 
+- 实现OSTimeDlyResume函数
 
 
 
@@ -91,6 +93,12 @@
 **[add]** 实现Idle任务钩子函数OSIdleTaskHook()；
 
 **[add]** 实现uCOS-III内部任务——统计任务；
+
+
+
+## v0.3.0
+
+**[add]** 实现OSTimeDlyResume函数（目前仅有13个uCOS-III API无法兼容）；
 
 
 

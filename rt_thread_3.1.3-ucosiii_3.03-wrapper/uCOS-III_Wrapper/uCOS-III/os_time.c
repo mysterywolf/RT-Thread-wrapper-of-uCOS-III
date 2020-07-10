@@ -198,7 +198,10 @@ void  OSTimeDly (OS_TICK   dly,
 *                                                                                   seconds      (0...65535)
 *                                                                                   milliseconds (0...4294967295)
 *                         -------------说明-------------
-*                         opts必须为OS_OPT_TIME_HMSM_NON_STRICT|OS_OPT_TIME_PERIODIC   
+*                         由于RTT没有实现相关功能,OS_OPT_TIME_DLY/OS_OPT_TIME_TIMEOUT/OS_OPT_TIME_MATCH在兼容层中无法使用
+*                             应用层需要对API返回的错误码判断做出相应的修改
+*                         注意：opt默认是含有OS_OPT_TIME_HMSM_STRICT，如果定义为1000ms直接返回错误
+*                               为防止这种错误建议使用OS_OPT_TIME_PERIODIC|OS_OPT_TIME_HMSM_NON_STRICT
 *
 *              p_err     is a pointer to a variable that will receive an error code from this call.
 *
@@ -340,6 +343,54 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
 void  OSTimeDlyResume (OS_TCB  *p_tcb,
                        OS_ERR  *p_err)
 {
+    CPU_SR_ALLOC();
+
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
+    if (rt_interrupt_get_nest() > (OS_NESTING_CTR)0u) {     /* Not allowed to call from an ISR                        */
+       *p_err = OS_ERR_TIME_DLY_RESUME_ISR;
+        return;
+    }
+#endif
+    
+#if OS_CFG_ARG_CHK_EN > 0u
+    if (p_tcb == (OS_TCB *)0) {                             /* Not possible for the running task to be delayed!       */
+       *p_err = OS_ERR_TASK_NOT_DLY;
+        return;
+    }
+#endif 
+
+    if (p_tcb == (OS_TCB*)rt_thread_self()) {               /* Not possible for the running task to be delayed!       */
+       *p_err = OS_ERR_TASK_NOT_DLY;
+        return;
+    }
+    
+    if ((!(p_tcb->Task.thread_timer.parent.flag & RT_TIMER_FLAG_ACTIVATED)) /* Cannot Abort delay if task is ready    */
+         || (p_tcb->Task.stat != RT_THREAD_SUSPEND))
+    {
+        *p_err = OS_ERR_TASK_NOT_DLY;
+        return;
+    }
+    *p_err = OS_ERR_NONE;
+    
+    OS_CRITICAL_ENTER();
+    /* set error number */
+    p_tcb->Task.error = -RT_ETIMEOUT;
+    OS_CRITICAL_EXIT();
+    
+    rt_timer_stop(&p_tcb->Task.thread_timer);
+    
+    /* insert to schedule ready list */
+    rt_schedule_insert_thread(&p_tcb->Task);
+
+    /* do schedule */
+    rt_schedule();      
 }
 #endif
 

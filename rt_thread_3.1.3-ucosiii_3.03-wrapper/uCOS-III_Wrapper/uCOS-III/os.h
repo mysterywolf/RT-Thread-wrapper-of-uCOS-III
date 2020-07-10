@@ -450,7 +450,7 @@ typedef  enum  os_err {
     OS_ERR_TASK_DEL_ISR              = 29006u,
     OS_ERR_TASK_INVALID              = 29007u,
 //    OS_ERR_TASK_NO_MORE_TCB          = 29008u,
-//    OS_ERR_TASK_NOT_DLY              = 29009u,
+    OS_ERR_TASK_NOT_DLY              = 29009u,
     OS_ERR_TASK_NOT_EXIST            = 29010u,
     OS_ERR_TASK_NOT_SUSPENDED        = 29011u,
 //    OS_ERR_TASK_OPT                  = 29012u,
@@ -480,7 +480,7 @@ typedef  enum  os_err {
 //    OS_ERR_TICK_WHEEL_SIZE           = 29204u,
 
     OS_ERR_TIME_DLY_ISR              = 29301u,
-//    OS_ERR_TIME_DLY_RESUME_ISR       = 29302u,
+    OS_ERR_TIME_DLY_RESUME_ISR       = 29302u,
 //    OS_ERR_TIME_GET_ISR              = 29303u,
     OS_ERR_TIME_INVALID_HOURS        = 29304u,
     OS_ERR_TIME_INVALID_MINUTES      = 29305u,
