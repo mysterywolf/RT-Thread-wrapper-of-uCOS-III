@@ -15,19 +15,25 @@
 
 
 ## 1.2 版本详细信息
-μC/OS-III        3.03.00 </br>
-μC/CPU          1.30.00 </br>
-μC/LIB            1.37.02 </br>
-RTT nano       3.1.3  </br>
+|    组件名称    | 版本号  |
+| :------------: | :-----: |
+| RT-Thread nano |  3.1.3  |
+|   μC/OS-III    | 3.03.00 |
+|     μC/CPU     | 1.30.00 |
+|     μC/LIB     | 1.37.02 |
 
 
 
 ## 1.3 官网
 
-RT-Thread：https://www.rt-thread.org/  </br>
+RT-Thread：https://www.rt-thread.org/ 
+
 文档中心：https://www.rt-thread.org/document/site/tutorial/nano/an0038-nano-introduction/
 
-μCOS-III：https://www.micrium.com/  </br>
+
+
+μCOS-III：https://www.micrium.com/
+
 文档中心：https://doc.micrium.com/display/kernel304/uC-OS-III+Documentation+Home
 
 
