@@ -19,23 +19,31 @@ static void thread2_entry(void *param)
 {
     OS_ERR err;
     rt_uint8_t i =0;
-    
+    rt_uint32_t pending_sem;
     while(1)
     {
         i++;
         if(i>10)
         {
-            OSSemDel(&SYNC_SEM,OS_OPT_DEL_ALWAYS,&err);
-            while(1)
+            pending_sem = OSSemDel(&SYNC_SEM,OS_OPT_DEL_NO_PEND,&err);
+            if(err == OS_ERR_TASK_WAITING)
             {
-                OSTimeDlyHMSM(0,0,0,1000,OS_OPT_TIME_PERIODIC,&err);
+                rt_kprintf("还有%d个信号量正在等待，无法删除\r\n",pending_sem);
+            }
+            else if (err == OS_ERR_NONE)
+            {
+                rt_kprintf("信号量删除成功\r\n");
+            }
+            else
+            {
+                rt_kprintf("err:%d\r\n",err);
             }
         }
         else
         {
             OSSemPost(&SYNC_SEM,OS_OPT_POST_1,&err);//发送信号量      
         }
-        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);
+        OSTimeDlyHMSM(0,0,0,100,OS_OPT_TIME_PERIODIC|OS_OPT_TIME_HMSM_NON_STRICT,&err);
     }
 }
 

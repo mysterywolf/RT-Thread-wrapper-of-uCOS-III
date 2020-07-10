@@ -714,6 +714,7 @@ struct  os_tmr {
 */
 
 #define          OSSchedLockNestingCtr      rt_critical_level()         /* Lock nesting level                         */
+#define          OSIntNestingCtr            rt_interrupt_get_nest()     /* Interrupt nesting level                    */
 
 #if OS_CFG_APP_HOOKS_EN > 0u
 OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskCreateHookPtr;    /* Application hooks                          */

@@ -245,7 +245,7 @@ void  OSSchedLock (OS_ERR  *p_err)
 #endif    
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(rt_interrupt_get_nest()!=0) /*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0) /*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_SCHED_LOCK_ISR;
         return; 
@@ -297,7 +297,7 @@ void  OSSchedUnlock (OS_ERR  *p_err)
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u   
-    if(rt_interrupt_get_nest()!=0) /*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0) /*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_SCHED_LOCK_ISR;
         return; 
@@ -389,7 +389,7 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_YIELD_ISR;
         return; 

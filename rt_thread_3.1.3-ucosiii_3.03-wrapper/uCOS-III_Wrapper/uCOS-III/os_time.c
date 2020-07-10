@@ -111,7 +111,7 @@ void  OSTimeDly (OS_TICK   dly,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TIME_DLY_ISR;
         return; 
@@ -253,7 +253,7 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TIME_DLY_ISR;
         return; 
@@ -353,7 +353,7 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if (rt_interrupt_get_nest() > (OS_NESTING_CTR)0u) {     /* Not allowed to call from an ISR                        */
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0u) {             /* Not allowed to call from an ISR                        */
        *p_err = OS_ERR_TIME_DLY_RESUME_ISR;
         return;
     }

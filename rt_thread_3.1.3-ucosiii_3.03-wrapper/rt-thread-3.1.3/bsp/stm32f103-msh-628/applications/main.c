@@ -40,12 +40,12 @@ int main(void)
     OSStatReset(&err);                              /*复位统计数据*/    
 #endif
     
-//    sem_test();
+    sem_test();
 //    timer_test();
 //    mutex_test();
 //    queue_test();
 //    flag_test();
-    task_q_test();
+//    task_q_test();
 //    task_sem_test();
 
 }

@@ -117,7 +117,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_CREATE_ISR;
         return;
@@ -160,11 +160,9 @@ void  OSSemCreate (OS_SEM      *p_sem,
 *
 *              opt           determines delete options as follows:
 *
-*                              - OS_OPT_DEL_NO_PEND          Delete semaphore ONLY if no task pending
+*                                OS_OPT_DEL_NO_PEND          Delete semaphore ONLY if no task pending
 *                                OS_OPT_DEL_ALWAYS           Deletes the semaphore even if tasks are waiting.
 *                                                            In this case, all the tasks pending will be readied.
-*                            -------------说明-------------
-*                            在RTT中没有实现OS_OPT_DEL_NO_PEND
 *
 *              p_err         is a pointer to a variable that will contain an error code returned by this function.
 *
@@ -173,17 +171,10 @@ void  OSSemCreate (OS_SEM      *p_sem,
 *                                OS_ERR_OBJ_PTR_NULL         If 'p_sem' is a NULL pointer.
 *                                OS_ERR_OBJ_TYPE             If 'p_sem' is not pointing at a semaphore
 *                                OS_ERR_OPT_INVALID          An invalid option was specified
-*                              - OS_ERR_TASK_WAITING         One or more tasks were waiting on the semaphore
-*                            -------------说明-------------
-*                                OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                              - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                              + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                              应用层需要对API返回的错误码判断做出相应的修改
+*                                OS_ERR_TASK_WAITING         One or more tasks were waiting on the semaphore
 *
 * Returns    : == 0          if no tasks were waiting on the semaphore, or upon error.
 *              >  0          if one or more tasks waiting on the semaphore are now readied and informed.
-*              -------------说明-------------
-*              返回值不可信,由于RTT没有实现查看该信号量还有几个任务正在等待的API，因此只能返回0
 *
 * Note(s)    : 1) This function must be used with care.  Tasks that would normally expect the presence of the semaphore
 *                 MUST check the return code of OSSemPend().
@@ -200,7 +191,10 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
                       OS_ERR  *p_err)
 {
     rt_err_t rt_err;
-
+    rt_uint32_t pend_sem_len;
+    
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -209,7 +203,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0;
@@ -242,17 +236,31 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
     }
 #endif
     
-    /*在RTT中没有实现OS_OPT_DEL_NO_PEND*/
-    if(opt != OS_OPT_DEL_ALWAYS)
+    switch (opt)
     {
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSSemDel: wrapper can't accept this option\r\n"));
-        *p_err = OS_ERR_OPT_INVALID;
-        return 0;
+        case OS_OPT_DEL_NO_PEND:
+            if(rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))/*若没有线程等待信号量*/
+            {
+                rt_err = rt_sem_detach(&p_sem->Sem);
+                *p_err = _err_rtt_to_ucosiii(rt_err);                 
+            }
+            else
+            {
+                *p_err = OS_ERR_TASK_WAITING;
+            }
+            break;
+            
+        case OS_OPT_DEL_ALWAYS:
+            rt_err = rt_sem_detach(&p_sem->Sem);
+            *p_err = _err_rtt_to_ucosiii(rt_err);
+            break;
     }
     
-    rt_err = rt_sem_detach(&p_sem->Sem);
-    *p_err = _err_rtt_to_ucosiii(rt_err); 
-    return 0;/*返回值不可信,RTT没有实现查看该信号量还有几个任务正在等待的API，因此只能返回0*/
+    OS_CRITICAL_ENTER();
+    pend_sem_len = rt_list_len(&(p_sem->Sem.parent.suspend_thread));
+    OS_CRITICAL_EXIT();
+    
+    return pend_sem_len;
 }
 #endif
 
@@ -330,7 +338,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u      
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_PEND_ISR;
         return 0;
@@ -570,7 +578,7 @@ void  OSSemSet (OS_SEM      *p_sem,
 #endif    
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u      
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_SET_ISR;
         return;

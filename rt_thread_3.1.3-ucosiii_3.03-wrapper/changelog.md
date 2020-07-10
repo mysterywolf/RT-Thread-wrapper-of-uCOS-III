@@ -70,6 +70,10 @@
 ### 2020-7-10
 
 - 实现OSTimeDlyResume函数
+- 修复OSSemDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题
+- 修复OSMutexDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题
+- 修复OSQDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题
+- 修复OSFlagDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题
 
 
 
@@ -98,12 +102,19 @@
 
 ## v0.3.0（尚未发布）
 
+**[bug fix]** 修复OSSemDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题（已知）
+
+**[bug fix]** 修复OSMutexDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题（已知）
+
+**[bug fix]** 修复OSQDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题（已知）
+
+**[bug fix]** 修复OSFlagDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题（已知）
+
 **[add]** 实现OSTimeDlyResume函数（目前仅有12个uCOS-III API无法兼容）；
-
-
 
 
 
 # TODO
 
 - [ ] 继续完善统计任务的其他统计项
+- [ ] 继续努力实现受限项opts

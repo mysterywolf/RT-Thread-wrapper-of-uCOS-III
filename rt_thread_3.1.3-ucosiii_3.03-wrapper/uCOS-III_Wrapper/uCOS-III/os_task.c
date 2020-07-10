@@ -227,7 +227,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TASK_CREATE_ISR;
         return;
@@ -431,7 +431,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TASK_DEL_ISR;
         return;
@@ -891,7 +891,7 @@ void  OSTaskResume (OS_TCB  *p_tcb,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u       
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TASK_RESUME_ISR;
         return;
@@ -1124,7 +1124,7 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u      
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_SET_ISR;
         return ((OS_SEM_CTR)0);
@@ -1201,7 +1201,7 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TASK_STK_CHK_ISR;
         return;
@@ -1303,7 +1303,7 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(rt_interrupt_get_nest() != 0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TASK_SUSPEND_ISR;
         return;

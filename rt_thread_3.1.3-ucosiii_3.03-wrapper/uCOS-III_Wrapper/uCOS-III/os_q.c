@@ -126,7 +126,7 @@ void  OSQCreate (OS_Q        *p_q,
     }
 #endif
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_CREATE_ISR;
         return; 
@@ -194,8 +194,6 @@ void  OSQCreate (OS_Q        *p_q,
 *                            OS_OPT_DEL_NO_PEND          Delete the queue ONLY if no task pending
 *                            OS_OPT_DEL_ALWAYS           Deletes the queue even if tasks are waiting.
 *                                                        In this case, all the tasks pending will be readied.
-*                            -------------说明-------------
-*                            在RTT中没有实现OS_OPT_DEL_NO_PEND
 *
 *              p_err     is a pointer to a variable that will contain an error code returned by this function.
 *
@@ -204,17 +202,10 @@ void  OSQCreate (OS_Q        *p_q,
 *                            OS_ERR_OBJ_PTR_NULL         if you pass a NULL pointer for 'p_q'
 *                            OS_ERR_OBJ_TYPE             if the message queue was not created
 *                            OS_ERR_OPT_INVALID          An invalid option was specified
-*                          - OS_ERR_TASK_WAITING         One or more tasks were waiting on the queue
-*                        -------------说明-------------
-*                            OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                          - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                          + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                          应用层需要对API返回的错误码判断做出相应的修改
+*                            OS_ERR_TASK_WAITING         One or more tasks were waiting on the queue
 *
 * Returns    : == 0          if no tasks were waiting on the queue, or upon error.
 *              >  0          if one or more tasks waiting on the queue are now readied and informed.
-*              -------------说明-------------
-*              返回值不可信,由于RTT没有实现查看该消息队列还有几个任务正在等待的API，因此只能返回0
 *
 * Note(s)    : 1) This function must be used with care.  Tasks that would normally expect the presence of the queue MUST
 *                 check the return code of OSQPend().
@@ -232,6 +223,9 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
                     OS_ERR  *p_err)
 {
     rt_err_t rt_err;
+    rt_uint32_t pend_q_len;
+    
+    CPU_SR_ALLOC();
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -241,7 +235,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(rt_interrupt_get_nest > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0; 
@@ -262,13 +256,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
         default:
             *p_err =  OS_ERR_OPT_INVALID;
              return ((OS_OBJ_QTY)0u);
-    } 
-    if(opt != OS_OPT_DEL_ALWAYS)/*在RTT中没有实现OS_OPT_DEL_NO_PEND*/
-    {
-        *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSQDel: wrapper can't accept this option\r\n"));
-        return 0;
-    }    
+    }   
 #endif
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
@@ -279,11 +267,32 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
         return 0;       
     }
 #endif
-        
-    rt_err = rt_mq_detach(&p_q->Msg);
-    RT_KERNEL_FREE(p_q->p_pool);/*释放消息池空间*/
-    *p_err = _err_rtt_to_ucosiii(rt_err);
-    return 0;/*返回值不可信,由于RTT没有实现查看该消息队列还有几个任务正在等待的API，因此只能返回0*/
+    
+    switch (opt)
+    {
+        case OS_OPT_DEL_NO_PEND:
+            if(rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))/*若没有线程等待信号量*/
+            {
+                rt_err = rt_mq_detach(&p_q->Msg);
+                *p_err = _err_rtt_to_ucosiii(rt_err);                 
+            }
+            else
+            {
+                *p_err = OS_ERR_TASK_WAITING;
+            }
+            break;
+            
+        case OS_OPT_DEL_ALWAYS:
+            rt_err = rt_mq_detach(&p_q->Msg);
+            *p_err = _err_rtt_to_ucosiii(rt_err);
+            break;
+    }
+    
+    OS_CRITICAL_ENTER();
+    pend_q_len = rt_list_len(&(p_q->Msg.parent.suspend_thread));
+    OS_CRITICAL_EXIT();
+    
+    return pend_q_len;
 }
 #endif
 
@@ -393,7 +402,7 @@ void  *OSQPend (OS_Q         *p_q,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_PEND_ISR;
         return RT_NULL; 

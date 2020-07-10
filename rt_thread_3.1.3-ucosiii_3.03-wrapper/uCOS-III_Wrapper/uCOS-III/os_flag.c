@@ -111,7 +111,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 #endif    
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_CREATE_ISR;
         return;
@@ -158,8 +158,6 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 *                            OS_OPT_DEL_NO_PEND           Deletes the event flag group ONLY if no task pending
 *                            OS_OPT_DEL_ALWAYS            Deletes the event flag group even if tasks are waiting.
 *                                                         In this case, all the tasks pending will be readied.
-*                            -------------说明-------------
-*                            在RTT中没有实现OS_OPT_DEL_NO_PEND
 *
 *              p_err     is a pointer to an error code that can contain one of the following values:
 *
@@ -168,17 +166,10 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 *                            OS_ERR_OBJ_PTR_NULL          If 'p_grp' is a NULL pointer.
 *                            OS_ERR_OBJ_TYPE              If you didn't pass a pointer to an event flag group
 *                            OS_ERR_OPT_INVALID           An invalid option was specified
-*                          - OS_ERR_TASK_WAITING          One or more tasks were waiting on the event flag group.
-*                        -------------说明-------------
-*                            OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                          - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                          + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                          应用层需要对API返回的错误码判断做出相应的修改
+*                            OS_ERR_TASK_WAITING          One or more tasks were waiting on the event flag group.
 *
 * Returns    : == 0          if no tasks were waiting on the event flag group, or upon error.
 *              >  0          if one or more tasks waiting on the event flag group are now readied and informed.
-*              -------------说明-------------
-*              返回值不可信,由于RTT没有实现查看该信号量还有几个任务正在等待的API，因此只能返回0
 *
 * Note(s)    : 1) This function must be used with care.  Tasks that would normally expect the presence of the event flag
 *                 group MUST check the return code of OSFlagPost and OSFlagPend().
@@ -191,6 +182,9 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
                        OS_ERR       *p_err)
 {
     rt_err_t rt_err;
+    rt_uint32_t pend_flag_len;
+    
+    CPU_SR_ALLOC();
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -200,7 +194,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0;
@@ -221,13 +215,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
         default:
             *p_err = OS_ERR_OPT_INVALID;
              return ((OS_OBJ_QTY)0);
-    }
-    if(opt != OS_OPT_DEL_ALWAYS)/*在RTT中没有实现OS_OPT_DEL_NO_PEND*/
-    {
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagDel: wrapper can't accept this option\r\n"));
-        *p_err = OS_ERR_OPT_INVALID;
-        return 0;
-    }      
+    }     
 #endif
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
@@ -239,9 +227,31 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
     }   
 #endif
     
-    rt_err = rt_event_detach(&p_grp->FlagGrp);
-    *p_err = _err_rtt_to_ucosiii(rt_err);
-    return 0;/*返回值不可信,由于RTT没有实现查看该事件标志组还有几个任务正在等待的API，因此只能返回0*/
+    switch (opt)
+    {
+        case OS_OPT_DEL_NO_PEND:
+            if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))/*若没有线程等待信号量*/
+            {
+                rt_err = rt_event_detach(&p_grp->FlagGrp);
+                *p_err = _err_rtt_to_ucosiii(rt_err);                 
+            }
+            else
+            {
+                *p_err = OS_ERR_TASK_WAITING;
+            }
+            break;
+            
+        case OS_OPT_DEL_ALWAYS:
+            rt_err = rt_event_detach(&p_grp->FlagGrp);
+            *p_err = _err_rtt_to_ucosiii(rt_err);
+            break;
+    }
+    
+    OS_CRITICAL_ENTER();
+    pend_flag_len = rt_list_len(&(p_grp->FlagGrp.parent.suspend_thread));
+    OS_CRITICAL_EXIT();
+    
+    return pend_flag_len;
 }
 #endif
 
@@ -341,7 +351,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr> (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_PEND_ISR;
         return ((OS_OBJ_QTY)0);

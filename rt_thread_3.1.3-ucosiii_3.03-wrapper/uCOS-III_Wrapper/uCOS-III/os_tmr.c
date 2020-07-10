@@ -136,7 +136,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 #endif   
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TMR_ISR;
         return;
@@ -260,7 +260,7 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u   
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TMR_ISR;
         return DEF_FALSE;
@@ -336,7 +336,7 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
 #endif   
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TMR_ISR;
         return 0;
@@ -405,7 +405,7 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TMR_ISR;
         return DEF_FALSE;
@@ -486,7 +486,7 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if (rt_interrupt_get_nest() > (OS_NESTING_CTR)0){
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0){
        *p_err = OS_ERR_TMR_ISR;
         return (OS_TMR_STATE_UNUSED);
     }
@@ -591,7 +591,7 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u   
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TMR_ISR;
         return DEF_FALSE;

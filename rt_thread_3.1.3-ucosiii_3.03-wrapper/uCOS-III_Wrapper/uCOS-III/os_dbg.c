@@ -51,6 +51,19 @@
 #warning "RT_USING_TIMER_SOFT宏没有开启,μCOS-III兼容层将无法启用软件定时器,如果您确认这么做的话请将本警告注释掉"
 #endif
 
+#if OS_CFG_TASK_Q_EN && !OS_CFG_Q_EN
+#error "任务内建消息队列需要消息队列的支持，需要将OS_CFG_Q_EN置1方可使用"
+#endif
+
+#if OS_CFG_TASK_Q_PEND_ABORT_EN && !OS_CFG_Q_PEND_ABORT_EN
+#error "请将OS_CFG_Q_PEND_ABORT_EN置1"
+#endif
+
+#if OS_CFG_TASK_SEM_PEND_ABORT_EN && !OS_CFG_SEM_PEND_ABORT_EN
+#error "请将OS_CFG_SEM_PEND_ABORT_EN置1"
+#endif
+
+
 OS_ERR _err_rtt_to_ucosiii(rt_err_t rt_err)
 {
     int rt_err2 = abs((int)rt_err);/*RTT返回的错误码都是带负号的*/

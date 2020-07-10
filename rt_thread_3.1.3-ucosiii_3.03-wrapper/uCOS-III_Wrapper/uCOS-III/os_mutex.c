@@ -101,7 +101,7 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_CREATE_ISR;
         return; 
@@ -144,11 +144,9 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 *
 *              opt           determines delete options as follows:
 *
-*                              - OS_OPT_DEL_NO_PEND          Delete mutex ONLY if no task pending
+*                                OS_OPT_DEL_NO_PEND          Delete mutex ONLY if no task pending
 *                                OS_OPT_DEL_ALWAYS           Deletes the mutex even if tasks are waiting.
 *                                                            In this case, all the tasks pending will be readied.
-*                            -------------说明-------------
-*                            在RTT中没有实现OS_OPT_DEL_NO_PEND
 *
 *              p_err         is a pointer to a variable that will contain an error code returned by this function.
 *
@@ -158,7 +156,7 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 *                                OS_ERR_OBJ_TYPE             If 'p_mutex' is not pointing to a mutex
 *                                OS_ERR_OPT_INVALID          An invalid option was specified
 *                              - OS_ERR_STATE_INVALID        Task is in an invalid state
-*                              - OS_ERR_TASK_WAITING         One or more tasks were waiting on the mutex
+*                                OS_ERR_TASK_WAITING         One or more tasks were waiting on the mutex
 *                            -------------说明-------------
 *                                OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
 *                              - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
@@ -167,8 +165,6 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 *
 * Returns    : == 0          if no tasks were waiting on the mutex, or upon error.
 *              >  0          if one or more tasks waiting on the mutex are now readied and informed.
-*              -------------说明-------------
-*              返回值不可信,由于RTT没有实现查看该互斥量还有几个任务正在等待的API，因此只能返回0
 *
 * Note(s)    : 1) This function must be used with care.  Tasks that would normally expect the presence of the mutex MUST
 *                 check the return code of OSMutexPend().
@@ -186,7 +182,10 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
                         OS_ERR    *p_err)
 {
     rt_err_t rt_err;
-
+    rt_uint32_t pend_mutex_len;
+    
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -195,7 +194,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0;
@@ -216,13 +215,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
         default:
             *p_err =  OS_ERR_OPT_INVALID;
              return ((OS_OBJ_QTY)0);
-    }  
-    if(opt != OS_OPT_DEL_ALWAYS)/*在RTT中没有实现OS_OPT_DEL_NO_PEND*/
-    {
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSMutexDel: wrapper can't accept this option\r\n"));
-        *p_err = OS_ERR_OPT_INVALID;
-        return 0;
-    }  
+    }
 #endif
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
@@ -234,9 +227,31 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
     }
 #endif
 
-    rt_err = rt_mutex_detach(&p_mutex->Mutex);
-    *p_err = _err_rtt_to_ucosiii(rt_err);
-    return 0;/*返回值不可信,RTT没有实现查看该互斥量还有几个任务正在等待的API，因此只能返回0*/
+    switch (opt)
+    {
+        case OS_OPT_DEL_NO_PEND:
+            if(rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))/*若没有线程等待信号量*/
+            {
+                rt_err = rt_mutex_detach(&p_mutex->Mutex);
+                *p_err = _err_rtt_to_ucosiii(rt_err);                 
+            }
+            else
+            {
+                *p_err = OS_ERR_TASK_WAITING;
+            }
+            break;
+            
+        case OS_OPT_DEL_ALWAYS:
+            rt_err = rt_mutex_detach(&p_mutex->Mutex);
+            *p_err = _err_rtt_to_ucosiii(rt_err);
+            break;
+    }
+    
+    OS_CRITICAL_ENTER();
+    pend_mutex_len = rt_list_len(&(p_mutex->Mutex.parent.suspend_thread));
+    OS_CRITICAL_EXIT();
+    
+    return pend_mutex_len;
 }
 #endif
 
@@ -313,7 +328,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_PEND_ISR;
         return;
@@ -470,7 +485,7 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest()!=0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_POST_ISR;
         return;

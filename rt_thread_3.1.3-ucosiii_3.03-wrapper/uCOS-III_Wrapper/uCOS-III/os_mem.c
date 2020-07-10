@@ -109,7 +109,7 @@ void  OSMemCreate (OS_MEM       *p_mem,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if (rt_interrupt_get_nest() > (OS_NESTING_CTR)0) {      /* Not allowed to call from an ISR                        */
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0) {      /* Not allowed to call from an ISR                        */
        *p_err = OS_ERR_MEM_CREATE_ISR;
         return;
     }
