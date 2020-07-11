@@ -314,7 +314,19 @@
                                                                     /* Dflt prio to init task TCB                     */
 #define  OS_PRIO_INIT                       (OS_PRIO)(OS_CFG_PRIO_MAX)
 
+/*
+------------------------------------------------------------------------------------------------------------------------
+*                                                 TIMER TICK THRESHOLDS
+------------------------------------------------------------------------------------------------------------------------
+*/
+                                                                    /* Threshold to init previous tick time           */
+#define  OS_TICK_TH_INIT                    (OS_TICK)(DEF_BIT       ((sizeof(OS_TICK) * DEF_OCTET_NBR_BITS) - 1u))
 
+                                                                    /* Threshold to check if tick time already ready  */
+#define  OS_TICK_TH_RDY                     (OS_TICK)(DEF_BIT_FIELD(((sizeof(OS_TICK) * DEF_OCTET_NBR_BITS) / 2u), \
+                                                                    ((sizeof(OS_TICK) * DEF_OCTET_NBR_BITS) / 2u)))
+
+                                                                    
 /*
 ************************************************************************************************************************
 ************************************************************************************************************************
@@ -681,6 +693,8 @@ struct os_tcb
     /*---------兼容层非必须成员变量---------*/
     CPU_STK        **StkPtr;        /* 比原版多了一级指针,堆栈指针的指针,引用需要(*xxx.StkPtr) */
     OS_SEM_CTR      *SemCtr;        /* 比原版多了一级指针,Task specific semaphore counter,引用需要(*xxx.SemCtr)*/
+    OS_TICK         *TickCtrMatch;  /* 比原版多了一级指针,Absolute time when task is going to be ready */  
+    OS_TICK          TickCtrPrev;   /* Previous time when task was */    
     OS_OPT           Opt;           /* Task options as passed by OSTaskCreate() */    
     OS_STATE         TaskState;     /* (未完成)See OS_TASK_STATE_xxx */
     OS_STATE         PendOn;        /* (未完成)Indicates what task is pending on */
@@ -691,6 +705,8 @@ struct os_tcb
     OS_TASK_PTR      TaskEntryAddr; /* Pointer to task entry point address */
     void            *TaskEntryArg;  /* Argument passed to task when it was created */
     OS_PRIO          Prio;          /* Task priority (0 == highest) */          
+    OS_TICK          TimeQuanta;
+    OS_TICK          TimeQuantaCtr; /*未实现*/ 
 };
 
 /*

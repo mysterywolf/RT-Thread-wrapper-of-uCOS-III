@@ -199,6 +199,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     OS_REG_ID      reg_nbr;
 #endif
+    rt_uint32_t    rt_time_quanta;
     CPU_STK       *p_stk_limit;
     CPU_STK       *p_sp;
     CPU_STK_SIZE   i;
@@ -352,6 +353,9 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     OS_TLS_TaskCreate(p_tcb);                               /* Call TLS hook                                          */
 #endif
     
+    /*uCOS-III时间片时间转RTT时间片时间*/
+    rt_time_quanta = time_quanta;
+    
     /*创建线程*/
     rt_err = rt_thread_init(&p_tcb->Task,
                             (const char*)p_name,
@@ -360,7 +364,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
                             p_stk_base,
                             stk_size*sizeof(CPU_STK),/*uCOS-III的任务堆栈时以CPU_STK为单位，而RTT是以字节为单位，因此需要进行转换*/
                             prio,
-                            time_quanta);
+                            rt_time_quanta);
     
     *p_err = _err_rtt_to_ucosiii(rt_err);
     if(rt_err != RT_EOK)
@@ -380,6 +384,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
      
     /*---------兼容层非必须成员变量初始化---------*/
     p_tcb->Opt = opt;
+    p_tcb->TickCtrPrev = p_tcb->Task.thread_timer.timeout_tick - p_tcb->Task.thread_timer.init_tick;
+    p_tcb->TickCtrMatch = &p_tcb->Task.thread_timer.timeout_tick;
     p_tcb->StkSize = stk_size;
     p_tcb->StkBasePtr = p_stk_base;
     p_tcb->StkLimitPtr = p_stk_limit;
@@ -389,7 +395,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_tcb->TaskEntryArg = p_tcb->Task.parameter;
     p_tcb->Prio = p_tcb->Task.init_priority;
     p_tcb->SemCtr = &p_tcb->Sem.Sem.value; 
-    
+    p_tcb->TimeQuanta = time_quanta;
     CPU_CRITICAL_EXIT();   
     
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
@@ -1531,7 +1537,9 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
 
     /*---------Clear兼容层非必须成员变量---------*/
     p_tcb->StkPtr             = (CPU_STK      **)0;
-    p_tcb->SemCtr             = (OS_SEM_CTR    *)0u;
+    p_tcb->SemCtr             = (OS_SEM_CTR    *)0u;   
+    p_tcb->TickCtrMatch       = (OS_TICK       *)0u;
+    p_tcb->TickCtrPrev        = (OS_TICK        )OS_TICK_TH_INIT; 
     p_tcb->Opt                = (OS_OPT         )0u;
     p_tcb->StkSize            = (CPU_STK        )0u;
     p_tcb->StkLimitPtr        = (CPU_STK       *)0;    
@@ -1542,6 +1550,8 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->TaskEntryAddr      = (OS_TASK_PTR    )0;
     p_tcb->TaskEntryArg       = (void          *)0;
     p_tcb->Prio               = (OS_PRIO        )OS_PRIO_INIT;   
+    p_tcb->TimeQuanta         = (OS_TICK        )0u;
+    p_tcb->TimeQuantaCtr      = (OS_TICK        )0u;    
     CPU_CRITICAL_EXIT();
 }
 
