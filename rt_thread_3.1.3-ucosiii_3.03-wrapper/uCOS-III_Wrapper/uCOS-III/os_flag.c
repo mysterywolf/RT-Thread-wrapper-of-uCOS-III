@@ -137,7 +137,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
     
     /*在uCOS中事件是直接被插入到链表,不按照优先级排列*/
     rt_err = rt_event_init(&p_grp->FlagGrp,(const char*)p_name,RT_IPC_FLAG_FIFO);
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    *p_err = rt_err_to_ucosiii(rt_err);
 }
 
 /*
@@ -230,7 +230,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_event_detach(&p_grp->FlagGrp);
-                *p_err = _err_rtt_to_ucosiii(rt_err);                 
+                *p_err = rt_err_to_ucosiii(rt_err);                 
             }
             else
             {
@@ -241,7 +241,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
             
         case OS_OPT_DEL_ALWAYS:
             rt_err = rt_event_detach(&p_grp->FlagGrp);
-            *p_err = _err_rtt_to_ucosiii(rt_err);
+            *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
     
@@ -456,7 +456,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
                            time,
                            &recved);
     
-    *p_err = _err_rtt_to_ucosiii(rt_err);  
+    *p_err = rt_err_to_ucosiii(rt_err);  
     return recved;
 }
 
@@ -610,7 +610,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
 #endif
     
     rt_err = rt_event_send(&p_grp->FlagGrp,flags);
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    *p_err = rt_err_to_ucosiii(rt_err);
     return p_grp->FlagGrp.set;/*返回执行后事件标志组的值*/
 }
 

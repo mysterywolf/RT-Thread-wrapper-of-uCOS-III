@@ -366,7 +366,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
                             prio,
                             rt_time_quanta);
     
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err != RT_EOK)
     {
         return;
@@ -400,7 +400,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
     rt_err = rt_thread_startup(&p_tcb->Task);                 
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    *p_err = rt_err_to_ucosiii(rt_err);
 }
 
 /*
@@ -469,13 +469,13 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     if(p_tcb == RT_NULL)/*若为NULL表示删除当前任务*/
     {
         rt_err = rt_thread_detach(rt_thread_self());
-        *p_err = _err_rtt_to_ucosiii(rt_err);   
+        *p_err = rt_err_to_ucosiii(rt_err);   
         rt_schedule();  
     } 
     else
     {
         rt_err = rt_thread_detach(&p_tcb->Task);
-        *p_err = _err_rtt_to_ucosiii(rt_err);   
+        *p_err = rt_err_to_ucosiii(rt_err);   
     }
     
     OSSemDel(&p_tcb->Sem,OS_OPT_DEL_ALWAYS,&err);/*删除任务内建信号量*/
@@ -946,7 +946,7 @@ void  OSTaskResume (OS_TCB  *p_tcb,
     else
     {
         rt_err = rt_thread_resume(&p_tcb->Task);
-        *p_err = _err_rtt_to_ucosiii(rt_err);       
+        *p_err = rt_err_to_ucosiii(rt_err);       
     }
 
 }
@@ -1357,7 +1357,7 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
         {
             rt_schedule();/* 根据RTT的要求,若挂起自己需要立即调用rt_shedule进行调度*/
         }    
-        *p_err = _err_rtt_to_ucosiii(rt_err);        
+        *p_err = rt_err_to_ucosiii(rt_err);        
     }
     else
     {

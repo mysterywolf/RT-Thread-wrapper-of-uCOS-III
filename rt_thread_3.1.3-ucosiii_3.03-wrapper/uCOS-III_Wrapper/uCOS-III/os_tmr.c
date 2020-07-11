@@ -285,7 +285,7 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
 #endif
     
     rt_err = rt_timer_detach(&p_tmr->Tmr);
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err == RT_EOK)
     {
         return DEF_TRUE;
@@ -430,7 +430,7 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
 #endif
     
     rt_err = rt_timer_start(&p_tmr->Tmr);
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err == RT_EOK)
     {
         return DEF_TRUE;

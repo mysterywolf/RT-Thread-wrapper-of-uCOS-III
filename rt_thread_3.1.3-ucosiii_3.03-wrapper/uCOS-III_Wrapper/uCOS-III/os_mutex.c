@@ -126,7 +126,7 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 #endif
     
     rt_err = rt_mutex_init(&p_mutex->Mutex,(const char *)p_name,RT_IPC_FLAG_PRIO);/*uCOS-III仅支持以优先级进行排列*/
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    *p_err = rt_err_to_ucosiii(rt_err);
 }
 
 /*
@@ -230,7 +230,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_mutex_detach(&p_mutex->Mutex);
-                *p_err = _err_rtt_to_ucosiii(rt_err);                 
+                *p_err = rt_err_to_ucosiii(rt_err);                 
             }
             else
             {
@@ -241,7 +241,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
             
         case OS_OPT_DEL_ALWAYS:
             rt_err = rt_mutex_detach(&p_mutex->Mutex);
-            *p_err = _err_rtt_to_ucosiii(rt_err);
+            *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
     
@@ -383,7 +383,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     }  
     
     rt_err = rt_mutex_take(&p_mutex->Mutex,time);
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    *p_err = rt_err_to_ucosiii(rt_err);
 }
 
 /*
@@ -514,7 +514,7 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
 #endif
         
     rt_err = rt_mutex_release(&p_mutex->Mutex);
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    *p_err = rt_err_to_ucosiii(rt_err);
     /*只有已经拥有互斥量控制权的线程才能释放*/
     if(rt_err == -RT_ERROR)/*rt_mutex_release返回-RT_ERROR表示该线程非掌握互斥量的线程*/
     {

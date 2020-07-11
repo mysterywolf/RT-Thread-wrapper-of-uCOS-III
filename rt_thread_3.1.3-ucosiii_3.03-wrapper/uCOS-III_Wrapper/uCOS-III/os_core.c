@@ -398,7 +398,7 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
     }
     
     rt_err = rt_thread_yield();
-    *p_err = _err_rtt_to_ucosiii(rt_err); 
+    *p_err = rt_err_to_ucosiii(rt_err); 
 }
 #endif
 

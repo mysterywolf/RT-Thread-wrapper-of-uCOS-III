@@ -178,7 +178,7 @@ void  OSQCreate (OS_Q        *p_q,
                          pool_size,
                          RT_IPC_FLAG_FIFO);
     
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    *p_err = rt_err_to_ucosiii(rt_err);
 }
 
 /*
@@ -276,7 +276,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_mq_detach(&p_q->Msg);
-                *p_err = _err_rtt_to_ucosiii(rt_err);                 
+                *p_err = rt_err_to_ucosiii(rt_err);                 
             }
             else
             {
@@ -287,7 +287,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
             
         case OS_OPT_DEL_ALWAYS:
             rt_err = rt_mq_detach(&p_q->Msg);
-            *p_err = _err_rtt_to_ucosiii(rt_err);
+            *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
     
@@ -473,7 +473,7 @@ void  *OSQPend (OS_Q         *p_q,
                          sizeof(ucos_msg_t),/*uCOS消息段长度*/
                          time);
 
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    *p_err = rt_err_to_ucosiii(rt_err);
     if(*p_err == OS_ERR_NONE)
     {
         *p_msg_size = ucos_msg.data_size;
@@ -648,7 +648,7 @@ void  OSQPost (OS_Q         *p_q,
         RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSQPost: wrapper can't accept this option\r\n"));
         return;
     }
-    *p_err = _err_rtt_to_ucosiii(rt_err); 
+    *p_err = rt_err_to_ucosiii(rt_err); 
 }
 
 #endif

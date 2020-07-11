@@ -46,8 +46,8 @@
 ### 2020-7-6  
 
 - 充实readme.md
-- 实现OSSemSet、OSTaskSemSet函数
-- 优化OSTaskSuspend、OSTaskResume函数，使其具备嵌套挂起/解挂能力
+- 实现`OSSemSet`、`OSTaskSemSet`函数
+- 优化`OSTaskSuspend`、`OSTaskResume`函数，使其具备嵌套挂起/解挂能力
 - 实现钩子函数
 
 ### 2020-7-7  
@@ -57,13 +57,13 @@
 
 ### 2020-7-8  
 
-- 实现OSTmrStateGet函数
+- 实现`OSTmrStateGet`函数
 - 构建统计任务框架
 - 修改OSTaskDel函数没有删除任务内建信号量、任务内建队列的bug
-- 移植OS_TaskDbgListAdd、OS_TaskDbgListRemove函数
-- 实现OS_TaskInitTCB函数
+- 移植`OS_TaskDbgListAdd`、`OS_TaskDbgListRemove`函数
+- 实现`OS_TaskInitTCB`函数
 - 实现Idle任务（实则为RTT Idle任务的回调函数）
-- 实现Idle任务钩子函数OSIdleTaskHook()
+- 实现Idle任务钩子函数`OSIdleTaskHook()`
 
 ### 2020-7-9
 
@@ -71,16 +71,21 @@
 
 ### 2020-7-10
 
-- 实现OSTimeDlyResume函数
-- 修复OSSemDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题
-- 修复OSMutexDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题
-- 修复OSQDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题
-- 修复OSFlagDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题
+- 实现`OSTimeDlyResume`函数
+- 修复`OSSemDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题
+- 修复`OSMutexDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题
+- 修复`OSQDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题
+- 修复`OSFlagDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题
 
 ### 2020-7-11
 
 - 增加兼容原版OS_TCB结构体成员变量
-- 实现OSSemPendAbort函数，OSSemPend函数增加了处理OS_ERR_PEND_ABORT的功能
+- 实现`OSSemPendAbort`函数，`OSSemPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能
+
+### 2020-7-12
+
+- 新增os_rtwrap.c文件，负责对RT-Thread和μCOS-III的转换提供支持。并在os.h文件末尾增加os_rtwrap.c内函数的声明
+- 
 
 
 
@@ -95,13 +100,13 @@
 
 ## v0.2.0 
 
-**[bug fix]** 修改OSTaskDel函数没有删除任务内建信号量、任务内建队列的bug
+**[bug fix]** 修改`OSTaskDel`函数没有删除任务内建信号量、任务内建队列的bug
 
-**[add]** 实现OSTmrStateGet函数（目前仅有13个uCOS-III API无法兼容）
+**[add]** 实现`OSTmrStateGet`函数（目前仅有13个uCOS-III API无法兼容）
 
 **[add]** 实现Idle任务（实则为RTT Idle任务的回调函数）
 
-**[add]** 实现Idle任务钩子函数OSIdleTaskHook()
+**[add]** 实现Idle任务钩子函数`OSIdleTaskHook()`
 
 **[add]** 实现uCOS-III内部任务——统计任务
 
@@ -109,21 +114,21 @@
 
 ## v0.3.0（尚未发布）
 
-**[bug fix]** 修复OSSemDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题（已知）
+**[bug fix]** 修复`OSSemDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题（已知）
 
-**[bug fix]** 修复OSMutexDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题（已知）
+**[bug fix]** 修复`OSMutexDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题（已知）
 
-**[bug fix]** 修复OSQDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题（已知）
+**[bug fix]** 修复`OSQDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题（已知）
 
-**[bug fix]** 修复OSFlagDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题（已知）
+**[bug fix]** 修复`OSFlagDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题（已知）
 
-**[bug fix]** OSSemPend函数增加了处理OS_ERR_PEND_ABORT的功能（已知）
+**[bug fix]** `OSSemPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能（已知）
 
 **[add]** 增加兼容原版OS_TCB结构体成员变量
 
-**[add]** 实现OSTimeDlyResume函数（目前仅有12个uCOS-III API无法兼容）
+**[add]** 实现`OSTimeDlyResume`函数（目前仅有12个uCOS-III API无法兼容）
 
-**[add]** 实现OSSemPendAbort函数（目前仅有11个uCOS-III API无法兼容）
+**[add]** 实现`OSSemPendAbort`函数（目前仅有11个uCOS-III API无法兼容）
 
 
 

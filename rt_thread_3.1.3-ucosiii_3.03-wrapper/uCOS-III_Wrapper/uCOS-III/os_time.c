@@ -149,7 +149,7 @@ void  OSTimeDly (OS_TICK   dly,
 #endif
     
     rt_err = rt_thread_delay(dly);
-    *p_err = _err_rtt_to_ucosiii(rt_err); 
+    *p_err = rt_err_to_ucosiii(rt_err); 
 }
 
 /*
@@ -297,7 +297,7 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
 #endif
     
     rt_err = rt_thread_mdelay(dly);   
-    *p_err = _err_rtt_to_ucosiii(rt_err);
+    *p_err = rt_err_to_ucosiii(rt_err);
 }
 #endif
 

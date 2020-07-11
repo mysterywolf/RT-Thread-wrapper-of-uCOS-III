@@ -41,7 +41,6 @@
 */
 
 #include <os.h>
-#include <stdlib.h>
 
 #ifndef RT_USING_IDLE_HOOK
 #error "μCOS-III兼容层必须开启要求RT_USING_IDLE_HOOK宏定义"
@@ -62,43 +61,3 @@
 #if OS_CFG_TASK_SEM_PEND_ABORT_EN && !OS_CFG_SEM_PEND_ABORT_EN
 #error "请将OS_CFG_SEM_PEND_ABORT_EN置1"
 #endif
-
-
-OS_ERR _err_rtt_to_ucosiii(rt_err_t rt_err)
-{
-    int rt_err2 = abs((int)rt_err);/*RTT返回的错误码都是带负号的*/
-    switch(rt_err2)
-    {
-        /*以下RTT错误码可以用原版uCOS-III错误码进行兼容*/
-        case RT_EOK: /* 无错误       */
-            return OS_ERR_NONE;
-        case RT_ETIMEOUT:/* 超时错误 */
-            return OS_ERR_TIMEOUT;
-        case RT_EINVAL:/* 非法参数   */
-            return OS_ERR_OPT_INVALID;        
-        case RT_EFULL:/* 资源已满,该参数仅在IPC中使用*/
-            return OS_ERR_Q_MAX;        
-        /*
-        由于uCOS-III的错误码分类较细，而RTT的错误码分类较为笼统，
-        以下RTT错误码使用uCOS-III的错误码很难准确描述
-        因此将针对RTT的错误码重新定义(新增)uCOS-III的错误码
-        */
-        case RT_ERROR:/* 普通错误    */
-            return OS_ERR_RT_ERROR;
-        case RT_EEMPTY:/* 无资源     */
-            return OS_ERR_RT_EEMPTY;
-        case RT_ENOMEM:/* 无内存     */
-            return OS_ERR_RT_ENOMEM;
-        case RT_ENOSYS:/* 系统不支持 */
-            return OS_ERR_RT_ENOSYS;
-        case RT_EBUSY:/* 系统忙      */
-            return OS_ERR_RT_EBUSY;
-        case RT_EIO:/* IO 错误       */
-            return OS_ERR_RT_EIO;
-        case RT_EINTR:/* 中断系统调用*/
-            return OS_ERR_RT_EINTR;
-
-        default:
-            return OS_ERR_RT_ERROR;
-    }
-}

@@ -53,14 +53,14 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
 
 
 ## 2.2 迁移步骤
-1. 浏览一下μC-CPU/cpu.h文件，看一下头文件中的定义是否符合你的CPU，一般不需要改这个文件
+1. 将**uCOS-III_Wrapper**文件夹内的所有文件都加入到你的工程中，最好保持原有文件夹的结构。相较于原版μCOS-III增加了os_rtwrap.c文件，负责对RT-Thread和μCOS-III的转换提供支持。
+2. 浏览一下μC-CPU/cpu.h文件，看一下头文件中的定义是否符合你的CPU，一般不需要改这个文件
+
+3. 浏览一下μCOS-III/os.h文件，看一下错误代码，这个错误代码和原版μCOS-III是有一定区别的。</br>
+   **注意: 请勿随意打开注释掉的错误码枚举体成员，** 如果用户使用到了这些注释掉的成员,则会在迁移时编译报错,用以提醒用户这些错误代码在兼容层已经不可用。
 
 
-2. 浏览一下μCOS-III/os.h文件，看一下错误代码，这个错误代码和原版μCOS-III是有一定区别的。</br>
-   **注意:** 请勿随意打开注释掉的枚举体成员,如果用户使用到了这些注释掉的成员,则会在迁移时编译报错,用以提醒用户这些错误代码在兼容层已经不可用。
-
-
-3. 软件定时器：μCOS-III原版的软件定时器回调函数是两个参数，本兼容层由于RT-Thread的回调函数仅为一个参数，因此改为一个参数（详见μCOS-III/os.h）。
+4. 软件定时器：μCOS-III原版的软件定时器回调函数是两个参数，本兼容层由于RT-Thread的回调函数仅为一个参数，因此改为一个参数（详见μCOS-III/os.h）。
 
    μCOS-III原版软件定时器回调函数定义：</br>
 
@@ -75,24 +75,24 @@ Keil工程路径：<u>RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03
     ```
 
 
-4. 配置os_cfg.h和os_cfg_app.h
+5. 配置os_cfg.h和os_cfg_app.h
    每个选项的配置说明和原版μCOS-III一致，若有不同，我已经在注释中有所解释。</br>
    **原版μCOS-III配置**说明可参见：</br>
    a)《嵌入式实时操作系统μC/OS-III》北京航空航天大学出版社 宫辉等译 邵贝贝审校 </br>
-   b) Micriμm公司文档中心: https://doc.micrium.com/display/kernel304/uC-OS-III+Features+os_cfg.h
+   b) Micriμm公司μCOS-III在线文档: https://doc.micrium.com/display/kernel304/uC-OS-III+Features+os_cfg.h
 
 
 
 ## 2.3 os_cfg.h配置文件
 
-```c
+ ```c
 #define  OS_CFG_DBG_EN  1     /* Enable (1) debug code/variables  */  
-```
+ ```
 ​    该宏定义定义是否启用兼容层调试，建议在第一次迁移时打开，因为在兼容层内部，一部分uCOS-III原版功能没有实现，如果用户用到了这部分没有实现的功能，将会通过调试的方式输出，予以提示。用户务必对业务逻辑予以修改。
 
-```c
+ ```c
 #define  OS_CFG_TMR_TASK_RATE_HZ 100u /* Rate for timers (100 Hz Typ.) */
-```
+ ```
 ​    在原版μCOS-III中，该宏定义定义了软件定时器的时基信号，这与RT-Thread的软件定时器有本质的不同，在RT-Thread中，软件定时器的时基信号就等于OS ticks。因此为了能够将μCOS-III软件定时器时间参数转为RT-Thread软件定时器的时间参数，需要用到该宏定义。请使该宏定义与原工程使用μCOS-III时的该宏定义参数一致。
 
 
@@ -196,9 +196,9 @@ int main(void) /*RT-Thread main线程*/
 由于RT-Thread没有提供相关接口，以下μCOS-III API无法兼容：
 
 ### 3.1.1 os_core.c
-```c
+ ```c
 void  OSSchedRoundRobinCfg (CPU_BOOLEAN en, OS_TICK dflt_time_quanta, OS_ERR *p_err);
-```
+ ```
 ### 3.1.2 os_flag.c
 ```c
 OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP *p_grp, OS_OPT opt, OS_ERR *p_err);
@@ -206,27 +206,27 @@ OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err);
 ```
 
 ### 3.1.3 os_mutex.c
-```c
+ ```c
 OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX *p_mutex, OS_OPT opt, OS_ERR *p_err);
-```
+ ```
 
 ### 3.1.4 os_q.c
-```c
+ ```c
 OS_MSG_QTY  OSQFlush (OS_Q *p_q, OS_ERR *p_err);
 OS_OBJ_QTY  OSQPendAbort (OS_Q *p_q, OS_OPT opt, OS_ERR *p_err);
-```
+ ```
 
 ### 3.1.5 os_task.c
 
 虽然RT-Thread没有任务内建消息队列、任务内建信号量、任务内建寄存器机制，但是本兼容层均已实现，可以正常兼容。
 
-```c
+ ```c
 void  OSTaskChangePrio (OS_TCB *p_tcb, OS_PRIO prio_new, OS_ERR *p_err);
 void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
 OS_MSG_QTY OSTaskQFlush (OS_TCB *p_tcb, OS_ERR *p_err);
 CPU_BOOLEAN OSTaskQPendAbort (OS_TCB *p_tcb, OS_OPT opt, OS_ERR *p_err);
 CPU_BOOLEAN OSTaskSemPendAbort (OS_TCB *p_tcb, OS_OPT opt, OS_ERR *p_err);
-```
+ ```
 
 
 
@@ -286,7 +286,7 @@ void  App_OS_TimeTickHook (void);
 
 目前，本兼容层可以使用以下μCOS-III原版全局变量（位于os.h）。这些全局变量的具体含义请参见2.2节中所列举出的参考资料。
 
-```c
+ ```c
 #define          OSSchedLockNestingCtr      rt_critical_level()         /* Lock nesting level                         */
 #define          OSIntNestingCtr            rt_interrupt_get_nest()     /* Interrupt nesting level                    */
 
@@ -331,7 +331,7 @@ OS_EXT            OS_TICK                   OSStatTaskCtrRun;
 OS_EXT            CPU_BOOLEAN               OSStatTaskRdy;
 OS_EXT            OS_TCB                    OSStatTaskTCB;
 #endif
-```
+ ```
 
 
 

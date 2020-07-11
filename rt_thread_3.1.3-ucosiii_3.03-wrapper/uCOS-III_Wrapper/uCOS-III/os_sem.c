@@ -145,7 +145,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
 #endif
 
     rt_err = rt_sem_init(&p_sem->Sem,(const char*)p_name,cnt,RT_IPC_FLAG_PRIO);   
-    *p_err = _err_rtt_to_ucosiii(rt_err); 
+    *p_err = rt_err_to_ucosiii(rt_err); 
 }
 
 /*
@@ -242,7 +242,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_sem_detach(&p_sem->Sem);
-                *p_err = _err_rtt_to_ucosiii(rt_err);                 
+                *p_err = rt_err_to_ucosiii(rt_err);                 
             }
             else
             {
@@ -253,7 +253,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
             
         case OS_OPT_DEL_ALWAYS:
             rt_err = rt_sem_detach(&p_sem->Sem);
-            *p_err = _err_rtt_to_ucosiii(rt_err);
+            *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
     
@@ -404,7 +404,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     CPU_CRITICAL_EXIT(); 
     
     rt_err = rt_sem_take(&p_sem->Sem,time);
-    *p_err = _err_rtt_to_ucosiii(rt_err); 
+    *p_err = rt_err_to_ucosiii(rt_err); 
     
     CPU_CRITICAL_ENTER();
     if(OSTCBCurPtr->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
@@ -450,57 +450,6 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
 */
 
 #if OS_CFG_SEM_PEND_ABORT_EN > 0u
-
-/*由rt_ipc_list_resume函数改编*/
-rt_inline rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
-{
-    struct rt_thread *thread;
-    
-    CPU_SR_ALLOC();
-    
-    CPU_CRITICAL_ENTER();
-    thread = rt_list_entry(list->next, struct rt_thread, tlist);/* get thread entry */
-    ((OS_TCB*)thread)->PendStatus = OS_STATUS_PEND_ABORT; /*标记当前任务放弃等待*/
-    CPU_CRITICAL_EXIT();
-   
-    rt_thread_resume(thread); /* resume it */
-
-    return RT_EOK;
-}
-
-/*由rt_ipc_list_resume_all函数改编*/
-rt_inline rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
-{
-    struct rt_thread *thread;
-
-    CPU_SR_ALLOC();
-
-    /* wakeup all suspend threads */
-    while (!rt_list_isempty(list))
-    {
-        /* disable interrupt */
-        CPU_CRITICAL_ENTER();
-
-        /* get next suspend thread */
-        thread = rt_list_entry(list->next, struct rt_thread, tlist);
-
-        /*标记当前任务放弃等待*/
-        ((OS_TCB*)thread)->PendStatus = OS_STATUS_PEND_ABORT; 
-        
-        /*
-         * resume thread
-         * In rt_thread_resume function, it will remove current thread from
-         * suspend list
-         */
-        rt_thread_resume(thread);
-
-        /* enable interrupt */
-        CPU_CRITICAL_EXIT();
-    }
-
-    return RT_EOK;
-}
-
 OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
                             OS_OPT   opt,
                             OS_ERR  *p_err)
@@ -670,7 +619,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
 #endif
  
     rt_err = rt_sem_release(&p_sem->Sem);
-    *p_err = _err_rtt_to_ucosiii(rt_err); 
+    *p_err = rt_err_to_ucosiii(rt_err); 
     return p_sem->Sem.value;/*返回信号量还剩多少value*/
 }
 
