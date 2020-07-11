@@ -549,9 +549,8 @@ void  *OSTaskQPend (OS_TICK       timeout,
                     CPU_TS       *p_ts,
                     OS_ERR       *p_err)
 {
-    rt_thread_t p_thread;
     OS_TCB  *p_tcb;
-    
+      
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -559,8 +558,7 @@ void  *OSTaskQPend (OS_TICK       timeout,
     }
 #endif
       
-    p_thread = rt_thread_self();
-    p_tcb = (OS_TCB*)p_thread;
+    p_tcb = OSTCBCurPtr;
     
     if(p_tcb->MsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
     {
@@ -666,7 +664,7 @@ void  OSTaskQPost (OS_TCB       *p_tcb,
     
     if(p_tcb == RT_NULL)
     {
-        p_tcb = (OS_TCB*)rt_thread_self();
+        p_tcb = OSTCBCurPtr;
     }
     
     if(p_tcb->MsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
@@ -881,7 +879,7 @@ void  OSTaskResume (OS_TCB  *p_tcb,
                     OS_ERR  *p_err)
 {
     rt_err_t rt_err;
-    
+       
     CPU_SR_ALLOC();
     
 #ifdef OS_SAFETY_CRITICAL
@@ -901,7 +899,7 @@ void  OSTaskResume (OS_TCB  *p_tcb,
     
     if(p_tcb == RT_NULL)/*检查TCB指针是否为空*/
     {
-        p_tcb = (OS_TCB*)rt_thread_self();
+        p_tcb = OSTCBCurPtr;
     }
     
 #if OS_CFG_ARG_CHK_EN > 0u
@@ -987,7 +985,7 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
     }
 #endif
     
-    p_tcb = (OS_TCB*)rt_thread_self();
+    p_tcb = OSTCBCurPtr;   
     if(p_tcb->SemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
     {
         return OSSemPend(&p_tcb->Sem,timeout,opt,p_ts,p_err); 
@@ -1077,7 +1075,7 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
     
     if(p_tcb == RT_NULL)
     {
-        p_tcb = (OS_TCB*)rt_thread_self();
+        p_tcb = OSTCBCurPtr;
     }
     if(p_tcb->SemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
     {
@@ -1134,7 +1132,7 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
     
     if(p_tcb == RT_NULL)
     {
-        p_tcb = (OS_TCB*)rt_thread_self();
+        p_tcb = OSTCBCurPtr;
     }
     
     CPU_CRITICAL_ENTER();
@@ -1320,7 +1318,7 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
     /*TCB指针是否为空,若为空则为当前线程*/
     if(p_tcb == RT_NULL)
     {
-        p_tcb = (OS_TCB*)rt_thread_self();
+        p_tcb = OSTCBCurPtr;
     } 
     
     if((p_tcb->Task.stat & RT_THREAD_STAT_MASK) == RT_THREAD_SUSPEND)
