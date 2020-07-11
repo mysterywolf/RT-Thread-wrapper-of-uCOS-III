@@ -184,7 +184,6 @@ void  OSSemCreate (OS_SEM      *p_sem,
 */
 
 #if OS_CFG_SEM_DEL_EN > 0u
-
 OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
                       OS_OPT   opt, 
                       OS_ERR  *p_err)
@@ -400,7 +399,10 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
         time = 0;/*在RTT中timeout为0表示非阻塞*/
     }
     
+    CPU_CRITICAL_ENTER();
     OSTCBCurPtr->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
+    CPU_CRITICAL_EXIT(); 
+    
     rt_err = rt_sem_take(&p_sem->Sem,time);
     *p_err = _err_rtt_to_ucosiii(rt_err); 
     
@@ -657,7 +659,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
         return 0;
     }    
 #endif
-    
+
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为信号量*/
     if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
