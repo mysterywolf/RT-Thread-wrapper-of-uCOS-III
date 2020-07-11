@@ -225,13 +225,16 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
     switch (opt)
     {
         case OS_OPT_DEL_NO_PEND:
+            CPU_CRITICAL_ENTER();
             if(rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))/*若没有线程等待信号量*/
             {
+                CPU_CRITICAL_EXIT();
                 rt_err = rt_mutex_detach(&p_mutex->Mutex);
                 *p_err = _err_rtt_to_ucosiii(rt_err);                 
             }
             else
             {
+                CPU_CRITICAL_EXIT();
                 *p_err = OS_ERR_TASK_WAITING;
             }
             break;
@@ -242,9 +245,9 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
             break;
     }
     
-    OS_CRITICAL_ENTER();
+    CPU_CRITICAL_ENTER();
     pend_mutex_len = rt_list_len(&(p_mutex->Mutex.parent.suspend_thread));
-    OS_CRITICAL_EXIT();
+    CPU_CRITICAL_EXIT();
     
     return pend_mutex_len;
 }

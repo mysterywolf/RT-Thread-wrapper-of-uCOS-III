@@ -151,7 +151,7 @@ void  OSMemCreate (OS_MEM       *p_mem,
     }
    *p_link             = (void *)0;                         /* Last memory block points to NULL                       */
 
-    OS_CRITICAL_ENTER();
+    CPU_CRITICAL_ENTER();
     p_mem->Type        = OS_OBJ_TYPE_MEM;                   /* Set the type of object                                 */
     p_mem->NamePtr     = p_name;                            /* Save name of memory partition                          */
     p_mem->AddrPtr     = p_addr;                            /* Store start address of memory partition                */

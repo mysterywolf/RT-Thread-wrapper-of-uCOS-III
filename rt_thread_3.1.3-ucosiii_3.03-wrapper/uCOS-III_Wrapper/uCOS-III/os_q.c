@@ -271,13 +271,16 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
     switch (opt)
     {
         case OS_OPT_DEL_NO_PEND:
+            CPU_CRITICAL_ENTER();
             if(rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))/*若没有线程等待信号量*/
             {
+                CPU_CRITICAL_EXIT();
                 rt_err = rt_mq_detach(&p_q->Msg);
                 *p_err = _err_rtt_to_ucosiii(rt_err);                 
             }
             else
             {
+                CPU_CRITICAL_EXIT();
                 *p_err = OS_ERR_TASK_WAITING;
             }
             break;
@@ -288,9 +291,9 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
             break;
     }
     
-    OS_CRITICAL_ENTER();
+    CPU_CRITICAL_ENTER();
     pend_q_len = rt_list_len(&(p_q->Msg.parent.suspend_thread));
-    OS_CRITICAL_EXIT();
+    CPU_CRITICAL_EXIT();
     
     return pend_q_len;
 }

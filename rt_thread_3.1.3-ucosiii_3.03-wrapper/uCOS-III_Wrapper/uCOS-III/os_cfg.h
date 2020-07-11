@@ -116,7 +116,7 @@
 #define  OS_CFG_SEM_EN                   0u                 /* 只读 Enable (1) or Disable (0) code generation for SEMAPHORES         */
 #endif
 #define  OS_CFG_SEM_DEL_EN               1u                 /* Include code for OSSemDel()                                           */
-#define  OS_CFG_SEM_PEND_ABORT_EN        0u                 /* 只读,该功能无法兼容 Include code for OSSemPendAbort()                 */
+#define  OS_CFG_SEM_PEND_ABORT_EN        1u                 /* nclude code for OSSemPendAbort()                                      */
 #define  OS_CFG_SEM_SET_EN               1u                 /* Include code for OSSemSet()                                           */
 
 

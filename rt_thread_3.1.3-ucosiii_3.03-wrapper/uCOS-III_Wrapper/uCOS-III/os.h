@@ -219,6 +219,15 @@
 
 /*
 ------------------------------------------------------------------------------------------------------------------------
+*                                                  PEND ABORT OPTIONS
+------------------------------------------------------------------------------------------------------------------------
+*/
+
+#define  OS_OPT_PEND_ABORT_1                 (OS_OPT)(0x0000u)  /* Pend abort a single waiting task                   */
+#define  OS_OPT_PEND_ABORT_ALL               (OS_OPT)(0x0100u)  /* Pend abort ALL tasks waiting                       */
+
+/*
+------------------------------------------------------------------------------------------------------------------------
 *                                                     POST OPTIONS
 ------------------------------------------------------------------------------------------------------------------------
 */
@@ -393,8 +402,8 @@ typedef  enum  os_err {
 
     OS_ERR_P                         = 25000u,
 //    OS_ERR_PEND_ABORT                = 25001u,
-//    OS_ERR_PEND_ABORT_ISR            = 25002u,
-//    OS_ERR_PEND_ABORT_NONE           = 25003u,
+    OS_ERR_PEND_ABORT_ISR            = 25002u,
+    OS_ERR_PEND_ABORT_NONE           = 25003u,
 //    OS_ERR_PEND_ABORT_SELF           = 25004u,
 //    OS_ERR_PEND_DEL                  = 25005u,
     OS_ERR_PEND_ISR                  = 25006u,
@@ -643,11 +652,18 @@ struct os_tcb
     CPU_BOOLEAN      MsgCreateSuc;  /*标记任务内建消息队列是否创建成功*/
 #endif    
     void            *ExtPtr;        /*指向用户附加区指针*/
+
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u       
     OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];/*任务寄存器*/
 #endif    
     CPU_STK          StkSize;       /*任务堆栈大小*/
-    OS_STATE         PendOn;        /* Indicates what task is pending on */
+    CPU_STK         *StkPtr;        /* (未完成)Pointer to current top of stack */
+    CPU_STK         *StkLimitPtr;   /* Pointer used to set stack 'watermark' limit */
+    CPU_STK         *StkBasePtr;    /* Pointer to base address of stack */
+
+    OS_STATE         PendOn;        /* (未完成)Indicates what task is pending on */
+    OS_STATUS        PendStatus;    /* Pend status */ 
+    OS_STATE         TaskState;     /* (未完成)See OS_TASK_STATE_xxx */
 #if OS_CFG_TASK_SUSPEND_EN > 0u
     OS_NESTING_CTR   SuspendCtr;    /* Nesting counter for OSTaskSuspend() */
 #endif
@@ -658,7 +674,7 @@ struct os_tcb
 #if OS_CFG_DBG_EN > 0u
     OS_TCB          *DbgPrevPtr;
     OS_TCB          *DbgNextPtr;  
-    CPU_CHAR        *DbgNamePtr;    
+    CPU_CHAR        *DbgNamePtr;    /*(未完成)*/
 #endif
 };
 

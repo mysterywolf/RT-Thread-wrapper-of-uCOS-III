@@ -225,13 +225,16 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
     switch (opt)
     {
         case OS_OPT_DEL_NO_PEND:
+            CPU_CRITICAL_ENTER();
             if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))/*若没有线程等待信号量*/
             {
+                CPU_CRITICAL_EXIT();
                 rt_err = rt_event_detach(&p_grp->FlagGrp);
                 *p_err = _err_rtt_to_ucosiii(rt_err);                 
             }
             else
             {
+                CPU_CRITICAL_EXIT();
                 *p_err = OS_ERR_TASK_WAITING;
             }
             break;
@@ -242,9 +245,9 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
             break;
     }
     
-    OS_CRITICAL_ENTER();
+    CPU_CRITICAL_ENTER();
     pend_flag_len = rt_list_len(&(p_grp->FlagGrp.parent.suspend_thread));
-    OS_CRITICAL_EXIT();
+    CPU_CRITICAL_EXIT();
     
     return pend_flag_len;
 }

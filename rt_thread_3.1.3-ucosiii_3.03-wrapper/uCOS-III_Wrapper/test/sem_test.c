@@ -29,6 +29,12 @@ static void thread2_entry(void *param)
             if(err == OS_ERR_TASK_WAITING)
             {
                 rt_kprintf("还有%d个任务正在等待该信号量，无法删除\r\n",pending_sem);
+                OSSemPendAbort(&SYNC_SEM,OS_OPT_PEND_ABORT_1|OS_OPT_POST_NO_SCHED,&err);
+                if(err==OS_ERR_NONE)
+                {
+                    rt_kprintf("放弃成功！\r\n");
+                }
+                OSSemDel(&SYNC_SEM,OS_OPT_DEL_NO_PEND,&err);
             }
             else if (err == OS_ERR_NONE)
             {

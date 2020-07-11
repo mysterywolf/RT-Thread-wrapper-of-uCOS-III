@@ -327,8 +327,6 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
 void  OSTimeDlyResume (OS_TCB  *p_tcb,
                        OS_ERR  *p_err)
 {
-    CPU_SR_ALLOC();
-
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -363,18 +361,8 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
     }
     *p_err = OS_ERR_NONE;
     
-    OS_CRITICAL_ENTER();
-    /* set error number */
-    p_tcb->Task.error = -RT_ETIMEOUT;
-    OS_CRITICAL_EXIT();
-    
-    rt_timer_stop(&p_tcb->Task.thread_timer);
-    
-    /* insert to schedule ready list */
-    rt_schedule_insert_thread(&p_tcb->Task);
-
-    /* do schedule */
-    rt_schedule();      
+    rt_thread_resume(&p_tcb->Task);
+    rt_schedule();
 }
 #endif
 
