@@ -79,8 +79,8 @@
 
 ### 2020-7-11
 
-- 实现OS_TCB结构体.StkLimitPtr .StkBasePtr .PendStatus成员变量
-- 实现OSSemPendAbort函数，OSSemPend函数增加了处理的功能
+- 增加兼容原版OS_TCB结构体成员变量
+- 实现OSSemPendAbort函数，OSSemPend函数增加了处理OS_ERR_PEND_ABORT的功能
 
 
 
@@ -119,7 +119,7 @@
 
 **[bug fix]** OSSemPend函数增加了处理OS_ERR_PEND_ABORT的功能（已知）
 
-**[add]** 实现OS_TCB结构体.StkLimitPtr .StkBasePtr .PendStatus成员变量
+**[add]** 增加兼容原版OS_TCB结构体成员变量
 
 **[add]** 实现OSTimeDlyResume函数（目前仅有12个uCOS-III API无法兼容）
 

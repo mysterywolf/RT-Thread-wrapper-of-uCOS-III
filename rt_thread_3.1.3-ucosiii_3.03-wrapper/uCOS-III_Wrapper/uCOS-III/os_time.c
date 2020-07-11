@@ -106,7 +106,7 @@ void  OSTimeDly (OS_TICK   dly,
     }
 #endif
     
-    if(rt_critical_level() > 0)/*检查调度器是否被锁*/
+    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否被锁*/
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;         
@@ -244,7 +244,7 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
     }
 #endif
       
-    if(rt_critical_level() > 0)/*检查调度器是否被锁*/
+    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否被锁*/
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;         

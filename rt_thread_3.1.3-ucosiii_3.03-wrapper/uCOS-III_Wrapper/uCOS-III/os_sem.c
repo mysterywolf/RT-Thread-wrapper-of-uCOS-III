@@ -379,7 +379,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     if((opt & OS_OPT_PEND_NON_BLOCKING) == (OS_OPT)0)
     {   
         /*检查调度器是否被锁*/
-        if(rt_critical_level() > 0)
+        if(OSSchedLockNestingCtr > (OS_NESTING_CTR)0)
         {
             *p_err = OS_ERR_SCHED_LOCKED;
             return 0;         

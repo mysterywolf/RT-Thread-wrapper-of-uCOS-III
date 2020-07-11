@@ -89,7 +89,7 @@ typedef   CPU_INT32U      OS_RATE_HZ;                  /* Rate in Hertz         
 typedef   CPU_INT32U      OS_REG;                      /* Task register                                     8/16/<32> */
 typedef   CPU_INT08U      OS_REG_ID;                   /* Index to task register                            <8>/16/32 */
 
-typedef   CPU_INT32U      OS_SEM_CTR;                  /* Semaphore value                                     16/<32> */
+typedef   CPU_INT16U      OS_SEM_CTR;                  /* Semaphore value                                     16/<32> */
 
 typedef   CPU_INT08U      OS_STATE;                    /* State variable                                    <8>/16/32 */
 

@@ -299,7 +299,7 @@ void  OSSchedUnlock (OS_ERR  *p_err)
     }
 #endif  
     
-    if(rt_critical_level() == 0)/*检查调度器是否已经完全解锁*/
+    if(OSSchedLockNestingCtr == (OS_NESTING_CTR)0)/*检查调度器是否已经完全解锁*/
     {
         *p_err = OS_ERR_SCHED_NOT_LOCKED;
         return;         
@@ -311,10 +311,10 @@ void  OSSchedUnlock (OS_ERR  *p_err)
     }  
     
     *p_err = OS_ERR_NONE;/*rt_exit_critical没有返回错误码*/
+    
     rt_exit_critical();
     
-    /*检查调度器是否还有锁定嵌套*/
-    if(rt_critical_level() >0)
+    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否还有锁定嵌套*/
     {
         *p_err = OS_ERR_SCHED_LOCKED;      
     }
@@ -391,7 +391,7 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
     }
 #endif
     
-    if(rt_critical_level() > 0)/*检查调度器是否被锁*/
+    if(OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否被锁*/
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;         
@@ -439,15 +439,10 @@ void  OSStart (OS_ERR  *p_err)
     
     CPU_CRITICAL_ENTER();
     if (OSRunning == OS_STATE_OS_STOPPED) {
-//        OSPrioHighRdy   = OS_PrioGetHighest();              /* Find the highest priority                              */
-//        OSPrioCur       = OSPrioHighRdy;
-//        OSTCBHighRdyPtr = OSRdyList[OSPrioHighRdy].HeadPtr;
-//        OSTCBCurPtr     = OSTCBHighRdyPtr;
         OSRunning       = OS_STATE_OS_RUNNING;
-//        OSStartHighRdy();                                   /* Execute target specific code to start task             */
-       *p_err           = OS_ERR_FATAL_RETURN;              /* OSStart() is not supposed to return                    */
+        *p_err           = OS_ERR_FATAL_RETURN;             /* OSStart() is not supposed to return                    */
     } else {
-       *p_err           = OS_ERR_OS_RUNNING;                /* OS is already running                                  */
+        *p_err           = OS_ERR_OS_RUNNING;               /* OS is already running                                  */
     }
     CPU_CRITICAL_EXIT();
 }

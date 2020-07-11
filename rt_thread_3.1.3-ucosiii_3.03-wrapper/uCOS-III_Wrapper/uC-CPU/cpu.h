@@ -89,7 +89,7 @@ extern  "C" {
 */
 
 typedef            void        CPU_VOID;
-typedef       rt_int8_t        CPU_CHAR;                        /*  8-bit character                                     */
+typedef            char        CPU_CHAR;                        /*  8-bit character                                     */
 typedef       rt_bool_t        CPU_BOOLEAN;                     /*  8-bit boolean or logical                            */
 typedef      rt_uint8_t        CPU_INT08U;                      /*  8-bit unsigned integer                              */
 typedef       rt_int8_t        CPU_INT08S;                      /*  8-bit   signed integer                              */

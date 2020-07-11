@@ -431,7 +431,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     这与uCOS-III有所不同,因此需要转换*/
     if((opt & OS_OPT_PEND_NON_BLOCKING) == (OS_OPT)0)
     {
-        if(rt_critical_level() > 0)/*检查调度器是否被锁*/
+        if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否被锁*/
         {
             *p_err = OS_ERR_SCHED_LOCKED;
             return ((OS_OBJ_QTY)0);         

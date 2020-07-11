@@ -288,16 +288,16 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     CPU_CRITICAL_ENTER();        
     p_tcb->MsgCreateSuc = RT_FALSE;
     p_tcb->SemCreateSuc = RT_FALSE;
-    p_tcb->StkSize = stk_size;/*任务堆栈大小(单位:sizeof(CPU_STK))*/
-    p_tcb->StkBasePtr = p_stk_base; /*堆栈基地址*/
-    p_tcb->StkLimitPtr = p_stk_limit; /*堆栈警戒地址*/
     p_tcb->ExtPtr = p_ext;/*用户附加区指针*/
-    p_tcb->SuspendCtr = 0;/*嵌套挂起为0层*/      
+    p_tcb->SuspendCtr = 0;/*嵌套挂起为0层*/
+#if OS_CFG_DBG_EN > 0u
+    p_tcb->DbgNamePtr = p_tcb->Task.name;
+#endif    
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     for (reg_nbr = 0u; reg_nbr < OS_CFG_TASK_REG_TBL_SIZE; reg_nbr++) {
         p_tcb->RegTbl[reg_nbr] = (OS_REG)0;
     }
-#endif
+#endif 
     CPU_CRITICAL_EXIT();
     
 #if OS_CFG_TASK_Q_EN > 0u   
@@ -372,11 +372,25 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     OSTaskCreateHook(p_tcb);
     
     CPU_CRITICAL_ENTER();
+    
 #if OS_CFG_DBG_EN > 0u
     OS_TaskDbgListAdd(p_tcb);/*将任务加入到Debug链表中*/
 #endif    
     OSTaskQty++; /* Increment the #tasks counter */
-    CPU_CRITICAL_EXIT();
+     
+    /*---------兼容层非必须成员变量初始化---------*/
+    p_tcb->Opt = opt;
+    p_tcb->StkSize = stk_size;
+    p_tcb->StkBasePtr = p_stk_base;
+    p_tcb->StkLimitPtr = p_stk_limit;
+    p_tcb->StkPtr = (CPU_STK**)(&p_tcb->Task.sp);
+    p_tcb->NamePtr = p_tcb->Task.name;
+    p_tcb->TaskEntryAddr = (OS_TASK_PTR)p_tcb->Task.entry;
+    p_tcb->TaskEntryArg = p_tcb->Task.parameter;
+    p_tcb->Prio = p_tcb->Task.init_priority;
+    p_tcb->SemCtr = &p_tcb->Sem.Sem.value; 
+    
+    CPU_CRITICAL_EXIT();   
     
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
     rt_err = rt_thread_startup(&p_tcb->Task);                 
@@ -1309,7 +1323,7 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
     }
 #endif
 
-    if(rt_critical_level() > 0)/*检查调度器是否被锁*/
+    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否被锁*/
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;         
@@ -1501,15 +1515,7 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
         p_tcb->RegTbl[reg_id] = (OS_REG)0u;
     }
 #endif
-    p_tcb->StkSize            = (CPU_STK        )0u;
-    p_tcb->StkPtr             = (CPU_STK       *)0;
-    p_tcb->StkLimitPtr        = (CPU_STK       *)0;    
-    p_tcb->StkBasePtr         = (CPU_STK       *)0;
-    
-    p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
     p_tcb->PendStatus         = (OS_STATUS      )OS_STATUS_PEND_OK;
-    p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;    
-
 #if OS_CFG_TASK_SUSPEND_EN > 0u
     p_tcb->SuspendCtr         = (OS_NESTING_CTR )0u;
 #endif
@@ -1522,6 +1528,20 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->DbgNextPtr         = (OS_TCB        *)0;
     p_tcb->DbgNamePtr         = (CPU_CHAR      *)((void *)" ");
 #endif
+
+    /*---------Clear兼容层非必须成员变量---------*/
+    p_tcb->StkPtr             = (CPU_STK      **)0;
+    p_tcb->SemCtr             = (OS_SEM_CTR    *)0u;
+    p_tcb->Opt                = (OS_OPT         )0u;
+    p_tcb->StkSize            = (CPU_STK        )0u;
+    p_tcb->StkLimitPtr        = (CPU_STK       *)0;    
+    p_tcb->StkBasePtr         = (CPU_STK       *)0;     
+    p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;    
+    p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
+    p_tcb->NamePtr            = (CPU_CHAR      *)((void *)"?Task");
+    p_tcb->TaskEntryAddr      = (OS_TASK_PTR    )0;
+    p_tcb->TaskEntryArg       = (void          *)0;
+    p_tcb->Prio               = (OS_PRIO        )OS_PRIO_INIT;   
     CPU_CRITICAL_EXIT();
 }
 

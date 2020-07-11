@@ -306,6 +306,14 @@
 #define  OS_TMR_STATE_RUNNING                   (OS_STATE)(2u)
 #define  OS_TMR_STATE_COMPLETED                 (OS_STATE)(3u)
 
+/*
+------------------------------------------------------------------------------------------------------------------------
+*                                                       PRIORITY
+------------------------------------------------------------------------------------------------------------------------
+*/
+                                                                    /* Dflt prio to init task TCB                     */
+#define  OS_PRIO_INIT                       (OS_PRIO)(OS_CFG_PRIO_MAX)
+
 
 /*
 ************************************************************************************************************************
@@ -656,14 +664,8 @@ struct os_tcb
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u       
     OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];/*任务寄存器*/
 #endif    
-    CPU_STK          StkSize;       /*任务堆栈大小*/
-    CPU_STK         *StkPtr;        /* (未完成)Pointer to current top of stack */
-    CPU_STK         *StkLimitPtr;   /* Pointer used to set stack 'watermark' limit */
-    CPU_STK         *StkBasePtr;    /* Pointer to base address of stack */
 
-    OS_STATE         PendOn;        /* (未完成)Indicates what task is pending on */
     OS_STATUS        PendStatus;    /* Pend status：OS_STATUS_PEND_ABORT OS_STATUS_PEND_OK可用*/ 
-    OS_STATE         TaskState;     /* (未完成)See OS_TASK_STATE_xxx */
 #if OS_CFG_TASK_SUSPEND_EN > 0u
     OS_NESTING_CTR   SuspendCtr;    /* Nesting counter for OSTaskSuspend() */
 #endif
@@ -674,8 +676,21 @@ struct os_tcb
 #if OS_CFG_DBG_EN > 0u
     OS_TCB          *DbgPrevPtr;
     OS_TCB          *DbgNextPtr;  
-    CPU_CHAR        *DbgNamePtr;    /*(未完成)*/
+    CPU_CHAR        *DbgNamePtr;
 #endif
+    /*---------兼容层非必须成员变量---------*/
+    CPU_STK        **StkPtr;        /* 比原版多了一级指针,堆栈指针的指针,引用需要(*xxx.StkPtr) */
+    OS_SEM_CTR      *SemCtr;        /* 比原版多了一级指针,Task specific semaphore counter,引用需要(*xxx.SemCtr)*/
+    OS_OPT           Opt;           /* Task options as passed by OSTaskCreate() */    
+    OS_STATE         TaskState;     /* (未完成)See OS_TASK_STATE_xxx */
+    OS_STATE         PendOn;        /* (未完成)Indicates what task is pending on */
+    CPU_STK          StkSize;       /* 任务堆栈大小*/    
+    CPU_STK         *StkLimitPtr;   /* Pointer used to set stack 'watermark' limit */
+    CPU_STK         *StkBasePtr;    /* Pointer to base address of stack */
+    CPU_CHAR        *NamePtr;       /* Pointer to task name */    
+    OS_TASK_PTR      TaskEntryAddr; /* Pointer to task entry point address */
+    void            *TaskEntryArg;  /* Argument passed to task when it was created */
+    OS_PRIO          Prio;          /* Task priority (0 == highest) */          
 };
 
 /*
@@ -728,10 +743,15 @@ struct  os_tmr {
 ************************************************************************************************************************
 ************************************************************************************************************************
 */
+extern           rt_uint8_t                 rt_current_priority;
+extern           rt_list_t                  rt_thread_priority_table[RT_THREAD_PRIORITY_MAX];
 
 #define          OSSchedLockNestingCtr      rt_critical_level()         /* Lock nesting level                         */
 #define          OSIntNestingCtr            rt_interrupt_get_nest()     /* Interrupt nesting level                    */
 #define          OSTCBCurPtr                ((OS_TCB*)rt_thread_self()) /* Pointer to currently running TCB           */
+                                                                        /* PRIORITIES ------------------------------- */
+#define          OSPrioCur                  rt_current_priority         /* Priority of current task                   */
+#define          OSPrioTbl                  rt_thread_priority_table
 
 #if OS_CFG_APP_HOOKS_EN > 0u
 OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskCreateHookPtr;    /* Application hooks                          */
