@@ -401,7 +401,7 @@ typedef  enum  os_err {
     OS_ERR_OS_RUNNING                = 24202u,
 
     OS_ERR_P                         = 25000u,
-//    OS_ERR_PEND_ABORT                = 25001u,
+    OS_ERR_PEND_ABORT                = 25001u,
     OS_ERR_PEND_ABORT_ISR            = 25002u,
     OS_ERR_PEND_ABORT_NONE           = 25003u,
 //    OS_ERR_PEND_ABORT_SELF           = 25004u,
@@ -662,7 +662,7 @@ struct os_tcb
     CPU_STK         *StkBasePtr;    /* Pointer to base address of stack */
 
     OS_STATE         PendOn;        /* (未完成)Indicates what task is pending on */
-    OS_STATUS        PendStatus;    /* Pend status */ 
+    OS_STATUS        PendStatus;    /* Pend status：OS_STATUS_PEND_ABORT OS_STATUS_PEND_OK可用*/ 
     OS_STATE         TaskState;     /* (未完成)See OS_TASK_STATE_xxx */
 #if OS_CFG_TASK_SUSPEND_EN > 0u
     OS_NESTING_CTR   SuspendCtr;    /* Nesting counter for OSTaskSuspend() */
@@ -731,6 +731,7 @@ struct  os_tmr {
 
 #define          OSSchedLockNestingCtr      rt_critical_level()         /* Lock nesting level                         */
 #define          OSIntNestingCtr            rt_interrupt_get_nest()     /* Interrupt nesting level                    */
+#define          OSTCBCurPtr                ((OS_TCB*)rt_thread_self()) /* Pointer to currently running TCB           */
 
 #if OS_CFG_APP_HOOKS_EN > 0u
 OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskCreateHookPtr;    /* Application hooks                          */

@@ -184,6 +184,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
 */
 
 #if OS_CFG_SEM_DEL_EN > 0u
+
 OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
                       OS_OPT   opt, 
                       OS_ERR  *p_err)
@@ -298,7 +299,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
 *                                OS_ERR_OBJ_PTR_NULL       If 'p_sem' is a NULL pointer.
 *                                OS_ERR_OBJ_TYPE           If 'p_sem' is not pointing at a semaphore
 *                                OS_ERR_OPT_INVALID        If you specified an invalid value for 'opt'
-*                              - OS_ERR_PEND_ABORT         If the pend was aborted by another task
+*                                OS_ERR_PEND_ABORT         If the pend was aborted by another task
 *                                OS_ERR_PEND_ISR           If you called this function from an ISR and the result
 *                                                          would lead to a suspension.
 *                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but the semaphore was not
@@ -328,6 +329,8 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
 {  
     rt_err_t rt_err;
     rt_int32_t time;
+    
+    CPU_SR_ALLOC();
     
     CPU_VAL_UNUSED(p_ts);
     
@@ -362,7 +365,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
              return ((OS_SEM_CTR)0);
     }    
 #endif
-    
+       
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
     /*判断内核对象是否为信号量*/
     if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
@@ -374,7 +377,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     
     /*在RTT中timeout为0表示不阻塞,为RT_WAITING_FOREVER表示永久阻塞,
     这与uCOS-III有所不同,因此需要转换*/
-    if(opt == OS_OPT_PEND_BLOCKING)
+    if((opt & OS_OPT_PEND_NON_BLOCKING) == (OS_OPT)0)
     {   
         /*检查调度器是否被锁*/
         if(rt_critical_level() > 0)
@@ -392,17 +395,24 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
             time = timeout;
         }
     }
-    else if (opt == OS_OPT_PEND_NON_BLOCKING)
+    else
     {
         time = 0;/*在RTT中timeout为0表示非阻塞*/
     }
-    else
-    {
-        *p_err = OS_ERR_OPT_INVALID;/*给定的opt参数无效*/
-    }
     
+    OSTCBCurPtr->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
     rt_err = rt_sem_take(&p_sem->Sem,time);
     *p_err = _err_rtt_to_ucosiii(rt_err); 
+    
+    CPU_CRITICAL_ENTER();
+    if(OSTCBCurPtr->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
+    {
+        CPU_CRITICAL_EXIT(); 
+        *p_err = OS_ERR_PEND_ABORT;
+        return 0;
+    }    
+    CPU_CRITICAL_EXIT();    
+    
     return p_sem->Sem.value;/*返回信号量还剩多少value*/
 }
 
@@ -446,13 +456,12 @@ rt_inline rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
     
     CPU_SR_ALLOC();
     
-    /* get thread entry */
     CPU_CRITICAL_ENTER();
-    thread = rt_list_entry(list->next, struct rt_thread, tlist);
+    thread = rt_list_entry(list->next, struct rt_thread, tlist);/* get thread entry */
+    ((OS_TCB*)thread)->PendStatus = OS_STATUS_PEND_ABORT; /*标记当前任务放弃等待*/
     CPU_CRITICAL_EXIT();
-    
-    /* resume it */
-    rt_thread_resume(thread);
+   
+    rt_thread_resume(thread); /* resume it */
 
     return RT_EOK;
 }
@@ -473,6 +482,9 @@ rt_inline rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
         /* get next suspend thread */
         thread = rt_list_entry(list->next, struct rt_thread, tlist);
 
+        /*标记当前任务放弃等待*/
+        ((OS_TCB*)thread)->PendStatus = OS_STATUS_PEND_ABORT; 
+        
         /*
          * resume thread
          * In rt_thread_resume function, it will remove current thread from

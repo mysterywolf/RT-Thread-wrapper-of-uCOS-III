@@ -361,7 +361,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     
     /*在RTT中timeout为0表示不阻塞,为RT_WAITING_FOREVER表示永久阻塞,
     这与uCOS-III有所不同,因此需要转换*/
-    if(opt == OS_OPT_PEND_BLOCKING)
+    if((opt & OS_OPT_PEND_NON_BLOCKING) == (OS_OPT)0)
     {
         if(rt_critical_level() > 0)/*检查调度器是否被锁*/
         {
@@ -377,14 +377,10 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
             time = timeout;
         }
     }
-    else if (opt == OS_OPT_PEND_NON_BLOCKING)
-    {
-        time = 0;/*在RTT中timeout为0表示非阻塞*/
-    }
     else
     {
-        *p_err = OS_ERR_OPT_INVALID;/*给定的opt参数无效*/
-    }    
+        time = 0;/*在RTT中timeout为0表示非阻塞*/
+    }  
     
     rt_err = rt_mutex_take(&p_mutex->Mutex,time);
     *p_err = _err_rtt_to_ucosiii(rt_err);
