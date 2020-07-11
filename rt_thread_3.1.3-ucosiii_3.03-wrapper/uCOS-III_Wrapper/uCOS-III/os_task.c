@@ -189,12 +189,10 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
                     void          *p_ext,
                     OS_OPT         opt,
                     OS_ERR        *p_err)
-{
-#define NAME_SIZE 32    
-    
+{ 
     rt_err_t rt_err;
     OS_ERR err;
-    char name[NAME_SIZE];
+    char name[RT_NAME_MAX];
 #if defined(OS_CFG_TLS_TBL_SIZE) && (OS_CFG_TLS_TBL_SIZE > 0u)
     OS_TLS_ID      id;
 #endif
@@ -306,8 +304,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     if(q_size>0)/*开启任务内建消息队列*/
     {
         rt_memset(name, 0, sizeof(name));
-        strncat(name, (const char*)p_name, NAME_SIZE);
-        strncat(name, "_QMsg", NAME_SIZE);
+        strncat(name, (const char*)p_name, RT_NAME_MAX);
+        strncat(name, "T", RT_NAME_MAX);
         OSQCreate(&p_tcb->MsgQ, (CPU_CHAR*)name, q_size, &err);
         if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
         {
@@ -329,8 +327,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #endif
     
     rt_memset(name, 0, sizeof(name));
-    strncat(name, (const char*)p_name, NAME_SIZE);
-    strncat(name, "_Sem", NAME_SIZE);  
+    strncat(name, (const char*)p_name, RT_NAME_MAX);
+    strncat(name, "T", RT_NAME_MAX);  
     OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)name,0,&err);
     if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
     {
@@ -383,8 +381,6 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
     rt_err = rt_thread_startup(&p_tcb->Task);                 
     *p_err = _err_rtt_to_ucosiii(rt_err);
-    
-#undef NAME_SIZE
 }
 
 /*

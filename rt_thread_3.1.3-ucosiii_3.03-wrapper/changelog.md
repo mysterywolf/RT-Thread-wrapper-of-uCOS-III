@@ -75,9 +75,9 @@
 - 修复OSQDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题
 - 修复OSFlagDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题
 
-### 2020-7-10
+### 2020-7-11
 
-- 增加OS_TCB结构体.StkLimitPtr .StkBasePtr .PendStatus成员变量
+- 实现OS_TCB结构体.StkLimitPtr .StkBasePtr .PendStatus成员变量
 - 实现OSSemPendAbort函数
 
 
@@ -116,6 +116,8 @@
 **[bug fix]** 修复OSQDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题（已知）
 
 **[bug fix]** 修复OSFlagDel函数无法返回当前等待信号量数量、无法使用OS_OPT_DEL_NO_PEND选项的问题（已知）
+
+**[add]** 实现OS_TCB结构体.StkLimitPtr .StkBasePtr .PendStatus成员变量
 
 **[add]** 实现OSTimeDlyResume函数（目前仅有12个uCOS-III API无法兼容）
 
