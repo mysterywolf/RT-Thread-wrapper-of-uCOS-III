@@ -95,7 +95,7 @@
 #define  OS_CFG_MUTEX_EN                 0u                 /* 只读 Enable (1) or Disable (0) code generation for MUTE               */
 #endif
 #define  OS_CFG_MUTEX_DEL_EN             1u                 /* Include code for OSMutexDel()                                         */
-#define  OS_CFG_MUTEX_PEND_ABORT_EN      0u                 /* 只读,该功能无法兼容 Include code for OSMutexPendAbort()               */
+#define  OS_CFG_MUTEX_PEND_ABORT_EN      1u                 /* Include code for OSMutexPendAbort()                                   */
 
 
                                                             /* --------------------------- MESSAGE QUEUES -------------------------- */
@@ -106,7 +106,7 @@
 #endif
 #define  OS_CFG_Q_DEL_EN                 1u                 /* Include code for OSQDel()                                             */
 #define  OS_CFG_Q_FLUSH_EN               0u                 /* 只读,该功能无法兼容 Include code for OSQFlush()                       */
-#define  OS_CFG_Q_PEND_ABORT_EN          0u                 /* 只读,该功能无法兼容 Include code for OSQPendAbort()                   */
+#define  OS_CFG_Q_PEND_ABORT_EN          1u                 /* Include code for OSQPendAbort()                                       */
 
 
                                                             /* ----------------------------- SEMAPHORES ---------------------------- */
@@ -127,7 +127,7 @@
 #define  OS_CFG_TASK_CHANGE_PRIO_EN      0u                 /* 只读,该功能无法兼容 Include code for OSTaskChangePrio()               */
 #define  OS_CFG_TASK_DEL_EN              1u                 /* Include code for OSTaskDel()                                          */
 #define  OS_CFG_TASK_Q_EN                1u                 /* Include code for OSTaskQXXXX()                                        */
-#define  OS_CFG_TASK_Q_PEND_ABORT_EN     0u                 /* 只读,该功能无法兼容 Include code for OSTaskQPendAbort()               */
+#define  OS_CFG_TASK_Q_PEND_ABORT_EN     1u                 /* Include code for OSTaskQPendAbort()                                   */
 #define  OS_CFG_TASK_PROFILE_EN          0u                 /* Include variables in OS_TCB for profiling                             */
 #define  OS_CFG_TASK_REG_TBL_SIZE        3u                 /* Number of task specific registers                                     */
 #define  OS_CFG_TASK_SEM_PEND_ABORT_EN   1u                 /* Include code for OSTaskSemPendAbort()                                 */

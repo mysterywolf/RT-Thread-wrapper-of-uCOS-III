@@ -48,7 +48,6 @@
 * Note(s)    : 1)由于RTT没有相关接口，因此以下函数没有实现
 *                   OSTaskQFlush
 *                   OSTaskQPendAbort
-*                   OSTaskSemPendAbort
 *                   OSTaskChangePrio
 *                   OSTaskTimeQuantaSet
 ************************************************************************************************************************
