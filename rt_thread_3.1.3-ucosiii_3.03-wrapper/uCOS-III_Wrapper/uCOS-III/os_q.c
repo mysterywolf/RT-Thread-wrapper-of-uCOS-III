@@ -361,7 +361,7 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
 *                                OS_ERR_NONE               The call was successful and your task received a message.
 *                                OS_ERR_OBJ_PTR_NULL       if you pass a NULL pointer for 'p_q'
 *                                OS_ERR_OBJ_TYPE           if the message queue was not created
-*                              - OS_ERR_PEND_ABORT         the pend was aborted
+*                                OS_ERR_PEND_ABORT         the pend was aborted
 *                                OS_ERR_PEND_ISR           if you called this function from an ISR
 *                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but the queue was not empty
 *                                OS_ERR_SCHED_LOCKED       the scheduler is locked
@@ -588,10 +588,7 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
        *p_err =  OS_ERR_PEND_ABORT_NONE;
         return ((OS_OBJ_QTY)0u);        
     }
-    else
-    {
-        CPU_CRITICAL_EXIT();
-    }
+    CPU_CRITICAL_EXIT();
     
     if(opt&OS_OPT_PEND_ABORT_ALL)
     {
@@ -602,7 +599,7 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
         rt_ipc_pend_abort_1(&(p_q->Msg.parent.suspend_thread));
     }
     
-    if(!opt&OS_OPT_POST_NO_SCHED)
+    if(!(opt&OS_OPT_POST_NO_SCHED))
     {
         rt_schedule();
     }

@@ -81,7 +81,7 @@
 #endif
 #define  OS_CFG_FLAG_DEL_EN              1u                 /* Include code for OSFlagDel()                                          */
 #define  OS_CFG_FLAG_MODE_CLR_EN         0u                 /* 只读,RTT仅能置1为事件发生  Include code for Wait on Clear EVENT FLAGS */
-#define  OS_CFG_FLAG_PEND_ABORT_EN       0u                 /* 只读,该功能无法兼容 Include code for OSFlagPendAbort()                */
+#define  OS_CFG_FLAG_PEND_ABORT_EN       1u                 /* Include code for OSFlagPendAbort()                                    */
 
 
                                                             /* -------------------------- MEMORY MANAGEMENT ------------------------ */

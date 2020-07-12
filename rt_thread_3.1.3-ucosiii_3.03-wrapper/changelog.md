@@ -86,6 +86,11 @@
 
 - 新增os_rtwrap.c文件，负责对RT-Thread和μCOS-III的转换提供支持。并在os.h文件末尾增加os_rtwrap.c内函数的声明
 - 实现`OSTaskSemPendAbort`函数
+- 实现`OSTaskQPendAbort`函数
+- 实现`OSSemPendAbort`函数，`OSSemPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能
+- 实现`OSSemMutexAbort`函数，`OSMutexPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能
+- 实现`OSSFlagPendAbort`函数，`OSFlagPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能
+- 实现`OSQPendAbort`函数，`OSQPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能
 
 
 
@@ -128,6 +133,8 @@
 
 **[bug fix]** `OSQPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能（已知）
 
+**[bug fix]** `OSFlagPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能（已知）
+
 **[add]** 增加兼容原版OS_TCB结构体成员变量
 
 **[add]** 实现`OSTimeDlyResume`函数（目前仅有12个uCOS-III API无法兼容）
@@ -140,6 +147,10 @@
 
 **[add]** 实现`OSQPendAbort`函数（目前仅有8个uCOS-III API无法兼容）
 
+**[add]** 实现`OSTaskQPendAbort`函数（目前仅有7个uCOS-III API无法兼容）
+
+**[add]** 实现`OSFlagPendAbort`函数（目前仅有6个uCOS-III API无法兼容）
+
 
 
 # TODO
@@ -148,4 +159,5 @@
 - [ ] 继续努力实现受限项opts
 - [ ] 继续努力实现剩余未兼容的API
 - [ ] uCOS-III时间片时间转RTT时间片时间
-- [ ] `OSQPendAbort`尚未测试
+- [ ] `OSQPendAbort`、`OSTaskQPendAbort`尚未测试
+- [ ] `OSQFlagAbort`尚未测试

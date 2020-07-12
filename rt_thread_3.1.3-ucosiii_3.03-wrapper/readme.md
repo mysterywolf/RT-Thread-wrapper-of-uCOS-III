@@ -191,7 +191,7 @@ int main(void) /*RT-Thread main线程*/
 
 
 # 3 接口
-## 3.1 没有实现兼容的API（仅8个）
+## 3.1 没有实现兼容的API（仅6个）
 
 由于RT-Thread没有提供相关接口，以下μCOS-III API无法兼容：
 
@@ -201,7 +201,6 @@ void  OSSchedRoundRobinCfg (CPU_BOOLEAN en, OS_TICK dflt_time_quanta, OS_ERR *p_
  ```
 ### 3.1.2 os_flag.c
 ```c
-OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP *p_grp, OS_OPT opt, OS_ERR *p_err);
 OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err);
 ```
 
@@ -218,7 +217,6 @@ OS_MSG_QTY  OSQFlush (OS_Q *p_q, OS_ERR *p_err);
 void  OSTaskChangePrio (OS_TCB *p_tcb, OS_PRIO prio_new, OS_ERR *p_err);
 void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
 OS_MSG_QTY OSTaskQFlush (OS_TCB *p_tcb, OS_ERR *p_err);
-CPU_BOOLEAN OSTaskQPendAbort (OS_TCB *p_tcb, OS_OPT opt, OS_ERR *p_err);
  ```
 
 

@@ -46,7 +46,6 @@
 ************************************************************************************************************************
 * Note(s)    : 1)uCOS-III称之为事件标志组(flag group),RTT称之为事件集(event),以下统一使用"事件标志组"称呼
 *              2)由于RTT没有相关接口，因此以下函数没有实现
-*                   OSFlagPendAbort  
 *                   OSFlagPendGetFlagsRdy
 ************************************************************************************************************************
 */
@@ -306,7 +305,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 *                                OS_ERR_OBJ_PTR_NULL        If 'p_grp' is a NULL pointer.
 *                                OS_ERR_OBJ_TYPE            You are not pointing to an event flag group
 *                                OS_ERR_OPT_INVALID         You didn't specify a proper 'opt' argument.
-*                              - OS_ERR_PEND_ABORT          The wait on the flag was aborted.
+*                                OS_ERR_PEND_ABORT          The wait on the flag was aborted.
 *                                OS_ERR_PEND_ISR            If you tried to PEND from an ISR
 *                              - OS_ERR_PEND_WOULD_BLOCK    If you specified non-blocking but the flags were not
 *                                                           available.
@@ -338,6 +337,8 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     OS_OPT          mode;
     rt_uint8_t      rt_option;
     rt_uint32_t     recved;
+    
+    CPU_SR_ALLOC();
     
     CPU_VAL_UNUSED(p_ts);
     
@@ -449,14 +450,27 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     {
         time = 0;/*在RTT中timeout为0表示非阻塞*/
     }
+
+    CPU_CRITICAL_ENTER();
+    OSTCBCurPtr->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
+    CPU_CRITICAL_EXIT(); 
     
     rt_err = rt_event_recv(&p_grp->FlagGrp,
                            flags,
                            rt_option,
                            time,
                            &recved);
-    
     *p_err = rt_err_to_ucosiii(rt_err);  
+    
+    CPU_CRITICAL_ENTER();
+    if(OSTCBCurPtr->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
+    {
+        CPU_CRITICAL_EXIT(); 
+        *p_err = OS_ERR_PEND_ABORT;
+        return 0;
+    }    
+    CPU_CRITICAL_EXIT();        
+    
     return recved;
 }
 
@@ -498,6 +512,79 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
                              OS_OPT        opt,
                              OS_ERR       *p_err)
 {
+    rt_uint32_t pe_flag_len;
+    
+    CPU_SR_ALLOC();
+
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((OS_OBJ_QTY)0u);
+    }
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0u) {             /* Not allowed to Pend Abort from an ISR                  */
+       *p_err =  OS_ERR_PEND_ABORT_ISR;
+        return ((OS_OBJ_QTY)0u);
+    }
+#endif
+
+#if OS_CFG_ARG_CHK_EN > 0u
+    if (p_grp == (OS_FLAG_GRP *)0) {                             /* Validate 'p_sem'                                       */
+       *p_err =  OS_ERR_OBJ_PTR_NULL;
+        return ((OS_OBJ_QTY)0u);
+    }
+    switch (opt) {                                          /* Validate 'opt'                                         */
+        case OS_OPT_PEND_ABORT_1:
+        case OS_OPT_PEND_ABORT_ALL:
+        case OS_OPT_PEND_ABORT_1   | OS_OPT_POST_NO_SCHED:
+        case OS_OPT_PEND_ABORT_ALL | OS_OPT_POST_NO_SCHED:
+             break;
+
+        default:
+            *p_err =  OS_ERR_OPT_INVALID;
+             return ((OS_OBJ_QTY)0u);
+    }
+#endif
+    
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
+    if (rt_object_get_type(&p_grp->FlagGrp.parent.parent) != RT_Object_Class_Event) {/*Make sure semaphore was created*/
+       *p_err =  OS_ERR_OBJ_TYPE;
+        return ((OS_OBJ_QTY)0u);
+    }
+#endif  
+    
+    CPU_CRITICAL_ENTER();
+    if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))/*若没有线程等待信号量*/ 
+    {
+        CPU_CRITICAL_EXIT(); 
+       *p_err =  OS_ERR_PEND_ABORT_NONE;
+        return ((OS_OBJ_QTY)0u);        
+    }
+    CPU_CRITICAL_EXIT();
+    
+    if(opt&OS_OPT_PEND_ABORT_ALL)
+    {
+        rt_ipc_pend_abort_all(&(p_grp->FlagGrp.parent.suspend_thread));
+    }
+    else
+    {
+        rt_ipc_pend_abort_1(&(p_grp->FlagGrp.parent.suspend_thread));
+    }
+    
+    if(!(opt&OS_OPT_POST_NO_SCHED))
+    {
+        rt_schedule();
+    }
+    
+    *p_err = OS_ERR_NONE;
+    
+    CPU_CRITICAL_ENTER();
+    pe_flag_len = rt_list_len(&(p_grp->FlagGrp.parent.suspend_thread));
+    CPU_CRITICAL_EXIT();
+    
+    return pe_flag_len;
 }
 #endif
 

@@ -480,10 +480,8 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
        *p_err =  OS_ERR_PEND_ABORT_NONE;
         return ((OS_OBJ_QTY)0u);        
     }
-    else
-    {
-        CPU_CRITICAL_EXIT();
-    }
+    CPU_CRITICAL_EXIT();
+
     
     if(opt&OS_OPT_PEND_ABORT_ALL)
     {
@@ -494,7 +492,7 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
         rt_ipc_pend_abort_1(&(p_mutex->Mutex.parent.suspend_thread));
     }
     
-    if(!opt&OS_OPT_POST_NO_SCHED)
+    if(!(opt&OS_OPT_POST_NO_SCHED))
     {
         rt_schedule();
     }
