@@ -132,6 +132,8 @@
 
 **[add]** 实现`OSTaskSemPendAbort`函数（目前仅有10个uCOS-III API无法兼容）
 
+**[add]** 实现`OSMutexPendAbort`函数（目前仅有9个uCOS-III API无法兼容）
+
 
 
 # TODO

@@ -191,7 +191,7 @@ int main(void) /*RT-Thread main线程*/
 
 
 # 3 接口
-## 3.1 没有实现兼容的API（仅10个）
+## 3.1 没有实现兼容的API（仅9个）
 
 由于RT-Thread没有提供相关接口，以下μCOS-III API无法兼容：
 
@@ -205,18 +205,13 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP *p_grp, OS_OPT opt, OS_ERR *p_err);
 OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err);
 ```
 
-### 3.1.3 os_mutex.c
- ```c
-OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX *p_mutex, OS_OPT opt, OS_ERR *p_err);
- ```
-
-### 3.1.4 os_q.c
+### 3.1.3 os_q.c
  ```c
 OS_MSG_QTY  OSQFlush (OS_Q *p_q, OS_ERR *p_err);
 OS_OBJ_QTY  OSQPendAbort (OS_Q *p_q, OS_OPT opt, OS_ERR *p_err);
  ```
 
-### 3.1.5 os_task.c
+### 3.1.4 os_task.c
 
 虽然RT-Thread没有任务内建消息队列、任务内建信号量、任务内建寄存器机制，但是本兼容层均已实现，可以正常兼容。
 

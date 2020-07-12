@@ -286,7 +286,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 *                                OS_ERR_OBJ_PTR_NULL       If 'p_mutex' is a NULL pointer.
 *                                OS_ERR_OBJ_TYPE           If 'p_mutex' is not pointing at a mutex
 *                                OS_ERR_OPT_INVALID        If you didn't specify a valid option
-*                              - OS_ERR_PEND_ABORT         If the pend was aborted by another task
+*                                OS_ERR_PEND_ABORT         If the pend was aborted by another task
 *                                OS_ERR_PEND_ISR           If you called this function from an ISR and the result
 *                                                          would lead to a suspension.
 *                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but the mutex was not
@@ -316,6 +316,8 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     rt_int32_t time;
     rt_err_t rt_err;
     
+    CPU_SR_ALLOC();
+
     CPU_VAL_UNUSED(p_ts);
  
 #ifdef OS_SAFETY_CRITICAL
@@ -380,10 +382,23 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     else
     {
         time = 0;/*在RTT中timeout为0表示非阻塞*/
-    }  
+    } 
+    
+    CPU_CRITICAL_ENTER();
+    OSTCBCurPtr->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
+    CPU_CRITICAL_EXIT();     
     
     rt_err = rt_mutex_take(&p_mutex->Mutex,time);
     *p_err = rt_err_to_ucosiii(rt_err);
+    
+    CPU_CRITICAL_ENTER();
+    if(OSTCBCurPtr->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
+    {
+        CPU_CRITICAL_EXIT(); 
+        *p_err = OS_ERR_PEND_ABORT;
+        return;
+    }    
+    CPU_CRITICAL_EXIT();      
 }
 
 /*
@@ -422,6 +437,84 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
                               OS_OPT     opt,
                               OS_ERR    *p_err)
 {
+    rt_uint32_t pend_mutex_len;
+    
+    CPU_SR_ALLOC();
+
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((OS_OBJ_QTY)0u);
+    }
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0u) {             /* Not allowed to Pend Abort from an ISR                  */
+       *p_err =  OS_ERR_PEND_ABORT_ISR;
+        return ((OS_OBJ_QTY)0u);
+    }
+#endif
+
+#if OS_CFG_ARG_CHK_EN > 0u
+    if (p_mutex == (OS_MUTEX *)0) {                             /* Validate 'p_sem'                                       */
+       *p_err =  OS_ERR_OBJ_PTR_NULL;
+        return ((OS_OBJ_QTY)0u);
+    }
+    switch (opt) {                                              /* Validate 'opt'                                         */
+        case OS_OPT_PEND_ABORT_1:
+        case OS_OPT_PEND_ABORT_ALL:
+        case OS_OPT_PEND_ABORT_1   | OS_OPT_POST_NO_SCHED:
+        case OS_OPT_PEND_ABORT_ALL | OS_OPT_POST_NO_SCHED:
+             break;
+
+        default:
+            *p_err =  OS_ERR_OPT_INVALID;
+             return ((OS_OBJ_QTY)0u);
+    }
+#endif
+    
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
+    if (rt_object_get_type(&p_mutex->Mutex.parent.parent) != RT_Object_Class_Mutex) {
+       *p_err =  OS_ERR_OBJ_TYPE;
+        return ((OS_OBJ_QTY)0u);
+    }
+#endif  
+    
+    CPU_CRITICAL_ENTER();
+    if(rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))/*若没有线程等待信号量*/ 
+    {
+        CPU_CRITICAL_EXIT(); 
+       *p_err =  OS_ERR_PEND_ABORT_NONE;
+        return ((OS_OBJ_QTY)0u);        
+    }
+    else
+    {
+        CPU_CRITICAL_EXIT();
+    }
+    
+    if(opt&OS_OPT_PEND_ABORT_ALL)
+    {
+        /*OS_OPT_PEND_ABORT_ALL*/
+        rt_ipc_pend_abort_all(&(p_mutex->Mutex.parent.suspend_thread));
+    }
+    else
+    {
+        /*OS_OPT_PEND_ABORT_1*/
+        rt_ipc_pend_abort_1(&(p_mutex->Mutex.parent.suspend_thread));
+    }
+    
+    if(!opt&OS_OPT_POST_NO_SCHED)
+    {
+        rt_schedule();
+    }
+    
+    *p_err = OS_ERR_NONE;
+    
+    CPU_CRITICAL_ENTER();
+    pend_mutex_len = rt_list_len(&(p_mutex->Mutex.parent.suspend_thread));
+    CPU_CRITICAL_EXIT();
+    
+    return pend_mutex_len;
 }
 #endif
 
