@@ -42,13 +42,6 @@
 
 #include <os.h>
 
-/*
-************************************************************************************************************************
-* Note(s)    : 1)由于RTT没有相关接口，因此以下函数没有实现
-*                   OSMutexPendAbort
-************************************************************************************************************************
-*/
-
 #if OS_CFG_MUTEX_EN > 0u
 /*
 ************************************************************************************************************************
@@ -494,12 +487,10 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
     
     if(opt&OS_OPT_PEND_ABORT_ALL)
     {
-        /*OS_OPT_PEND_ABORT_ALL*/
         rt_ipc_pend_abort_all(&(p_mutex->Mutex.parent.suspend_thread));
     }
     else
     {
-        /*OS_OPT_PEND_ABORT_1*/
         rt_ipc_pend_abort_1(&(p_mutex->Mutex.parent.suspend_thread));
     }
     

@@ -61,7 +61,6 @@
 *                       OS_OPT_POST_NO_SCHED (RT-Thread未实现)
 *              2)由于RTT没有相关接口，因此以下函数没有实现
 *                   OSQFlush
-*                   OSQPendAbort
 ************************************************************************************************************************
 */
 
@@ -395,6 +394,8 @@ void  *OSQPend (OS_Q         *p_q,
     rt_int32_t  time;
     ucos_msg_t  ucos_msg;
     
+    CPU_SR_ALLOC();
+    
     CPU_VAL_UNUSED(p_ts);
 
 #ifdef OS_SAFETY_CRITICAL
@@ -467,6 +468,10 @@ void  *OSQPend (OS_Q         *p_q,
         time = 0;/*在RTT中timeout为0表示非阻塞*/
     }
     
+    CPU_CRITICAL_ENTER();
+    OSTCBCurPtr->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
+    CPU_CRITICAL_EXIT();     
+    
     /*开始消息接收以及处理*/
     rt_err = rt_mq_recv(&p_q->Msg,
                         (void*)&ucos_msg,/*uCOS消息段*/
@@ -474,6 +479,17 @@ void  *OSQPend (OS_Q         *p_q,
                          time);
 
     *p_err = rt_err_to_ucosiii(rt_err);
+                         
+    CPU_CRITICAL_ENTER();
+    if(OSTCBCurPtr->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
+    {
+        CPU_CRITICAL_EXIT();
+        *p_err = OS_ERR_PEND_ABORT;
+        *p_msg_size = 0;
+        return RT_NULL;
+    }    
+    CPU_CRITICAL_EXIT();                             
+                         
     if(*p_err == OS_ERR_NONE)
     {
         *p_msg_size = ucos_msg.data_size;
@@ -522,6 +538,82 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
                           OS_OPT   opt,
                           OS_ERR  *p_err)
 {
+    rt_uint32_t pend_q_len;
+    
+    CPU_SR_ALLOC();
+
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((OS_OBJ_QTY)0u);
+    }
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0u) {             /* Not allowed to Pend Abort from an ISR                  */
+       *p_err =  OS_ERR_PEND_ABORT_ISR;
+        return ((OS_OBJ_QTY)0u);
+    }
+#endif
+
+#if OS_CFG_ARG_CHK_EN > 0u
+    if (p_q == (OS_Q *)0) {                             /* Validate 'p_sem'                                       */
+       *p_err =  OS_ERR_OBJ_PTR_NULL;
+        return ((OS_OBJ_QTY)0u);
+    }
+    switch (opt) {                                          /* Validate 'opt'                                         */
+        case OS_OPT_PEND_ABORT_1:
+        case OS_OPT_PEND_ABORT_ALL:
+        case OS_OPT_PEND_ABORT_1   | OS_OPT_POST_NO_SCHED:
+        case OS_OPT_PEND_ABORT_ALL | OS_OPT_POST_NO_SCHED:
+             break;
+
+        default:
+            *p_err =  OS_ERR_OPT_INVALID;
+             return ((OS_OBJ_QTY)0u);
+    }
+#endif
+    
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
+    if (rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue) {/*Make sure semaphore was created*/
+       *p_err =  OS_ERR_OBJ_TYPE;
+        return ((OS_OBJ_QTY)0u);
+    }
+#endif  
+    
+    CPU_CRITICAL_ENTER();
+    if(rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))/*若没有线程等待信号量*/ 
+    {
+        CPU_CRITICAL_EXIT(); 
+       *p_err =  OS_ERR_PEND_ABORT_NONE;
+        return ((OS_OBJ_QTY)0u);        
+    }
+    else
+    {
+        CPU_CRITICAL_EXIT();
+    }
+    
+    if(opt&OS_OPT_PEND_ABORT_ALL)
+    {
+        rt_ipc_pend_abort_all(&(p_q->Msg.parent.suspend_thread));
+    }
+    else
+    {
+        rt_ipc_pend_abort_1(&(p_q->Msg.parent.suspend_thread));
+    }
+    
+    if(!opt&OS_OPT_POST_NO_SCHED)
+    {
+        rt_schedule();
+    }
+    
+    *p_err = OS_ERR_NONE;
+    
+    CPU_CRITICAL_ENTER();
+    pend_q_len = rt_list_len(&(p_q->Msg.parent.suspend_thread));
+    CPU_CRITICAL_EXIT();
+    
+    return pend_q_len;
 }
 #endif
 

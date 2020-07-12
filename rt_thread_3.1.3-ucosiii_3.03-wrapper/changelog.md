@@ -124,6 +124,10 @@
 
 **[bug fix]** `OSSemPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能（已知）
 
+**[bug fix]** `OSMutexPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能（已知）
+
+**[bug fix]** `OSQPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能（已知）
+
 **[add]** 增加兼容原版OS_TCB结构体成员变量
 
 **[add]** 实现`OSTimeDlyResume`函数（目前仅有12个uCOS-III API无法兼容）
@@ -134,6 +138,8 @@
 
 **[add]** 实现`OSMutexPendAbort`函数（目前仅有9个uCOS-III API无法兼容）
 
+**[add]** 实现`OSQPendAbort`函数（目前仅有8个uCOS-III API无法兼容）
+
 
 
 # TODO
@@ -142,3 +148,4 @@
 - [ ] 继续努力实现受限项opts
 - [ ] 继续努力实现剩余未兼容的API
 - [ ] uCOS-III时间片时间转RTT时间片时间
+- [ ] `OSQPendAbort`尚未测试

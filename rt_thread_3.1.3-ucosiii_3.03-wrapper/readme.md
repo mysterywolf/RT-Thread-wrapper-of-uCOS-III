@@ -191,7 +191,7 @@ int main(void) /*RT-Thread main线程*/
 
 
 # 3 接口
-## 3.1 没有实现兼容的API（仅9个）
+## 3.1 没有实现兼容的API（仅8个）
 
 由于RT-Thread没有提供相关接口，以下μCOS-III API无法兼容：
 
@@ -208,7 +208,6 @@ OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err);
 ### 3.1.3 os_q.c
  ```c
 OS_MSG_QTY  OSQFlush (OS_Q *p_q, OS_ERR *p_err);
-OS_OBJ_QTY  OSQPendAbort (OS_Q *p_q, OS_OPT opt, OS_ERR *p_err);
  ```
 
 ### 3.1.4 os_task.c

@@ -511,12 +511,10 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
     
     if(opt&OS_OPT_PEND_ABORT_ALL)
     {
-        /*OS_OPT_PEND_ABORT_ALL*/
         rt_ipc_pend_abort_all(&(p_sem->Sem.parent.suspend_thread));
     }
     else
     {
-        /*OS_OPT_PEND_ABORT_1*/
         rt_ipc_pend_abort_1(&(p_sem->Sem.parent.suspend_thread));
     }
     
