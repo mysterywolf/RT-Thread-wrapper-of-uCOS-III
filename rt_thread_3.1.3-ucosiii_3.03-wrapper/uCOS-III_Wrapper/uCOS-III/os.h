@@ -424,7 +424,7 @@ typedef  enum  os_err {
     OS_ERR_PEND_ABORT                = 25001u,
     OS_ERR_PEND_ABORT_ISR            = 25002u,
     OS_ERR_PEND_ABORT_NONE           = 25003u,
-//    OS_ERR_PEND_ABORT_SELF           = 25004u,
+    OS_ERR_PEND_ABORT_SELF           = 25004u,
 //    OS_ERR_PEND_DEL                  = 25005u,
     OS_ERR_PEND_ISR                  = 25006u,
 //    OS_ERR_PEND_LOCKED               = 25007u,
@@ -1284,6 +1284,44 @@ void          OSStatTaskHook            (void);
 OS_ERR        rt_err_to_ucosiii         (rt_err_t rt_err);
 rt_err_t      rt_ipc_pend_abort_1       (rt_list_t *list);
 rt_err_t      rt_ipc_pend_abort_all     (rt_list_t *list);
+
+/*
+************************************************************************************************************************
+*                                          LOOK FOR MISSING #define CONSTANTS
+*
+* This section is used to generate ERROR messages at compile time if certain #define constants are
+* MISSING in OS_CFG.H.  This allows you to quickly determine the source of the error.
+*
+* You SHOULD NOT change this section UNLESS you would like to add more comments as to the source of the
+* compile time error.
+************************************************************************************************************************
+*/
+
+/*
+************************************************************************************************************************
+*                                                     MISCELLANEOUS
+************************************************************************************************************************
+*/
+
+#ifndef RT_USING_IDLE_HOOK
+#error "μCOS-III兼容层必须开启要求RT_USING_IDLE_HOOK宏定义"
+#endif
+
+#ifndef RT_USING_TIMER_SOFT
+#warning "RT_USING_TIMER_SOFT宏没有开启,μCOS-III兼容层将无法启用软件定时器,如果您确认这么做的话请将本警告注释掉"
+#endif
+
+#if OS_CFG_TASK_Q_EN && !OS_CFG_Q_EN
+#error "任务内建消息队列需要消息队列的支持，需要将OS_CFG_Q_EN置1方可使用"
+#endif
+
+#if OS_CFG_TASK_Q_PEND_ABORT_EN && !OS_CFG_Q_PEND_ABORT_EN
+#error "请将OS_CFG_Q_PEND_ABORT_EN置1"
+#endif
+
+#if OS_CFG_TASK_SEM_PEND_ABORT_EN && !OS_CFG_SEM_PEND_ABORT_EN
+#error "请将OS_CFG_SEM_PEND_ABORT_EN置1"
+#endif
 
 
 #endif

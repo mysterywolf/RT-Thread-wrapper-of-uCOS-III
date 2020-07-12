@@ -41,23 +41,3 @@
 */
 
 #include <os.h>
-
-#ifndef RT_USING_IDLE_HOOK
-#error "μCOS-III兼容层必须开启要求RT_USING_IDLE_HOOK宏定义"
-#endif
-
-#ifndef RT_USING_TIMER_SOFT
-#warning "RT_USING_TIMER_SOFT宏没有开启,μCOS-III兼容层将无法启用软件定时器,如果您确认这么做的话请将本警告注释掉"
-#endif
-
-#if OS_CFG_TASK_Q_EN && !OS_CFG_Q_EN
-#error "任务内建消息队列需要消息队列的支持，需要将OS_CFG_Q_EN置1方可使用"
-#endif
-
-#if OS_CFG_TASK_Q_PEND_ABORT_EN && !OS_CFG_Q_PEND_ABORT_EN
-#error "请将OS_CFG_Q_PEND_ABORT_EN置1"
-#endif
-
-#if OS_CFG_TASK_SEM_PEND_ABORT_EN && !OS_CFG_SEM_PEND_ABORT_EN
-#error "请将OS_CFG_SEM_PEND_ABORT_EN置1"
-#endif

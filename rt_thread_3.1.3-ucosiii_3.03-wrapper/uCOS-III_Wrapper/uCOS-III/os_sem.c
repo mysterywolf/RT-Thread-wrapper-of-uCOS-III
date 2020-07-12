@@ -526,6 +526,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
     }
     
     *p_err = OS_ERR_NONE;
+    
     CPU_CRITICAL_ENTER();
     pend_sem_len = rt_list_len(&(p_sem->Sem.parent.suspend_thread));
     CPU_CRITICAL_EXIT();

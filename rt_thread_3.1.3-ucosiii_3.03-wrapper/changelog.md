@@ -85,7 +85,7 @@
 ### 2020-7-12
 
 - 新增os_rtwrap.c文件，负责对RT-Thread和μCOS-III的转换提供支持。并在os.h文件末尾增加os_rtwrap.c内函数的声明
-- 
+- 实现`OSTaskSemPendAbort`函数
 
 
 
@@ -129,6 +129,8 @@
 **[add]** 实现`OSTimeDlyResume`函数（目前仅有12个uCOS-III API无法兼容）
 
 **[add]** 实现`OSSemPendAbort`函数（目前仅有11个uCOS-III API无法兼容）
+
+**[add]** 实现`OSTaskSemPendAbort`函数（目前仅有10个uCOS-III API无法兼容）
 
 
 

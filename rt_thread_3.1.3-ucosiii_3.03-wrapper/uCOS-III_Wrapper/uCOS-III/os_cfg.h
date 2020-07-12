@@ -130,7 +130,7 @@
 #define  OS_CFG_TASK_Q_PEND_ABORT_EN     0u                 /* 只读,该功能无法兼容 Include code for OSTaskQPendAbort()               */
 #define  OS_CFG_TASK_PROFILE_EN          0u                 /* Include variables in OS_TCB for profiling                             */
 #define  OS_CFG_TASK_REG_TBL_SIZE        3u                 /* Number of task specific registers                                     */
-#define  OS_CFG_TASK_SEM_PEND_ABORT_EN   0u                 /* 只读,该功能无法兼容 Include code for OSTaskSemPendAbort()             */
+#define  OS_CFG_TASK_SEM_PEND_ABORT_EN   1u                 /* Include code for OSTaskSemPendAbort()                                 */
 #define  OS_CFG_TASK_SUSPEND_EN          1u                 /* Include code for OSTaskSuspend() and OSTaskResume()                   */
 
 

@@ -1050,6 +1050,50 @@ CPU_BOOLEAN  OSTaskSemPendAbort (OS_TCB  *p_tcb,
                                  OS_OPT   opt,
                                  OS_ERR  *p_err)
 {
+    OS_OPT _opt;
+    
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return (DEF_FALSE);
+    }
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0) {              /* See if called from ISR ...                             */
+       *p_err = OS_ERR_PEND_ABORT_ISR;                      /* ... can't Pend Abort from an ISR                       */
+        return (DEF_FALSE);
+    }
+#endif
+
+#if OS_CFG_ARG_CHK_EN > 0u
+    switch (opt) {                                          /* Validate 'opt'                                         */
+        case OS_OPT_POST_NONE:
+        case OS_OPT_POST_NO_SCHED:
+             break;
+
+        default:
+            *p_err =  OS_ERR_OPT_INVALID;
+             return (DEF_FALSE);
+    }
+#endif  
+    
+    if ((p_tcb == (OS_TCB *)0) ||                           /* Pend abort self?                                       */
+        (p_tcb == OSTCBCurPtr)) {
+       *p_err = OS_ERR_PEND_ABORT_SELF;
+        return (DEF_FALSE);
+    }
+      
+    _opt = OS_OPT_PEND_ABORT_1 | opt;
+    OSSemPendAbort(&p_tcb->Sem,_opt,p_err);
+    if(*p_err != OS_ERR_NONE)
+    {
+        return DEF_FALSE;
+    }   
+    else
+    {
+        return DEF_TRUE;
+    }
 }
 #endif
 
