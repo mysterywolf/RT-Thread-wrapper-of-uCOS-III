@@ -271,6 +271,8 @@ void  App_OS_TimeTickHook (void);
 
 注意：一旦开启统计任务，则该优先级强烈建议不要被其他任务使用，统计任务的优先级总是为OS_CFG_PRIO_MAX-2u 。
 
+特别感谢：感谢armink大神在2018年7月14日在idle.c文件中增加了hook list功能，使RT-Thread空闲任务回调函数可以注册最多`RT_IDEL_HOOK_LIST_SIZE`个，而非只能注册一个。若没有该功能，本兼容层的空闲任务将无法实现。
+
 
 
 ## 3.5 全局变量
@@ -338,3 +340,5 @@ OS_EXT            OS_TCB                    OSStatTaskTCB;
 维护：Meco Man
 
 联系方式：jiantingman@foxmail.com
+
+主页：https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III
