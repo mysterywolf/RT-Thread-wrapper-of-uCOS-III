@@ -96,6 +96,7 @@
 ### 2020-7-14
 
 - 实现`OSSchedRoundRobinCfg`函数
+- 实现`OSFlagPendGetFlagsRdy`函数
 
 
 
@@ -142,21 +143,23 @@
 
 **[add]** 增加兼容原版OS_TCB结构体成员变量
 
-**[add]** 实现`OSTimeDlyResume`函数（目前仅有12个uCOS-III API无法兼容）
+**[add]** 实现`OSTimeDlyResume`函数
 
-**[add]** 实现`OSSemPendAbort`函数（目前仅有11个uCOS-III API无法兼容）
+**[add]** 实现`OSSemPendAbort`函数
 
-**[add]** 实现`OSTaskSemPendAbort`函数（目前仅有10个uCOS-III API无法兼容）
+**[add]** 实现`OSTaskSemPendAbort`函数
 
-**[add]** 实现`OSMutexPendAbort`函数（目前仅有9个uCOS-III API无法兼容）
+**[add]** 实现`OSMutexPendAbort`函数
 
-**[add]** 实现`OSQPendAbort`函数（目前仅有8个uCOS-III API无法兼容）
+**[add]** 实现`OSQPendAbort`函数
 
-**[add]** 实现`OSTaskQPendAbort`函数（目前仅有7个uCOS-III API无法兼容）
+**[add]** 实现`OSTaskQPendAbort`函数
 
-**[add]** 实现`OSFlagPendAbort`函数（目前仅有6个uCOS-III API无法兼容）
+**[add]** 实现`OSFlagPendAbort`函数
 
-**[add]** 实现`OSSchedRoundRobinCfg`函数（目前仅有5个uCOS-III API无法兼容）
+**[add]** 实现`OSSchedRoundRobinCfg`函数
+
+**[add]** 实现`OSFlagPendGetFlagsRdy`函数（目前仅有4个uCOS-III API无法兼容）
 
 
 

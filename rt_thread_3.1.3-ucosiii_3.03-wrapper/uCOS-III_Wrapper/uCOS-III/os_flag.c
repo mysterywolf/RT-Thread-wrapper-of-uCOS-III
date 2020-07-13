@@ -604,9 +604,32 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
 ************************************************************************************************************************
 */
 
-//OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err)
-//{
-//}
+OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err)
+{
+    OS_FLAGS   flags;
+    
+    CPU_SR_ALLOC();
+
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((OS_FLAGS)0);
+    }
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0) {              /* See if called from ISR ...                             */
+       *p_err = OS_ERR_PEND_ISR;                            /* ... can't get from an ISR                              */
+        return ((OS_FLAGS)0);
+    }
+#endif
+
+    CPU_CRITICAL_ENTER();
+    flags = OSTCBCurPtr->Task.event_set;
+    CPU_CRITICAL_EXIT();
+   *p_err = OS_ERR_NONE;
+    return (flags);
+}
 
 /*
 ************************************************************************************************************************
