@@ -51,7 +51,7 @@ static void thread3_entry(void *param)
     OS_ERR err;
     while(1)
     {
-        OSSemPend(&SYNC_SEM,0,OS_OPT_PEND_BLOCKING,0,&err); //请求信号量
+        OSSemPend(&SYNC_SEM,10000,OS_OPT_PEND_BLOCKING,0,&err); //请求信号量
         if(err==OS_ERR_PEND_ABORT)
         {
             rt_kprintf("信号量被放弃\r\n");

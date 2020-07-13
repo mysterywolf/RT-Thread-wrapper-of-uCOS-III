@@ -72,6 +72,7 @@ rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
     
     CPU_CRITICAL_ENTER();
     thread = rt_list_entry(list->next, struct rt_thread, tlist);/* get thread entry */
+    thread->error = -RT_ERROR;/* set error code to RT_ERROR */
     ((OS_TCB*)thread)->PendStatus = OS_STATUS_PEND_ABORT; /*标记当前任务放弃等待*/
     CPU_CRITICAL_EXIT();
    
@@ -100,7 +101,8 @@ rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
 
         /* get next suspend thread */
         thread = rt_list_entry(list->next, struct rt_thread, tlist);
-
+        /* set error code to RT_ERROR */
+        thread->error = -RT_ERROR;
         /*标记当前任务放弃等待*/
         ((OS_TCB*)thread)->PendStatus = OS_STATUS_PEND_ABORT; 
         

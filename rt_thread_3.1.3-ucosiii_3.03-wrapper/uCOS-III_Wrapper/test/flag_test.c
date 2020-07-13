@@ -24,17 +24,19 @@ static void thread2_entry(void *param)
     
     while(1)
     {
-        //向事件标志组EventFlags发送标志
-        OSFlagPost( (OS_FLAG_GRP*)&EventFlags,
-                     (OS_FLAGS	  )KEY0_FLAG|KEY1_FLAG,
-                     (OS_OPT	  )OS_OPT_POST_FLAG_SET,
-                     (OS_ERR*     )&err);  
-        if(err!=OS_ERR_NONE)
-        {
-            rt_kprintf("flag post err:%d!\r\n",err);
-        }            
+//        //向事件标志组EventFlags发送标志
+//        OSFlagPost( (OS_FLAG_GRP*)&EventFlags,
+//                     (OS_FLAGS	  )KEY0_FLAG|KEY1_FLAG,
+//                     (OS_OPT	  )OS_OPT_POST_FLAG_SET,
+//                     (OS_ERR*     )&err);  
+//        if(err!=OS_ERR_NONE)
+//        {
+//            rt_kprintf("flag post err:%d!\r\n",err);
+//        }            
 
-        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);        
+        OSTimeDlyHMSM(0,0,1,0,OS_OPT_TIME_PERIODIC,&err); 
+        
+        OSFlagPendAbort(&EventFlags,OS_OPT_PEND_ABORT_1,&err);    
     }
 }
 
@@ -51,13 +53,17 @@ static void thread3_entry(void *param)
 				   (OS_OPT	    )OS_OPT_PEND_FLAG_SET_ALL+OS_OPT_PEND_FLAG_CONSUME,
 				   (CPU_TS*     )0,
 				   (OS_ERR*	    )&err); 
-        if(err!=OS_ERR_NONE)
+        if(err==OS_ERR_NONE)
         {
-            rt_kprintf("flag pend err!:%d\r\n",err);
+            rt_kprintf("pended a flag\r\n");
+        }
+        else if(err == OS_ERR_PEND_ABORT)
+        {
+            rt_kprintf("abort!\r\n");
         }
         else
         {
-            rt_kprintf("pended a flag\r\n");
+            rt_kprintf("flag pend err!:%d\r\n",err);            
         }    
     }
 }

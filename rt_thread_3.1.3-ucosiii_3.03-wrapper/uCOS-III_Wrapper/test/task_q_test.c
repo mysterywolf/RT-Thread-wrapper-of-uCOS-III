@@ -23,16 +23,20 @@ static void thread1_entry(void *param)
     unsigned int i=0;
     while(1) 
     {
-        i++;
-        rt_sprintf(buffer,"test:%d",i);
+//        i++;
+//        rt_sprintf(buffer,"test:%d",i);
+//        
+//        OSTaskQPost(&thread2,buffer,rt_strlen(buffer),OS_OPT_POST_FIFO,&err);
+//        if(err!=OS_ERR_NONE)
+//        {
+//            rt_kprintf("queue post err:%d!\r\n",err);
+//        }      
         
-        OSTaskQPost(&thread2,buffer,rt_strlen(buffer),OS_OPT_POST_FIFO,&err);
-        if(err!=OS_ERR_NONE)
-        {
-            rt_kprintf("queue post err:%d!\r\n",err);
-        }      
+        OSTimeDlyHMSM(0,0,1,0,OS_OPT_TIME_PERIODIC,&err);
         
-        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);
+        OSTaskQPendAbort(&thread2,OS_OPT_POST_NONE,&err);
+        
+        rt_kprintf("OSTaskQPendAbort:%d\r\n",err);
     }
 }
     
@@ -47,33 +51,36 @@ static void thread2_entry(void *param)
     while(1)
     {
         p = OSTaskQPend(0,OS_OPT_PEND_BLOCKING,&size,0,&err);
-        if(err!=OS_ERR_NONE)
+        if(err == OS_ERR_PEND_ABORT)
         {
-            rt_kprintf("queue pend err!:%d\r\n",err);
+            rt_kprintf("task q pend abort!\r\n");
         }
-        else
+        else if(err == OS_ERR_NONE)
         {
             rt_kprintf("pended: str:%s,size:%d\r\n",p,size);
         }   
-
-        /*测试统计任务之任务堆栈*/
-        rt_kprintf("thread1: used:%d,free:%d\r\n",thread1.StkUsed,thread1.StkFree);
-        rt_kprintf("thread2: used:%d,free:%d\r\n",thread2.StkUsed,thread2.StkFree);
-        
-        /*测试CPU使用率*/
-        rt_kprintf("CPU usage:%d.%d%%\r\n",OSStatTaskCPUUsage/100,OSStatTaskCPUUsage%100);
-        
-        /*测试嵌套挂起*/
-        OSTaskSuspend(&thread1,&err);
-        OSTaskSuspend(&thread1,&err);
-        OSTaskSuspend(&thread1,&err);
-        OSTaskSuspend(&thread1,&err);
-        OSTaskSuspend(&thread1,&err);
-        OSTaskResume(&thread1,&err);
-        OSTaskResume(&thread1,&err);
-        OSTaskResume(&thread1,&err);
-        OSTaskResume(&thread1,&err);
-        OSTaskResume(&thread1,&err);
+        else
+        {
+            rt_kprintf("queue pend err!:%d\r\n",err);
+        }
+//        /*测试统计任务之任务堆栈*/
+//        rt_kprintf("thread1: used:%d,free:%d\r\n",thread1.StkUsed,thread1.StkFree);
+//        rt_kprintf("thread2: used:%d,free:%d\r\n",thread2.StkUsed,thread2.StkFree);
+//        
+//        /*测试CPU使用率*/
+//        rt_kprintf("CPU usage:%d.%d%%\r\n",OSStatTaskCPUUsage/100,OSStatTaskCPUUsage%100);
+//        
+//        /*测试嵌套挂起*/
+//        OSTaskSuspend(&thread1,&err);
+//        OSTaskSuspend(&thread1,&err);
+//        OSTaskSuspend(&thread1,&err);
+//        OSTaskSuspend(&thread1,&err);
+//        OSTaskSuspend(&thread1,&err);
+//        OSTaskResume(&thread1,&err);
+//        OSTaskResume(&thread1,&err);
+//        OSTaskResume(&thread1,&err);
+//        OSTaskResume(&thread1,&err);
+//        OSTaskResume(&thread1,&err);
     }
 }
                  

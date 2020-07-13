@@ -22,7 +22,6 @@ void flag_test (void);
 void task_q_test (void);
 void task_sem_test (void);
 
-
 int main(void)
 {
     OS_ERR err;
@@ -42,8 +41,8 @@ int main(void)
     
 //    sem_test();
 //    timer_test();
-    mutex_test();
-//    queue_test();
+//    mutex_test();
+    queue_test();
 //    flag_test();
 //    task_q_test();
 //    task_sem_test();

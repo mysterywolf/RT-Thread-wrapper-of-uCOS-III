@@ -95,6 +95,8 @@
 
 
 
+
+
 # Release
 
 ## v0.1.0
@@ -159,5 +161,3 @@
 - [ ] 继续努力实现受限项opts
 - [ ] 继续努力实现剩余未兼容的API
 - [ ] uCOS-III时间片时间转RTT时间片时间
-- [ ] `OSQPendAbort`、`OSTaskQPendAbort`尚未测试
-- [ ] `OSQFlagAbort`尚未测试

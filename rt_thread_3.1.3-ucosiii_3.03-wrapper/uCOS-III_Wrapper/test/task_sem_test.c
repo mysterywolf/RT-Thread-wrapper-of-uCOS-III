@@ -19,8 +19,9 @@ static void thread1_entry(void *param)
 
     while(1) 
     {
-        OSTaskSemPost(&thread2,OS_OPT_POST_NONE,&err);
-        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);
+        //OSTaskSemPost(&thread2,OS_OPT_POST_NONE,&err);
+        OSTimeDlyHMSM(0,0,1,0,OS_OPT_TIME_PERIODIC,&err);
+        OSTaskSemPendAbort(&thread2,OS_OPT_POST_NONE,&err);
     }
 }
     
@@ -33,7 +34,18 @@ static void thread2_entry(void *param)
     while(1)
     {
         OSTaskSemPend(0,OS_OPT_PEND_BLOCKING,0,&err);
-        rt_kprintf("has pended a task sem!\r\n");
+        if(err==OS_ERR_NONE)
+        {
+            rt_kprintf("has pended a task sem!\r\n");
+        }
+        else if(err == OS_ERR_PEND_ABORT)
+        {
+            rt_kprintf("abort!\r\n");
+        }
+        else
+        {
+            rt_kprintf("err:%d\r\n",err);
+        }
     }
 }
                  

@@ -25,21 +25,30 @@ static void thread2_entry(void *param)
     unsigned int i=0;
     while(1) 
     {
-        i++;
-        rt_sprintf(buffer,"test:%d",i);
-        //发送消息
-        OSQPost((OS_Q*		)&DATA_Msg,		
-                (void*		)buffer,
-                (OS_MSG_SIZE)rt_strlen(buffer),
-                (OS_OPT		)OS_OPT_POST_FIFO,
-                (OS_ERR*	)&err);    
-        
-        if(err!=OS_ERR_NONE)
-        {
-            rt_kprintf("queue post err:%d!\r\n",err);
-        }            
+//        i++;
+//        rt_sprintf(buffer,"test:%d",i);
+//        //发送消息
+//        OSQPost((OS_Q*		)&DATA_Msg,		
+//                (void*		)buffer,
+//                (OS_MSG_SIZE)rt_strlen(buffer),
+//                (OS_OPT		)OS_OPT_POST_FIFO,
+//                (OS_ERR*	)&err);    
+//        
+//        if(err!=OS_ERR_NONE)
+//        {
+//            rt_kprintf("queue post err:%d!\r\n",err);
+//        }            
                 
-        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC,&err);
+        OSTimeDlyHMSM(0,0,1,0,OS_OPT_TIME_PERIODIC,&err);
+        OSQPendAbort(&DATA_Msg,OS_OPT_PEND_ABORT_1,&err);
+        rt_kprintf("OSQPendAbort:%d\r\n",err);
+        
+        
+//        rt_kprintf("还有%d个任务等待该队列",OSQDel(&DATA_Msg,OS_OPT_DEL_NO_PEND,&err));
+//        if(err != OS_ERR_NONE)
+//        {
+//            rt_kprintf("删除错误:%d\r\n",err);
+//        }
     }
 }
 
@@ -54,18 +63,22 @@ static void thread3_entry(void *param)
     {
 		//请求消息
 		p=OSQPend((OS_Q*		)&DATA_Msg,   
-				  (OS_TICK		)0,
+				  (OS_TICK		)5000,
                   (OS_OPT		)OS_OPT_PEND_BLOCKING,
                   (OS_MSG_SIZE*	)&size,	
                   (CPU_TS*		)0,
                   (OS_ERR*		)&err);
-        if(err!=OS_ERR_NONE)
+        if(err==OS_ERR_NONE)
         {
-            rt_kprintf("queue pend err!:%d\r\n",err);
+            rt_kprintf("pended: str:%s,size:%d\r\n",p,size);
+        }
+        else if(err== OS_ERR_PEND_ABORT)
+        {
+            rt_kprintf("abort!\r\n");
         }
         else
         {
-            rt_kprintf("pended: str:%s,size:%d\r\n",p,size);
+            rt_kprintf("queue pend err!:%d\r\n",err);
         }       
     }
 }

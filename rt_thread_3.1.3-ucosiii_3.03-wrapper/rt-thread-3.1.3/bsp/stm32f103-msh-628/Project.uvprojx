@@ -509,6 +509,11 @@
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os.h</FilePath>
             </File>
             <File>
+              <FileName>os_type.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_type.h</FilePath>
+            </File>
+            <File>
               <FileName>os_cfg.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg.h</FilePath>
@@ -517,11 +522,6 @@
               <FileName>os_cfg_app.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg_app.h</FilePath>
-            </File>
-            <File>
-              <FileName>os_type.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_type.h</FilePath>
             </File>
             <File>
               <FileName>os_app_hooks.h</FileName>
@@ -547,11 +547,6 @@
               <FileName>os_core.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_core.c</FilePath>
-            </File>
-            <File>
-              <FileName>os_dbg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_dbg.c</FilePath>
             </File>
             <File>
               <FileName>os_flag.c</FileName>

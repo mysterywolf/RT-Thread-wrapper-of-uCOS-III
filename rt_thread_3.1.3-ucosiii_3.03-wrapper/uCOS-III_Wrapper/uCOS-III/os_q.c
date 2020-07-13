@@ -234,7 +234,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(rt_interrupt_get_nest > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0; 
