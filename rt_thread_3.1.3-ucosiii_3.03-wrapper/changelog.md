@@ -77,7 +77,8 @@
 - 修复`OSQDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题
 - 修复`OSFlagDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题
 
-### 2020-7-11
+- ### 2020-7-11
+
 
 - 增加兼容原版OS_TCB结构体成员变量
 - 实现`OSSemPendAbort`函数，`OSSemPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能
@@ -92,7 +93,9 @@
 - 实现`OSSFlagPendAbort`函数，`OSFlagPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能
 - 实现`OSQPendAbort`函数，`OSQPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能
 
+### 2020-7-14
 
+- 实现`OSSchedRoundRobinCfg`函数
 
 
 
@@ -153,6 +156,8 @@
 
 **[add]** 实现`OSFlagPendAbort`函数（目前仅有6个uCOS-III API无法兼容）
 
+**[add]** 实现`OSSchedRoundRobinCfg`函数（目前仅有5个uCOS-III API无法兼容）
+
 
 
 # TODO
@@ -160,4 +165,3 @@
 - [ ] 继续完善统计任务的其他统计项
 - [ ] 继续努力实现受限项opts
 - [ ] 继续努力实现剩余未兼容的API
-- [ ] uCOS-III时间片时间转RTT时间片时间

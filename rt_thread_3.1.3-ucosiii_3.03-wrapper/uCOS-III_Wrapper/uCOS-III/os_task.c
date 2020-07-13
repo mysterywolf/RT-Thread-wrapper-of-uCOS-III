@@ -197,7 +197,6 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     OS_REG_ID      reg_nbr;
 #endif
-    rt_uint32_t    rt_time_quanta;
     CPU_STK       *p_stk_limit;
     CPU_STK       *p_sp;
     CPU_STK_SIZE   i;
@@ -289,6 +288,14 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_tcb->SemCreateSuc = RT_FALSE;
     p_tcb->ExtPtr = p_ext;/*用户附加区指针*/
     p_tcb->SuspendCtr = 0;/*嵌套挂起为0层*/
+    p_tcb->TimeQuanta    = time_quanta;                     /* Save the #ticks for time slice (0 means not sliced)    */
+#if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
+    if (time_quanta == (OS_TICK)0) {
+        p_tcb->TimeQuantaCtr = OSSchedRoundRobinDfltTimeQuanta;
+    } else {
+        p_tcb->TimeQuantaCtr = time_quanta;
+    }
+#endif    
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = p_tcb->Task.name;
 #endif    
@@ -350,10 +357,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     }
     OS_TLS_TaskCreate(p_tcb);                               /* Call TLS hook                                          */
 #endif
-    
-    /*uCOS-III时间片时间转RTT时间片时间*/
-    rt_time_quanta = time_quanta;
-    
+       
     /*创建线程*/
     rt_err = rt_thread_init(&p_tcb->Task,
                             (const char*)p_name,
@@ -362,7 +366,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
                             p_stk_base,
                             stk_size*sizeof(CPU_STK),/*uCOS-III的任务堆栈时以CPU_STK为单位，而RTT是以字节为单位，因此需要进行转换*/
                             prio,
-                            rt_time_quanta);
+                            p_tcb->TimeQuantaCtr);
     
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err != RT_EOK)
@@ -393,7 +397,6 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_tcb->TaskEntryArg = p_tcb->Task.parameter;
     p_tcb->Prio = p_tcb->Task.init_priority;
     p_tcb->SemCtr = &p_tcb->Sem.Sem.value; 
-    p_tcb->TimeQuanta = time_quanta;
     CPU_CRITICAL_EXIT();   
     
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
@@ -1635,6 +1638,8 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
 #if OS_CFG_TASK_SUSPEND_EN > 0u
     p_tcb->SuspendCtr         = (OS_NESTING_CTR )0u;
 #endif
+    p_tcb->TimeQuanta         = (OS_TICK        )0u;
+    p_tcb->TimeQuantaCtr      = (OS_TICK        )0u;
 #if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
     p_tcb->StkFree            = (CPU_STK_SIZE   )0u;
     p_tcb->StkUsed            = (CPU_STK_SIZE   )0u;
@@ -1644,7 +1649,7 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->DbgNextPtr         = (OS_TCB        *)0;
     p_tcb->DbgNamePtr         = (CPU_CHAR      *)((void *)" ");
 #endif
-
+    
     /*---------Clear兼容层非必须成员变量---------*/
     p_tcb->StkPtr             = (CPU_STK      **)0;
     p_tcb->SemCtr             = (OS_SEM_CTR    *)0u;   
@@ -1660,8 +1665,6 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->TaskEntryAddr      = (OS_TASK_PTR    )0;
     p_tcb->TaskEntryArg       = (void          *)0;
     p_tcb->Prio               = (OS_PRIO        )OS_PRIO_INIT;   
-    p_tcb->TimeQuanta         = (OS_TICK        )0u;
-    p_tcb->TimeQuantaCtr      = (OS_TICK        )0u;    
     CPU_CRITICAL_EXIT();
 }
 

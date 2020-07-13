@@ -86,7 +86,11 @@ void  OSInit (OS_ERR  *p_err)
 #ifdef OS_SAFETY_CRITICAL_IEC61508
     OSSafetyCriticalStartFlag = DEF_FALSE;
 #endif  
-
+    
+#if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
+    OSSchedRoundRobinEn             = DEF_TRUE;/*RTT的时间片轮转是必选项*/
+    OSSchedRoundRobinDfltTimeQuanta = OS_CFG_TICK_RATE_HZ / 10u;
+#endif
 
 
     OS_TaskInit(p_err);                                     /* Initialize the task manager                            */
@@ -342,7 +346,33 @@ void  OSSchedUnlock (OS_ERR  *p_err)
 void  OSSchedRoundRobinCfg (CPU_BOOLEAN   en,
                             OS_TICK       dflt_time_quanta,
                             OS_ERR       *p_err)
-{    
+{
+    CPU_SR_ALLOC();
+
+
+
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+    CPU_CRITICAL_ENTER();
+    if (en != DEF_ENABLED) {
+        //OSSchedRoundRobinEn = DEF_DISABLED;
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("在RT-Thread中时间片轮转是必选项,不可禁用!\r\n"));
+    } else {
+        OSSchedRoundRobinEn = DEF_ENABLED;
+    }
+
+    if (dflt_time_quanta > (OS_TICK)0) {
+        OSSchedRoundRobinDfltTimeQuanta = dflt_time_quanta;
+    } else {
+        OSSchedRoundRobinDfltTimeQuanta = (OS_TICK)(OS_CFG_TICK_RATE_HZ / (OS_RATE_HZ)10);
+    }
+    CPU_CRITICAL_EXIT();
+   *p_err = OS_ERR_NONE;
 }
 #endif
 

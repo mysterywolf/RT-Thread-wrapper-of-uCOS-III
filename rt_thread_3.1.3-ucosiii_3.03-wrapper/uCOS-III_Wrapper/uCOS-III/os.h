@@ -681,6 +681,8 @@ struct os_tcb
 #if OS_CFG_TASK_SUSPEND_EN > 0u
     OS_NESTING_CTR   SuspendCtr;    /* Nesting counter for OSTaskSuspend() */
 #endif
+    OS_TICK          TimeQuanta;
+    OS_TICK          TimeQuantaCtr;
 #if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
     CPU_STK_SIZE     StkUsed;       /* Number of stack elements used from the stack */
     CPU_STK_SIZE     StkFree;       /* Number of stack elements free on   the stack */
@@ -705,8 +707,6 @@ struct os_tcb
     OS_TASK_PTR      TaskEntryAddr; /* Pointer to task entry point address */
     void            *TaskEntryArg;  /* Argument passed to task when it was created */
     OS_PRIO          Prio;          /* Task priority (0 == highest) */          
-    OS_TICK          TimeQuanta;
-    OS_TICK          TimeQuantaCtr; /*Î´ÊµÏÖ*/ 
 };
 
 /*
@@ -796,7 +796,10 @@ OS_EXT            OS_OBJ_QTY                OSTaskQty;                  /* Numbe
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
 OS_EXT            OS_REG_ID                 OSTaskRegNextAvailID;       /* Next available Task Register ID            */
 #endif
-
+#if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
+OS_EXT            OS_TICK                   OSSchedRoundRobinDfltTimeQuanta;
+OS_EXT            CPU_BOOLEAN               OSSchedRoundRobinEn;        /* Enable/Disable round-robin scheduling      */
+#endif
                                                                         /* IDLE TASK -------------------------------- */
 OS_EXT            OS_IDLE_CTR               OSIdleTaskCtr;              
 
