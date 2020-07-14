@@ -24,7 +24,7 @@ static OS_TMR 	tmr1;		//定时器1
 //定时器1的回调函数
 void tmr1_callback(void *p_tmr, void *p_arg)
 {
-    rt_kprintf("CPU usage:%d.%d\r\n",OSStatTaskCPUUsage/100,OSStatTaskCPUUsage%100);
+    rt_kprintf("CPU usage:%d.%d%%\r\n",OSStatTaskCPUUsage/100,OSStatTaskCPUUsage%100);
 }
 
 /* 线程2入口 */
@@ -48,7 +48,7 @@ static void AppTask1 (void *param)
     while(1)
     {
  		OSTaskStkChk(RT_NULL,&free,&used,&err);//获取当前任务堆栈信息
-    	rt_kprintf("AppTask1 free:%d,used:%d%%\r\n",free,used);   
+    	rt_kprintf("AppTask1 free:%d,used:%d\r\n",free,used);   
         OSTimeDlyHMSM(0,0,1,0,OS_OPT_TIME_PERIODIC|OS_OPT_TIME_HMSM_NON_STRICT,&err);
     }
 }
