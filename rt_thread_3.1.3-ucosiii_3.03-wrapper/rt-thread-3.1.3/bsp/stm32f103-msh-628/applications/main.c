@@ -14,13 +14,6 @@
 #include <os_app_hooks.h>
 
 /*finsh使用串口2*/
-void sem_test (void);
-void timer_test (void);
-void mutex_test (void);
-void queue_test (void);
-void flag_test (void);
-void task_q_test (void);
-void task_sem_test (void);
 
 int main(void)
 {
@@ -38,14 +31,6 @@ int main(void)
     OSStatTaskCPUUsageInit(&err);  	                /*统计任务*/    
     OSStatReset(&err);                              /*复位统计数据*/    
 #endif
-    
-//    sem_test();
-//    timer_test();
-//    mutex_test();
-    queue_test();
-//    flag_test();
-//    task_q_test();
-//    task_sem_test();
 
 }
 

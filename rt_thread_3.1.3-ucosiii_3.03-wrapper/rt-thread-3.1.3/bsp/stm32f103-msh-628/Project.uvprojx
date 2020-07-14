@@ -611,46 +611,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>uCOS-III_Wrapper/test</GroupName>
-          <Files>
-            <File>
-              <FileName>flag_test.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\test\flag_test.c</FilePath>
-            </File>
-            <File>
-              <FileName>mutex_test.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\test\mutex_test.c</FilePath>
-            </File>
-            <File>
-              <FileName>queue_test.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\test\queue_test.c</FilePath>
-            </File>
-            <File>
-              <FileName>sem_test.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\test\sem_test.c</FilePath>
-            </File>
-            <File>
-              <FileName>timer_test.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\test\timer_test.c</FilePath>
-            </File>
-            <File>
-              <FileName>task_q_test.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\test\task_q_test.c</FilePath>
-            </File>
-            <File>
-              <FileName>task_sem_test.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\test\task_sem_test.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
         <Group>
