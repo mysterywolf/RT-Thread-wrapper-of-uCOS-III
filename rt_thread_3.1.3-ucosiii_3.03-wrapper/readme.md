@@ -261,6 +261,7 @@ void  App_OS_TimeTickHook (void);
 目前，本兼容层可以使用以下μCOS-III原版全局变量（位于os.h）。这些全局变量的具体含义请参见2.2节中所列举出的参考资料。
 
  ```c
+
 #define          OSSchedLockNestingCtr      rt_critical_level()         /* Lock nesting level                         */
 #define          OSIntNestingCtr            rt_interrupt_get_nest()     /* Interrupt nesting level                    */
 #define          OSTCBCurPtr                ((OS_TCB*)rt_thread_self()) /* Pointer to currently running TCB           */
@@ -295,7 +296,10 @@ OS_EXT            OS_OBJ_QTY                OSTaskQty;                  /* Numbe
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
 OS_EXT            OS_REG_ID                 OSTaskRegNextAvailID;       /* Next available Task Register ID            */
 #endif
-
+#if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
+OS_EXT            OS_TICK                   OSSchedRoundRobinDfltTimeQuanta;
+OS_EXT            CPU_BOOLEAN               OSSchedRoundRobinEn;        /* Enable/Disable round-robin scheduling      */
+#endif
                                                                         /* IDLE TASK -------------------------------- */
 OS_EXT            OS_IDLE_CTR               OSIdleTaskCtr;              
 
@@ -317,6 +321,8 @@ OS_EXT            OS_TCB                    OSStatTaskTCB;
 # 4 联系方式&致谢
 
 感谢RT-Thread工程师Willian Chan的技术支持：https://github.com/willianchanlovegithub
+
+感谢RT-Thread工程师yangjie的技术支持：https://github.com/yangjie11
 
 维护：Meco Man
 

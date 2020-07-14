@@ -6,10 +6,9 @@
  * Change Logs:
  * Date           Author       Notes
  * 2019-11-05     yangjie      First edition
+ * 2020-07-14     Meco Man     implement uCOS-III Wrapper
  */
 
-#include "stm32f1xx_hal.h"
-#include <rtthread.h>
 #include <os.h>
 #include <os_app_hooks.h>
 
