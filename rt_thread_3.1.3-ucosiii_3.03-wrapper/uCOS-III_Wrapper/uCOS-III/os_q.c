@@ -59,12 +59,17 @@
 *                       OS_OPT_POST_LIFO(相当于rt_mq_urgent函数) 
 *                       OS_OPT_POST_ALL (RT-Thread未实现)
 *                       OS_OPT_POST_NO_SCHED (RT-Thread未实现)
-*              2)由于RTT没有相关接口，因此以下函数没有实现
-*                   OSQFlush
 ************************************************************************************************************************
 */
 
 #if OS_CFG_Q_EN > 0u
+
+/*由于在ipc.c文件中的struct rt_mq_message没有暴露出来,因此需要复制一份,为避免重复改名为struct _rt_mq_message*/
+struct _rt_mq_message
+{
+    struct _rt_mq_message *next;
+};
+
 /*
 ************************************************************************************************************************
 *                                               CREATE A MESSAGE QUEUE
@@ -159,8 +164,7 @@ void  OSQCreate (OS_Q        *p_q,
     }
 #endif
     
-    /*RTT消息队列内部消息头大小,由于该结构体在ipc.c文件内部没有暴露出来,因此直接写成sizeof(rt_base_t)指针字节数*/
-    msg_header_size = sizeof(rt_base_t);/*sizeof(struct rt_mq_message)*/
+    msg_header_size = sizeof(struct _rt_mq_message);/*sizeof(struct rt_mq_message)*/
     msg_size = sizeof(ucos_msg_t);/*消息队列中一条消息的最大长度，单位字节*/
     pool_size = (msg_header_size+msg_size) * max_qty;/*存放消息的缓冲区大小*/
     p_q->p_pool = RT_KERNEL_MALLOC(pool_size);/*分配用于存放消息的缓冲区*/
@@ -326,6 +330,63 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
 OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
                       OS_ERR  *p_err)
 {
+    struct _rt_mq_message *msg;
+    OS_MSG_QTY entries = 0;
+    
+    CPU_SR_ALLOC();
+
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((OS_MSG_QTY)0);
+    }
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0) {              /* Can't flush a message queue from an ISR                */
+       *p_err = OS_ERR_FLUSH_ISR;
+        return ((OS_MSG_QTY)0);
+    }
+#endif
+
+#if OS_CFG_ARG_CHK_EN > 0u
+    if (p_q == (OS_Q *)0) {                                 /* Validate arguments                                     */
+       *p_err = OS_ERR_OBJ_PTR_NULL;
+        return ((OS_MSG_QTY)0);
+    }
+#endif
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
+    if(rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue){/* Make sure message queue was created*/
+       *p_err = OS_ERR_OBJ_TYPE;
+        return ((OS_MSG_QTY)0);
+    }
+#endif
+    
+    OS_CRITICAL_ENTER();
+    while(p_q->Msg.entry>0)
+    {
+        /* get message from queue */
+        msg = (struct _rt_mq_message *)(p_q->Msg.msg_queue_head);
+
+        /* move message queue head */
+        p_q->Msg.msg_queue_head = msg->next;
+        /* reach queue tail, set to NULL */
+        if (p_q->Msg.msg_queue_tail == msg)
+            p_q->Msg.msg_queue_tail = RT_NULL;
+
+        /* decrease message entry */
+        p_q->Msg.entry --;    
+        
+        /* put message to free list */
+        msg->next = (struct _rt_mq_message *)p_q->Msg.msg_queue_free;
+        p_q->Msg.msg_queue_free = msg; 
+
+        entries ++;
+    }
+    OS_CRITICAL_EXIT();
+    
+    return entries;
 }
 #endif
 

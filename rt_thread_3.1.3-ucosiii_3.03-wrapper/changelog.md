@@ -97,6 +97,8 @@
 
 - 实现`OSSchedRoundRobinCfg`函数
 - 实现`OSFlagPendGetFlagsRdy`函数
+- 实现`OSQFlush`函数
+- 实现`OSTaskQFlush`函数
 
 
 
@@ -159,7 +161,13 @@
 
 **[add]** 实现`OSSchedRoundRobinCfg`函数
 
-**[add]** 实现`OSFlagPendGetFlagsRdy`函数（目前仅有4个uCOS-III API无法兼容）
+**[add]** 实现`OSFlagPendGetFlagsRdy`函数
+
+**[add]** 实现`OSFlagPendGetFlagsRdy`函数
+
+**[add]** 实现`OSTaskQFlush`函数
+
+**[add]** 实现`OSQFlush`函数（目前仅有2个uCOS-III API无法兼容）
 
 
 

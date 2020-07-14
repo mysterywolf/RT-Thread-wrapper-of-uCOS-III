@@ -191,23 +191,13 @@ int main(void) /*RT-Thread main线程*/
 
 
 # 3 接口
-## 3.1 没有实现兼容的API（仅4个）
+## 3.1 没有实现兼容的API（仅2个）
 
-由于RT-Thread没有提供相关接口，以下μCOS-III API无法兼容：
-
-### 3.1.1 os_q.c
- ```c
-OS_MSG_QTY  OSQFlush (OS_Q *p_q, OS_ERR *p_err);
- ```
-
-### 3.1.2 os_task.c
-
-虽然RT-Thread没有任务内建消息队列、任务内建信号量、任务内建寄存器机制，但是本兼容层均已实现，可以正常兼容。
+虽然RT-Thread没有任务内建消息队列、任务内建信号量、任务内建寄存器机制，但是本兼容层均已实现，可以正常兼容。但由于RT-Thread没有提供相关接口，**以下μCOS-III API无法兼容**：
 
  ```c
 void  OSTaskChangePrio (OS_TCB *p_tcb, OS_PRIO prio_new, OS_ERR *p_err);
 void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
-OS_MSG_QTY OSTaskQFlush (OS_TCB *p_tcb, OS_ERR *p_err);
  ```
 
 

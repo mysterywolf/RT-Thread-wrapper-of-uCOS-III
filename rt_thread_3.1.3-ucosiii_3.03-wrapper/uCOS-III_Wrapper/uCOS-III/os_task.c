@@ -46,7 +46,6 @@
 /*
 ************************************************************************************************************************
 * Note(s)    : 1)由于RTT没有相关接口，因此以下函数没有实现
-*                   OSTaskQFlush
 *                   OSTaskChangePrio
 *                   OSTaskTimeQuantaSet
 ************************************************************************************************************************
@@ -510,10 +509,33 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 */
 
 #if OS_CFG_TASK_Q_EN > 0u
-//OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
-//                          OS_ERR  *p_err)
-//{
-//}
+OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
+                          OS_ERR  *p_err)
+{    
+    CPU_SR_ALLOC();
+
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return ((OS_MSG_QTY)0);
+    }
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0) {              /* Can't flush a message queue from an ISR                */
+       *p_err = OS_ERR_FLUSH_ISR;
+        return ((OS_MSG_QTY)0);
+    }
+#endif
+
+    if (p_tcb == (OS_TCB *)0) {                             /* Flush message queue of calling task?                   */
+        CPU_CRITICAL_ENTER();
+        p_tcb = OSTCBCurPtr;
+        CPU_CRITICAL_EXIT();
+    }
+
+    return OSQFlush(&p_tcb->MsgQ, p_err);
+}
 #endif
 
 /*

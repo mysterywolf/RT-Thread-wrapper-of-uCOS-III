@@ -364,7 +364,7 @@ typedef  enum  os_err {
 //    OS_ERR_FLAG_GRP_DEPLETED         = 15101u,
 //    OS_ERR_FLAG_NOT_RDY              = 15102u,
 //    OS_ERR_FLAG_PEND_OPT             = 15103u,
-//    OS_ERR_FLUSH_ISR                 = 15104u,
+    OS_ERR_FLUSH_ISR                 = 15104u,
 
     OS_ERR_G                         = 16000u,
 
