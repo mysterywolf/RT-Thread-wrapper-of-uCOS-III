@@ -498,6 +498,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uC-CPU\cpu_a.c</FilePath>
             </File>
+            <File>
+              <FileName>cpu_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uC-CPU\cpu_core.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -17,9 +17,9 @@
 #define TASK_TIMESLICE        5		/*任务时间片*/
 
 static CPU_STK AppTask1_Stack[TASK_STACK_SIZE];/*任务堆栈*/
-static OS_TCB AppTask1_TCB;/*任务控制块*/
+static OS_TCB  AppTask1_TCB;/*任务控制块*/
 
-static OS_TMR 	CPUUsageTimer;/*CPU使用率测量定时器*/
+static OS_TMR  CPUUsageTimer;/*CPU使用率测量定时器*/
 
 /*定时器回调函数*/ 
 void tmr1_callback(void *p_tmr, void *p_arg)
