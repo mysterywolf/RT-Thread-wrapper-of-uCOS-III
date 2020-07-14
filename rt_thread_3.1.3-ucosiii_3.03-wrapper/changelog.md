@@ -99,6 +99,7 @@
 - 实现`OSFlagPendGetFlagsRdy`函数
 - 实现`OSQFlush`函数
 - 实现`OSTaskQFlush`函数
+- 补充`timer_sample.c`例程
 
 
 
@@ -125,7 +126,7 @@
 
 
 
-## v0.3.0（尚未发布）
+## v0.3.0
 
 **[bug fix]** 修复`OSSemDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题（已知）
 
