@@ -101,6 +101,11 @@
 - 实现`OSTaskQFlush`函数
 - 补充`timer_sample.c`例程
 
+### 2020-7-15
+
+- 移植`cpu_core.c`文件增加`CPU_Init`函数，老项目如果用到该函数在迁移时不会报错，函数内部没有实际动作
+- 优化了`timer_sample.c`例程
+
 
 
 
@@ -169,6 +174,14 @@
 **[add]** 实现`OSTaskQFlush`函数
 
 **[add]** 实现`OSQFlush`函数（目前仅有2个uCOS-III API无法兼容）
+
+
+
+## v0.4.0（尚未发布）
+
+**[add]**移植`cpu_core.c`文件增加`CPU_Init`函数，防止老项目移植时因为没有该函数而报错，在函数内没有任何动作(DO NOTHING)
+
+
 
 
 

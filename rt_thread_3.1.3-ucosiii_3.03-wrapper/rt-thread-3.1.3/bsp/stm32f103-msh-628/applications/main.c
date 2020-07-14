@@ -20,7 +20,6 @@ int main(void)
 {
     OS_ERR err;
     
-    CPU_Init();
     OSInit(&err);                                   /*uCOS-III操作系统初始化*/
     
     OSStart(&err);                                  /*开始运行uCOS-III操作系统*/
