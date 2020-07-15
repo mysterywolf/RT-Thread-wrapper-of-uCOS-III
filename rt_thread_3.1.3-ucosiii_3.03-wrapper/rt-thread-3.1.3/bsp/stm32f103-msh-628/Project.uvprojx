@@ -623,6 +623,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\samples\timer_sample.c</FilePath>
             </File>
+            <File>
+              <FileName>mutex_sample.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\samples\mutex_sample.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

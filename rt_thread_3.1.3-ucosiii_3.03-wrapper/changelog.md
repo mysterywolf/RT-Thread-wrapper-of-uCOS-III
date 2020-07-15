@@ -105,6 +105,7 @@
 
 - 移植`cpu_core.c`文件增加`CPU_Init`函数，老项目如果用到该函数在迁移时不会报错，函数内部没有实际动作
 - 优化了`timer_sample.c`例程
+- 补充`mutex_sample.c`例程
 
 
 

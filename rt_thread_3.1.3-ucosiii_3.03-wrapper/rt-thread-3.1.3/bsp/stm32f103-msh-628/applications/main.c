@@ -15,6 +15,7 @@
 /*finsh使用串口2*/
 
 void timer_sample (void);
+void mutex_sample (void);
 
 int main(void)
 {
@@ -33,5 +34,6 @@ int main(void)
     OSStatReset(&err);                              /*复位统计数据*/    
 #endif
 
-    timer_sample();
+//    timer_sample();
+    mutex_sample();
 }

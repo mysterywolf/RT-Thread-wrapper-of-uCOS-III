@@ -61,11 +61,11 @@ void timer_sample (void)
 			   (CPU_CHAR*)"AppTask1", 		    /*任务名字*/
                AppTask1, 			            /*任务函数*/
                0,					            /*传递给任务函数的参数*/
-               TASK_PRIORITY-1,                 /*任务优先级*/
+               TASK_PRIORITY,                   /*任务优先级*/
                AppTask1_Stack,	                /*任务堆栈基地址*/
                TASK_STACK_SIZE/10,	            /*任务堆栈深度限位*/
                TASK_STACK_SIZE,		            /*任务堆栈大小*/
-               20,					            /*任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息*/
+               0,					            /*任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息*/
                TASK_TIMESLICE,			        /*当使能时间片轮转时的时间片长度，为0时为默认长度*/
                0,					            /*用户补充的存储区*/
                OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, /*任务选项*/

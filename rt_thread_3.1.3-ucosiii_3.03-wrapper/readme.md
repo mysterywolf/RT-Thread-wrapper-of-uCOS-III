@@ -206,9 +206,18 @@ void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
 
 功能受限函数是指该函数虽然在兼容层中实现，但是实现不完全。即本兼容层无法完全实现该函数在原版μCOS-III中的所有功能，予以列出：
 
-```c
+### 3.2.1 os_flag.c
 
+#### 3.2.1.1
+
+```c
+void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
+                    CPU_CHAR     *p_name,
+                    OS_FLAGS      flags,
+                    OS_ERR       *p_err);
 ```
+
+​	flags字段无效，在μCOS-III中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死，必须置1为事件发生，因此该位没有意义,直接填0即可。
 
 
 
