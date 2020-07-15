@@ -64,7 +64,7 @@
 *              flags          contains the initial value to store in the event flag group (typically 0).
 *                             -------------说明-------------
 *                             在uCOS中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死
-*                             置1为事件发生,因此该位没有意义,直接填0即可
+*                             置1为事件发生,因此该位必须为0。
 *
 *              p_err          is a pointer to an error code which will be returned to your application:
 *
@@ -75,7 +75,12 @@
 *                                 OS_ERR_NAME                    if 'p_name' is a NULL pointer
 *                                 OS_ERR_OBJ_CREATED             if the event flag group has already been created
 *                                 OS_ERR_OBJ_PTR_NULL            if 'p_grp' is a NULL pointer
-*
+*                               + OS_ERR_OPT_INVALID
+*                             -------------说明-------------
+*                                 OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
+*                               - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
+*                               + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
+*                               应用层需要对API返回的错误码判断做出相应的修改
 * Returns    : none
 ************************************************************************************************************************
 */
@@ -86,9 +91,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
                     OS_ERR       *p_err)
 {
     rt_err_t rt_err;
-    
-    CPU_VAL_UNUSED(flags);
-    
+        
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -121,6 +124,12 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
     {
         *p_err = OS_ERR_NAME;
         return;
+    } 
+    if(flags)
+    {
+        *p_err = OS_ERR_OPT_INVALID;
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagCreate: wrapper can't accept this option\r\n"));
+        return;        
     }  
 #endif
 
@@ -132,7 +141,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
         return;       
     }   
 #endif
-    
+ 
     /*在uCOS中事件是直接被插入到链表,不按照优先级排列*/
     rt_err = rt_event_init(&p_grp->FlagGrp,(const char*)p_name,RT_IPC_FLAG_FIFO);
     *p_err = rt_err_to_ucosiii(rt_err);
