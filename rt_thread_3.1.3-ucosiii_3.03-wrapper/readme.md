@@ -208,7 +208,7 @@ void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
 
 ### 3.2.1 os_flag.c
 
-#### 3.2.1.1
+#### 3.2.1.1 OSFlagCreate()
 
 ```c
 void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
