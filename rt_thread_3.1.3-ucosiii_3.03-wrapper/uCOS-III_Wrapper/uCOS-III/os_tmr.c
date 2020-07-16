@@ -120,7 +120,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 {
     rt_uint8_t rt_flag;
     rt_tick_t  time;
-    
+        
     CPU_SR_ALLOC();
     
 #ifdef OS_SAFETY_CRITICAL
@@ -216,14 +216,18 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     p_tmr->Type           = (OS_OBJ_TYPE        )OS_OBJ_TYPE_TMR;    
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)p_callback;
     p_tmr->CallbackPtrArg = (void              *)p_callback_arg;
+    p_tmr->Opt            = (OS_OPT             )opt;
+#if OS_CFG_DBG_EN > 0u
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
+#endif
     OS_CRITICAL_EXIT();
+    
     
     rt_timer_init(&p_tmr->Tmr,
                   (const char*)p_name,
-                  p_callback,
-                  p_callback_arg,
+                  OS_TmrCallback,
+                  p_tmr,/*将p_tmr作为参数传到回调函数中*/
                   time,
                   rt_flag);
     
@@ -427,6 +431,8 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
 {
     rt_err_t rt_err;
     
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -463,6 +469,9 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err == RT_EOK)
     {
+        CPU_CRITICAL_ENTER();
+        p_tmr->State = OS_TMR_STATE_RUNNING;
+        CPU_CRITICAL_EXIT();
         return DEF_TRUE;
     }
     else
@@ -499,10 +508,11 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
 OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
                          OS_ERR  *p_err)
 {
-    rt_uint8_t state;
-    
+    OS_STATE  state;
     CPU_SR_ALLOC();
-    
+
+
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -511,7 +521,7 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if (OSIntNestingCtr > (OS_NESTING_CTR)0){
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0) {              /* See if trying to call from an ISR                      */
        *p_err = OS_ERR_TMR_ISR;
         return (OS_TMR_STATE_UNUSED);
     }
@@ -522,40 +532,31 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
        *p_err = OS_ERR_TMR_INVALID;
         return (OS_TMR_STATE_UNUSED);
     }
-#endif 
-    
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
-    /*判断内核对象是否为定时器*/
-    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)
-    {
-        *p_err = OS_ERR_OBJ_TYPE;
-        return DEF_FALSE;       
-    }
-    
-    CPU_CRITICAL_ENTER();
-    state = (p_tmr->Tmr.parent.flag);
-    CPU_CRITICAL_EXIT();
-    
-    *p_err  = OS_ERR_NONE;
-    
-    if(p_tmr->State == OS_TMR_STATE_UNUSED)
-    {
-        return OS_TMR_STATE_UNUSED;
-    }
-    else if(!(state&RT_TIMER_FLAG_ACTIVATED)&&!(state&RT_TIMER_FLAG_PERIODIC))
-    {
-        return OS_TMR_STATE_COMPLETED;
-    }
-    else if(state&RT_TIMER_FLAG_ACTIVATED)
-    {
-        return OS_TMR_STATE_RUNNING;
-    }
-    else
-    {
-        return OS_TMR_STATE_STOPPED;
-    }
-    
 #endif
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
+    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer){/* Make sure timer was created                            */
+       *p_err = OS_ERR_OBJ_TYPE;
+        return (OS_TMR_STATE_UNUSED);
+    }
+#endif
+
+    CPU_CRITICAL_ENTER();
+    state = p_tmr->State;
+    switch (state) {
+        case OS_TMR_STATE_UNUSED:
+        case OS_TMR_STATE_STOPPED:
+        case OS_TMR_STATE_COMPLETED:
+        case OS_TMR_STATE_RUNNING:
+            *p_err = OS_ERR_NONE;
+             break;
+
+        default:
+            *p_err = OS_ERR_TMR_INVALID_STATE;
+             break;
+    }
+    CPU_CRITICAL_EXIT();
+    return (state);
 }
 
 /*
@@ -650,6 +651,7 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
     }
     
     CPU_CRITICAL_ENTER();
+    p_tmr->State = OS_TMR_STATE_STOPPED;/*标记目前定时器状态已经停止*/
     p_fnct = p_tmr->CallbackPtr;                         /* Execute callback function ...           */
     CPU_CRITICAL_EXIT();
     
@@ -659,7 +661,7 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
     {
         case OS_OPT_TMR_CALLBACK:
             if (p_fnct != (OS_TMR_CALLBACK_PTR)0) {      /* ... if available                        */
-                (*p_fnct)(p_tmr->CallbackPtrArg);        /* Use callback arg when timer was created */
+                (*p_fnct)((void *)p_tmr, p_tmr->CallbackPtrArg);        /* Use callback arg when timer was created */
             } else {
                 *p_err = OS_ERR_TMR_NO_CALLBACK;
             }            
@@ -667,7 +669,7 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
             
         case OS_OPT_TMR_CALLBACK_ARG:
               if (p_fnct != (OS_TMR_CALLBACK_PTR)0) {
-                (*p_fnct)(p_callback_arg);               /* .. using the 'callback_arg' provided in call */
+                (*p_fnct)((void *)p_tmr, p_callback_arg);               /* .. using the 'callback_arg' provided in call */
               } else {
                  *p_err = OS_ERR_TMR_NO_CALLBACK;
               }            
@@ -717,6 +719,7 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
     p_tmr->Type           = OS_OBJ_TYPE_NONE;
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)0;
     p_tmr->CallbackPtrArg = (void              *)0;
+    p_tmr->Opt            = (OS_OPT             )0;
 #if OS_CFG_DBG_EN > 0u    
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgNextPtr     = (OS_TMR            *)0;
@@ -808,4 +811,34 @@ void  OS_TmrInit (OS_ERR  *p_err)
 #if OS_CFG_DBG_EN > 0u
     OSTmrDbgListPtr = (OS_TMR   *)0;
 #endif
+}
+
+/*
+************************************************************************************************************************
+*                                                   内部回调函数
+*
+* Description: 由于RT-Thread的定时器回调函数参数只有一个，而uCOS-III的定时器回调函数参数有两个，因此需要
+*              先由RTT调用内部回调函数，再由内部回调函数调用uCOS-III的回调函数，以此完成参数的转换。
+************************************************************************************************************************
+*/
+void OS_TmrCallback(void *p_ara)
+{
+    OS_TMR *p_tmr;
+    OS_ERR err;
+    
+    CPU_SR_ALLOC();
+    
+    p_tmr = (OS_TMR*)p_ara;
+        
+    /*调用真正uCOS-III的软件定时器回调函数*/
+    OSSchedLock(&err);
+    p_tmr->CallbackPtr((void *)p_tmr, p_tmr->CallbackPtrArg);
+    OSSchedUnlock(&err);
+    
+    CPU_CRITICAL_ENTER();
+    if(p_tmr->Opt == OS_OPT_TMR_ONE_SHOT)
+    {
+        p_tmr->State = OS_TMR_STATE_COMPLETED;
+    }
+    CPU_CRITICAL_EXIT();    
 }

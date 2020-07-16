@@ -585,16 +585,15 @@ typedef  struct  os_sem              OS_SEM;
 
 typedef  struct  os_flag_grp         OS_FLAG_GRP;
 
-/*注意：RTT的定时器回调函数比uCOS-III的少了一个参数！*/
-typedef  void                        (*OS_TMR_CALLBACK_PTR)(void *p_arg);
+typedef  void                      (*OS_TMR_CALLBACK_PTR)  (void *p_tmr, void *p_arg);
 typedef  struct  os_tmr              OS_TMR;
 
-typedef  void                        (*OS_TASK_PTR)        (void *p_arg);
+typedef  void                      (*OS_TASK_PTR)          (void *p_arg);
 typedef  struct  os_tcb              OS_TCB;
 
 #if OS_CFG_APP_HOOKS_EN > 0u
-typedef  void                        (*OS_APP_HOOK_VOID)   (void);
-typedef  void                        (*OS_APP_HOOK_TCB)    (OS_TCB *p_tcb);
+typedef  void                      (*OS_APP_HOOK_VOID)     (void);
+typedef  void                      (*OS_APP_HOOK_TCB)      (OS_TCB *p_tcb);
 #endif
 
 /*
@@ -752,6 +751,7 @@ struct  os_tmr {
     OS_TMR_CALLBACK_PTR  CallbackPtr;                       /* Function to call when timer expires                    */
     void                *CallbackPtrArg;                    /* Argument to pass to function when timer expires        */
     OS_STATE             State;
+    OS_OPT               Opt;                               /* Options (see OS_OPT_TMR_xxx)                           */
 #if OS_CFG_DBG_EN > 0u
     OS_TMR              *DbgPrevPtr;
     OS_TMR              *DbgNextPtr;
@@ -1255,6 +1255,7 @@ void          OS_TmrDbgListRemove       (OS_TMR                *p_tmr);
 
 void          OS_TmrInit                (OS_ERR                *p_err);
 
+void          OS_TmrCallback            (void *p_ara);
 #endif
   
 /* ================================================================================================================== */

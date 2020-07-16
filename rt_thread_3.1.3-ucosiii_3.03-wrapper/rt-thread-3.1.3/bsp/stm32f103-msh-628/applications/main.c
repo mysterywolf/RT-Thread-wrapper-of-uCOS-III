@@ -36,5 +36,4 @@ int main(void)
 
     timer_sample();
 //    mutex_sample();
-    
 }
