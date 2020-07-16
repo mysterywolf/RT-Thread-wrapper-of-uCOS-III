@@ -537,7 +537,12 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
     CPU_CRITICAL_EXIT();
     
     *p_err  = OS_ERR_NONE;
-    if(!(state&RT_TIMER_FLAG_ACTIVATED)&&!(state&RT_TIMER_FLAG_PERIODIC))
+    
+    if(p_tmr->State == OS_TMR_STATE_UNUSED)
+    {
+        return OS_TMR_STATE_UNUSED;
+    }
+    else if(!(state&RT_TIMER_FLAG_ACTIVATED)&&!(state&RT_TIMER_FLAG_PERIODIC))
     {
         return OS_TMR_STATE_COMPLETED;
     }
