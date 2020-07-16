@@ -528,7 +528,7 @@ typedef  enum  os_err {
     OS_ERR_TMR_INVALID_STATE         = 29505u,
     OS_ERR_TMR_INVALID               = 29506u,
     OS_ERR_TMR_ISR                   = 29507u,
-//    OS_ERR_TMR_NO_CALLBACK           = 29508u,
+    OS_ERR_TMR_NO_CALLBACK           = 29508u,
 //    OS_ERR_TMR_NON_AVAIL             = 29509u,
 //    OS_ERR_TMR_PRIO_INVALID          = 29510u,
 //    OS_ERR_TMR_STK_INVALID           = 29511u,
@@ -586,10 +586,10 @@ typedef  struct  os_sem              OS_SEM;
 typedef  struct  os_flag_grp         OS_FLAG_GRP;
 
 /*注意：RTT的定时器回调函数比uCOS-III的少了一个参数！*/
-typedef  void                        (*OS_TMR_CALLBACK_PTR)(void *parameter);
+typedef  void                        (*OS_TMR_CALLBACK_PTR)(void *p_arg);
 typedef  struct  os_tmr              OS_TMR;
 
-typedef  void                        (*OS_TASK_PTR)        (void *parameter);
+typedef  void                        (*OS_TASK_PTR)        (void *p_arg);
 typedef  struct  os_tcb              OS_TCB;
 
 #if OS_CFG_APP_HOOKS_EN > 0u
@@ -747,8 +747,15 @@ struct  os_mutex {
 */
 
 struct  os_tmr {
-    struct  rt_timer Tmr;
-    OS_OBJ_TYPE      Type;
+    struct  rt_timer     Tmr;
+    OS_OBJ_TYPE          Type;
+    OS_TMR_CALLBACK_PTR  CallbackPtr;                       /* Function to call when timer expires                    */
+    void                *CallbackPtrArg;                    /* Argument to pass to function when timer expires        */
+    OS_STATE             State;
+#if OS_CFG_DBG_EN > 0u
+    OS_TMR              *DbgPrevPtr;
+    OS_TMR              *DbgNextPtr;
+#endif
 };
 
 
@@ -812,6 +819,13 @@ OS_EXT            OS_TICK                   OSStatTaskCtrMax;
 OS_EXT            OS_TICK                   OSStatTaskCtrRun;
 OS_EXT            CPU_BOOLEAN               OSStatTaskRdy;
 OS_EXT            OS_TCB                    OSStatTaskTCB;
+#endif
+
+#if OS_CFG_TMR_EN > 0u                                                  /* TIMERS ----------------------------------- */
+#if OS_CFG_DBG_EN > 0u
+OS_EXT            OS_TMR                   *OSTmrDbgListPtr;
+#endif
+OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Number of timers created                   */
 #endif
 
 
@@ -1228,6 +1242,19 @@ CPU_BOOLEAN   OSTmrStop                 (OS_TMR                *p_tmr,
                                          OS_OPT                 opt,
                                          void                  *p_callback_arg,
                                          OS_ERR                *p_err);
+
+/* ------------------------------------------------ INTERNAL FUNCTIONS ---------------------------------------------- */
+
+void          OS_TmrClr                 (OS_TMR                *p_tmr);
+
+#if OS_CFG_DBG_EN > 0u
+void          OS_TmrDbgListAdd          (OS_TMR                *p_tmr);
+
+void          OS_TmrDbgListRemove       (OS_TMR                *p_tmr);
+#endif
+
+void          OS_TmrInit                (OS_ERR                *p_err);
+
 #endif
   
 /* ================================================================================================================== */

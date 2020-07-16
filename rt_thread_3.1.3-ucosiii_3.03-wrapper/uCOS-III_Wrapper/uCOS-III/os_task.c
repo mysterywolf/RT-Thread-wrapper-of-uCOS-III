@@ -41,7 +41,6 @@
 */
 
 #include <os.h>
-#include <string.h>
 
 /*
 ************************************************************************************************************************
@@ -140,7 +139,7 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
 *                                 OS_OPT_TASK_STK_CLR         Clear the stack when the task is created
 *                               - OS_OPT_TASK_SAVE_FP         If the CPU has floating-point registers, save them
 *                                                             during a context switch.
-*                               - OS_OPT_TASK_NO_TLS          If the caller doesn't want or need TLS (Thread Local 
+*                                 OS_OPT_TASK_NO_TLS          If the caller doesn't want or need TLS (Thread Local 
 *                                                             Storage) support for the task.  If you do not include this
 *                                                             option, TLS will be supported by default.
 *
@@ -189,7 +188,6 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 { 
     rt_err_t rt_err;
     OS_ERR err;
-    char name[RT_NAME_MAX];
 #if defined(OS_CFG_TLS_TBL_SIZE) && (OS_CFG_TLS_TBL_SIZE > 0u)
     OS_TLS_ID      id;
 #endif
@@ -308,17 +306,13 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #if OS_CFG_TASK_Q_EN > 0u   
     if(q_size>0)/*开启任务内建消息队列*/
     {
-        rt_memset(name, 0, sizeof(name));
-        strncat(name, (const char*)p_name, RT_NAME_MAX);
-        strncat(name, "T", RT_NAME_MAX);
-        OSQCreate(&p_tcb->MsgQ, (CPU_CHAR*)name, q_size, &err);
+        OSQCreate(&p_tcb->MsgQ, (CPU_CHAR*)p_name, q_size, &err);
         if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
         {
-            CPU_CRITICAL_ENTER(); 
+            CPU_CRITICAL_ENTER();
             p_tcb->MsgCreateSuc = RT_FALSE;
             CPU_CRITICAL_EXIT();
-            
-            RT_DEBUG_LOG(OS_CFG_DBG_EN,("task qmsg %s create err!\r\n",name));
+            RT_DEBUG_LOG(OS_CFG_DBG_EN,("task qmsg %s create err!\r\n",p_name));
         }
         else
         {
@@ -331,17 +325,13 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     CPU_VAL_UNUSED(q_size);
 #endif
     
-    rt_memset(name, 0, sizeof(name));
-    strncat(name, (const char*)p_name, RT_NAME_MAX);
-    strncat(name, "T", RT_NAME_MAX);  
-    OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)name,0,&err);
+    OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)p_name,0,&err);
     if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
     {
         CPU_CRITICAL_ENTER(); 
         p_tcb->SemCreateSuc = RT_FALSE;
         CPU_CRITICAL_EXIT();
-        
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("task sem %s create err!\r\n",name));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("task sem %s create err!\r\n",p_name));
     }
     else
     {

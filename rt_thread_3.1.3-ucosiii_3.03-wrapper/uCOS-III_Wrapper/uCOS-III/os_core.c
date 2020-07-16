@@ -109,6 +109,13 @@ void  OSInit (OS_ERR  *p_err)
         return;
     }
 #endif    
+    
+#if OS_CFG_TMR_EN > 0u                                      /* Initialize the Timer Manager module                    */
+    OS_TmrInit(p_err);
+    if (*p_err != OS_ERR_NONE) {
+        return;
+    }
+#endif    
 }
 
 /*

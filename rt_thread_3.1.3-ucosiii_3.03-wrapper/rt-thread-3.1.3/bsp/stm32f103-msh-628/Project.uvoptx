@@ -765,8 +765,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\uCOS-III_Wrapper\samples\timer_sample.c</PathWithFileName>
-      <FilenameWithoutPath>timer_sample.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\uCOS-III_Wrapper\samples\mutex_sample.c</PathWithFileName>
+      <FilenameWithoutPath>mutex_sample.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -777,8 +777,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\uCOS-III_Wrapper\samples\mutex_sample.c</PathWithFileName>
-      <FilenameWithoutPath>mutex_sample.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\uCOS-III_Wrapper\samples\timer_sample.c</PathWithFileName>
+      <FilenameWithoutPath>timer_sample.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

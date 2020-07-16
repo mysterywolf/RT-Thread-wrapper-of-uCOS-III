@@ -22,7 +22,7 @@ static OS_TCB  AppTask1_TCB;/*任务控制块*/
 static OS_TMR  CPUUsageTimer;/*CPU使用率测量定时器*/
 
 /*定时器回调函数*/ 
-void tmr1_callback(void *p_tmr, void *p_arg)
+void tmr1_callback(void *p_arg)
 {
     rt_kprintf("CPU usage:%d.%d%%\r\n",OSStatTaskCPUUsage/100,OSStatTaskCPUUsage%100);
 }

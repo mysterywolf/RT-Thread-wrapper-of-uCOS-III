@@ -663,12 +663,12 @@ OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err)
 *              opt           indicates whether the flags will be:
 *
 *                                OS_OPT_POST_FLAG_SET       set
-*                                OS_OPT_POST_FLAG_CLR       cleared
+*                              - OS_OPT_POST_FLAG_CLR       cleared
 *
 *                            you can also 'add' OS_OPT_POST_NO_SCHED to prevent the scheduler from being called.
 *                             -------------说明-------------
 *                             在uCOS中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死
-*                             置1为事件发生,因此该位没有意义,直接填OS_OPT_POST_FLAG_SET即可
+*                             置1为事件发生,因此该位必须填OS_OPT_POST_FLAG_SET
 *
 *              p_err         is a pointer to an error code and can be:
 *
@@ -689,9 +689,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
                       OS_ERR       *p_err)
 {
     rt_err_t rt_err;
-    
-    CPU_VAL_UNUSED(opt);
-    
+        
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -716,6 +714,12 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
             *p_err = OS_ERR_OPT_INVALID;
              return ((OS_FLAGS)0);
     }
+    if(opt != OS_OPT_POST_FLAG_SET)
+    {
+        *p_err = OS_ERR_OPT_INVALID;
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagPost: wrapper can't accept this option\r\n"));
+        return ((OS_FLAGS)0);  
+    }      
 #endif
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    

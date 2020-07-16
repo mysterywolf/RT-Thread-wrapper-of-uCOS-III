@@ -121,6 +121,8 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     rt_uint8_t rt_flag;
     rt_tick_t  time;
     
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -209,6 +211,15 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
         return;
     }
     
+    OS_CRITICAL_ENTER();
+    p_tmr->State          = (OS_STATE           )OS_TMR_STATE_STOPPED;     /* Initialize the timer fields             */
+    p_tmr->Type           = (OS_OBJ_TYPE        )OS_OBJ_TYPE_TMR;    
+    p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)p_callback;
+    p_tmr->CallbackPtrArg = (void              *)p_callback_arg;
+    p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
+    p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
+    OS_CRITICAL_EXIT();
+    
     rt_timer_init(&p_tmr->Tmr,
                   (const char*)p_name,
                   p_callback,
@@ -217,6 +228,13 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
                   rt_flag);
     
     *p_err = OS_ERR_NONE;/*rt_timer_init没有返回错误码*/
+
+    OS_CRITICAL_ENTER();
+#if OS_CFG_DBG_EN > 0u
+    OS_TmrDbgListAdd(p_tmr);
+#endif
+    OSTmrQty++;                                             /* Keep track of the number of timers created             */                  
+    OS_CRITICAL_EXIT();
 }
 
 /*
@@ -252,6 +270,8 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
 {
     rt_err_t rt_err;
     
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -285,6 +305,16 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
 #endif
     
     rt_err = rt_timer_detach(&p_tmr->Tmr);
+    
+    OS_CRITICAL_ENTER();
+#if OS_CFG_DBG_EN > 0u
+    OS_TmrDbgListRemove(p_tmr);
+#endif
+    OSTmrQty--;
+    OS_CRITICAL_EXIT();
+    
+    OS_TmrClr(p_tmr);
+    
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err == RT_EOK)
     {
@@ -520,10 +550,7 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
         return OS_TMR_STATE_STOPPED;
     }
     
-#endif    
-    
-    
-    
+#endif
 }
 
 /*
@@ -537,12 +564,10 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
 *              opt           Allows you to specify an option to this functions which can be:
 *
 *                               OS_OPT_TMR_NONE            Do nothing special but stop the timer
-*                             - OS_OPT_TMR_CALLBACK        Execute the callback function, pass it the callback argument
+*                               OS_OPT_TMR_CALLBACK        Execute the callback function, pass it the callback argument
 *                                                          specified when the timer was created.
-*                             - OS_OPT_TMR_CALLBACK_ARG    Execute the callback function, pass it the callback argument
+*                               OS_OPT_TMR_CALLBACK_ARG    Execute the callback function, pass it the callback argument
 *                                                          specified in THIS function call
-*                            -------------说明-------------
-*                             由于RTT并没有实现回调函数的功能,因此OS_OPT_TMR_CALLBACK和OS_OPT_TMR_CALLBACK_ARG选项无效
 *
 *              callback_arg  Is a pointer to a 'new' callback argument that can be passed to the callback function
 *                               instead of the timer's callback argument.  In other words, use 'callback_arg' passed in
@@ -556,7 +581,7 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
 *                               OS_ERR_TMR_INVALID         'p_tmr' is a NULL pointer
 *                             - OS_ERR_TMR_INVALID_STATE   the timer is in an invalid state
 *                               OS_ERR_TMR_ISR             if the function was called from an ISR
-*                             - OS_ERR_TMR_NO_CALLBACK     if the timer does not have a callback function defined
+*                               OS_ERR_TMR_NO_CALLBACK     if the timer does not have a callback function defined
 *                               OS_ERR_TMR_STOPPED         if the timer was already stopped
 *                            -------------说明-------------
 *                               OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
@@ -575,8 +600,10 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
                         OS_ERR  *p_err)
 {
     rt_err_t rt_err;
+    OS_TMR_CALLBACK_PTR  p_fnct;    
+    OS_ERR err;
     
-    CPU_VAL_IGNORED(p_callback_arg);/*由于RTT并没有实现回调函数的功能,因此p_callback_arg无用*/
+    CPU_SR_ALLOC();
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -609,24 +636,171 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
         return DEF_FALSE;       
     }
 #endif
-    
-    /*由于RTT并没有实现回调函数的功能,因此OS_OPT_TMR_CALLBACK和OS_OPT_TMR_CALLBACK_ARG选项无效*/
-    if(opt != OS_OPT_TMR_NONE)
-    {
-        *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSTmrStop: wrapper can't accept this option\r\n"));
-        return DEF_FALSE;
-    }
-    
+     
     rt_err = rt_timer_stop(&p_tmr->Tmr);
-    
     if(rt_err == -RT_ERROR)
     {
         *p_err = OS_ERR_TMR_STOPPED;/*返回-RT_ERROR 时则说明已经处于停止状态*/
+        return DEF_FALSE;
+    }
+    
+    CPU_CRITICAL_ENTER();
+    p_fnct = p_tmr->CallbackPtr;                         /* Execute callback function ...           */
+    CPU_CRITICAL_EXIT();
+    
+    *p_err = OS_ERR_NONE;
+    OSSchedLock(&err);
+    switch (opt) 
+    {
+        case OS_OPT_TMR_CALLBACK:
+            if (p_fnct != (OS_TMR_CALLBACK_PTR)0) {      /* ... if available                        */
+                (*p_fnct)(p_tmr->CallbackPtrArg);        /* Use callback arg when timer was created */
+            } else {
+                *p_err = OS_ERR_TMR_NO_CALLBACK;
+            }            
+            break;
+            
+        case OS_OPT_TMR_CALLBACK_ARG:
+              if (p_fnct != (OS_TMR_CALLBACK_PTR)0) {
+                (*p_fnct)(p_callback_arg);               /* .. using the 'callback_arg' provided in call */
+              } else {
+                 *p_err = OS_ERR_TMR_NO_CALLBACK;
+              }            
+            break;
+              
+        case OS_OPT_TMR_NONE:
+            break;
+
+         default:
+             OSSchedUnlock(&err);
+            *p_err = OS_ERR_OPT_INVALID;
+             return (DEF_FALSE);        
+    }        
+    OSSchedUnlock(&err);
+    
+    if(*p_err != OS_ERR_NONE)
+    {
         return DEF_FALSE;
     }
     else
     {
         return DEF_TRUE;
     }
+}
+
+/*
+************************************************************************************************************************
+*                                                 CLEAR TIMER FIELDS
+*
+* Description: This function is called to clear all timer fields.
+*
+* Argument(s): p_tmr    is a pointer to the timer to clear
+*              -----
+*
+* Returns    : none
+*
+* Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
+************************************************************************************************************************
+*/
+
+void  OS_TmrClr (OS_TMR  *p_tmr)
+{
+    CPU_SR_ALLOC();
+    
+    CPU_CRITICAL_ENTER();
+    p_tmr->State          = OS_TMR_STATE_UNUSED;            /* Clear timer fields                                     */
+    p_tmr->Type           = OS_OBJ_TYPE_NONE;
+    p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)0;
+    p_tmr->CallbackPtrArg = (void              *)0;
+#if OS_CFG_DBG_EN > 0u    
+    p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
+    p_tmr->DbgNextPtr     = (OS_TMR            *)0;
+#endif
+    CPU_CRITICAL_EXIT();
+}
+
+/*
+************************************************************************************************************************
+*                                         ADD/REMOVE TIMER TO/FROM DEBUG TABLE
+*
+* Description: These functions are called by uC/OS-III to add or remove a timer to/from a timer debug table.
+*
+* Arguments  : p_tmr     is a pointer to the timer to add/remove
+*
+* Returns    : none
+*
+* Note(s)    : These functions are INTERNAL to uC/OS-III and your application should not call it.
+************************************************************************************************************************
+*/
+
+#if OS_CFG_DBG_EN > 0u
+void  OS_TmrDbgListAdd (OS_TMR  *p_tmr)
+{
+    p_tmr->DbgPrevPtr               = (OS_TMR *)0;
+    if (OSTmrDbgListPtr == (OS_TMR *)0) {
+        p_tmr->DbgNextPtr           = (OS_TMR *)0;
+    } else {
+        p_tmr->DbgNextPtr           =  OSTmrDbgListPtr;
+        OSTmrDbgListPtr->DbgPrevPtr =  p_tmr;
+    }
+    OSTmrDbgListPtr                 =  p_tmr;
+}
+
+
+
+void  OS_TmrDbgListRemove (OS_TMR  *p_tmr)
+{
+    OS_TMR  *p_tmr_next;
+    OS_TMR  *p_tmr_prev;
+
+
+    p_tmr_prev = p_tmr->DbgPrevPtr;
+    p_tmr_next = p_tmr->DbgNextPtr;
+
+    if (p_tmr_prev == (OS_TMR *)0) {
+        OSTmrDbgListPtr = p_tmr_next;
+        if (p_tmr_next != (OS_TMR *)0) {
+            p_tmr_next->DbgPrevPtr = (OS_TMR *)0;
+        }
+        p_tmr->DbgNextPtr = (OS_TMR *)0;
+
+    } else if (p_tmr_next == (OS_TMR *)0) {
+        p_tmr_prev->DbgNextPtr = (OS_TMR *)0;
+        p_tmr->DbgPrevPtr      = (OS_TMR *)0;
+
+    } else {
+        p_tmr_prev->DbgNextPtr =  p_tmr_next;
+        p_tmr_next->DbgPrevPtr =  p_tmr_prev;
+        p_tmr->DbgNextPtr      = (OS_TMR *)0;
+        p_tmr->DbgPrevPtr      = (OS_TMR *)0;
+    }
+}
+#endif
+
+/*
+************************************************************************************************************************
+*                                             INITIALIZE THE TIMER MANAGER
+*
+* Description: This function is called by OSInit() to initialize the timer manager module.
+*
+* Argument(s): p_err    is a pointer to a variable that will contain an error code returned by this function.
+*
+*                           OS_ERR_NONE
+*                           OS_ERR_TMR_STK_INVALID       if you didn't specify a stack for the timer task
+*                           OS_ERR_TMR_STK_SIZE_INVALID  if you didn't allocate enough space for the timer stack
+*                           OS_ERR_PRIO_INVALID          if you specified the same priority as the idle task
+*                           OS_ERR_xxx                   any error code returned by OSTaskCreate()
+*
+* Returns    : none
+*
+* Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
+************************************************************************************************************************
+*/
+
+void  OS_TmrInit (OS_ERR  *p_err)
+{
+    OSTmrQty        = (OS_OBJ_QTY)0;
+#if OS_CFG_DBG_EN > 0u
+    OSTmrDbgListPtr = (OS_TMR   *)0;
+#endif
 }

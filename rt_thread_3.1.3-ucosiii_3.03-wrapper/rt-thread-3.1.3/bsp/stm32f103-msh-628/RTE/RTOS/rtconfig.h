@@ -21,7 +21,7 @@
 #define RT_ALIGN_SIZE   4
 // <o>the max length of object name<2-16>
 //  <i>Default: 8
-#define RT_NAME_MAX    8
+#define RT_NAME_MAX    16
 // <c1>Using RT-Thread components initialization
 //  <i>Using RT-Thread components initialization
 #define RT_USING_COMPONENTS_INIT
