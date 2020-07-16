@@ -217,6 +217,8 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)p_callback;
     p_tmr->CallbackPtrArg = (void              *)p_callback_arg;
     p_tmr->Opt            = (OS_OPT             )opt;
+    p_tmr->Period         = (OS_TICK            )period;
+    p_tmr->Dly            = (OS_TICK            )dly;
 #if OS_CFG_DBG_EN > 0u
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
@@ -720,6 +722,8 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)0;
     p_tmr->CallbackPtrArg = (void              *)0;
     p_tmr->Opt            = (OS_OPT             )0;
+    p_tmr->Period         = (OS_TICK            )0;
+    p_tmr->Dly            = (OS_TICK            )0;
 #if OS_CFG_DBG_EN > 0u    
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgNextPtr     = (OS_TMR            *)0;

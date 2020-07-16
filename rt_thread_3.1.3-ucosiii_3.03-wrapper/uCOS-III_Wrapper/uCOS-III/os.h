@@ -752,6 +752,8 @@ struct  os_tmr {
     void                *CallbackPtrArg;                    /* Argument to pass to function when timer expires        */
     OS_STATE             State;
     OS_OPT               Opt;                               /* Options (see OS_OPT_TMR_xxx)                           */
+    OS_TICK              Dly;                               /* Delay before start of repeat                           */
+    OS_TICK              Period;                            /* Period to repeat timer                                 */
 #if OS_CFG_DBG_EN > 0u
     OS_TMR              *DbgPrevPtr;
     OS_TMR              *DbgNextPtr;
