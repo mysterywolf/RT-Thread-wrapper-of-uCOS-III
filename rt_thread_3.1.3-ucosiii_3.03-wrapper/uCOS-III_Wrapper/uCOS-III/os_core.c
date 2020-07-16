@@ -44,13 +44,6 @@
 
 /*
 ************************************************************************************************************************
-* Note(s)    : 1)由于RTT没有相关接口，因此以下函数没有实现
-*                   OSSchedRoundRobinCfg
-************************************************************************************************************************
-*/
-
-/*
-************************************************************************************************************************
 *                                                    INITIALIZATION
 *
 * Description: This function is used to initialize the internals of uC/OS-III and MUST be called prior to
@@ -355,8 +348,6 @@ void  OSSchedRoundRobinCfg (CPU_BOOLEAN   en,
                             OS_ERR       *p_err)
 {
     CPU_SR_ALLOC();
-
-
 
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
