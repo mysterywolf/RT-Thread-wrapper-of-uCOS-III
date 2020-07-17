@@ -10,6 +10,7 @@
  
 #include <os.h>
 #include <stdlib.h>
+#include <string.h>
 
 /**
  * ½«RT-Thread´íÎóÂë×ª»»ÎªuCOS-III´íÎóÂë
@@ -121,3 +122,47 @@ rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
     return RT_EOK;
 }
 
+static void ucos_wrap_info (int argc, char *argv[])
+{
+    OS_ERR err;
+    CPU_INT16U version;
+    OS_CPU_USAGE cpu_usage;
+    
+    CPU_SR_ALLOC();
+    
+    if(argc == 1)
+    {
+        rt_kprintf("invalid parameter,use --help to get more information.\r\n");
+        return;
+    }
+    
+    if(!strcmp((const char *)argv[1],(const char *)"--help"))
+    {
+        rt_kprintf("-v version\r\n");
+        rt_kprintf("-u cpu usage\r\n");
+        rt_kprintf("-s sem\r\n");
+        rt_kprintf("-m mutex\r\n");
+        rt_kprintf("-q message queue\r\n");
+        rt_kprintf("-f event flag\r\n");
+        rt_kprintf("-t timer\r\n");
+        rt_kprintf("-m memory pool\r\n");
+    }
+    else if(!strcmp((const char *)argv[1],(const char *)"-v"))
+    {
+        version = OSVersion(&err);
+        rt_kprintf("template's version: %d\r\n",version);
+        rt_kprintf("compatible version: 3.03.00 - 3.08.00\r\n");
+    }    
+    else if(!strcmp((const char *)argv[1],(const char *)"-u"))
+    {
+        CPU_CRITICAL_ENTER();
+        cpu_usage = OSStatTaskCPUUsage;
+        CPU_CRITICAL_EXIT();
+        rt_kprintf("CPU Usage: %d.%d%%\r\n",cpu_usage/100,cpu_usage%100);
+    }
+    else
+    {
+        rt_kprintf("invalid parameter,use --help to get more information.\r\n");
+    }
+}
+MSH_CMD_EXPORT_ALIAS(ucos_wrap_info, ucos, get ucos wrapper info);

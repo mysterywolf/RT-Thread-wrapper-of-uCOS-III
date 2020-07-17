@@ -38,7 +38,7 @@ static void AppTask1 (void *param)
 	OSTmrCreate((OS_TMR		*)&CPUUsageTimer,/*定时器句柄*/
                 (CPU_CHAR	*)"CPUUsageTimer",/*定时器名字*/ 
                 (OS_TICK	 )300,/*300*10=3000ms(10由OS_CFG_TMR_TASK_RATE_HZ决定)*/
-                (OS_TICK	 )50,/*100*10=1000ms(10由OS_CFG_TMR_TASK_RATE_HZ决定)*/
+                (OS_TICK	 )50,/*50*10=500ms(10由OS_CFG_TMR_TASK_RATE_HZ决定)*/
                 (OS_OPT		 )OS_OPT_TMR_PERIODIC, /*周期模式*/
                 (OS_TMR_CALLBACK_PTR)tmr1_callback,/*定时器1回调函数*/
                 (void	    *)0,/*参数为0*/
