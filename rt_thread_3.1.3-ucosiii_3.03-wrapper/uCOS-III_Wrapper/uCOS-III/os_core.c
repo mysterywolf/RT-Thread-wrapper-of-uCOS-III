@@ -359,7 +359,7 @@ void  OSSchedRoundRobinCfg (CPU_BOOLEAN   en,
     CPU_CRITICAL_ENTER();
     if (en != DEF_ENABLED) {
         //OSSchedRoundRobinEn = DEF_DISABLED;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("在RT-Thread中时间片轮转是必选项,不可禁用!\r\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("在RT-Thread中时间片轮转是必选项,不可禁用!\n"));
     } else {
         OSSchedRoundRobinEn = DEF_ENABLED;
     }

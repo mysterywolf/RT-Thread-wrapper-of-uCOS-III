@@ -32,7 +32,7 @@ static void AppTask1 (void *param)
 	while(1)
 	{
         OSMutexPend(&SyncMutex,0,OS_OPT_PEND_BLOCKING,0,&err); /*申请互斥量 请求访问共享资源*/ 
-        rt_kprintf("This is Task1\r\n");
+        rt_kprintf("This is Task1\n");
         OSMutexPost(&SyncMutex,OS_OPT_POST_NONE,&err);/*释放互斥量*/
         OSTimeDlyHMSM(0,0,0,200,OS_OPT_TIME_PERIODIC,&err);
 	}
@@ -47,7 +47,7 @@ static void AppTask2 (void *param)
 	while(1)
 	{
 		OSMutexPend(&SyncMutex,0,OS_OPT_PEND_BLOCKING,0,&err); /*请求访问共享资源*/
-		rt_kprintf("This is Task2\r\n");
+		rt_kprintf("This is Task2\n");
         OSMutexPost(&SyncMutex,OS_OPT_POST_NONE,&err);/*释放互斥量*/
         OSTimeDlyHMSM(0,0,0,300,OS_OPT_TIME_PERIODIC,&err);
 	}	
@@ -64,7 +64,7 @@ void mutex_sample (void)
                  (OS_ERR*	)&err);    
     if(err!=OS_ERR_NONE)
     {
-        rt_kprintf("create mutex err!\r\n");
+        rt_kprintf("create mutex err!\n");
     }
     
 	OSTaskCreate(&AppTask1_TCB,		            /*任务控制块*/ 
@@ -82,7 +82,7 @@ void mutex_sample (void)
                &err);
         if(err!=OS_ERR_NONE)
         {
-            rt_kprintf("task1 create err:%d\r\n",err);
+            rt_kprintf("task1 create err:%d\n",err);
         }               
 
 	OSTaskCreate(&AppTask2_TCB,		            /*任务控制块*/ 
@@ -100,6 +100,6 @@ void mutex_sample (void)
                &err);
         if(err!=OS_ERR_NONE)
         {
-            rt_kprintf("task2 create err:%d\r\n",err);
+            rt_kprintf("task2 create err:%d\n",err);
         }    
 }

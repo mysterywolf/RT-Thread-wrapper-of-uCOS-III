@@ -65,8 +65,7 @@ RT_WEAK void *rt_heap_end_get(void)
  */
 void rt_hw_board_init()
 {
-	
-	  SystemClock_Config();
+    SystemClock_Config();
     /* System Clock Update */
     SystemCoreClockUpdate();
 

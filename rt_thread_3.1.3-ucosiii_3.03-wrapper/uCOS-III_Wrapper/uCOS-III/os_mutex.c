@@ -581,7 +581,7 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
     if(opt != OS_OPT_POST_NONE)/*此opt选项只能为OS_OPT_POST_NONE*/
     {
         *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSMutexPost: wrapper can't accept this option\r\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSMutexPost: wrapper can't accept this option\n"));
         return;
     }    
 #endif  

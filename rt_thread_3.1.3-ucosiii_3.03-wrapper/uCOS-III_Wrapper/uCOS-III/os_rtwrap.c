@@ -122,44 +122,78 @@ rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
     return RT_EOK;
 }
 
+#if defined RT_USING_FINSH && OS_CFG_DBG_EN > 0u
+/**
+ * msh命令：uCOS-III兼容层信息获取
+ */
 static void ucos_wrap_info (int argc, char *argv[])
 {
     OS_CPU_USAGE cpu_usage;
+    OS_TCB *p_tcb;
+    OS_TMR *p_tmr;
     
     CPU_SR_ALLOC();
     
     if(argc == 1)
     {
-        rt_kprintf("invalid parameter,use --help to get more information.\r\n");
+        rt_kprintf("invalid parameter,use --help to get more information.\n");
         return;
     }
     
     if(!strcmp((const char *)argv[1],(const char *)"--help"))
     {
-        rt_kprintf("-v version\r\n");
-        rt_kprintf("-u cpu usage\r\n");
-        rt_kprintf("-s sem\r\n");
-        rt_kprintf("-m mutex\r\n");
-        rt_kprintf("-q message queue\r\n");
-        rt_kprintf("-f event flag\r\n");
-        rt_kprintf("-t timer\r\n");
-        rt_kprintf("-m memory pool\r\n");
+        rt_kprintf("-v version\n");
+        rt_kprintf("-u cpu usage\n");
+        rt_kprintf("-t task\n");
+        rt_kprintf("-s sem\n");
+        rt_kprintf("-m mutex\n");
+        rt_kprintf("-q message queue\n");
+        rt_kprintf("-f event flag\n");
+        rt_kprintf("-r timer\n");
+        rt_kprintf("-m memory pool\n");
     }
     else if(!strcmp((const char *)argv[1],(const char *)"-v"))
     {
-        rt_kprintf("template's version: 3.03.00\r\n");
-        rt_kprintf("compatible version: 3.00 - 3.08\r\n");
+        rt_kprintf("template's version: 3.03.00\n");
+        rt_kprintf("compatible version: 3.00 - 3.08\n");
     }    
     else if(!strcmp((const char *)argv[1],(const char *)"-u"))
     {
         CPU_CRITICAL_ENTER();
         cpu_usage = OSStatTaskCPUUsage;
         CPU_CRITICAL_EXIT();
-        rt_kprintf("CPU Usage: %d.%d%%\r\n",cpu_usage/100,cpu_usage%100);
+        rt_kprintf("CPU Usage: %d.%d%%\n",cpu_usage/100,cpu_usage%100);
+    }
+    else if(!strcmp((const char *)argv[1],(const char *)"-r"))
+    {
+        CPU_CRITICAL_ENTER();
+        p_tmr = OSTmrDbgListPtr;
+        CPU_CRITICAL_EXIT();
+        rt_kprintf("-----------------μCOS-III Timer--------------------\n");
+        while(p_tmr)
+        {
+            rt_kprintf("name:%s\n",p_tmr->Tmr.parent.name);
+            p_tmr = p_tmr->DbgNextPtr;
+        }
+        rt_kprintf("\n");
+    }
+    else if(!strcmp((const char *)argv[1],(const char *)"-t"))
+    {
+        CPU_CRITICAL_ENTER();
+        p_tcb = OSTaskDbgListPtr;
+        CPU_CRITICAL_EXIT();
+        rt_kprintf("-----------------μCOS-III Task---------------------\n");
+        while(p_tcb)
+        {
+            rt_kprintf("name:%s\n",p_tcb->Task.name);
+            p_tcb = p_tcb->DbgNextPtr;
+        }
+        rt_kprintf("\n");        
     }
     else
     {
-        rt_kprintf("invalid parameter,use --help to get more information.\r\n");
+        rt_kprintf("invalid parameter,use --help to get more information.\n");
     }
 }
 MSH_CMD_EXPORT_ALIAS(ucos_wrap_info, ucos, get ucos wrapper info);
+#endif

@@ -795,7 +795,7 @@ void  OSQPost (OS_Q         *p_q,
     else
     {
         *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSQPost: wrapper can't accept this option\r\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSQPost: wrapper can't accept this option\n"));
         return;
     }
     *p_err = rt_err_to_ucosiii(rt_err); 

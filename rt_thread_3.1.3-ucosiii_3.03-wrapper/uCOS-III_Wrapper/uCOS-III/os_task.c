@@ -312,7 +312,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
             CPU_CRITICAL_ENTER();
             p_tcb->MsgCreateSuc = RT_FALSE;
             CPU_CRITICAL_EXIT();
-            RT_DEBUG_LOG(OS_CFG_DBG_EN,("task qmsg %s create err!\r\n",p_name));
+            RT_DEBUG_LOG(OS_CFG_DBG_EN,("task qmsg %s create err!\n",p_name));
         }
         else
         {
@@ -331,7 +331,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         CPU_CRITICAL_ENTER(); 
         p_tcb->SemCreateSuc = RT_FALSE;
         CPU_CRITICAL_EXIT();
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("task sem %s create err!\r\n",p_name));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("task sem %s create err!\n",p_name));
     }
     else
     {

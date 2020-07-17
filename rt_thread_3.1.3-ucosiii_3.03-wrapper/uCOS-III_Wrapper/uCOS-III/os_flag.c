@@ -128,7 +128,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
     if(flags)
     {
         *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagCreate: wrapper can't accept this option\r\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagCreate: wrapper can't accept this option\n"));
         return;        
     }  
 #endif
@@ -717,7 +717,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     if(opt != OS_OPT_POST_FLAG_SET)
     {
         *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagPost: wrapper can't accept this option\r\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagPost: wrapper can't accept this option\n"));
         return ((OS_FLAGS)0);  
     }      
 #endif

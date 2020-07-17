@@ -25,7 +25,7 @@ static OS_TMR  CPUUsageTimer;/*CPU使用率测量定时器*/
 void tmr1_callback(void *p_tmr, void *p_arg)
 {
     rt_kprintf("FROM '%s'-->",((OS_TMR*)p_tmr)->Tmr.parent.name);
-    rt_kprintf("CPU usage:%d.%d%%\r\n",OSStatTaskCPUUsage/100,OSStatTaskCPUUsage%100);
+    rt_kprintf("CPU usage:%d.%d%%\n",OSStatTaskCPUUsage/100,OSStatTaskCPUUsage%100);
 }
 
 /*任务函数*/
@@ -49,7 +49,7 @@ static void AppTask1 (void *param)
     while(1)
     {
  		OSTaskStkChk(RT_NULL,&free,&used,&err);/*获取当前任务堆栈信息*/ 
-    	rt_kprintf("AppTask1 free:%d,used:%d\r\n",free,used);   
+    	rt_kprintf("AppTask1 free:%d,used:%d\n",free,used);   
         OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC|OS_OPT_TIME_HMSM_NON_STRICT,&err);/*延时500ms*/
     }
 }
@@ -73,6 +73,6 @@ void timer_sample (void)
                &err);
         if(err!=OS_ERR_NONE)
         {
-            rt_kprintf("task create err:%d\r\n",err);
+            rt_kprintf("task create err:%d\n",err);
         }               
 }

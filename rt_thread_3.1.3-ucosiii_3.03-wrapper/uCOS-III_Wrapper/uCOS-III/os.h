@@ -791,12 +791,46 @@ OS_EXT            OS_STATE                  OSRunning;                  /* Flag 
 OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag indicating that all init. done        */
 #endif
 
+                                                                        /* SEMAPHORES ------------------------------- */
+#if OS_CFG_SEM_EN > 0u
+#if OS_CFG_DBG_EN > 0u
+OS_EXT            OS_SEM                   *OSSemDbgListPtr;
+#endif
+OS_EXT            OS_OBJ_QTY                OSSemQty;                   /* Number of semaphores created               */
+#endif
+
+                                                                        /* QUEUES ----------------------------------- */
+#if OS_CFG_Q_EN   > 0u
+#if OS_CFG_DBG_EN > 0u
+OS_EXT            OS_Q                     *OSQDbgListPtr;
+#endif
+OS_EXT            OS_OBJ_QTY                OSQQty;                     /* Number of message queues created           */
+#endif
+
+                                                                        /* MUTEX MANAGEMENT ------------------------- */
+#if OS_CFG_MUTEX_EN > 0u
+#if OS_CFG_DBG_EN   > 0u
+OS_EXT            OS_MUTEX                 *OSMutexDbgListPtr;
+#endif
+OS_EXT            OS_OBJ_QTY                OSMutexQty;                 /* Number of mutexes created                  */
+#endif
+
+                                                                        /* FLAGS ------------------------------------ */
+#if OS_CFG_FLAG_EN > 0u
+#if OS_CFG_DBG_EN  > 0u
+OS_EXT            OS_FLAG_GRP              *OSFlagDbgListPtr;
+#endif
+OS_EXT            OS_OBJ_QTY                OSFlagQty;
+#endif
+
+                                                                        /* MEMORY MANAGEMENT ------------------------ */
 #if OS_CFG_MEM_EN > 0u
 #if OS_CFG_DBG_EN > 0u
 OS_EXT            OS_MEM                   *OSMemDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSMemQty;                   /* Number of memory partitions created        */
 #endif
+
                                                                         /* TASKS ------------------------------------ */
 #if OS_CFG_DBG_EN > 0u
 OS_EXT            OS_TCB                   *OSTaskDbgListPtr;

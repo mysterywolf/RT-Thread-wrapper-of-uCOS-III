@@ -600,7 +600,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
     if(opt != OS_OPT_POST_1)/*此opt选项只能为OS_OPT_POST_1*/
     {
         *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSSemPost: wrapper can't accept this option\r\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSSemPost: wrapper can't accept this option\n"));
         return 0;
     }    
 #endif
