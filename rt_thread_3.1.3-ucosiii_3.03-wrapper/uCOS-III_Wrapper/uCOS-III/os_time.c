@@ -56,22 +56,19 @@
 *
 *                        depending on the option argument, the task will wake up when OSTickCtr reaches:
 *
-*                          - OS_OPT_TIME_DLY      : OSTickCtr + dly
-*                          - OS_OPT_TIME_TIMEOUT  : OSTickCtr + dly
-*                          - OS_OPT_TIME_MATCH    : dly
+*                            OS_OPT_TIME_DLY      : OSTickCtr + dly
+*                            OS_OPT_TIME_TIMEOUT  : OSTickCtr + dly
+*                            OS_OPT_TIME_MATCH    : dly
 *                            OS_OPT_TIME_PERIODIC : OSTCBCurPtr->TickCtrPrev + dly
 *
 *              opt       specifies whether 'dly' represents absolute or relative time; default option marked with *** :
 *
-*                          - OS_OPT_TIME_DLY        specifies a relative time from the current value of OSTickCtr.
-*                          - OS_OPT_TIME_TIMEOUT    same as OS_OPT_TIME_DLY.
-*                          - OS_OPT_TIME_MATCH      indicates that 'dly' specifies the absolute value that OSTickCtr
+*                        *** OS_OPT_TIME_DLY        specifies a relative time from the current value of OSTickCtr.
+*                            OS_OPT_TIME_TIMEOUT    same as OS_OPT_TIME_DLY.
+*                            OS_OPT_TIME_MATCH      indicates that 'dly' specifies the absolute value that OSTickCtr
 *                                                   must reach before the task will be resumed.
 *                            OS_OPT_TIME_PERIODIC   indicates that 'dly' specifies the periodic value that OSTickCtr
 *                                                   must reach before the task will be resumed.
-*                            -------------说明-------------
-*                             由于RTT没有实现相关功能,OS_OPT_TIME_DLY/OS_OPT_TIME_TIMEOUT/OS_OPT_TIME_MATCH在兼容层中无法使用
-*                             应用层需要对API返回的错误码判断做出相应的修改
 *
 *              p_err     is a pointer to a variable that will contain an error code from this call.
 *
@@ -135,20 +132,17 @@ void  OSTimeDly (OS_TICK   dly,
             *p_err = OS_ERR_OPT_INVALID;
              return;
     }
-    
-    /*检查opts*/
-    if(opt == OS_OPT_TIME_DLY || 
-       opt == OS_OPT_TIME_MATCH ||
-       opt == OS_OPT_TIME_TIMEOUT)
-    {
-        /*这三种opts无法实现*/
-        *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSTimeDly: wrapper can't accept this option\r\n"));
-        return;
-    }
 #endif
     
-    rt_err = rt_thread_delay(dly);
+    if(opt == OS_OPT_TIME_MATCH)
+    {
+        rt_err = rt_thread_delay(dly - rt_tick_get());
+    }
+    else/*不区分OS_OPT_TIME_DLY、OS_OPT_TIME_TIMEOUT、OS_OPT_TIME_MATCH*/
+    {
+        rt_err = rt_thread_delay(dly);
+    }
+    
     *p_err = rt_err_to_ucosiii(rt_err); 
 }
 
@@ -172,12 +166,12 @@ void  OSTimeDly (OS_TICK   dly,
 *
 *                          - OS_OPT_TIME_DLY        specifies a relative time from the current value of OSTickCtr.
 *                          - OS_OPT_TIME_TIMEOUT    same as OS_OPT_TIME_DLY.
-*                          - OS_OPT_TIME_MATCH      indicates that the delay specifies the absolute value that OSTickCtr
+*                            OS_OPT_TIME_MATCH      indicates that the delay specifies the absolute value that OSTickCtr
 *                                                   must reach before the task will be resumed.
 *                            OS_OPT_TIME_PERIODIC   indicates that the delay specifies the periodic value that OSTickCtr
 *                                                   must reach before the task will be resumed.
 *
-*                            OS_OPT_TIME_HMSM_STRICT            strictly allow only hours        (0...99)
+*                        *** OS_OPT_TIME_HMSM_STRICT            strictly allow only hours        (0...99)
 *                                                                                   minutes      (0...59)
 *                                                                                   seconds      (0...59)
 *                                                                                   milliseconds (0...999)
@@ -185,11 +179,6 @@ void  OSTimeDly (OS_TICK   dly,
 *                                                                                   minutes      (0...9999)
 *                                                                                   seconds      (0...65535)
 *                                                                                   milliseconds (0...4294967295)
-*                         -------------说明-------------
-*                         由于RTT没有实现相关功能,OS_OPT_TIME_DLY/OS_OPT_TIME_TIMEOUT/OS_OPT_TIME_MATCH在兼容层中无法使用
-*                             应用层需要对API返回的错误码判断做出相应的修改
-*                         注意：opt默认是含有OS_OPT_TIME_HMSM_STRICT，如果定义为1000ms直接返回错误
-*                               为防止这种错误建议使用OS_OPT_TIME_PERIODIC|OS_OPT_TIME_HMSM_NON_STRICT
 *
 *              p_err     is a pointer to a variable that will receive an error code from this call.
 *
@@ -211,6 +200,9 @@ void  OSTimeDly (OS_TICK   dly,
 *
 *              2) Although this function allows you to delay a task for many, many hours, it's not recommended to put
 *                 a task to sleep for that long.
+*
+*              3) opt默认是含有OS_OPT_TIME_HMSM_STRICT，如果定义为1000ms直接返回错误,为防止这种错误建议使用
+*                 OS_OPT_TIME_PERIODIC|OS_OPT_TIME_HMSM_NON_STRICT
 ************************************************************************************************************************
 */
 
@@ -223,7 +215,7 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
                      OS_ERR      *p_err)
 {
     rt_err_t rt_err;
-    rt_int32_t dly;
+    rt_int32_t dly_ms;
 #if OS_CFG_ARG_CHK_EN > 0u     
     CPU_BOOLEAN  opt_invalid;
     CPU_BOOLEAN  opt_non_strict;
@@ -286,17 +278,17 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
     }
 #endif
     
-    dly = hours*3600*1000+minutes*60*1000+seconds*1000+milli;
+    dly_ms = hours*3600*1000+minutes*60*1000+seconds*1000+milli;
     
 #if OS_CFG_ARG_CHK_EN > 0u      
-    if(dly == 0)/*检查是否为0延时*/
+    if(dly_ms == 0)/*检查是否为0延时*/
     {
         *p_err = OS_ERR_TIME_ZERO_DLY;
         return;         
     }
 #endif
     
-    rt_err = rt_thread_mdelay(dly);   
+    rt_err = rt_thread_mdelay(dly_ms);  
     *p_err = rt_err_to_ucosiii(rt_err);
 }
 #endif
