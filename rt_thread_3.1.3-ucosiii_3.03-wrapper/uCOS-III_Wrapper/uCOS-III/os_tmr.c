@@ -119,7 +119,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
                    OS_ERR               *p_err)
 {
     rt_uint8_t rt_flag;
-    rt_tick_t  time;
+    rt_tick_t  time, time2;
         
     CPU_SR_ALLOC();
     
@@ -225,14 +225,27 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 #endif
     OS_CRITICAL_EXIT();
     
-    
-    rt_timer_init(&p_tmr->Tmr,
-                  (const char*)p_name,
-                  OS_TmrCallback,
-                  p_tmr,/*将p_tmr作为参数传到回调函数中*/
-                  time,
-                  rt_flag);
-    
+    if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->Dly && p_tmr->Period)
+    {
+        /*带有延迟的周期延时，先延时一次延迟部分，该部分延时完毕后，周期部分由回调函数重新装填*/
+        time2 = p_tmr->Dly * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
+        rt_timer_init(&p_tmr->Tmr,
+                      (const char*)p_name,
+                      OS_TmrCallback,
+                      p_tmr,/*将p_tmr作为参数传到回调函数中*/
+                      time2,
+                      RT_TIMER_FLAG_ONE_SHOT|RT_TIMER_FLAG_SOFT_TIMER);          
+    }
+    else
+    {
+        rt_timer_init(&p_tmr->Tmr,
+                      (const char*)p_name,
+                      OS_TmrCallback,
+                      p_tmr,/*将p_tmr作为参数传到回调函数中*/
+                      time,
+                      rt_flag);        
+    }
+ 
     *p_err = OS_ERR_NONE;/*rt_timer_init没有返回错误码*/
 
     OS_CRITICAL_ENTER();
@@ -844,5 +857,17 @@ void OS_TmrCallback(void *p_ara)
     {
         p_tmr->State = OS_TMR_STATE_COMPLETED;
     }
-    CPU_CRITICAL_EXIT();    
+    CPU_CRITICAL_EXIT();   
+
+    if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->Dly && p_tmr->Period)
+    {
+        /*带有延迟的周期延时，延迟延时已经完毕，开始进行正常周期延时*/
+        CPU_CRITICAL_ENTER();
+        p_tmr->Dly = 0;/*延迟部分清零，防止再进入本条件分支语句*/
+        p_tmr->Tmr.init_tick = p_tmr->Period * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
+        p_tmr->Tmr.timeout_tick = rt_tick_get() + p_tmr->Tmr.init_tick;
+        p_tmr->Tmr.parent.flag |= RT_TIMER_FLAG_PERIODIC;/*定时器设置为周期模式*/
+        CPU_CRITICAL_EXIT();
+        rt_timer_start(&(p_tmr->Tmr));/*开启定时器*/
+    }        
 }

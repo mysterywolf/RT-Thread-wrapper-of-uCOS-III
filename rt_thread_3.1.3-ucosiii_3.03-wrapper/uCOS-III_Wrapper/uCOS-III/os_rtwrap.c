@@ -80,6 +80,7 @@ rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
 
     return RT_EOK;
 }
+
 /**
  * 让所有等待该IPC的任务全部放弃等待，进入就绪态(由rt_ipc_list_resume_all函数改编)
  *
@@ -119,3 +120,4 @@ rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
 
     return RT_EOK;
 }
+
