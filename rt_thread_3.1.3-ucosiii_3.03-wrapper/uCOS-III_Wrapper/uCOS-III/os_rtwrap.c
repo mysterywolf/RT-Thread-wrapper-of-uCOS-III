@@ -124,8 +124,6 @@ rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
 
 static void ucos_wrap_info (int argc, char *argv[])
 {
-    OS_ERR err;
-    CPU_INT16U version;
     OS_CPU_USAGE cpu_usage;
     
     CPU_SR_ALLOC();
@@ -149,9 +147,8 @@ static void ucos_wrap_info (int argc, char *argv[])
     }
     else if(!strcmp((const char *)argv[1],(const char *)"-v"))
     {
-        version = OSVersion(&err);
-        rt_kprintf("template's version: %d\r\n",version);
-        rt_kprintf("compatible version: 3.03.00 - 3.08.00\r\n");
+        rt_kprintf("template's version: 3.03.00\r\n");
+        rt_kprintf("compatible version: 3.00 - 3.08\r\n");
     }    
     else if(!strcmp((const char *)argv[1],(const char *)"-u"))
     {
