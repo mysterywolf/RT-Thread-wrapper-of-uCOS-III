@@ -214,7 +214,11 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
         return 0;       
     }
 #endif
-
+    
+    CPU_CRITICAL_ENTER();
+    pend_mutex_len = rt_list_len(&(p_mutex->Mutex.parent.suspend_thread));
+    CPU_CRITICAL_EXIT();
+    
     switch (opt)
     {
         case OS_OPT_DEL_NO_PEND:
@@ -237,11 +241,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
             *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
-    
-    CPU_CRITICAL_ENTER();
-    pend_mutex_len = rt_list_len(&(p_mutex->Mutex.parent.suspend_thread));
-    CPU_CRITICAL_EXIT();
-    
+        
     return pend_mutex_len;
 }
 #endif

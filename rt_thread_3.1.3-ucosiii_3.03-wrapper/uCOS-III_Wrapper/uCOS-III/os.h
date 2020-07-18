@@ -642,6 +642,10 @@ struct os_q
 struct  os_sem { 
     struct  rt_semaphore  Sem;
     OS_OBJ_TYPE           Type;
+#if OS_CFG_DBG_EN > 0u
+    OS_SEM              *DbgPrevPtr;
+    OS_SEM              *DbgNextPtr;
+#endif    
 };
 /*
 ------------------------------------------------------------------------------------------------------------------------
@@ -1139,6 +1143,18 @@ void          OSSemSet                  (OS_SEM                *p_sem,
                                          OS_SEM_CTR             cnt,
                                          OS_ERR                *p_err);
 #endif
+
+/* ------------------------------------------------ INTERNAL FUNCTIONS ---------------------------------------------- */
+
+void          OS_SemClr                 (OS_SEM                *p_sem);
+
+#if OS_CFG_DBG_EN > 0u
+void          OS_SemDbgListAdd          (OS_SEM                *p_sem);
+
+void          OS_SemDbgListRemove       (OS_SEM                *p_sem);
+#endif
+
+void          OS_SemInit                (OS_ERR                *p_err);
 
 #endif
 

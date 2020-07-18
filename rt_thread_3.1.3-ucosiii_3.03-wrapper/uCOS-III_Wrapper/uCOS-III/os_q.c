@@ -271,6 +271,10 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
     }
 #endif
     
+    CPU_CRITICAL_ENTER();
+    pend_q_len = rt_list_len(&(p_q->Msg.parent.suspend_thread));
+    CPU_CRITICAL_EXIT(); 
+    
     switch (opt)
     {
         case OS_OPT_DEL_NO_PEND:
@@ -293,11 +297,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
             *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
-    
-    CPU_CRITICAL_ENTER();
-    pend_q_len = rt_list_len(&(p_q->Msg.parent.suspend_thread));
-    CPU_CRITICAL_EXIT();
-    
+        
     return pend_q_len;
 }
 #endif

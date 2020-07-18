@@ -122,10 +122,10 @@ rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
     return RT_EOK;
 }
 
-#if defined RT_USING_FINSH && OS_CFG_DBG_EN > 0u
 /**
  * msh命令：uCOS-III兼容层信息获取
  */
+#if defined RT_USING_FINSH && OS_CFG_DBG_EN > 0u
 static void ucos_wrap_info (int argc, char *argv[])
 {
     OS_CPU_USAGE cpu_usage;

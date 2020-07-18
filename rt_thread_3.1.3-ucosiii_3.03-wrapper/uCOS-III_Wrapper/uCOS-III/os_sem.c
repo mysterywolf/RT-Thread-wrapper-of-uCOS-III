@@ -99,7 +99,9 @@ void  OSSemCreate (OS_SEM      *p_sem,
                    OS_ERR      *p_err)
 {
     rt_err_t rt_err;
-
+    
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -146,6 +148,18 @@ void  OSSemCreate (OS_SEM      *p_sem,
 
     rt_err = rt_sem_init(&p_sem->Sem,(const char*)p_name,cnt,RT_IPC_FLAG_PRIO);   
     *p_err = rt_err_to_ucosiii(rt_err); 
+    if(rt_err != RT_EOK)
+    {
+        return;
+    }
+    
+    CPU_CRITICAL_ENTER();
+    p_sem->Type    = OS_OBJ_TYPE_SEM;                       /* Mark the data structure as a semaphore                 */    
+#if OS_CFG_DBG_EN > 0u
+    OS_SemDbgListAdd(p_sem);
+#endif
+    OSSemQty++;    
+    CPU_CRITICAL_EXIT();
 }
 
 /*
@@ -190,7 +204,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
 {
     rt_err_t rt_err;
     rt_uint32_t pend_sem_len;
-    
+
     CPU_SR_ALLOC();
     
 #ifdef OS_SAFETY_CRITICAL
@@ -234,6 +248,10 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
     }
 #endif
     
+    CPU_CRITICAL_ENTER();
+    pend_sem_len = rt_list_len(&(p_sem->Sem.parent.suspend_thread));
+    CPU_CRITICAL_EXIT();  
+    
     switch (opt)
     {
         case OS_OPT_DEL_NO_PEND:
@@ -256,10 +274,17 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
             *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
-    
-    CPU_CRITICAL_ENTER();
-    pend_sem_len = rt_list_len(&(p_sem->Sem.parent.suspend_thread));
-    CPU_CRITICAL_EXIT();
+        
+    if(*p_err == OS_ERR_NONE)
+    {
+        CPU_CRITICAL_ENTER();
+#if OS_CFG_DBG_EN > 0u
+        OS_SemDbgListRemove(p_sem);
+#endif
+        OSSemQty--; 
+        OS_SemClr(p_sem);
+        CPU_CRITICAL_EXIT();
+    } 
     
     return pend_sem_len;
 }
@@ -702,5 +727,119 @@ void  OSSemSet (OS_SEM      *p_sem,
     CPU_CRITICAL_EXIT();
 }
 #endif
+
+/*
+************************************************************************************************************************
+*                                           CLEAR THE CONTENTS OF A SEMAPHORE
+*
+* Description: This function is called by OSSemDel() to clear the contents of a semaphore
+*
+
+* Argument(s): p_sem      is a pointer to the semaphore to clear
+*              -----
+*
+* Returns    : none
+*
+* Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
+************************************************************************************************************************
+*/
+
+void  OS_SemClr (OS_SEM  *p_sem)
+{
+    p_sem->Type    = OS_OBJ_TYPE_NONE;                      /* Mark the data structure as a NONE                      */
+}
+
+/*
+************************************************************************************************************************
+*                                        ADD/REMOVE SEMAPHORE TO/FROM DEBUG LIST
+*
+* Description: These functions are called by uC/OS-III to add or remove a semaphore to/from the debug list.
+*
+* Arguments  : p_sem     is a pointer to the semaphore to add/remove
+*
+* Returns    : none
+*
+* Note(s)    : These functions are INTERNAL to uC/OS-III and your application should not call it.
+************************************************************************************************************************
+*/
+
+
+#if OS_CFG_DBG_EN > 0u
+void  OS_SemDbgListAdd (OS_SEM  *p_sem)
+{
+    p_sem->DbgPrevPtr               = (OS_SEM   *)0;
+    if (OSSemDbgListPtr == (OS_SEM *)0) {
+        p_sem->DbgNextPtr           = (OS_SEM   *)0;
+    } else {
+        p_sem->DbgNextPtr           =  OSSemDbgListPtr;
+        OSSemDbgListPtr->DbgPrevPtr =  p_sem;
+    }
+    OSSemDbgListPtr                 =  p_sem;
+}
+
+
+
+void  OS_SemDbgListRemove (OS_SEM  *p_sem)
+{
+    OS_SEM  *p_sem_next;
+    OS_SEM  *p_sem_prev;
+
+
+    p_sem_prev = p_sem->DbgPrevPtr;
+    p_sem_next = p_sem->DbgNextPtr;
+
+    if (p_sem_prev == (OS_SEM *)0) {
+        OSSemDbgListPtr = p_sem_next;
+        if (p_sem_next != (OS_SEM *)0) {
+            p_sem_next->DbgPrevPtr = (OS_SEM *)0;
+        }
+        p_sem->DbgNextPtr = (OS_SEM *)0;
+
+    } else if (p_sem_next == (OS_SEM *)0) {
+        p_sem_prev->DbgNextPtr = (OS_SEM *)0;
+        p_sem->DbgPrevPtr      = (OS_SEM *)0;
+
+    } else {
+        p_sem_prev->DbgNextPtr =  p_sem_next;
+        p_sem_next->DbgPrevPtr =  p_sem_prev;
+        p_sem->DbgNextPtr      = (OS_SEM *)0;
+        p_sem->DbgPrevPtr      = (OS_SEM *)0;
+    }
+}
+#endif
+
+/*
+************************************************************************************************************************
+*                                                SEMAPHORE INITIALIZATION
+*
+* Description: This function is called by OSInit() to initialize the semaphore management.
+*
+
+* Argument(s): p_err        is a pointer to a variable that will contain an error code returned by this function.
+*
+*                                OS_ERR_NONE     the call was successful
+*
+* Returns    : none
+*
+* Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
+************************************************************************************************************************
+*/
+
+void  OS_SemInit (OS_ERR  *p_err)
+{
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+#if OS_CFG_DBG_EN > 0u
+    OSSemDbgListPtr = (OS_SEM *)0;
+#endif
+
+    OSSemQty        = (OS_OBJ_QTY)0;
+   *p_err           = OS_ERR_NONE;
+}
 
 #endif

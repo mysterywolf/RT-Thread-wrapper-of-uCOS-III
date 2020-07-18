@@ -323,20 +323,17 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
     }
 #endif
     
-    rt_err = rt_timer_detach(&p_tmr->Tmr);
-    
-    OS_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u
-    OS_TmrDbgListRemove(p_tmr);
-#endif
-    OSTmrQty--;
-    OS_CRITICAL_EXIT();
-    
-    OS_TmrClr(p_tmr);
-    
+    rt_err = rt_timer_detach(&p_tmr->Tmr);    
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err == RT_EOK)
     {
+        OS_CRITICAL_ENTER();
+#if OS_CFG_DBG_EN > 0u
+        OS_TmrDbgListRemove(p_tmr);
+#endif
+        OSTmrQty--;
+        OS_TmrClr(p_tmr);    
+        OS_CRITICAL_EXIT(); 
         return DEF_TRUE;
     }
     else
@@ -727,9 +724,6 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
 
 void  OS_TmrClr (OS_TMR  *p_tmr)
 {
-    CPU_SR_ALLOC();
-    
-    CPU_CRITICAL_ENTER();
     p_tmr->State          = OS_TMR_STATE_UNUSED;            /* Clear timer fields                                     */
     p_tmr->Type           = OS_OBJ_TYPE_NONE;
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)0;
@@ -741,7 +735,6 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgNextPtr     = (OS_TMR            *)0;
 #endif
-    CPU_CRITICAL_EXIT();
 }
 
 /*

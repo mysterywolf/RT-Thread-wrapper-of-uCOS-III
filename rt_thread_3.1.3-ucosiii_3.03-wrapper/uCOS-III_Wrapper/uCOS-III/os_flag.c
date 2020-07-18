@@ -229,6 +229,10 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
     }   
 #endif
     
+    CPU_CRITICAL_ENTER();
+    pend_flag_len = rt_list_len(&(p_grp->FlagGrp.parent.suspend_thread));
+    CPU_CRITICAL_EXIT();  
+    
     switch (opt)
     {
         case OS_OPT_DEL_NO_PEND:
@@ -251,11 +255,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
             *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
-    
-    CPU_CRITICAL_ENTER();
-    pend_flag_len = rt_list_len(&(p_grp->FlagGrp.parent.suspend_thread));
-    CPU_CRITICAL_EXIT();
-    
+        
     return pend_flag_len;
 }
 #endif

@@ -59,6 +59,8 @@
 
 void  OSInit (OS_ERR  *p_err)
 {
+    CPU_SR_ALLOC();
+    
     *p_err = OS_ERR_NONE;
     
 #ifdef OS_SAFETY_CRITICAL
@@ -68,6 +70,8 @@ void  OSInit (OS_ERR  *p_err)
     }
 #endif    
 
+    CPU_CRITICAL_ENTER();
+    
     OSInitHook();                                           /* Call port specific initialization code                 */
     
     OSRunning = OS_STATE_OS_STOPPED;                        /* Indicate that multitasking not started                 */
@@ -85,7 +89,13 @@ void  OSInit (OS_ERR  *p_err)
     OSSchedRoundRobinDfltTimeQuanta = OS_CFG_TICK_RATE_HZ / 10u;
 #endif
 
-
+#if OS_CFG_SEM_EN > 0u                                      /* Initialize the Semaphore Manager module                */
+    OS_SemInit(p_err);
+    if (*p_err != OS_ERR_NONE) {
+        return;
+    }
+#endif
+    
     OS_TaskInit(p_err);                                     /* Initialize the task manager                            */
     if (*p_err != OS_ERR_NONE) {
         return;
@@ -108,7 +118,10 @@ void  OSInit (OS_ERR  *p_err)
     if (*p_err != OS_ERR_NONE) {
         return;
     }
-#endif    
+#endif  
+
+    
+    CPU_CRITICAL_EXIT();
 }
 
 /*
