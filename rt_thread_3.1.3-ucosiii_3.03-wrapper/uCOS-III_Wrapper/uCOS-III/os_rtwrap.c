@@ -131,6 +131,7 @@ static void ucos_wrap_info (int argc, char *argv[])
     OS_CPU_USAGE cpu_usage;
     OS_TCB *p_tcb;
     OS_TMR *p_tmr;
+    OS_SEM *p_sem;
     
     CPU_SR_ALLOC();
     
@@ -189,6 +190,19 @@ static void ucos_wrap_info (int argc, char *argv[])
             p_tcb = p_tcb->DbgNextPtr;
         }
         rt_kprintf("\n");        
+    }
+    else if(!strcmp((const char *)argv[1],(const char *)"-s"))
+    {
+        CPU_CRITICAL_ENTER();
+        p_sem = OSSemDbgListPtr;
+        CPU_CRITICAL_EXIT();
+        rt_kprintf("-----------------¦ÌCOS-III Sem----------------------\n");
+        while(p_sem)
+        {
+            rt_kprintf("name:%s\n",p_sem->Sem.parent.parent.name);
+            p_sem = p_sem->DbgNextPtr;
+        }
+        rt_kprintf("\n");          
     }
     else
     {
