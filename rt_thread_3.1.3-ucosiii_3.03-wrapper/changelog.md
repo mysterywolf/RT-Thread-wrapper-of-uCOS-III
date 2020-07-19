@@ -127,6 +127,10 @@
 - 实现`OSSemQty`全局变量
 - 实现`OSMutexDbgListPtr`链表
 - 实现`OSMutexQty`全局变量
+- 实现`OSQDbgListPtr`链表
+- 实现`OSQQty`全局变量
+- 实现`OSFlagDbgListPtr`链表
+- 实现`OSFlagQty`全局变量
 
 
 
@@ -220,4 +224,3 @@
 - [ ] 完善统计任务的其他统计项
 - [ ] 实现受限项opts
 - [ ] 补充例程
-- [ ] 实现各内核对象DbgList

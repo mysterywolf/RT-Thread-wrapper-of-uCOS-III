@@ -115,7 +115,10 @@ void  OSQCreate (OS_Q        *p_q,
     rt_size_t 	msg_size;
     rt_size_t 	pool_size;
     rt_size_t   msg_header_size;
-
+    void       *p_pool;
+    
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -167,12 +170,15 @@ void  OSQCreate (OS_Q        *p_q,
     msg_header_size = sizeof(struct _rt_mq_message);/*sizeof(struct rt_mq_message)*/
     msg_size = sizeof(ucos_msg_t);/*消息队列中一条消息的最大长度，单位字节*/
     pool_size = (msg_header_size+msg_size) * max_qty;/*存放消息的缓冲区大小*/
-    p_q->p_pool = RT_KERNEL_MALLOC(pool_size);/*分配用于存放消息的缓冲区*/
-    if(p_q->p_pool == RT_NULL)
+    p_pool = RT_KERNEL_MALLOC(pool_size);/*分配用于存放消息的缓冲区*/
+    if(p_pool == RT_NULL)
     {
         *p_err = OS_ERR_MEM_FULL;
         return;
     }
+    CPU_CRITICAL_ENTER();
+    p_q->p_pool = p_pool;
+    CPU_CRITICAL_EXIT();
     
     rt_err = rt_mq_init(&p_q->Msg,
                         (const char *)p_name,
@@ -182,6 +188,19 @@ void  OSQCreate (OS_Q        *p_q,
                          RT_IPC_FLAG_FIFO);
     
     *p_err = rt_err_to_ucosiii(rt_err);
+    if(rt_err != RT_EOK)
+    {
+        return;
+    }
+    
+    CPU_CRITICAL_ENTER();
+    p_q->Type    = OS_OBJ_TYPE_Q;                           /* Mark the data structure as a message queue             */
+    p_q->NamePtr = p_name;
+#if OS_CFG_DBG_EN > 0u
+    OS_QDbgListAdd(p_q);
+#endif
+    OSQQty++;                                               /* One more queue created                                 */      
+    CPU_CRITICAL_EXIT();    
 }
 
 /*
@@ -297,7 +316,18 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
             *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
-        
+    
+    if(*p_err == OS_ERR_NONE)
+    {
+        CPU_CRITICAL_ENTER();
+#if OS_CFG_DBG_EN > 0u
+        OS_QDbgListRemove(p_q);
+#endif
+        OSQQty--;
+        OS_QClr(p_q);
+        CPU_CRITICAL_EXIT();
+    }
+    
     return pend_q_len;
 }
 #endif
@@ -799,6 +829,120 @@ void  OSQPost (OS_Q         *p_q,
         return;
     }
     *p_err = rt_err_to_ucosiii(rt_err); 
+}
+/*
+************************************************************************************************************************
+*                                        CLEAR THE CONTENTS OF A MESSAGE QUEUE
+*
+* Description: This function is called by OSQDel() to clear the contents of a message queue
+*
+
+* Argument(s): p_q      is a pointer to the queue to clear
+*              ---
+*
+* Returns    : none
+*
+* Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
+************************************************************************************************************************
+*/
+
+void  OS_QClr (OS_Q  *p_q)
+{
+    p_q->Type    =  OS_OBJ_TYPE_NONE;                       /* Mark the data structure as a NONE                      */
+    p_q->NamePtr = (CPU_CHAR *)((void *)"?Q");
+}
+
+/*
+************************************************************************************************************************
+*                                      ADD/REMOVE MESSAGE QUEUE TO/FROM DEBUG LIST
+*
+* Description: These functions are called by uC/OS-III to add or remove a message queue to/from a message queue debug
+*              list.
+*
+* Arguments  : p_q     is a pointer to the message queue to add/remove
+*
+* Returns    : none
+*
+* Note(s)    : These functions are INTERNAL to uC/OS-III and your application should not call it.
+************************************************************************************************************************
+*/
+
+#if OS_CFG_DBG_EN > 0u
+void  OS_QDbgListAdd (OS_Q  *p_q)
+{
+    p_q->DbgPrevPtr               = (OS_Q     *)0;
+    if (OSQDbgListPtr == (OS_Q *)0) {
+        p_q->DbgNextPtr           = (OS_Q     *)0;
+    } else {
+        p_q->DbgNextPtr           =  OSQDbgListPtr;
+        OSQDbgListPtr->DbgPrevPtr =  p_q;
+    }
+    OSQDbgListPtr                 =  p_q;
+}
+
+
+
+void  OS_QDbgListRemove (OS_Q  *p_q)
+{
+    OS_Q  *p_q_next;
+    OS_Q  *p_q_prev;
+
+
+    p_q_prev = p_q->DbgPrevPtr;
+    p_q_next = p_q->DbgNextPtr;
+
+    if (p_q_prev == (OS_Q *)0) {
+        OSQDbgListPtr = p_q_next;
+        if (p_q_next != (OS_Q *)0) {
+            p_q_next->DbgPrevPtr = (OS_Q *)0;
+        }
+        p_q->DbgNextPtr = (OS_Q *)0;
+
+    } else if (p_q_next == (OS_Q *)0) {
+        p_q_prev->DbgNextPtr = (OS_Q *)0;
+        p_q->DbgPrevPtr      = (OS_Q *)0;
+
+    } else {
+        p_q_prev->DbgNextPtr =  p_q_next;
+        p_q_next->DbgPrevPtr =  p_q_prev;
+        p_q->DbgNextPtr      = (OS_Q *)0;
+        p_q->DbgPrevPtr      = (OS_Q *)0;
+    }
+}
+#endif
+
+/*
+************************************************************************************************************************
+*                                              MESSAGE QUEUE INITIALIZATION
+*
+* Description: This function is called by OSInit() to initialize the message queue management.
+*
+
+* Arguments  : p_err         is a pointer to a variable that will receive an error code.
+*
+*                                OS_ERR_NONE     the call was successful
+*
+* Returns    : none
+*
+* Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
+************************************************************************************************************************
+*/
+
+void  OS_QInit (OS_ERR  *p_err)
+{
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+#if OS_CFG_DBG_EN > 0u
+    OSQDbgListPtr = (OS_Q *)0;
+#endif
+
+    OSQQty        = (OS_OBJ_QTY)0;
+   *p_err         = OS_ERR_NONE;
 }
 
 #endif

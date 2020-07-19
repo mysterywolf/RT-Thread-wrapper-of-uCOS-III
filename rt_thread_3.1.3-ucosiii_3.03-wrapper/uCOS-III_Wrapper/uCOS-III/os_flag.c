@@ -92,6 +92,8 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 {
     rt_err_t rt_err;
         
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -145,6 +147,20 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
     /*在uCOS中事件是直接被插入到链表,不按照优先级排列*/
     rt_err = rt_event_init(&p_grp->FlagGrp,(const char*)p_name,RT_IPC_FLAG_FIFO);
     *p_err = rt_err_to_ucosiii(rt_err);
+    if(rt_err != RT_EOK)
+    {
+        return;
+    }
+    
+    CPU_CRITICAL_ENTER();
+    p_grp->Type    = OS_OBJ_TYPE_FLAG;                      /* Set to event flag group type                           */
+    p_grp->NamePtr = p_name;
+    p_grp->Flags   = flags;                                 /* Set to desired initial value                           */
+#if OS_CFG_DBG_EN > 0u
+    OS_FlagDbgListAdd(p_grp);
+#endif
+    OSFlagQty++;
+    CPU_CRITICAL_EXIT();
 }
 
 /*
@@ -255,7 +271,18 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
             *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
-        
+    
+    if(*p_err == OS_ERR_NONE)
+    {
+        CPU_CRITICAL_ENTER();
+#if OS_CFG_DBG_EN > 0u
+        OS_FlagDbgListRemove(p_grp);
+#endif
+        OSFlagQty--;
+        OS_FlagClr(p_grp);
+        CPU_CRITICAL_EXIT();
+    }
+    
     return pend_flag_len;
 }
 #endif
@@ -735,5 +762,123 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     *p_err = rt_err_to_ucosiii(rt_err);
     return p_grp->FlagGrp.set;/*返回执行后事件标志组的值*/
 }
+
+
+/*$PAGE*/
+/*
+************************************************************************************************************************
+*                                      CLEAR THE CONTENTS OF AN EVENT FLAG GROUP
+*
+* Description: This function is called by OSFlagDel() to clear the contents of an event flag group
+*
+
+* Argument(s): p_grp     is a pointer to the event flag group to clear
+*              -----
+*
+* Returns    : none
+*
+* Note(s)    : This function is INTERNAL to uC/OS-III and your application should not call it.
+************************************************************************************************************************
+*/
+
+void  OS_FlagClr (OS_FLAG_GRP  *p_grp)
+{
+    p_grp->Type             = OS_OBJ_TYPE_NONE;
+    p_grp->NamePtr          = (CPU_CHAR *)((void *)"?FLAG");    /* Unknown name                                       */
+    p_grp->Flags            = (OS_FLAGS )0;
+}
+
+/*
+************************************************************************************************************************
+*                                          INITIALIZE THE EVENT FLAG MODULE
+*
+* Description: This function is called by uC/OS-III to initialize the event flag module.  Your application MUST NOT call
+*              this function.  In other words, this function is internal to uC/OS-III.
+*
+* Arguments  : p_err     is a pointer to an error code that can contain one of the following values:
+*
+*                            OS_ERR_NONE   The call was successful.
+*
+* Returns    : none
+*
+* Note(s)    : This function is INTERNAL to uC/OS-III and your application should not call it.
+************************************************************************************************************************
+*/
+
+void  OS_FlagInit (OS_ERR  *p_err)
+{
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+#if OS_CFG_DBG_EN > 0u
+    OSFlagDbgListPtr = (OS_FLAG_GRP *)0;
+#endif
+
+    OSFlagQty        = (OS_OBJ_QTY   )0;
+   *p_err            = OS_ERR_NONE;
+}
+
+/*
+************************************************************************************************************************
+*                                    ADD/REMOVE EVENT FLAG GROUP TO/FROM DEBUG LIST
+*
+* Description: These functions are called by uC/OS-III to add or remove an event flag group from the event flag debug
+*              list.
+*
+* Arguments  : p_grp     is a pointer to the event flag group to add/remove
+*
+* Returns    : none
+*
+* Note(s)    : These functions are INTERNAL to uC/OS-III and your application should not call it.
+************************************************************************************************************************
+*/
+
+#if OS_CFG_DBG_EN > 0u
+void  OS_FlagDbgListAdd (OS_FLAG_GRP  *p_grp)
+{
+    p_grp->DbgPrevPtr                = (OS_FLAG_GRP *)0;
+    if (OSFlagDbgListPtr == (OS_FLAG_GRP *)0) {
+        p_grp->DbgNextPtr            = (OS_FLAG_GRP *)0;
+    } else {
+        p_grp->DbgNextPtr            =  OSFlagDbgListPtr;
+        OSFlagDbgListPtr->DbgPrevPtr =  p_grp;
+    }
+    OSFlagDbgListPtr                 =  p_grp;
+}
+
+
+
+void  OS_FlagDbgListRemove (OS_FLAG_GRP  *p_grp)
+{
+    OS_FLAG_GRP  *p_grp_next;
+    OS_FLAG_GRP  *p_grp_prev;
+
+
+    p_grp_prev = p_grp->DbgPrevPtr;
+    p_grp_next = p_grp->DbgNextPtr;
+
+    if (p_grp_prev == (OS_FLAG_GRP *)0) {
+        OSFlagDbgListPtr = p_grp_next;
+        if (p_grp_next != (OS_FLAG_GRP *)0) {
+            p_grp_next->DbgPrevPtr = (OS_FLAG_GRP *)0;
+        }
+        p_grp->DbgNextPtr = (OS_FLAG_GRP *)0;
+
+    } else if (p_grp_next == (OS_FLAG_GRP *)0) {
+        p_grp_prev->DbgNextPtr = (OS_FLAG_GRP *)0;
+        p_grp->DbgPrevPtr      = (OS_FLAG_GRP *)0;
+
+    } else {
+        p_grp_prev->DbgNextPtr =  p_grp_next;
+        p_grp_next->DbgPrevPtr =  p_grp_prev;
+        p_grp->DbgNextPtr      = (OS_FLAG_GRP *)0;
+        p_grp->DbgPrevPtr      = (OS_FLAG_GRP *)0;
+    }
+}
+#endif
 
 #endif

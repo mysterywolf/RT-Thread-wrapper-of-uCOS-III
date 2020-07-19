@@ -627,9 +627,14 @@ typedef  struct
 struct os_q
 {
     struct  rt_messagequeue Msg;
-    OS_OBJ_TYPE  Type;
-    void    *p_pool;
+    OS_OBJ_TYPE          Type;
+    CPU_CHAR            *NamePtr;                           /* Pointer to Message Queue Name (NUL terminated ASCII)   */
+    void                *p_pool;
     ucos_msg_t ucos_msg;
+#if OS_CFG_DBG_EN > 0u
+    OS_Q                *DbgPrevPtr;
+    OS_Q                *DbgNextPtr;
+#endif
 };
 #endif
 
@@ -642,6 +647,7 @@ struct os_q
 struct  os_sem { 
     struct  rt_semaphore  Sem;
     OS_OBJ_TYPE           Type;
+    CPU_CHAR             *NamePtr;                           /* Pointer to Semaphore Name (NUL terminated ASCII)       */
 #if OS_CFG_DBG_EN > 0u
     OS_SEM               *DbgPrevPtr;
     OS_SEM               *DbgNextPtr;
@@ -656,6 +662,12 @@ struct  os_sem {
 struct  os_flag_grp {
     struct  rt_event     FlagGrp;
     OS_OBJ_TYPE          Type;
+    CPU_CHAR            *NamePtr;                           /* Pointer to Event Flag Name (NUL terminated ASCII)      */
+    OS_FLAGS             Flags;                             /* 8, 16 or 32 bit flags                                  */
+#if OS_CFG_DBG_EN > 0u
+    OS_FLAG_GRP         *DbgPrevPtr;
+    OS_FLAG_GRP         *DbgNextPtr;
+#endif
 };
 
 /*
@@ -756,6 +768,7 @@ struct  os_mutex {
 struct  os_tmr {
     struct  rt_timer     Tmr;
     OS_OBJ_TYPE          Type;
+    CPU_CHAR            *NamePtr;                           /* Pointer to Semaphore Name (NUL terminated ASCII)       */
     OS_TMR_CALLBACK_PTR  CallbackPtr;                       /* Function to call when timer expires                    */
     void                *CallbackPtrArg;                    /* Argument to pass to function when timer expires        */
     OS_STATE             State;
@@ -917,6 +930,19 @@ OS_FLAGS      OSFlagPost                (OS_FLAG_GRP           *p_grp,
                                          OS_FLAGS               flags,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
+                                         
+/* ------------------------------------------------ INTERNAL FUNCTIONS ---------------------------------------------- */
+
+void          OS_FlagClr                (OS_FLAG_GRP           *p_grp);
+
+#if OS_CFG_DBG_EN > 0u
+void          OS_FlagDbgListAdd         (OS_FLAG_GRP           *p_grp);
+
+void          OS_FlagDbgListRemove      (OS_FLAG_GRP           *p_grp);
+#endif
+
+void          OS_FlagInit               (OS_ERR                *p_err);
+
 #endif
 
 /* ================================================================================================================== */
@@ -1122,6 +1148,19 @@ void          OSQPost                   (OS_Q                  *p_q,
                                          OS_MSG_SIZE            msg_size,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
+
+/* ------------------------------------------------ INTERNAL FUNCTIONS ---------------------------------------------- */
+
+void          OS_QClr                   (OS_Q                  *p_q);
+
+#if OS_CFG_DBG_EN > 0u
+void          OS_QDbgListAdd            (OS_Q                  *p_q);
+
+void          OS_QDbgListRemove         (OS_Q                  *p_q);
+#endif
+
+void          OS_QInit                  (OS_ERR                *p_err);
+
 #endif
                                          
 /* ================================================================================================================== */

@@ -213,7 +213,8 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     
     CPU_CRITICAL_ENTER();
     p_tmr->State          = (OS_STATE           )OS_TMR_STATE_STOPPED;     /* Initialize the timer fields             */
-    p_tmr->Type           = (OS_OBJ_TYPE        )OS_OBJ_TYPE_TMR;    
+    p_tmr->Type           = (OS_OBJ_TYPE        )OS_OBJ_TYPE_TMR; 
+    p_tmr->NamePtr        = (CPU_CHAR          *)p_name;    
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)p_callback;
     p_tmr->CallbackPtrArg = (void              *)p_callback_arg;
     p_tmr->Opt            = (OS_OPT             )opt;
@@ -726,6 +727,7 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
 {
     p_tmr->State          = OS_TMR_STATE_UNUSED;            /* Clear timer fields                                     */
     p_tmr->Type           = OS_OBJ_TYPE_NONE;
+    p_tmr->NamePtr        = (CPU_CHAR          *)((void *)"?TMR");
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)0;
     p_tmr->CallbackPtrArg = (void              *)0;
     p_tmr->Opt            = (OS_OPT             )0;

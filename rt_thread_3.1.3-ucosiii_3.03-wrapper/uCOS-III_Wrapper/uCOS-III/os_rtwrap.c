@@ -133,6 +133,8 @@ static void ucos_wrap_info (int argc, char *argv[])
     OS_TMR *p_tmr;
     OS_SEM *p_sem;
     OS_MUTEX *p_mutex;
+    OS_Q *p_q;
+    OS_FLAG_GRP *p_flag;
     
     CPU_SR_ALLOC();
     
@@ -217,7 +219,33 @@ static void ucos_wrap_info (int argc, char *argv[])
             p_mutex = p_mutex->DbgNextPtr;
         }
         rt_kprintf("\n");          
-    }        
+    }
+    else if(!strcmp((const char *)argv[1],(const char *)"-q"))
+    {
+        CPU_CRITICAL_ENTER();
+        p_q = OSQDbgListPtr;
+        CPU_CRITICAL_EXIT();
+        rt_kprintf("-----------------¦ÌCOS-III MsgQ---------------------\n");
+        while(p_q)
+        {
+            rt_kprintf("name:%s\n",p_q->Msg.parent.parent.name);
+            p_q = p_q->DbgNextPtr;
+        }
+        rt_kprintf("\n");          
+    } 
+    else if(!strcmp((const char *)argv[1],(const char *)"-f"))
+    {
+        CPU_CRITICAL_ENTER();
+        p_flag = OSFlagDbgListPtr;
+        CPU_CRITICAL_EXIT();
+        rt_kprintf("-----------------¦ÌCOS-III Flag---------------------\n");
+        while(p_flag)
+        {
+            rt_kprintf("name:%s\n",p_flag->FlagGrp.parent.parent.name);
+            p_flag = p_flag->DbgNextPtr;
+        }
+        rt_kprintf("\n");          
+    }     
     else
     {
         rt_kprintf("invalid parameter,use --help to get more information.\n");

@@ -103,6 +103,20 @@ void  OSInit (OS_ERR  *p_err)
     }
 #endif
     
+#if OS_CFG_FLAG_EN > 0u                                     /* Initialize the Event Flag module                       */
+    OS_FlagInit(p_err);
+    if (*p_err != OS_ERR_NONE) {
+        return;
+    }
+#endif
+
+#if OS_CFG_Q_EN > 0u
+    OS_QInit(p_err);                                        /* Initialize the Message Queue Manager module            */
+    if (*p_err != OS_ERR_NONE) {
+        return;
+    }
+#endif
+    
     OS_TaskInit(p_err);                                     /* Initialize the task manager                            */
     if (*p_err != OS_ERR_NONE) {
         return;
