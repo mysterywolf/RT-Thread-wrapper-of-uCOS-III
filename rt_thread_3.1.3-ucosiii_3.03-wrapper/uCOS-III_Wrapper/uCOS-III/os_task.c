@@ -1396,7 +1396,6 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     *p_used = stack_used / sizeof(CPU_STK_SIZE);
     *p_free = stack_free / sizeof(CPU_STK_SIZE);    
 #endif
-
 }
 #endif
 
