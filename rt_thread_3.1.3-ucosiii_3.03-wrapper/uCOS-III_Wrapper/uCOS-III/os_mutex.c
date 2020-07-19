@@ -74,6 +74,8 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 {
     rt_err_t rt_err;
 
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -120,6 +122,18 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
     
     rt_err = rt_mutex_init(&p_mutex->Mutex,(const char *)p_name,RT_IPC_FLAG_PRIO);/*uCOS-III仅支持以优先级进行排列*/
     *p_err = rt_err_to_ucosiii(rt_err);
+    if(rt_err != RT_EOK)
+    {
+        return;
+    }
+    
+    CPU_CRITICAL_ENTER();
+    p_mutex->Type              =  OS_OBJ_TYPE_MUTEX;
+#if OS_CFG_DBG_EN > 0u
+    OS_MutexDbgListAdd(p_mutex);
+#endif
+    OSMutexQty++;    
+    CPU_CRITICAL_EXIT();
 }
 
 /*
@@ -241,7 +255,18 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
             *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
-        
+    
+    if(*p_err == OS_ERR_NONE)
+    {
+        CPU_CRITICAL_ENTER();
+#if OS_CFG_DBG_EN > 0u
+        OS_MutexDbgListRemove(p_mutex);
+#endif
+        OSMutexQty--;
+        OS_MutexClr(p_mutex);
+        CPU_CRITICAL_EXIT();
+    }
+    
     return pend_mutex_len;
 }
 #endif
@@ -602,6 +627,119 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
     {
         *p_err = OS_ERR_MUTEX_NOT_OWNER;
     }
+}
+
+/*
+************************************************************************************************************************
+*                                            CLEAR THE CONTENTS OF A MUTEX
+*
+* Description: This function is called by OSMutexDel() to clear the contents of a mutex
+*
+
+* Argument(s): p_mutex      is a pointer to the mutex to clear
+*              -------
+*
+* Returns    : none
+*
+* Note(s)    : This function is INTERNAL to uC/OS-III and your application should not call it.
+************************************************************************************************************************
+*/
+
+void  OS_MutexClr (OS_MUTEX  *p_mutex)
+{
+    p_mutex->Type              =  OS_OBJ_TYPE_NONE;         /* Mark the data structure as a NONE                      */
+}
+
+/*
+************************************************************************************************************************
+*                                          ADD/REMOVE MUTEX TO/FROM DEBUG LIST
+*
+* Description: These functions are called by uC/OS-III to add or remove a mutex to/from the debug list.
+*
+* Arguments  : p_mutex     is a pointer to the mutex to add/remove
+*
+* Returns    : none
+*
+* Note(s)    : These functions are INTERNAL to uC/OS-III and your application should not call it.
+************************************************************************************************************************
+*/
+
+#if OS_CFG_DBG_EN > 0u
+void  OS_MutexDbgListAdd (OS_MUTEX  *p_mutex)
+{
+    p_mutex->DbgPrevPtr               = (OS_MUTEX *)0;
+    if (OSMutexDbgListPtr == (OS_MUTEX *)0) {
+        p_mutex->DbgNextPtr           = (OS_MUTEX *)0;
+    } else {
+        p_mutex->DbgNextPtr           =  OSMutexDbgListPtr;
+        OSMutexDbgListPtr->DbgPrevPtr =  p_mutex;
+    }
+    OSMutexDbgListPtr                 =  p_mutex;
+}
+
+
+
+void  OS_MutexDbgListRemove (OS_MUTEX  *p_mutex)
+{
+    OS_MUTEX  *p_mutex_next;
+    OS_MUTEX  *p_mutex_prev;
+
+
+    p_mutex_prev = p_mutex->DbgPrevPtr;
+    p_mutex_next = p_mutex->DbgNextPtr;
+
+    if (p_mutex_prev == (OS_MUTEX *)0) {
+        OSMutexDbgListPtr = p_mutex_next;
+        if (p_mutex_next != (OS_MUTEX *)0) {
+            p_mutex_next->DbgPrevPtr = (OS_MUTEX *)0;
+        }
+        p_mutex->DbgNextPtr = (OS_MUTEX *)0;
+
+    } else if (p_mutex_next == (OS_MUTEX *)0) {
+        p_mutex_prev->DbgNextPtr = (OS_MUTEX *)0;
+        p_mutex->DbgPrevPtr      = (OS_MUTEX *)0;
+
+    } else {
+        p_mutex_prev->DbgNextPtr =  p_mutex_next;
+        p_mutex_next->DbgPrevPtr =  p_mutex_prev;
+        p_mutex->DbgNextPtr      = (OS_MUTEX *)0;
+        p_mutex->DbgPrevPtr      = (OS_MUTEX *)0;
+    }
+}
+#endif
+
+/*
+************************************************************************************************************************
+*                                                MUTEX INITIALIZATION
+*
+* Description: This function is called by OSInit() to initialize the mutex management.
+*
+
+* Argument(s): p_err        is a pointer to a variable that will contain an error code returned by this function.
+*
+*                                OS_ERR_NONE     the call was successful
+*
+* Returns    : none
+*
+* Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
+************************************************************************************************************************
+*/
+
+void  OS_MutexInit (OS_ERR  *p_err)
+{
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+#if OS_CFG_DBG_EN > 0u
+    OSMutexDbgListPtr = (OS_MUTEX *)0;
+#endif
+
+    OSMutexQty        = (OS_OBJ_QTY)0;
+   *p_err             =  OS_ERR_NONE;
 }
 
 #endif

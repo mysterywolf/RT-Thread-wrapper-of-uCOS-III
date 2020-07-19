@@ -211,7 +211,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
         return;
     }
     
-    OS_CRITICAL_ENTER();
+    CPU_CRITICAL_ENTER();
     p_tmr->State          = (OS_STATE           )OS_TMR_STATE_STOPPED;     /* Initialize the timer fields             */
     p_tmr->Type           = (OS_OBJ_TYPE        )OS_OBJ_TYPE_TMR;    
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)p_callback;
@@ -223,7 +223,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
 #endif
-    OS_CRITICAL_EXIT();
+    CPU_CRITICAL_EXIT();
     
     if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->Dly && p_tmr->Period)
     {
@@ -248,12 +248,12 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
  
     *p_err = OS_ERR_NONE;/*rt_timer_initÃ»ÓÐ·µ»Ø´íÎóÂë*/
 
-    OS_CRITICAL_ENTER();
+    CPU_CRITICAL_ENTER();
 #if OS_CFG_DBG_EN > 0u
     OS_TmrDbgListAdd(p_tmr);
 #endif
     OSTmrQty++;                                             /* Keep track of the number of timers created             */                  
-    OS_CRITICAL_EXIT();
+    CPU_CRITICAL_EXIT();
 }
 
 /*
@@ -327,13 +327,13 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err == RT_EOK)
     {
-        OS_CRITICAL_ENTER();
+        CPU_CRITICAL_ENTER();
 #if OS_CFG_DBG_EN > 0u
         OS_TmrDbgListRemove(p_tmr);
 #endif
         OSTmrQty--;
         OS_TmrClr(p_tmr);    
-        OS_CRITICAL_EXIT(); 
+        CPU_CRITICAL_EXIT(); 
         return DEF_TRUE;
     }
     else

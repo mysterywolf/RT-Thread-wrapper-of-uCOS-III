@@ -125,7 +125,8 @@
 - `OSInit`函数内加入临界区保护
 - 实现`OSSemDbgListPtr`链表
 - 实现`OSSemQty`全局变量
-- 增加了`OS_SEM`结构体成员变量
+- 实现`OSMutexDbgListPtr`链表
+- 实现`OSMutexQty`全局变量
 
 
 

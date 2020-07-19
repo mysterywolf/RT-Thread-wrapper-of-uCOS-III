@@ -363,7 +363,7 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
     }
 #endif
     
-    OS_CRITICAL_ENTER();
+    CPU_CRITICAL_ENTER();
     while(p_q->Msg.entry>0)
     {
         /* get message from queue */
@@ -384,7 +384,7 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
 
         entries ++;
     }
-    OS_CRITICAL_EXIT();
+    CPU_CRITICAL_EXIT();
     
     return entries;
 }

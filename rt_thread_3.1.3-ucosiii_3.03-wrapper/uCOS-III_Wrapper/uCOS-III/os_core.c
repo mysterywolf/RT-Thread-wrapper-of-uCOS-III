@@ -96,6 +96,13 @@ void  OSInit (OS_ERR  *p_err)
     }
 #endif
     
+#if OS_CFG_MUTEX_EN > 0u                                    /* Initialize the Mutex Manager module                    */
+    OS_MutexInit(p_err);
+    if (*p_err != OS_ERR_NONE) {
+        return;
+    }
+#endif
+    
     OS_TaskInit(p_err);                                     /* Initialize the task manager                            */
     if (*p_err != OS_ERR_NONE) {
         return;

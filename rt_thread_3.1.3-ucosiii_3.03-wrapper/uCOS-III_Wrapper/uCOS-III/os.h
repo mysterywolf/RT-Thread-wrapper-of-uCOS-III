@@ -643,8 +643,8 @@ struct  os_sem {
     struct  rt_semaphore  Sem;
     OS_OBJ_TYPE           Type;
 #if OS_CFG_DBG_EN > 0u
-    OS_SEM              *DbgPrevPtr;
-    OS_SEM              *DbgNextPtr;
+    OS_SEM               *DbgPrevPtr;
+    OS_SEM               *DbgNextPtr;
 #endif    
 };
 /*
@@ -741,6 +741,10 @@ struct os_mem {                                             /* MEMORY CONTROL BL
 struct  os_mutex {
     struct rt_mutex     Mutex;
     OS_OBJ_TYPE         Type;
+#if OS_CFG_DBG_EN > 0u
+    OS_MUTEX           *DbgPrevPtr;
+    OS_MUTEX           *DbgNextPtr;
+#endif  
 };
 
 /*
@@ -1063,6 +1067,19 @@ OS_OBJ_QTY    OSMutexPendAbort          (OS_MUTEX              *p_mutex,
 void          OSMutexPost               (OS_MUTEX              *p_mutex,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
+
+/* ------------------------------------------------ INTERNAL FUNCTIONS ---------------------------------------------- */
+
+void          OS_MutexClr               (OS_MUTEX              *p_mutex);
+
+#if OS_CFG_DBG_EN > 0u
+void          OS_MutexDbgListAdd        (OS_MUTEX              *p_mutex);
+
+void          OS_MutexDbgListRemove     (OS_MUTEX              *p_mutex);
+#endif
+
+void          OS_MutexInit              (OS_ERR                *p_err);
+
 #endif
 
 /* ================================================================================================================== */

@@ -132,6 +132,7 @@ static void ucos_wrap_info (int argc, char *argv[])
     OS_TCB *p_tcb;
     OS_TMR *p_tmr;
     OS_SEM *p_sem;
+    OS_MUTEX *p_mutex;
     
     CPU_SR_ALLOC();
     
@@ -204,6 +205,19 @@ static void ucos_wrap_info (int argc, char *argv[])
         }
         rt_kprintf("\n");          
     }
+    else if(!strcmp((const char *)argv[1],(const char *)"-m"))
+    {
+        CPU_CRITICAL_ENTER();
+        p_mutex = OSMutexDbgListPtr;
+        CPU_CRITICAL_EXIT();
+        rt_kprintf("-----------------¦ÌCOS-III Mutex--------------------\n");
+        while(p_mutex)
+        {
+            rt_kprintf("name:%s\n",p_mutex->Mutex.parent.parent.name);
+            p_mutex = p_mutex->DbgNextPtr;
+        }
+        rt_kprintf("\n");          
+    }        
     else
     {
         rt_kprintf("invalid parameter,use --help to get more information.\n");
