@@ -216,7 +216,8 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
                       OS_ERR       *p_err);
 ```
 
-​	flags字段必须填`OS_OPT_POST_FLAG_SET`，在μCOS-III中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死，必须置1为事件发生，因此该位必须填`OS_OPT_POST_FLAG_SET`。
+​	flags字段，必须填`OS_OPT_POST_FLAG_SET`，在μCOS-III中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死，必须置1为事件发生，因此该位必须填`OS_OPT_POST_FLAG_SET`。
+​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
 
 #### 3.2.1.3 OSFlagPend()
 
@@ -275,7 +276,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
 ```
 
 ​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效，调用该函数执行完毕后内部已经进行了调度。因为RT-Thread对应函数`rt_sem_release` 内部直接调用`rt_schedule`函数。
-​	同时该字段`OS_OPT_POST_ALL`也为无效，仅可使用`OS_OPT_POST_1`
+​	同时该字段`OS_OPT_POST_ALL`也为无效，仅可使用`OS_OPT_POST_1`。
 
 
 
