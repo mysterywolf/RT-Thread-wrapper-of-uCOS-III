@@ -63,7 +63,7 @@
 *
 *              flags          contains the initial value to store in the event flag group (typically 0).
 *                             -------------说明-------------
-*                             在uCOS中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死
+*                             在uCOS-III中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死
 *                             置1为事件发生,因此该位必须为0。
 *
 *              p_err          is a pointer to an error code which will be returned to your application:
@@ -694,7 +694,7 @@ OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err)
 *
 *                            you can also 'add' OS_OPT_POST_NO_SCHED to prevent the scheduler from being called.
 *                             -------------说明-------------
-*                             在uCOS中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死
+*                             在uCOS-III中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死
 *                             置1为事件发生,因此该位必须填OS_OPT_POST_FLAG_SET
 *
 *              p_err         is a pointer to an error code and can be:

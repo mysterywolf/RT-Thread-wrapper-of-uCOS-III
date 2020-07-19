@@ -76,9 +76,6 @@
 *                              callback function must be declared as follows:
 *
 *                                  void  MyCallback (OS_TMR *p_tmr, void *p_arg);
-*                              -------------说明-------------
-*                              RTT的回调函数参数为1个，因此兼容层的回调函数形式改为：
-*                                  void  MyCallback (void *p_arg); 
 *
 *              p_callback_arg  Is an argument (a pointer) that is passed to the callback function when it is called.
 *

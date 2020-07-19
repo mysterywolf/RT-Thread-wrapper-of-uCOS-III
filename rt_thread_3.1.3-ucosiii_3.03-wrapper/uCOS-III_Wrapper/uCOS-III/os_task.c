@@ -1190,7 +1190,7 @@ CPU_BOOLEAN  OSTaskSemPendAbort (OS_TCB  *p_tcb,
 *              opt       determines the type of POST performed:
 *
 *                             OS_OPT_POST_NONE         No option
-*                             OS_OPT_POST_NO_SCHED     Do not call the scheduler
+*                           - OS_OPT_POST_NO_SCHED     Do not call the scheduler
 *
 *              p_err     is a pointer to an error code returned by this function:
 *

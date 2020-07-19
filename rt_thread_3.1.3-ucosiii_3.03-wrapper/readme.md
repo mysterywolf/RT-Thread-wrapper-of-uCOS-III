@@ -171,7 +171,7 @@ int main(void) /*RT-Thread main线程*/
    
 5. 兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能
 
-    ​	该功能在原版3.05版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06版本开始删除了该功能，因此本兼容层不再予以实现。
+    ​	该功能在原版3.05.00版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06.00版本开始删除了该功能，因此本兼容层不再予以实现。
 
 
 
@@ -190,9 +190,9 @@ void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
 
 
 
-## 3.2 功能受限API
+## 3.2 功能受限API（仅8个，全部为轻度受限，对正常使用没有影响）
 
-功能受限函数是指该函数虽然在兼容层中实现，但是实现不完全。即本兼容层无法完全实现该函数在原版μCOS-III中的所有功能，予以列出：
+功能受限函数是指该函数虽然在兼容层中实现，但是实现不完全。即无法完全实现该函数在原版μCOS-III中的所有功能，予以列出：
 
 ### 3.2.1 os_flag.c
 
@@ -205,7 +205,105 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
                     OS_ERR       *p_err);
 ```
 
-​	flags字段无效，在μCOS-III中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死，必须置1为事件发生，因此该位必须填0。
+​	flags字段必须填`0`，在μCOS-III中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死，必须置1为事件发生，因此该位必须填`0`。
+
+#### 3.2.1.2 OSFlagPost()
+
+```c
+OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
+                      OS_FLAGS      flags,
+                      OS_OPT        opt,
+                      OS_ERR       *p_err);
+```
+
+​	flags字段必须填`OS_OPT_POST_FLAG_SET`，在μCOS-III中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死，必须置1为事件发生，因此该位必须填`OS_OPT_POST_FLAG_SET`。
+
+#### 3.2.1.3 OSFlagPend()
+
+```c
+OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
+                      OS_FLAGS      flags,
+                      OS_TICK       timeout,
+                      OS_OPT        opt,
+                      CPU_TS       *p_ts,
+                      OS_ERR       *p_err);
+```
+
+​	opt字段，由于上述相同原因，`OS_OPT_PEND_FLAG_CLR_ALL`和`OS_OPT_PEND_FLAG_SET_ALL`意义一样，`OS_OPT_PEND_FLAG_CLR_ANY`和`OS_OPT_PEND_FLAG_SET_ANY`意义一样。  
+​	同时，`OS_OPT_POST_NO_SCHED`选项无效，调用该函数执行完毕后内部已经进行了调度。因为RT-Thread对应函数`rt_event_send`内部直接调用`rt_schedule`函数。
+
+
+
+### 3.2.2  os_mutex.c
+
+#### 3.2.2.1 OSMutexPost()
+
+```c
+void  OSMutexPost (OS_MUTEX  *p_mutex,
+                   OS_OPT     opt,
+                   OS_ERR    *p_err);
+```
+
+​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效，调用该函数执行完毕后内部已经进行了调度。因为RT-Thread对应函数`rt_mutex_release`内部直接调用`rt_schedule`函数。
+
+
+
+### 3.2.3 os_q.c
+
+#### 3.2.3.1 OSQPost()
+
+```c
+void  OSQPost (OS_Q         *p_q,
+               void         *p_void,
+               OS_MSG_SIZE   msg_size,
+               OS_OPT        opt,
+               OS_ERR       *p_err);
+```
+
+​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效，调用该函数执行完毕后内部已经进行了调度。因为RT-Thread对应函数`rt_mq_send` / `rt_mq_urgent`内部直接调用`rt_schedule`函数。
+
+
+
+### 3.2.4 os_sem.c
+
+#### 3.2.4.1 OSSemPost()
+
+```c
+OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
+                       OS_OPT   opt,
+                       OS_ERR  *p_err);
+```
+
+​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效，调用该函数执行完毕后内部已经进行了调度。因为RT-Thread对应函数`rt_sem_release` 内部直接调用`rt_schedule`函数。
+​	同时该字段`OS_OPT_POST_ALL`也为无效，仅可使用`OS_OPT_POST_1`
+
+
+
+### 3.2.5 os_task.c
+
+#### 3.2.5.1 OSTaskQPost()
+
+```c
+void  OSTaskQPost (OS_TCB       *p_tcb,
+                   void         *p_void,
+                   OS_MSG_SIZE   msg_size,
+                   OS_OPT        opt,
+                   OS_ERR       *p_err);
+```
+
+​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
+
+
+
+#### 3.2.5.2 OSTaskSemPost()
+
+```c
+OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
+                           OS_OPT   opt,
+                           OS_ERR  *p_err);
+```
+
+​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
 
 
 
@@ -255,7 +353,7 @@ void  App_OS_TimeTickHook (void);
 
 ## 3.5 全局变量
 
-目前，本兼容层可以使用以下μCOS-III原版全局变量（位于`os.h`）。这些全局变量的具体含义请参见**2.2节**中所列举出的参考资料。
+目前，本兼容层可以使用以下μCOS-III原版全局变量（位于`os.h`）。**这些全局变量的具体含义请参见2.2节中所列举出的参考资料。**
 
  ```c
 
@@ -279,12 +377,46 @@ OS_EXT            OS_STATE                  OSRunning;                  /* Flag 
 OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag indicating that all init. done        */
 #endif
 
+                                                                        /* SEMAPHORES ------------------------------- */
+#if OS_CFG_SEM_EN > 0u
+#if OS_CFG_DBG_EN > 0u
+OS_EXT            OS_SEM                   *OSSemDbgListPtr;
+#endif
+OS_EXT            OS_OBJ_QTY                OSSemQty;                   /* Number of semaphores created               */
+#endif
+
+                                                                        /* QUEUES ----------------------------------- */
+#if OS_CFG_Q_EN   > 0u
+#if OS_CFG_DBG_EN > 0u
+OS_EXT            OS_Q                     *OSQDbgListPtr;
+#endif
+OS_EXT            OS_OBJ_QTY                OSQQty;                     /* Number of message queues created           */
+#endif
+
+                                                                        /* MUTEX MANAGEMENT ------------------------- */
+#if OS_CFG_MUTEX_EN > 0u
+#if OS_CFG_DBG_EN   > 0u
+OS_EXT            OS_MUTEX                 *OSMutexDbgListPtr;
+#endif
+OS_EXT            OS_OBJ_QTY                OSMutexQty;                 /* Number of mutexes created                  */
+#endif
+
+                                                                        /* FLAGS ------------------------------------ */
+#if OS_CFG_FLAG_EN > 0u
+#if OS_CFG_DBG_EN  > 0u
+OS_EXT            OS_FLAG_GRP              *OSFlagDbgListPtr;
+#endif
+OS_EXT            OS_OBJ_QTY                OSFlagQty;
+#endif
+
+                                                                        /* MEMORY MANAGEMENT ------------------------ */
 #if OS_CFG_MEM_EN > 0u
 #if OS_CFG_DBG_EN > 0u
 OS_EXT            OS_MEM                   *OSMemDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSMemQty;                   /* Number of memory partitions created        */
 #endif
+
                                                                         /* TASKS ------------------------------------ */
 #if OS_CFG_DBG_EN > 0u
 OS_EXT            OS_TCB                   *OSTaskDbgListPtr;
@@ -309,6 +441,13 @@ OS_EXT            OS_TICK                   OSStatTaskCtrMax;
 OS_EXT            OS_TICK                   OSStatTaskCtrRun;
 OS_EXT            CPU_BOOLEAN               OSStatTaskRdy;
 OS_EXT            OS_TCB                    OSStatTaskTCB;
+#endif
+
+#if OS_CFG_TMR_EN > 0u                                                  /* TIMERS ----------------------------------- */
+#if OS_CFG_DBG_EN > 0u
+OS_EXT            OS_TMR                   *OSTmrDbgListPtr;
+#endif
+OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Number of timers created                   */
 #endif
 
  ```
