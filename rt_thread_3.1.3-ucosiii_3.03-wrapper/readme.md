@@ -1,4 +1,4 @@
-# RT-Thread操作系统μC/OS-III(3.03-3.04)兼容层
+# RT-Thread操作系统的μC/OS-III兼容层
 ## μCOS-III Wrapper
 
 [TOC]
