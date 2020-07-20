@@ -256,7 +256,7 @@ void  OSQPost (OS_Q         *p_q,
                OS_ERR       *p_err);
 ```
 
-​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
+​	opt字段，`OS_OPT_POST_NO_SCHED`、`OS_OPT_POST_ALL`选项无效。
 
 
 

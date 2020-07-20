@@ -50,9 +50,8 @@
 *                       RT_IPC_FLAG_FIFO(uCOS-III没有实现,其均是按照优先级排列的)
 *                   uCOS-III支持：
 *                       OS_OPT_POST_1 (相当于RT_IPC_FLAG_PRIO)
-*                       OS_OPT_POST_ALL (RT-Thread未实现)
+*                       OS_OPT_POST_ALL (RT-Thread未实现,但是本兼容层已经实现,os_rtwrap.c)
 *                       OS_OPT_POST_NO_SCHED (RT-Thread未实现)
-*                   因此只能实现RT_IPC_FLAG_PRIO与OS_OPT_POST_1作为信号量的兼容
 ************************************************************************************************************************
 */
 
