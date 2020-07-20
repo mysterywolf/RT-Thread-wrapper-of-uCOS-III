@@ -157,8 +157,7 @@ static rt_err_t rt_ipc_post_all (rt_list_t *list)
 }
 
 /**
- * This function will release ALL semaphores, if there are threads suspended on
- * semaphore, it will be waked up.
+ * This function will wake ALL threads which are WAITTING for semaphores
  *
  * @param sem the semaphore object
  *
@@ -189,8 +188,6 @@ rt_err_t rt_sem_release_all(rt_sem_t sem)
         rt_ipc_post_all(&(sem->parent.suspend_thread));
         need_schedule = RT_TRUE;
     }
-    else
-        sem->value ++; /* increase value */
 
     /* enable interrupt */
     rt_hw_interrupt_enable(temp);

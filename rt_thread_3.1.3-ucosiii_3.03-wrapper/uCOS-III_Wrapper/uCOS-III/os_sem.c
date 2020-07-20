@@ -595,7 +595,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
         OS_SAFETY_CRITICAL_EXCEPTION();
         return ((OS_SEM_CTR)0);
     }
-#endif    
+#endif
 
 #if OS_CFG_ARG_CHK_EN > 0u    
     if(p_sem == RT_NULL)/*检查指针是否为空*/
@@ -629,9 +629,11 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
         case OS_OPT_POST_1:
             rt_err = rt_sem_release(&p_sem->Sem);
             break;
+        
         case OS_OPT_POST_ALL:
             rt_err = rt_sem_release_all(&p_sem->Sem);
             break;
+        
         default:
             *p_err = OS_ERR_OPT_INVALID;
             return 0;
