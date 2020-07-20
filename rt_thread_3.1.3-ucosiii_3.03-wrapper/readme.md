@@ -161,17 +161,14 @@ int main(void) /*RT-Thread main线程*/
                  &err);
     ```
 
-3. **切勿将RT-Thread和μCOS-III的API混搭使用。**
-
-   ​    例如RT-Thread中的`rt_thread_suspend` / `rt_thread_resume` 函数仅支持一次挂起/解挂；而μCOS-III的`OSTaskSuspend` / `OSTaskResume` 函数是支持嵌套挂起/解挂的，为此需要继承`struct rt_thread`结构体并在其基础上增加成员`.SuspendCtr`变量实现该功能。若采用`rt_thread_init`函数初始化线程，该函数并不会管理μCOS-III兼容层的成员变量，`.SuspendCtr`也不会创建和初始化，若此时调用`OSTaskSuspend` / `OSTaskResume`函数试图指向`.SuspendCtr`成员变量，将会访问非法内存地址(因为`rt_thread_init`初始化的线程`.SuspendCtr`成员变量根本不存在)！
-
-4. 兼容层取消了原版μCOS-III中的时间戳功能
-
-   ​	在μCOS-III中，时间戳主要用于测量中断关闭时间，以及任务单次执行时间以及最大时间等涉及到精度较高的时长测量。该特性在μCOS-II以及RT-Thread中均没有，因此本兼容层不予实现。
+3. **切勿将RT-Thread和μCOS-III的API混搭使用。**   
+    例如RT-Thread中的`rt_thread_suspend` / `rt_thread_resume` 函数仅支持一次挂起/解挂；而μCOS-III的`OSTaskSuspend` / `OSTaskResume` 函数是支持嵌套挂起/解挂的，为此需要继承`struct rt_thread`结构体并在其基础上增加成员`.SuspendCtr`变量实现该功能。若采用`rt_thread_init`函数初始化线程，该函数并不会管理μCOS-III兼容层的成员变量，`.SuspendCtr`也不会创建和初始化，若此时调用`OSTaskSuspend` / `OSTaskResume`函数试图指向`.SuspendCtr`成员变量，将会访问非法内存地址(因为`rt_thread_init`初始化的线程`.SuspendCtr`成员变量根本不存在)！
    
-5. 兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能
-
-    ​	该功能在原版3.05.00版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06.00版本开始删除了该功能，因此本兼容层不再予以实现。
+4. 兼容层取消了原版μCOS-III中的时间戳功能  
+    在μCOS-III中，时间戳主要用于测量中断关闭时间，以及任务单次执行时间以及最大时间等涉及到精度较高的时长测量。该特性在μCOS-II以及RT-Thread中均没有，因此本兼容层不予实现。
+   
+5. 兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能  
+    该功能在原版3.05.00版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06.00版本开始删除了该功能，因此本兼容层不再予以实现。
 
 
 
@@ -205,7 +202,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
                     OS_ERR       *p_err);
 ```
 
-​	flags字段必须填`0`，在μCOS-III中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死，必须置1为事件发生，因此该位必须填`0`。
+​	flags字段必须填`0`，在μCOS-III中可以让用户选择是位置1为事件发生还是位清0为事件发生，但是在RTT中直接定死，必须位置1为事件发生，因此该位必须填`0`（即32位全部为0）。
 
 #### 3.2.1.2 OSFlagPost()
 
@@ -216,7 +213,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
                       OS_ERR       *p_err);
 ```
 
-​	flags字段，必须填`OS_OPT_POST_FLAG_SET`，在μCOS-III中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死，必须置1为事件发生，因此该位必须填`OS_OPT_POST_FLAG_SET`。
+​	flags字段，必须填`OS_OPT_POST_FLAG_SET`，在μCOS-III中可以让用户选择是位置1为事件发生还是位清0为事件发生，但是在RTT中直接定死，必须位置1为事件发生，因此该位必须填`OS_OPT_POST_FLAG_SET`。
 ​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
 
 #### 3.2.1.3 OSFlagPend()
