@@ -174,7 +174,6 @@
 #define  OS_OBJ_TYPE_SEM                     (OS_OBJ_TYPE)CPU_TYPE_CREATE('S', 'E', 'M', 'A')
 #define  OS_OBJ_TYPE_TMR                     (OS_OBJ_TYPE)CPU_TYPE_CREATE('T', 'M', 'R', ' ')
 
-
 /*
 ========================================================================================================================
 *                                           Possible values for 'opt' argument

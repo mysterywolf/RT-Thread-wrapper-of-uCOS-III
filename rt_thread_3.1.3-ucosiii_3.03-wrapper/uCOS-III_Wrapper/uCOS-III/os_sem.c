@@ -81,13 +81,6 @@
 *                                OS_ERR_NAME                    if 'p_name' is a NULL pointer
 *                                OS_ERR_OBJ_CREATED             if the semaphore has already been created
 *                                OS_ERR_OBJ_PTR_NULL            if 'p_sem'  is a NULL pointer
-*                              - OS_ERR_OBJ_TYPE                if 'p_sem' has already been initialized to a different
-*                                                               object type
-*                            -------------说明-------------
-*                                OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                              - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                              + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                              应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : none
 ************************************************************************************************************************
@@ -142,8 +135,8 @@ void  OSSemCreate (OS_SEM      *p_sem,
     if(rt_object_get_type(&p_sem->Sem.parent.parent) == RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_CREATED;
-        return;       
-    }    
+        return;
+    }
 #endif
 
     rt_err = rt_sem_init(&p_sem->Sem,(const char*)p_name,cnt,RT_IPC_FLAG_PRIO);   
