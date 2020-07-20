@@ -31,10 +31,10 @@
 
 ## 1.3 官网
 
-RT-Thread：https://www.rt-thread.org/ 
+RT-Thread：https://www.rt-thread.org/   
 文档中心：https://www.rt-thread.org/document/site/tutorial/nano/an0038-nano-introduction/
 
-μCOS-III：https://www.micrium.com/
+μCOS-III：https://www.micrium.com/  
 文档中心：https://doc.micrium.com/display/kernel304/uC-OS-III+Documentation+Home
 
 
@@ -56,13 +56,13 @@ Keil工程路径：*RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03-w
 1. 将**uCOS-III_Wrapper**文件夹内的所有文件都加入到你的工程中，最好保持原有文件夹的结构。相较于原版μCOS-III增加了`os_rtwrap.c`文件，负责对RT-Thread和μCOS-III的转换提供支持。
 2. 浏览一下`μC-CPU/cpu.h`文件，看一下头文件中的定义是否符合你的CPU，一般不需要改这个文件
 
-3. 浏览一下`μCOS-III/os.h`文件，看一下错误代码，这个错误代码和原版μCOS-III是有一定区别的。
+3. 浏览一下`μCOS-III/os.h`文件，看一下错误代码，这个错误代码和原版μCOS-III是有一定区别的。  
    **注意: 请勿随意打开注释掉的错误码枚举体成员，** 如果用户使用到了这些注释掉的成员,则会在迁移时编译报错,用以提醒用户这些错误代码在兼容层已经不可用。
 
-4. 配置`os_cfg.h`和`os_cfg_app.h`
-   每个选项的配置说明和原版μCOS-III一致，若有不同，我已经在注释中有所解释。
-   **原版μCOS-III配置**说明可参见：
-   a)《嵌入式实时操作系统μC/OS-III》北京航空航天大学出版社 宫辉等译 邵贝贝审校 
+4. 配置`os_cfg.h`和`os_cfg_app.h`  
+   每个选项的配置说明和原版μCOS-III一致，若有不同，我已经在注释中有所解释。 
+   **原版μCOS-III配置**说明可参见：  
+   a)《嵌入式实时操作系统μC/OS-III》北京航空航天大学出版社 宫辉等译 邵贝贝审校   
    b) Micriμm公司μCOS-III在线文档: https://doc.micrium.com/display/kernel304/uC-OS-III+Features+os_cfg.h
 5. μCOS-III原版定时器回调函数是在定时器线程中调用的，而非在中断中调用，因此要使用μCOS-III兼容层的软件定时器，需要将rtconfig.h中的宏定义`RT_USING_TIMER_SOFT`置1。
 
