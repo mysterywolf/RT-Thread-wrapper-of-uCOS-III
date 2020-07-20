@@ -336,7 +336,7 @@ void  OS_StatTaskInit (OS_ERR  *p_err)
     }
 
     OSTaskCreate((OS_TCB     *)&OSStatTaskTCB,
-                 (CPU_CHAR   *)((void *)"uC/OS-III Stat Task"),
+                 (CPU_CHAR   *)((void *)"uC/OS Stat Task"),
                  (OS_TASK_PTR )OS_StatTask,
                  (void       *)0,
                  (OS_PRIO     )OS_CFG_STAT_TASK_PRIO,
