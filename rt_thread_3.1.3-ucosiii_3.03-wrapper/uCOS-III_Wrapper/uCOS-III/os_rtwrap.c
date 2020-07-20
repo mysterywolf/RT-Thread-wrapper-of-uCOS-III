@@ -11,6 +11,7 @@
 #include <os.h>
 #include <stdlib.h>
 #include <string.h>
+#include <rthw.h>
 
 /**
  * 将RT-Thread错误码转换为uCOS-III错误码
@@ -68,14 +69,13 @@ OS_ERR rt_err_to_ucosiii(rt_err_t rt_err)
 rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
 {
     struct rt_thread *thread;
+    register rt_base_t temp;
     
-    CPU_SR_ALLOC();
-    
-    CPU_CRITICAL_ENTER();
+    temp = rt_hw_interrupt_disable();
     thread = rt_list_entry(list->next, struct rt_thread, tlist);/* get thread entry */
     thread->error = -RT_ERROR;/* set error code to RT_ERROR */
     ((OS_TCB*)thread)->PendStatus = OS_STATUS_PEND_ABORT; /*标记当前任务放弃等待*/
-    CPU_CRITICAL_EXIT();
+    rt_hw_interrupt_enable(temp);
    
     rt_thread_resume(thread); /* resume it */
 
@@ -92,14 +92,13 @@ rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
 rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
 {
     struct rt_thread *thread;
-
-    CPU_SR_ALLOC();
+    register rt_base_t temp;
 
     /* wakeup all suspend threads */
     while (!rt_list_isempty(list))
     {
         /* disable interrupt */
-        CPU_CRITICAL_ENTER();
+        temp = rt_hw_interrupt_disable();
 
         /* get next suspend thread */
         thread = rt_list_entry(list->next, struct rt_thread, tlist);
@@ -116,8 +115,89 @@ rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
         rt_thread_resume(thread);
 
         /* enable interrupt */
-        CPU_CRITICAL_EXIT();
+        rt_hw_interrupt_enable(temp);
     }
+
+    return RT_EOK;
+}
+
+/**
+ * 让所有等待该IPC的任务全部批准进入就绪态(由rt_ipc_list_resume_all函数改编)
+ *
+ * @param 挂起表表头指针
+ *
+ * @return 错误码
+ */
+static rt_err_t rt_ipc_post_all (rt_list_t *list)
+{
+    struct rt_thread *thread;
+    register rt_base_t temp;
+
+    /* wakeup all suspend threads */
+    while (!rt_list_isempty(list))
+    {
+        /* disable interrupt */
+        temp = rt_hw_interrupt_disable();
+
+        /* get next suspend thread */
+        thread = rt_list_entry(list->next, struct rt_thread, tlist);
+        
+        /*
+         * resume thread
+         * In rt_thread_resume function, it will remove current thread from
+         * suspend list
+         */
+        rt_thread_resume(thread);
+
+        /* enable interrupt */
+        rt_hw_interrupt_enable(temp);
+    }
+
+    return RT_EOK;
+}
+
+/**
+ * This function will release ALL semaphores, if there are threads suspended on
+ * semaphore, it will be waked up.
+ *
+ * @param sem the semaphore object
+ *
+ * @return the error code
+ */
+rt_err_t rt_sem_release_all(rt_sem_t sem)
+{
+    register rt_base_t temp;
+    register rt_bool_t need_schedule;
+
+    /* parameter check */
+    RT_ASSERT(sem != RT_NULL);
+    RT_ASSERT(rt_object_get_type(&sem->parent.parent) == RT_Object_Class_Semaphore);
+
+    need_schedule = RT_FALSE;
+
+    /* disable interrupt */
+    temp = rt_hw_interrupt_disable();
+
+    RT_DEBUG_LOG(RT_DEBUG_IPC, ("thread %s releases sem:%s, which value is: %d\n",
+                                rt_thread_self()->name,
+                                ((struct rt_object *)sem)->name,
+                                sem->value));
+
+    if (!rt_list_isempty(&sem->parent.suspend_thread))
+    {
+        /* resume the suspended thread */
+        rt_ipc_post_all(&(sem->parent.suspend_thread));
+        need_schedule = RT_TRUE;
+    }
+    else
+        sem->value ++; /* increase value */
+
+    /* enable interrupt */
+    rt_hw_interrupt_enable(temp);
+
+    /* resume a thread, re-schedule */
+    if (need_schedule == RT_TRUE)
+        rt_schedule();
 
     return RT_EOK;
 }

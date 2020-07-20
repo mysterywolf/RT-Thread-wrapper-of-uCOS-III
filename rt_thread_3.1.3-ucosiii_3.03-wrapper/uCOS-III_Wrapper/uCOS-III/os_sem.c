@@ -561,13 +561,11 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
 *
 *                           OS_OPT_POST_1            POST and ready only the highest priority task waiting on semaphore
 *                                                    (if tasks are waiting).
-*                         - OS_OPT_POST_ALL          POST to ALL tasks that are waiting on the semaphore
+*                           OS_OPT_POST_ALL          POST to ALL tasks that are waiting on the semaphore
 *
 *                         - OS_OPT_POST_NO_SCHED     Do not call the scheduler
 *
 *                           Note(s): 1) OS_OPT_POST_NO_SCHED can be added with one of the other options.
-*                       -------------说明-------------
-*                        由于RTT没有实现上述所有功能,因此opt选项只能为OS_OPT_POST_1
 *
 *              p_err    is a pointer to a variable that will contain an error code returned by this function.
 *
@@ -615,13 +613,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
         default:
             *p_err =  OS_ERR_OPT_INVALID;
              return ((OS_SEM_CTR)0u);
-    } 
-    if(opt != OS_OPT_POST_1)/*此opt选项只能为OS_OPT_POST_1*/
-    {
-        *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSSemPost: wrapper can't accept this option\n"));
-        return 0;
-    }    
+    }  
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
@@ -632,8 +624,18 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
         return 0;       
     }
 #endif
- 
-    rt_err = rt_sem_release(&p_sem->Sem);
+    switch (opt) 
+    {
+        case OS_OPT_POST_1:
+            rt_err = rt_sem_release(&p_sem->Sem);
+            break;
+        case OS_OPT_POST_ALL:
+            rt_err = rt_sem_release_all(&p_sem->Sem);
+            break;
+        default:
+            *p_err = OS_ERR_OPT_INVALID;
+            return 0;
+    }
     *p_err = rt_err_to_ucosiii(rt_err); 
     return p_sem->Sem.value;/*返回信号量还剩多少value*/
 }

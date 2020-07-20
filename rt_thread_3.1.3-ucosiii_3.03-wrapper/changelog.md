@@ -132,6 +132,10 @@
 - 实现`OSFlagDbgListPtr`链表
 - 实现`OSFlagQty`全局变量
 
+### 2020-7-20
+
+- 在os_rtwrap.c文件中增加`rt_ipc_post_all`和`rt_sem_release_all`函数，并实现了`OSSemPost`函数`OS_OPT_POST_ALL`选项
+
 
 
 
@@ -218,6 +222,12 @@
 **[fix]** `OSInit`函数内加入临界区保护
 
 **[add]** 内核对象双向Dbg链表全部实现，并与FinSH对接，可以在msh模式下使用ucos命令查看兼容层管理的内核对象以及相关信息（例如CPU使用率）
+
+
+
+## v0.5.0
+
+**[fix]** 实现并解决`OSSemPost`函数`OS_OPT_POST_ALL`选项（已知）
 
 
 

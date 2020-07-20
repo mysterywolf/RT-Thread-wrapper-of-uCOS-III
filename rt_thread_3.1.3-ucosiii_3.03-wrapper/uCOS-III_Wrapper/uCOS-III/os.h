@@ -1422,6 +1422,7 @@ void          OSStatTaskHook            (void);
 OS_ERR        rt_err_to_ucosiii         (rt_err_t rt_err);
 rt_err_t      rt_ipc_pend_abort_1       (rt_list_t *list);
 rt_err_t      rt_ipc_pend_abort_all     (rt_list_t *list);
+rt_err_t      rt_sem_release_all        (rt_sem_t sem);
 
 /*
 ************************************************************************************************************************
