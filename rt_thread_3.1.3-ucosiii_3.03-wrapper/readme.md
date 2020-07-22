@@ -1,5 +1,5 @@
 ---
-typora-root-url: pic
+
 ---
 
 # RT-Thread操作系统的μC/OS-III兼容层
@@ -55,7 +55,7 @@ Keil工程路径：*RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03-w
 
 **注意：调试串口使用的是USART2，不是USART1**
 
-![usart2](/usart2.png)
+![](https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III/blob/master/rt_thread_3.1.3-ucosiii_3.03-wrapper/pic/usart2.png)
 
 
 
