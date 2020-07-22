@@ -4,7 +4,7 @@
 
 - 初步搭建框架
 - 完成信号量兼容
-- 完成os_time.c系统延时有关兼容
+- 完成`os_time.c`系统延时有关兼容
 
 
 ### 2020-6-30 
@@ -34,32 +34,32 @@
 
 - 实现任务内建信号量兼容
 - 实现uCOS-III安全认证检查相关兼容
-- 对接os_cfg.h宏定义
-- 增加os_cfg_app.h并与之对接
-- 完成os_sem.c os_q.c文件宏定义检查以及流程的确认
+- 对接`os_cfg.h`宏定义
+- 增加`os_cfg_app.h`并与之对接
+- 完成`os_sem.c` `os_q.c`文件宏定义检查以及流程的确认
 
 ### 2020-7-5  
 
-- 完成os_flag.c os_mutex.c os_tmr.c os_task.c os_time.c os_core.c文件宏定义检查以及流程的确认
-- 优化os_cfg_app.h、os_cfg.h
+- 完成`os_flag.c` `os_mutex.c` `os_tmr.c` `os_task.c` `os_time.c` `os_core.c`文件宏定义检查以及流程的确认
+- 优化`os_cfg_app.h`、`os_cfg.h`
 
 ### 2020-7-6  
 
-- 充实readme.md
+- 充实`readme.md`
 - 实现`OSSemSet`、`OSTaskSemSet`函数
 - 优化`OSTaskSuspend`、`OSTaskResume`函数，使其具备嵌套挂起/解挂能力
 - 实现钩子函数
 
 ### 2020-7-7  
 
-- 移植os_mem.c文件
+- 移植`os_mem.c`文件
 - 优化了内核对象的结构体
 
 ### 2020-7-8  
 
 - 实现`OSTmrStateGet`函数
 - 构建统计任务框架
-- 修改OSTaskDel函数没有删除任务内建信号量、任务内建队列的bug
+- 修改`OSTaskDel`函数没有删除任务内建信号量、任务内建队列的bug
 - 移植`OS_TaskDbgListAdd`、`OS_TaskDbgListRemove`函数
 - 实现`OS_TaskInitTCB`函数
 - 实现Idle任务（实则为RTT Idle任务的回调函数）
@@ -80,12 +80,12 @@
 ### 2020-7-11
 
 
-- 增加兼容原版OS_TCB结构体成员变量
+- 增加兼容原版`OS_TCB`结构体成员变量
 - 实现`OSSemPendAbort`函数，`OSSemPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能
 
 ### 2020-7-12
 
-- 新增os_rtwrap.c文件，负责对RT-Thread和μCOS-III的转换提供支持。并在os.h文件末尾增加os_rtwrap.c内函数的声明
+- 新增`os_rtwrap.c`文件，负责对RT-Thread和μCOS-III的转换提供支持。并在`os.h`文件末尾增加`os_rtwrap.c`内函数的声明
 - 实现`OSTaskSemPendAbort`函数
 - 实现`OSTaskQPendAbort`函数
 - 实现`OSSemPendAbort`函数，`OSSemPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能
@@ -112,7 +112,7 @@
 - 任务内建消息队列、任务内建信号量直接沿用任务的name，不再strcat字符串
 - 实现`OSTmrDel`函数回调函数功能
 - 增加`OSTmrDbgListPtr`链表
-- 实现了由RTT定时器回调函数一个参数，到μCOS-III定时器回调函数两个参数的转换，在移植时可以直接沿用原版回调函数，无需再修改为RTT定时器的回调函数样式
+- 实现了由RT-Thread定时器回调函数一个参数，到μCOS-III定时器回调函数两个参数的转换，在移植时可以直接沿用原版回调函数，无需再修改为RTT定时器的回调函数样式
 - 完整实现了`p_tmr->State`的所有选项，重新实现了`OSTmrStateGet`函数
 - 实现μCOS-III软件定时器带有延迟的周期延时功能(`os_tmr.c`受限项全部解决)
 
@@ -143,7 +143,7 @@
 ### 2020-7-23
 
 - 增加`q_sample.c`例程
-- 修改`main.c`，严格按照μCOS-III给出的初始化流程进行初始化
+- 修改`main.c`，严格按照μCOS-III官方给出的初始化流程进行初始化
 
 
 
@@ -188,7 +188,7 @@
 
 **[bug fix]** `OSFlagPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能（已知）
 
-**[add]** 增加兼容原版OS_TCB结构体成员变量
+**[add]** 增加兼容原版`OS_TCB`结构体成员变量
 
 **[add]** 实现`OSTimeDlyResume`函数
 
