@@ -16,6 +16,7 @@
 
 void timer_sample (void);
 void mutex_sample (void);
+void sem_sample (void);
 
 int main(void)
 {
@@ -36,4 +37,5 @@ int main(void)
 
 //    timer_sample();
 //    mutex_sample();
+    sem_sample();
 }

@@ -36,7 +36,7 @@ static void AppTask1 (void *param)
         OSMutexPend(&SyncMutex,0,OS_OPT_PEND_BLOCKING,0,&err); /*申请互斥量 请求访问共享资源*/ 
         rt_kprintf("This is Task1\n");
         OSMutexPost(&SyncMutex,OS_OPT_POST_NONE,&err);/*释放互斥量*/
-        OSTimeDlyHMSM(0,0,0,200,OS_OPT_TIME_PERIODIC,&err);
+        OSTimeDlyHMSM(0,0,0,200,OS_OPT_TIME_HMSM_NON_STRICT,&err);
 	}
 }
 
@@ -51,7 +51,7 @@ static void AppTask2 (void *param)
 		OSMutexPend(&SyncMutex,0,OS_OPT_PEND_BLOCKING,0,&err); /*请求访问共享资源*/
 		rt_kprintf("This is Task2\n");
         OSMutexPost(&SyncMutex,OS_OPT_POST_NONE,&err);/*释放互斥量*/
-        OSTimeDlyHMSM(0,0,0,300,OS_OPT_TIME_PERIODIC,&err);
+        OSTimeDlyHMSM(0,0,0,300,OS_OPT_TIME_HMSM_NON_STRICT,&err);
 	}	
 }
 

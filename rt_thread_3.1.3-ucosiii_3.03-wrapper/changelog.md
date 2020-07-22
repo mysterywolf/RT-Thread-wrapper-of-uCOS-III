@@ -136,6 +136,10 @@
 
 - 在os_rtwrap.c文件中增加`rt_ipc_post_all`和`rt_sem_release_all`函数，并实现了`OSSemPost`函数`OS_OPT_POST_ALL`选项
 
+### 2020-7-22
+
+- 增加`sem_sample.c`例程
+
 
 
 

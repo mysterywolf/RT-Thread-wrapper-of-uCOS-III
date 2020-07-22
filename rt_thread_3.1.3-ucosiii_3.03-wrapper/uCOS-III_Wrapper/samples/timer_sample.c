@@ -51,7 +51,7 @@ static void AppTask1 (void *param)
     {
  		OSTaskStkChk(RT_NULL,&free,&used,&err);/*获取当前任务堆栈信息*/ 
     	rt_kprintf("AppTask1 free:%d,used:%d\n",free,used);   
-        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_PERIODIC|OS_OPT_TIME_HMSM_NON_STRICT,&err);/*延时500ms*/
+        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_HMSM_NON_STRICT,&err);/*延时500ms*/
     }
 }
 

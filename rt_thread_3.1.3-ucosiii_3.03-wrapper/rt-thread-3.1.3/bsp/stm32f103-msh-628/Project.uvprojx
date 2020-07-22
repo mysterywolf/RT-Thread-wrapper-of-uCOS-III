@@ -628,6 +628,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\samples\timer_sample.c</FilePath>
             </File>
+            <File>
+              <FileName>sem_sample.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\samples\sem_sample.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
