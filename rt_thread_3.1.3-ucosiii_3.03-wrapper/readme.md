@@ -305,8 +305,6 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
 
 
 
-
-
 ## 3.3 钩子函数
 
 ​	**μCOS-III的钩子函数仅对μCOS-III兼容层负责。** 即如果你注册了`OSTaskDelHook`函数，他仅会在调用OSTaskDel函数时被调用，不会在调用`rt_thread_detach`函数时被调用(这个由RTT的钩子函数负责)。这样做是为了层次分明，防止μCOS-III兼容层插手RT-Thread内部事务。
