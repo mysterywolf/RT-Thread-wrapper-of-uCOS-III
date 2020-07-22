@@ -15,8 +15,8 @@ task1同时向task2、task3广播信号量
 
 #include <os.h>
 
-#define TASK_PRIORITY         5		/*任务优先级*/
-#define TASK_STACK_SIZE       256	/*任务堆栈大小*/
+#define TASK_PRIORITY         6		/*任务优先级*/
+#define TASK_STACK_SIZE       128	/*任务堆栈大小*/
 #define TASK_TIMESLICE        5		/*任务时间片*/
 
 

@@ -141,6 +141,10 @@ void  OSInit (OS_ERR  *p_err)
     }
 #endif  
 
+    /*这部分内容是在原版OSStart()函数中运行的,但是在本兼容层中,操作系统已经启动,因此直接在此处进行标记*/
+    if (OSRunning == OS_STATE_OS_STOPPED) {
+        OSRunning       = OS_STATE_OS_RUNNING;
+    }
     
     CPU_CRITICAL_EXIT();
 }
@@ -489,7 +493,7 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
 */
 
 void  OSStart (OS_ERR  *p_err)
-{  
+{    
     CPU_SR_ALLOC();    
     
 #ifdef OS_SAFETY_CRITICAL
@@ -500,12 +504,14 @@ void  OSStart (OS_ERR  *p_err)
 #endif
     
     CPU_CRITICAL_ENTER();
+    
+    /*由于在兼容层运行之前,RT-Thread操作系统已经运行,因此在本函数对OSRunning的操作转移到OSInit函数中*/
     if (OSRunning == OS_STATE_OS_STOPPED) {
-        OSRunning       = OS_STATE_OS_RUNNING;
         *p_err           = OS_ERR_FATAL_RETURN;             /* OSStart() is not supposed to return                    */
     } else {
         *p_err           = OS_ERR_OS_RUNNING;               /* OS is already running                                  */
-    }
+    }      
+    
     CPU_CRITICAL_EXIT();
 }
 
