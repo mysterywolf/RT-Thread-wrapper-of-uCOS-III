@@ -9,21 +9,17 @@
  * 2020-07-14     Meco Man     implement uCOS-III Wrapper
  */
 
+/*串口使用USART2*/
 /*启动以及初始化过程严格遵照官方给出的例程*/
 
 #include <os.h>
 #include <os_app_hooks.h>
 
-/*FinSH使用USART2*/
-
-void timer_sample (void);
-void mutex_sample (void);
-void sem_sample   (void);
-void q_sample     (void);
-
+/*宏定义*/
 #define APP_TASK_START_STK_SIZE     128   /*开始任务 任务堆栈大小*/
 #define APP_TASK_START_PRIO         5     /*开始任务 任务优先级*/
 
+/*任务堆栈以及TCB*/
 ALIGN(RT_ALIGN_SIZE)
 static CPU_STK AppTaskStartStk[APP_TASK_START_STK_SIZE];/*任务堆栈*/
 static OS_TCB AppTaskStartTCB;
@@ -47,7 +43,7 @@ int main(void)
 	OSTaskCreate((OS_TCB 	* )&AppTaskStartTCB,		
 				 (CPU_CHAR	* )"App Task Start", 		
                  (OS_TASK_PTR )AppTaskStart, 			
-                 (void		* )0,					
+                 (void		* )0,			
                  (OS_PRIO	  )APP_TASK_START_PRIO,     
                  (CPU_STK   * )&AppTaskStartStk[0],	
                  (CPU_STK_SIZE)APP_TASK_START_STK_SIZE/10,
@@ -93,7 +89,12 @@ static void AppTaskStart(void *p_arg)
 }
 
 
-/*创建示例任务*/
+/*示例任务*/
+void timer_sample (void);
+void mutex_sample (void);
+void sem_sample   (void);
+void q_sample     (void);
+
 static void AppTaskCreate(void)
 {
     timer_sample();
