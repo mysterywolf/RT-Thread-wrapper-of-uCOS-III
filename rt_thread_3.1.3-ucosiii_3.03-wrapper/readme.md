@@ -1,3 +1,7 @@
+---
+typora-root-url: pic
+---
+
 # RT-Thread操作系统的μC/OS-III兼容层
 ## μCOS-III Wrapper
 
@@ -50,6 +54,8 @@ Keil工程路径：*RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03-w
 需要提前安装好RT-Thread Nano-3.1.3 Keil支持包：https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.1.3.pack
 
 **注意：调试串口使用的是USART2，不是USART1**
+
+![usart2](/usart2.png)
 
 
 
