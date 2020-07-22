@@ -633,6 +633,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\samples\sem_sample.c</FilePath>
             </File>
+            <File>
+              <FileName>q_sample.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\samples\q_sample.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

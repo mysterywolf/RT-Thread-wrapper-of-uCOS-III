@@ -12,11 +12,12 @@
 #include <os.h>
 #include <os_app_hooks.h>
 
-/*finsh使用串口2*/
+/*FinSH使用USART2*/
 
 void timer_sample (void);
 void mutex_sample (void);
-void sem_sample (void);
+void sem_sample   (void);
+void q_sample     (void);
 
 int main(void)
 {
@@ -37,5 +38,6 @@ int main(void)
 
 //    timer_sample();
 //    mutex_sample();
-    sem_sample();
+//    sem_sample();
+    q_sample();
 }

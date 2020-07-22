@@ -33,9 +33,9 @@ ALIGN(RT_ALIGN_SIZE)
 static CPU_STK AppTask3_Stack[TASK_STACK_SIZE];/*任务堆栈*/
 static OS_TCB  AppTask3_TCB;/*任务控制块*/
 
-
 static OS_SEM sem;
 
+/*任务1 负责广播信号量*/
 static void AppTask1 (void *param)
 {
     OS_ERR err;
@@ -52,7 +52,7 @@ static void AppTask1 (void *param)
     }
 }
 
-
+/*任务2 负责等待信号量*/
 static void AppTask2 (void *param)
 {
     OS_ERR err;
@@ -78,7 +78,7 @@ static void AppTask2 (void *param)
     }
 }
 
-
+/*任务3 负责等待信号量*/
 static void AppTask3 (void *param)
 {
     OS_ERR err;
