@@ -95,7 +95,7 @@ Keil工程路径：*RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03-w
 
 ### 2.5.1 官方标准初始化流程
 
-​	本兼容层完全兼容官方给出的标准初始化流程，如果您兼容老项目，初始化部分无需做任何修改。具体初始化流程代码参见工程`main.c`文件，参考文献参见docs/HOW THE EXAMPLE PROJECT WORKS.pdf 
+​	本兼容层完全兼容官方给出的标准初始化流程，如果您兼容老项目，μCOS-III初始化部分无需做任何修改。具体初始化流程代码参见工程`main.c`文件，参考文献参见*docs/demo.pdf* 
 
 
 
