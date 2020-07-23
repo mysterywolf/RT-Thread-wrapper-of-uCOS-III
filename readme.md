@@ -471,3 +471,11 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 联系方式：jiantingman@foxmail.com
 
 主页：https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III
+
+
+
+# 5 打赏
+
+如果您喜欢本项目**可以给我一个Star**，并赏我五毛钱，用以满足我小小的虚荣心，并激励我继续维护好这个项目。
+
+![](docs/pic/donate.png)
