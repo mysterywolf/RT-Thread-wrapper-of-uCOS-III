@@ -29,8 +29,8 @@ static void AppTaskStart(void *p_arg);
 static void AppTaskCreate(void);
 
 /*¿Õº¯Êý*/
-#define BSP_Init()          do{  }while(0)
-#define BSP_LED_Toggle(x)   do{  }while(0)
+#define BSP_Init()          do{ rt_kprintf("BSP init!\r\n"); }while(0)
+#define BSP_LED_Toggle(x)   do{ rt_kprintf("LED Toggle!\r\n"); }while(0)
 
 
 int main(void)
