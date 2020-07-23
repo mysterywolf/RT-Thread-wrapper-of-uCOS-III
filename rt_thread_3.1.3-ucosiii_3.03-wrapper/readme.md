@@ -51,7 +51,7 @@ Keil工程路径：*RT-Thread-wrapper-of-uCOS-III\rt_thread_3.1.3-ucosiii_3.03-w
 
 **注意：调试串口使用的是USART2，不是USART1**
 
-![usart2](pic/usart2.png)
+![usart2](docs/pic/usart2.png)
 
 
 
