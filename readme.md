@@ -460,7 +460,27 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 
 
-# 4 联系方式&致谢
+
+
+# 4 支持
+
+如果您喜欢本项目**可以在本页右上角点一下Star**，可以赏我五毛钱，用以满足我小小的虚荣心，并激励我继续维护好这个项目。
+
+![](docs/pic/donate.png)
+
+
+
+
+
+# 5 许可
+
+采用 Apache-2.0 开源协议，细节请阅读项目中的 LICENSE 文件内容。
+
+
+
+
+
+# 6 联系方式&致谢
 
 感谢RT-Thread工程师Willian Chan的技术支持：https://github.com/willianchanlovegithub
 
@@ -471,11 +491,3 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 联系方式：jiantingman@foxmail.com
 
 主页：https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III
-
-
-
-# 5 支持
-
-如果您喜欢本项目**可以在本页右上角点一下Star**，可以赏我五毛钱，用以满足我小小的虚荣心，并激励我继续维护好这个项目。
-
-![](docs/pic/donate.png)
