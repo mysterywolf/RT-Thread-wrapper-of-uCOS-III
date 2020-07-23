@@ -1,16 +1,21 @@
 /*
 *********************************************************************************************************
-*                                               uC/LIB
-*                                       Custom Library Modules
+*                                                uC/LIB
+*                                        CUSTOM LIBRARY MODULES
 *
-*                    Copyright 2004-2020 Silicon Laboratories Inc. www.silabs.com
+*                          (c) Copyright 2004-2013; Micrium, Inc.; Weston, FL
 *
-*                                 SPDX-License-Identifier: APACHE-2.0
+*               All rights reserved.  Protected by international copyright laws.
 *
-*               This software is subject to an open source license and is distributed by
-*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
-*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
+*               uC/LIB is provided in source form to registered licensees ONLY.  It is
+*               illegal to distribute this source code to any third party unless you receive
+*               written permission by an authorized Micrium representative.  Knowledge of
+*               the source code may NOT be used to develop a similar product.
 *
+*               Please help us continue to provide the Embedded community with the finest
+*               software available.  Your honesty is greatly appreciated.
+*
+*               You can contact us at www.micrium.com.
 *********************************************************************************************************
 */
 
@@ -19,31 +24,35 @@
 *
 *                                     CORE CUSTOM LIBRARY MODULE
 *
-* Filename : lib_def.h
-* Version  : V1.39.00
+* Filename      : lib_def.h
+* Version       : V1.37.02
+* Programmer(s) : ITJ
+*                 FBJ
+*                 JFD
 *********************************************************************************************************
-* Note(s)  : (1) Assumes the following versions (or more recent) of software modules are included in
-*                the project build :
+* Note(s)       : (1) Assumes the following versions (or more recent) of software modules are included in
+*                     the project build :
 *
-*                (a) uC/CPU V1.29.00
+*                     (a) uC/CPU V1.29.00
 *
 *
-*            (2) NO compiler-supplied standard library functions are used in library or product software.
+*                 (2) NO compiler-supplied standard library functions are used in library or product software.
 *
-*                (a) ALL standard library functions are implemented in the custom library modules :
+*                     (a) ALL standard library functions are implemented in the custom library modules :
 *
-*                    (1) \<Custom Library Directory>\lib_*.*
+*                         (1) \<Custom Library Directory>\lib_*.*
 *
-*                    (2) \<Custom Library Directory>\Ports\<cpu>\<compiler>\lib*_a.*
+*                         (2) \<Custom Library Directory>\Ports\<cpu>\<compiler>\lib*_a.*
 *
-*                          where
-*                                  <Custom Library Directory>      directory path for custom library software
-*                                  <cpu>                           directory name for specific processor (CPU)
-*                                  <compiler>                      directory name for specific compiler
+*                               where
+*                                       <Custom Library Directory>      directory path for custom library software
+*                                       <cpu>                           directory name for specific processor (CPU)
+*                                       <compiler>                      directory name for specific compiler
 *
-*                (b) Product-specific library functions are implemented in individual products.
+*                     (b) Product-specific library functions are implemented in individual products.
 *********************************************************************************************************
 */
+
 
 /*
 *********************************************************************************************************
@@ -85,7 +94,7 @@
 *********************************************************************************************************
 */
 
-#define  LIB_VERSION                                   13900u   /* See Note #1.                                         */
+#define  LIB_VERSION                                   13702u   /* See Note #1.                                         */
 
 
 /*
@@ -461,7 +470,6 @@ typedef enum lib_err {
     LIB_MEM_ERR_INVALID_MEM_ALIGN           =     10101u,       /* Invalid mem     align.                               */
     LIB_MEM_ERR_INVALID_SEG_SIZE            =     10110u,       /* Invalid mem seg size.                                */
     LIB_MEM_ERR_INVALID_SEG_OVERLAP         =     10111u,       /* Invalid mem seg overlaps other mem seg(s).           */
-    LIB_MEM_ERR_INVALID_SEG_EXISTS          =     10112u,       /* Invalid mem seg already exists.                      */
     LIB_MEM_ERR_INVALID_POOL                =     10120u,       /* Invalid mem pool.                                    */
     LIB_MEM_ERR_INVALID_BLK_NBR             =     10130u,       /* Invalid mem pool blk nbr.                            */
     LIB_MEM_ERR_INVALID_BLK_SIZE            =     10131u,       /* Invalid mem pool blk size.                           */
@@ -474,7 +482,6 @@ typedef enum lib_err {
     LIB_MEM_ERR_SEG_OVF                     =     10201u,       /* Mem seg  ovf;   i.e. req'd mem ovfs rem mem in seg.  */
     LIB_MEM_ERR_POOL_FULL                   =     10205u,       /* Mem pool full;  i.e. all mem blks avail in mem pool. */
     LIB_MEM_ERR_POOL_EMPTY                  =     10206u,       /* Mem pool empty; i.e. NO  mem blks avail in mem pool. */
-    LIB_MEM_ERR_POOL_UNLIMITED              =     10207u,       /* Mem pool is unlimited.                               */
 
     LIB_MEM_ERR_HEAP_EMPTY                  =     10210u,       /* Heap seg empty; i.e. NO avail mem in heap.           */
     LIB_MEM_ERR_HEAP_OVF                    =     10211u,       /* Heap seg ovf;   i.e. req'd mem ovfs rem mem in heap. */
@@ -546,7 +553,7 @@ typedef enum lib_err {
 *********************************************************************************************************
 */
 
-#define  DEF_BIT(bit)                                                   (1uL << (bit))
+#define  DEF_BIT(bit)                                                   (1u << (bit))
 
 
 /*
@@ -761,40 +768,13 @@ typedef enum lib_err {
 *********************************************************************************************************
 */
 
-#define  DEF_BIT_SET_08(val, mask)                     (CPU_INT08U)DEF_BIT_SET((val), (CPU_INT08U)(mask))
+#define  DEF_BIT_SET_08(val, mask)                     DEF_BIT_SET(val, mask)
 
-#define  DEF_BIT_SET_16(val, mask)                     (CPU_INT16U)DEF_BIT_SET((val), (CPU_INT16U)(mask))
+#define  DEF_BIT_SET_16(val, mask)                     DEF_BIT_SET(val, mask)
 
-#define  DEF_BIT_SET_32(val, mask)                     (CPU_INT32U)DEF_BIT_SET((val), (CPU_INT32U)(mask))
+#define  DEF_BIT_SET_32(val, mask)                     DEF_BIT_SET(val, mask)
 
-#define  DEF_BIT_SET_64(val, mask)                     (CPU_INT64U)DEF_BIT_SET((val), (CPU_INT64U)(mask))
-
-
-/*
-*********************************************************************************************************
-*                                          DEF_BIT_CLR_xx()
-*
-* Description : Clear specified bit(s) in a value of specified bit size.
-*
-* Argument(s) : val         Value to modify by clearing specified bit(s).
-*
-*               mask        Mask of bits to clear.
-*
-* Return(s)   : Modified value with specified bit(s) clear.
-*
-* Caller(s)   : Application.
-*
-* Note(s)     : (1) 'val' & 'mask' SHOULD be unsigned integers.
-*********************************************************************************************************
-*/
-
-#define  DEF_BIT_CLR_08(val, mask)                     ((val) = (CPU_INT08U)(((CPU_INT08U)(val)) & (CPU_INT08U)(~((CPU_INT08U)(mask)))))
-
-#define  DEF_BIT_CLR_16(val, mask)                     ((val) = (CPU_INT16U)(((CPU_INT16U)(val)) & (CPU_INT16U)(~((CPU_INT16U)(mask)))))
-
-#define  DEF_BIT_CLR_32(val, mask)                     ((val) = (CPU_INT32U)(((CPU_INT32U)(val)) & (CPU_INT32U)(~((CPU_INT32U)(mask)))))
-
-#define  DEF_BIT_CLR_64(val, mask)                     ((val) = (CPU_INT64U)(((CPU_INT64U)(val)) & (CPU_INT64U)(~((CPU_INT64U)(mask)))))
+#define  DEF_BIT_SET_64(val, mask)                     DEF_BIT_SET(val, mask)
 
 
 /*
@@ -815,131 +795,36 @@ typedef enum lib_err {
 *********************************************************************************************************
 */
 
-#if     (CPU_CFG_DATA_SIZE_MAX == CPU_WORD_SIZE_08)
-
-#define  DEF_BIT_CLR(val, mask)                 ((sizeof((val)) == CPU_WORD_SIZE_08) ? DEF_BIT_CLR_08((val), (mask)) : 0)
-
-
-#elif   (CPU_CFG_DATA_SIZE_MAX == CPU_WORD_SIZE_16)
-
-#define  DEF_BIT_CLR(val, mask)                 ((sizeof((val)) == CPU_WORD_SIZE_08) ? DEF_BIT_CLR_08((val), (mask)) :   \
-                                                ((sizeof((val)) == CPU_WORD_SIZE_16) ? DEF_BIT_CLR_16((val), (mask)) : 0))
-
-
-#elif   (CPU_CFG_DATA_SIZE_MAX == CPU_WORD_SIZE_32)
-
-#define  DEF_BIT_CLR(val, mask)                 ((sizeof((val)) == CPU_WORD_SIZE_08) ? DEF_BIT_CLR_08((val), (mask)) :    \
-                                                ((sizeof((val)) == CPU_WORD_SIZE_16) ? DEF_BIT_CLR_16((val), (mask)) :    \
-                                                ((sizeof((val)) == CPU_WORD_SIZE_32) ? DEF_BIT_CLR_32((val), (mask)) : 0)))
-
-
-#elif   (CPU_CFG_DATA_SIZE_MAX == CPU_WORD_SIZE_64)
-
-#define  DEF_BIT_CLR(val, mask)                 ((sizeof((val)) == CPU_WORD_SIZE_08) ? DEF_BIT_CLR_08((val), (mask)) :     \
-                                                ((sizeof((val)) == CPU_WORD_SIZE_16) ? DEF_BIT_CLR_16((val), (mask)) :     \
-                                                ((sizeof((val)) == CPU_WORD_SIZE_32) ? DEF_BIT_CLR_32((val), (mask)) :     \
-                                                ((sizeof((val)) == CPU_WORD_SIZE_64) ? DEF_BIT_CLR_64((val), (mask)) : 0))))
-
-#else
-
-#error  "CPU_CFG_DATA_SIZE_MAX  illegally #defined in 'cpu.h'      "
-#error  "                       [See 'cpu.h  CONFIGURATION ERRORS']"
-
-#endif
+#define  DEF_BIT_CLR(val, mask)                        ((val) = ((val) & ~(mask)))
 
 
 /*
 *********************************************************************************************************
-*                                            DEF_BIT_TOGGLE()
+*                                          DEF_BIT_CLR_xx()
 *
-* Description : Toggles specified bit(s) in a value.
+* Description : Clear specified bit(s) in a value of specified bit size.
 *
-* Argument(s) : val         Value to modify by toggling specified bit(s).
+* Argument(s) : val         Value to modify by clearing specified bit(s).
 *
-*               mask        Mask of bits to toggle.
+*               mask        Mask of bits to clear.
 *
-* Return(s)   : Modified value with specified bit(s) toggled.
+* Return(s)   : Modified value with specified bit(s) clear.
 *
 * Caller(s)   : Application.
 *
 * Note(s)     : (1) 'val' & 'mask' SHOULD be unsigned integers.
+*
+*               (2) These macros are deprecated and should be replaced by the DEF_BIT_CLR macro.
 *********************************************************************************************************
 */
 
-#define  DEF_BIT_TOGGLE(val, mask)                      ((val) ^= (mask))
+#define  DEF_BIT_CLR_08(val, mask)                     DEF_BIT_CLR(val, mask)
 
+#define  DEF_BIT_CLR_16(val, mask)                     DEF_BIT_CLR(val, mask)
 
-/*
-*********************************************************************************************************
-*                                           DEF_BIT_FIELD_RD()
-*
-* Description : Reads a 'val' field, masked and shifted, given by mask 'field_mask'.
-*
-* Argument(s) : val         Value to read from.
-*
-*               field_mask  Mask of field to read. See note #1, #2 and #3.
-*
-* Return(s)   : Field value, masked and right-shifted to bit position 0.
-*
-* Caller(s)   : Application.
-*
-* Note(s)     : (1) 'field_mask' argument must NOT be 0.
-*
-*               (2) 'field_mask' argument must contain a mask with contiguous set bits.
-*
-*               (3) 'val' & 'field_mask' SHOULD be unsigned integers.
-*********************************************************************************************************
-*/
+#define  DEF_BIT_CLR_32(val, mask)                     DEF_BIT_CLR(val, mask)
 
-#define  DEF_BIT_FIELD_RD(val, field_mask)              (((val) & (field_mask)) / ((field_mask) & ((~(field_mask)) + 1u)))
-
-
-/*
-*********************************************************************************************************
-*                                          DEF_BIT_FIELD_ENC()
-*
-* Description : Encodes given 'field_val' at position given by mask 'field_mask'.
-*
-* Argument(s) : field_val   Value to encode.
-*
-*               field_mask  Mask of field to read. See note #1 and #2.
-*
-* Return(s)   : Field value, masked and left-shifted to field position.
-*
-* Caller(s)   : Application.
-*
-* Note(s)     : (1) 'field_mask' argument must contain a mask with contiguous set bits.
-*
-*               (2) 'field_val' & 'field_mask' SHOULD be unsigned integers.
-*********************************************************************************************************
-*/
-
-#define  DEF_BIT_FIELD_ENC(field_val, field_mask)       (((field_val) * ((field_mask) & ((~(field_mask)) + 1u))) & (field_mask))
-
-
-/*
-*********************************************************************************************************
-*                                           DEF_BIT_FIELD_WR()
-*
-* Description : Writes 'field_val' field at position given by mask 'field_mask' in variable 'var'.
-*
-* Argument(s) : var         Variable to write field to. See note #2.
-*
-*               field_val   Desired value for field. See note #2.
-*
-*               field_mask  Mask of field to write to. See note #1 and #2.
-*
-* Return(s)   : None.
-*
-* Caller(s)   : Application.
-*
-* Note(s)     : (1) 'field_mask' argument must contain a mask with contiguous set bits.
-*
-*               (2) 'var', 'field_val' & 'field_mask' SHOULD be unsigned integers.
-*********************************************************************************************************
-*/
-
-#define  DEF_BIT_FIELD_WR(var, field_val, field_mask)   (var) = (((var) & ~(field_mask)) | DEF_BIT_FIELD_ENC((field_val), (field_mask)))
+#define  DEF_BIT_CLR_64(val, mask)                     DEF_BIT_CLR(val, mask)
 
 
 /*
@@ -964,8 +849,8 @@ typedef enum lib_err {
 *********************************************************************************************************
 */
 
-#define  DEF_BIT_IS_SET(val, mask)                    (((((val) & (mask)) == (mask)) && \
-                                                         ((mask)          !=  0u))    ? (DEF_YES) : (DEF_NO))
+#define  DEF_BIT_IS_SET(val, mask)                           ((((mask)  !=  0u)  && \
+                                                      (((val) & (mask)) == (mask))) ? (DEF_YES) : (DEF_NO ))
 
 
 /*
@@ -990,8 +875,8 @@ typedef enum lib_err {
 *********************************************************************************************************
 */
 
-#define  DEF_BIT_IS_CLR(val, mask)                    (((((val) & (mask)) ==  0u)  && \
-                                                         ((mask)          !=  0u))  ? (DEF_YES) : (DEF_NO))
+#define  DEF_BIT_IS_CLR(val, mask)                           ((((mask)  !=  0u)  && \
+                                                      (((val) & (mask)) ==  0u))    ? (DEF_YES) : (DEF_NO ))
 
 
 /*
@@ -1194,8 +1079,8 @@ typedef enum lib_err {
 *********************************************************************************************************
 */
 
-#define  DEF_CHK_VAL(val, val_min, val_max)          (((DEF_CHK_VAL_MIN((val), (val_min)) == DEF_FAIL) ||                  \
-                                                       (DEF_CHK_VAL_MAX((val), (val_max)) == DEF_FAIL)) ? DEF_FAIL : DEF_OK)
+#define  DEF_CHK_VAL(val, val_min, val_max)          (((DEF_CHK_VAL_MIN(val, val_min) == DEF_FAIL) ||                  \
+                                                       (DEF_CHK_VAL_MAX(val, val_max) == DEF_FAIL)) ? DEF_FAIL : DEF_OK)
 
 
 /*

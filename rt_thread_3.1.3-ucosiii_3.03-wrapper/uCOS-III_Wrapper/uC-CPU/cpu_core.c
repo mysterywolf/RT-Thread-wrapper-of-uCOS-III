@@ -86,5 +86,35 @@
 
 void  CPU_Init (void)
 {
-    /*DO NOTHING*/
+                                                                /* ------------------ INIT CPU NAME ------------------- */
+#if (CPU_CFG_NAME_EN == DEF_ENABLED)
+     CPU_NameInit();
+#endif
+}
+
+/*
+*********************************************************************************************************
+*                                         CPU_SW_Exception()
+*
+* Description : Trap unrecoverable software exception.
+*
+* Argument(s) : none.
+*
+* Return(s)   : none.
+*
+* Caller(s)   : various.
+*
+* Note(s)     : (1) CPU_SW_Exception() deadlocks the current code execution -- whether multi-tasked/
+*                   -processed/-threaded or single-threaded -- when the current code execution cannot 
+*                   gracefully recover or report a fault or exception condition.
+*
+*                   See also 'cpu_core.h  CPU_SW_EXCEPTION()  Note #1'.
+*********************************************************************************************************
+*/
+
+void  CPU_SW_Exception (void)
+{
+    while (DEF_ON) {
+        ;
+    }
 }

@@ -145,8 +145,8 @@ typedef  volatile  CPU_INT64U  CPU_REG64;                       /* 64-bit regist
 *********************************************************************************************************
 */
 
-typedef  rt_base_t  CPU_ADDR;                                   /* CPU address type based on address bus size.          */
-typedef  rt_base_t  CPU_DATA;                                   /* CPU data    type based on data    bus size.          */
+typedef  rt_ubase_t  CPU_ADDR;                                  /* CPU address type based on address bus size.          */
+typedef  rt_ubase_t  CPU_DATA;                                  /* CPU data    type based on data    bus size.          */
 
 typedef  CPU_DATA    CPU_ALIGN;                                 /* Defines CPU data-word-alignment size.                */
 typedef  CPU_ADDR    CPU_SIZE_T;                                /* Defines CPU standard 'size_t'   size.                */
@@ -170,7 +170,7 @@ typedef  CPU_ADDR    CPU_SIZE_T;                                /* Defines CPU s
 #define  CPU_CFG_STK_GROWTH     CPU_STK_GROWTH_HI_TO_LO         
 #endif
 
-typedef  rt_base_t              CPU_STK;                        /* Defines CPU stack word size (in octets).             */
+typedef  rt_ubase_t             CPU_STK;                        /* Defines CPU stack word size (in octets).             */
 typedef  CPU_ADDR               CPU_STK_SIZE;                   /* Defines CPU stack      size (in number of CPU_STKs). */
 
 
@@ -201,7 +201,7 @@ typedef  CPU_ADDR               CPU_STK_SIZE;                   /* Defines CPU s
 *********************************************************************************************************
 */
 
-typedef  rt_base_t                  CPU_SR;                     /* Defines   CPU status register size (see Note #3b).   */
+typedef  rt_ubase_t                 CPU_SR;                     /* Defines   CPU status register size (see Note #3b).   */
 
 #define  CPU_SR_ALLOC()             CPU_SR  cpu_sr = (CPU_SR)0
                                                                         /* Save    CPU status word & disable interrupts.*/

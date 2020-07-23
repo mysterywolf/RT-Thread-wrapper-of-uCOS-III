@@ -609,9 +609,54 @@
           <GroupName>uCOS-III_Wrapper/uC-LIB</GroupName>
           <Files>
             <File>
+              <FileName>lib_cfg.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uC-LIB\lib_cfg.h</FilePath>
+            </File>
+            <File>
               <FileName>lib_def.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uC-LIB\lib_def.h</FilePath>
+            </File>
+            <File>
+              <FileName>lib_ascii.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uC-LIB\lib_ascii.c</FilePath>
+            </File>
+            <File>
+              <FileName>lib_ascii.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uC-LIB\lib_ascii.h</FilePath>
+            </File>
+            <File>
+              <FileName>lib_math.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uC-LIB\lib_math.c</FilePath>
+            </File>
+            <File>
+              <FileName>lib_math.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uC-LIB\lib_math.h</FilePath>
+            </File>
+            <File>
+              <FileName>lib_mem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uC-LIB\lib_mem.c</FilePath>
+            </File>
+            <File>
+              <FileName>lib_mem.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uC-LIB\lib_mem.h</FilePath>
+            </File>
+            <File>
+              <FileName>lib_str.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uC-LIB\lib_str.c</FilePath>
+            </File>
+            <File>
+              <FileName>lib_str.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uC-LIB\lib_str.h</FilePath>
             </File>
           </Files>
         </Group>

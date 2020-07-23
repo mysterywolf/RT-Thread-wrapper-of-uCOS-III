@@ -69,7 +69,7 @@ OS_ERR rt_err_to_ucosiii(rt_err_t rt_err)
 rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
 {
     struct rt_thread *thread;
-    register rt_base_t temp;
+    register rt_ubase_t temp;
     
     temp = rt_hw_interrupt_disable();
     thread = rt_list_entry(list->next, struct rt_thread, tlist);/* get thread entry */
@@ -92,7 +92,7 @@ rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
 rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
 {
     struct rt_thread *thread;
-    register rt_base_t temp;
+    register rt_ubase_t temp;
 
     /* wakeup all suspend threads */
     while (!rt_list_isempty(list))
@@ -131,7 +131,7 @@ rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
 static rt_err_t rt_ipc_post_all (rt_list_t *list)
 {
     struct rt_thread *thread;
-    register rt_base_t temp;
+    register rt_ubase_t temp;
 
     /* wakeup all suspend threads */
     while (!rt_list_isempty(list))
@@ -165,7 +165,7 @@ static rt_err_t rt_ipc_post_all (rt_list_t *list)
  */
 rt_err_t rt_sem_release_all(rt_sem_t sem)
 {
-    register rt_base_t temp;
+    register rt_ubase_t temp;
     register rt_bool_t need_schedule;
 
     /* parameter check */

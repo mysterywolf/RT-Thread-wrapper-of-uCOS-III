@@ -141,6 +141,129 @@ typedef  CPU_TS32    CPU_TS;                                    /* Req'd for bac
 
 /*
 *********************************************************************************************************
+*                                               MACRO'S
+*********************************************************************************************************
+*/
+
+/*
+*********************************************************************************************************
+*                                         CPU_SW_EXCEPTION()
+*
+* Description : Trap unrecoverable software exception.
+*
+* Argument(s) : err_rtn_val     Error type &/or value of the calling function to return (see Note #2b).
+*
+* Return(s)   : none.
+*
+* Caller(s)   : various.
+*
+* Note(s)     : (1) CPU_SW_EXCEPTION() deadlocks the current code execution -- whether multi-tasked/
+*                   -processed/-threaded or single-threaded -- when the current code execution cannot 
+*                   gracefully recover or report a fault or exception condition.
+*
+*                   Example CPU_SW_EXCEPTION() call :
+*
+*                       void  Fnct (CPU_ERR  *p_err)
+*                       {
+*                           :
+*
+*                           if (p_err == (CPU_ERR *)0) {        If 'p_err' NULL, cannot return error ...
+*                               CPU_SW_EXCEPTION(;);            ... so trap invalid argument exception.
+*                           }
+*
+*                           :
+*                       }
+*
+*                   See also 'cpu_core.c  CPU_SW_Exception()  Note #1'.
+*
+*               (2) (a) CPU_SW_EXCEPTION()  MAY be developer-implemented to output &/or handle any error or 
+*                       exception conditions; but since CPU_SW_EXCEPTION() is intended to trap unrecoverable 
+*                       software  conditions, it is recommended that developer-implemented versions prevent 
+*                       execution of any code following calls to CPU_SW_EXCEPTION() by deadlocking the code 
+*                       (see Note #1).
+*
+*                           Example CPU_SW_EXCEPTION() :
+*
+*                               #define  CPU_SW_EXCEPTION(err_rtn_val)      do {                         \
+*                                                                               Log(__FILE__, __LINE__); \
+*                                                                               CPU_SW_Exception();      \
+*                                                                           } while (0)
+*
+*                   (b) (1) However, if execution of code following calls to CPU_SW_EXCEPTION() is required 
+*                           (e.g. for automated testing); it is recommended that the last statement in 
+*                           developer-implemented versions be to return from the current function to prevent 
+*                           possible software exception(s) in the current function from triggering CPU &/or 
+*                           hardware exception(s).
+*
+*                           Example CPU_SW_EXCEPTION() :
+*
+*                               #define  CPU_SW_EXCEPTION(err_rtn_val)      do {                         \
+*                                                                               Log(__FILE__, __LINE__); \
+*                                                                               return  err_rtn_val;     \
+*                                                                           } while (0)
+*
+*                           (A) Note that 'err_rtn_val' in the return statement MUST NOT be enclosed in 
+*                               parentheses.  This allows CPU_SW_EXCEPTION() to return from functions that 
+*                               return 'void', i.e. NO return type or value (see also Note #2b2A).
+*
+*                       (2) In order for CPU_SW_EXCEPTION() to return from functions with various return 
+*                           types/values, each caller function MUST pass an appropriate error return type 
+*                           & value to CPU_SW_EXCEPTION().
+*
+*                           (A) Note that CPU_SW_EXCEPTION()  MUST NOT be passed any return type or value 
+*                               for functions that return 'void', i.e. NO return type or value; but SHOULD 
+*                               instead be passed a single semicolon.  This prevents possible compiler 
+*                               warnings that CPU_SW_EXCEPTION() is passed too few arguments.  However, 
+*                               the compiler may warn that CPU_SW_EXCEPTION() does NOT prevent creating 
+*                               null statements on lines with NO other code statements.
+*
+*                           Example CPU_SW_EXCEPTION() calls :
+*
+*                               void  Fnct (CPU_ERR  *p_err)
+*                               {
+*                                   :
+*
+*                                   if (p_err == (CPU_ERR *)0) {
+*                                       CPU_SW_EXCEPTION(;);            Exception macro returns NO value
+*                                   }                                       (see Note #2b2A)
+*
+*                                   :
+*                               }
+*
+*                               CPU_BOOLEAN  Fnct (CPU_ERR  *p_err)
+*                               {
+*                                   :
+*
+*                                   if (p_err == (CPU_ERR *)0) {
+*                                       CPU_SW_EXCEPTION(DEF_FAIL);     Exception macro returns 'DEF_FAIL'
+*                                   }
+*
+*                                   :
+*                               }
+*
+*                               OBJ  *Fnct (CPU_ERR  *p_err)
+*                               {
+*                                   :
+*
+*                                   if (p_err == (CPU_ERR *)0) {
+*                                       CPU_SW_EXCEPTION((OBJ *)0);     Exception macro returns NULL 'OBJ *'
+*                                   }
+*
+*                                   :
+*                               }
+*
+*********************************************************************************************************
+*/
+
+#ifndef  CPU_SW_EXCEPTION                                                       /* See Note #2.                         */
+#define  CPU_SW_EXCEPTION(err_rtn_val)              do {                    \
+                                                        CPU_SW_Exception(); \
+                                                    } while (0)
+#endif
+
+
+/*
+*********************************************************************************************************
 *                                           CPU_VAL_UNUSED()
 *
 * Description : 
@@ -239,5 +362,19 @@ typedef  CPU_TS32    CPU_TS;                                    /* Req'd for bac
 */
 
 void             CPU_Init                 (void);
+void             CPU_SW_Exception         (void);
+
+
+
+#if (CPU_CFG_NAME_EN == DEF_ENABLED)                                    /* -------------- CPU NAME FNCTS -------------- */
+void             CPU_NameClr              (void);
+
+void             CPU_NameGet              (       CPU_CHAR  *p_name,
+                                                  CPU_ERR   *p_err);
+
+void             CPU_NameSet              (const  CPU_CHAR  *p_name,
+                                                  CPU_ERR   *p_err);
+#endif
+
 
 #endif                                                          /* End of CPU core module include.                      */
