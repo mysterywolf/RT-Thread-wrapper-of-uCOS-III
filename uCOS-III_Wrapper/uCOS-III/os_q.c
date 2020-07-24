@@ -735,12 +735,12 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
 *
 *                                        OS_OPT_POST_FIFO
 *                                        OS_OPT_POST_LIFO
-*                                        OS_OPT_POST_FIFO + OS_OPT_POST_ALL
-*                                        OS_OPT_POST_LIFO + OS_OPT_POST_ALL
-*                                        OS_OPT_POST_FIFO + OS_OPT_POST_NO_SCHED
-*                                        OS_OPT_POST_LIFO + OS_OPT_POST_NO_SCHED
-*                                        OS_OPT_POST_FIFO + OS_OPT_POST_ALL + OS_OPT_POST_NO_SCHED
-*                                        OS_OPT_POST_LIFO + OS_OPT_POST_ALL + OS_OPT_POST_NO_SCHED
+*                                      - OS_OPT_POST_FIFO + OS_OPT_POST_ALL
+*                                      - OS_OPT_POST_LIFO + OS_OPT_POST_ALL
+*                                      - OS_OPT_POST_FIFO + OS_OPT_POST_NO_SCHED
+*                                      - OS_OPT_POST_LIFO + OS_OPT_POST_NO_SCHED
+*                                      - OS_OPT_POST_FIFO + OS_OPT_POST_ALL + OS_OPT_POST_NO_SCHED
+*                                      - OS_OPT_POST_LIFO + OS_OPT_POST_ALL + OS_OPT_POST_NO_SCHED
 *                       -------------说明-------------
 *                        由于RTT没有实现上述所有功能,因此opt选项只能为OS_OPT_POST_FIFO或OS_OPT_POST_LIFO
 *

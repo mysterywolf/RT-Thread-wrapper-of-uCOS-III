@@ -238,7 +238,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
                       OS_ERR       *p_err);
 ```
 
-​	opt字段，由于上述相同原因，`OS_OPT_PEND_FLAG_CLR_ALL`和`OS_OPT_PEND_FLAG_SET_ALL`意义一样，`OS_OPT_PEND_FLAG_CLR_ANY`和`OS_OPT_PEND_FLAG_SET_ANY`意义一样。
+​	opt字段，由于上述相同原因，`OS_OPT_PEND_FLAG_CLR_ALL`、`OS_OPT_PEND_FLAG_CLR_ANY`无效。
 ​	
 
 ### 3.2.2  os_mutex.c

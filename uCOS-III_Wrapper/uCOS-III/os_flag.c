@@ -307,14 +307,10 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 *              opt           specifies whether you want ALL bits to be set or ANY of the bits to be set.
 *                            You can specify the 'ONE' of the following arguments:
 *
-*                                OS_OPT_PEND_FLAG_CLR_ALL   You will wait for ALL bits in 'flags' to be clear (0)
-*                                OS_OPT_PEND_FLAG_CLR_ANY   You will wait for ANY bit  in 'flags' to be clear (0)
+*                              - OS_OPT_PEND_FLAG_CLR_ALL   You will wait for ALL bits in 'flags' to be clear (0)
+*                              - OS_OPT_PEND_FLAG_CLR_ANY   You will wait for ANY bit  in 'flags' to be clear (0)
 *                                OS_OPT_PEND_FLAG_SET_ALL   You will wait for ALL bits in 'flags' to be set   (1)
 *                                OS_OPT_PEND_FLAG_SET_ANY   You will wait for ANY bit  in 'flags' to be set   (1)
-*                            -------------说明-------------
-*                               在本兼容层中：
-*                               OS_OPT_PEND_FLAG_CLR_ALL和OS_OPT_PEND_FLAG_SET_ALL意义一样
-*                               OS_OPT_PEND_FLAG_CLR_ANY和OS_OPT_PEND_FLAG_SET_ANY意义一样
 *
 *                            You can 'ADD' OS_OPT_PEND_FLAG_CONSUME if you want the event flag to be 'consumed' by
 *                                      the call.  Example, to wait for any flag in a group AND then clear
@@ -440,19 +436,26 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     }
 
     mode = opt & OS_OPT_PEND_FLAG_MASK;
+#if OS_CFG_FLAG_MODE_CLR_EN == 0u
+    if(mode == OS_OPT_PEND_FLAG_CLR_ALL||
+       mode == OS_OPT_PEND_FLAG_CLR_ANY)
+    {
+        *p_err = OS_ERR_OPT_INVALID;
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagPend: wrapper can't accept this option\n"));  
+        return ((OS_FLAGS)0);
+    }
+#endif    
     switch (mode) {
-        /*OS_OPT_PEND_FLAG_CLR_ALL和OS_OPT_PEND_FLAG_SET_ALL意义一样,相当于RTT的RT_EVENT_FLAG_AND*/
         case OS_OPT_PEND_FLAG_SET_ALL:
-        case OS_OPT_PEND_FLAG_CLR_ALL:    
             rt_option = RT_EVENT_FLAG_AND;
             break;
         
-        /*OS_OPT_PEND_FLAG_CLR_ANY和OS_OPT_PEND_FLAG_SET_ANY意义一样,相当于RTT的RT_EVENT_FLAG_OR*/
         case OS_OPT_PEND_FLAG_SET_ANY:
-        case OS_OPT_PEND_FLAG_CLR_ANY:
             rt_option = RT_EVENT_FLAG_OR;
             break;
-             
+        
+        case OS_OPT_PEND_FLAG_CLR_ANY:
+        case OS_OPT_PEND_FLAG_CLR_ALL:    
         default:
             *p_err = OS_ERR_OPT_INVALID;
     }
