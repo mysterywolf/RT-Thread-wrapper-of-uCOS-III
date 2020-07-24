@@ -1670,8 +1670,8 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->StkSize            = (CPU_STK        )0u;
     p_tcb->StkLimitPtr        = (CPU_STK       *)0;    
     p_tcb->StkBasePtr         = (CPU_STK       *)0;     
-    p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;    
-    p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
+//    p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;    
+//    p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
     p_tcb->NamePtr            = (CPU_CHAR      *)((void *)"?Task");
     p_tcb->TaskEntryAddr      = (OS_TASK_PTR    )0;
     p_tcb->TaskEntryArg       = (void          *)0;

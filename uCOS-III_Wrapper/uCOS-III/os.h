@@ -712,8 +712,8 @@ struct os_tcb
     OS_TICK         *TickCtrMatch;  /* 比原版多了一级指针,Absolute time when task is going to be ready */  
     OS_TICK          TickCtrPrev;   /* Previous time when task was */    
     OS_OPT           Opt;           /* Task options as passed by OSTaskCreate() */    
-    OS_STATE         TaskState;     /* (未完成)See OS_TASK_STATE_xxx */
-    OS_STATE         PendOn;        /* (未完成)Indicates what task is pending on */
+//    OS_STATE         TaskState;     /* (未完成)See OS_TASK_STATE_xxx */
+//    OS_STATE         PendOn;        /* (未完成)Indicates what task is pending on */
     CPU_STK          StkSize;       /* 任务堆栈大小*/    
     CPU_STK         *StkLimitPtr;   /* Pointer used to set stack 'watermark' limit */
     CPU_STK         *StkBasePtr;    /* Pointer to base address of stack */
