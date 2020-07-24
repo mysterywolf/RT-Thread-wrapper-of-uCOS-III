@@ -66,7 +66,6 @@ Keil工程路径：*\rt-thread-3.1.3\bsp\stm32f103-msh-628\Project.uvprojx*
    a)《嵌入式实时操作系统μC/OS-III》北京航空航天大学出版社 宫辉等译 邵贝贝审校   
    b) Micriμm公司μCOS-III在线文档: https://doc.micrium.com/display/kernel304/uC-OS-III+Features+os_cfg.h
 5. μCOS-III原版定时器回调函数是在定时器线程中调用的，而非在中断中调用，因此要使用μCOS-III兼容层的软件定时器，需要将rtconfig.h中的宏定义`RT_USING_TIMER_SOFT`置1。
-6. 本封装层文件内含有中文，编码格式GB2312。
 
 
 
@@ -179,6 +178,8 @@ int main(void) /*RT-Thread main线程*/
    
 5. 兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能  
     该功能在原版3.05.00版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06.00版本开始删除了该功能，因此本兼容层不再予以实现。
+    
+6. 本封装层文件内含有中文，编码格式ANSI - GB2312，并非UTF-8编码。
 
 
 
