@@ -81,6 +81,13 @@
 
 #include  <cpu.h>
 #include  <lib_def.h>
+#include  <cpu_cfg.h>
+
+#if (CPU_CFG_NAME_EN == DEF_ENABLED)
+#include  <lib_mem.h>
+#include  <lib_str.h>
+#endif
+
 
 /*
 *********************************************************************************************************
@@ -126,6 +133,24 @@
 
 /*
 *********************************************************************************************************
+*                                           CPU ERROR CODES
+*********************************************************************************************************
+*/
+
+typedef enum cpu_err {
+
+    CPU_ERR_NONE                            =         0u,
+    CPU_ERR_NULL_PTR                        =        10u,
+
+    CPU_ERR_NAME_SIZE                       =      1000u,
+
+    CPU_ERR_TS_FREQ_INVALID                 =      2000u
+
+} CPU_ERR;
+
+
+/*
+*********************************************************************************************************
 *                                      CPU TIMESTAMP DATA TYPES
 *
 * Note(s) : (1) CPU timestamp timer data type defined to the binary-multiple of 8-bit octets as configured 
@@ -138,6 +163,15 @@ typedef  CPU_INT64U  CPU_TS64;
 
 typedef  CPU_TS32    CPU_TS;                                    /* Req'd for backwards-compatibility.                   */
 
+/*
+*********************************************************************************************************
+*                                          GLOBAL VARIABLES
+*********************************************************************************************************
+*/
+
+#if    (CPU_CFG_NAME_EN   == DEF_ENABLED)
+CPU_CORE_EXT  CPU_CHAR         CPU_Name[CPU_CFG_NAME_SIZE];     /* CPU host name.                                       */
+#endif
 
 /*
 *********************************************************************************************************

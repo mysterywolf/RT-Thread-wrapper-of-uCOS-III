@@ -149,6 +149,7 @@
 
 - 增加μC/LIB全部文件（V1.39.00）
 - 更改工程结构，将工程文件提到一级目录
+- 实现μC/CPU中`CPU_NameClr`、`CPU_NameGet`、`CPU_NameSet`函数
 
 
 
@@ -245,7 +246,7 @@
 
 **[add]** 增加μC/LIB全部文件（V1.39.00）
 
-
+**[add]** 实现μC/CPU中`CPU_NameClr`、`CPU_NameGet`、`CPU_NameSet`函数
 
 # TODO
 
