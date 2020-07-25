@@ -55,6 +55,20 @@ Keil工程路径：*\rt-thread-3.1.3\bsp\stm32f103-msh-628\Project.uvprojx*
 
 
 
+目前仿真工程支持以下型号：
+
+- STM32F103C8
+- STM32F103RB
+- STM32F103RC
+
+上述型号可以通过如图所示方式进行切换。
+
+![stm32f1xx](docs/pic/stm32f1xx.png)
+
+
+
+
+
 ## 2.2 迁移步骤
 1. 将**uCOS-III_Wrapper**文件夹内的所有文件都加入到你的工程中，最好保持原有文件夹的结构。相较于原版μCOS-III增加了`os_rtwrap.c`文件，负责对RT-Thread和μCOS-III的转换提供支持。
 2. 浏览一下`μC-CPU/cpu.h`文件，看一下头文件中的定义是否符合你的CPU，一般不需要改这个文件
