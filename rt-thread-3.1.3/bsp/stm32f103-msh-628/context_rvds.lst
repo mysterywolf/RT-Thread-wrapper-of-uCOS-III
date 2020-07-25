@@ -302,7 +302,7 @@ ARM Macro Assembler    Page 5
               E000ED08 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
 ork --depend=.\build\context_rvds.d -o.\build\context_rvds.o -I.\RTE\RTOS -I.\R
-TE\_STM32F103RB -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.7.0\CMSIS\Core\Include -IC:\K
+TE\_STM32F103C8 -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.7.0\CMSIS\Core\Include -IC:\K
 eil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include -IC:\Keil_v5\ARM\PACK\R
 ealThread\RT-Thread\3.1.3\components\finsh -IC:\Keil_v5\ARM\PACK\RealThread\RT-
 Thread\3.1.3\include --predefine="__UVISION_VERSION SETA 530" --predefine="_RTE
