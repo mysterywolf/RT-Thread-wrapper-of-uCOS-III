@@ -293,9 +293,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         p_tcb->TimeQuantaCtr = time_quanta;
     }
 #endif    
-#if OS_CFG_DBG_EN > 0u
-    p_tcb->DbgNamePtr = p_tcb->Task.name;
-#endif    
+
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     for (reg_nbr = 0u; reg_nbr < OS_CFG_TASK_REG_TBL_SIZE; reg_nbr++) {
         p_tcb->RegTbl[reg_nbr] = (OS_REG)0;
@@ -380,7 +378,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_tcb->StkSize = stk_size;
     p_tcb->StkBasePtr = p_stk_base;
     p_tcb->StkLimitPtr = p_stk_limit;
-    p_tcb->StkPtr = (CPU_STK**)(&p_tcb->Task.sp);
+    p_tcb->StkPtr = 0;
     p_tcb->NamePtr = p_tcb->Task.name;
     p_tcb->TaskEntryAddr = (OS_TASK_PTR)p_tcb->Task.entry;
     p_tcb->TaskEntryArg = p_tcb->Task.parameter;
@@ -472,6 +470,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     OSQDel(&p_tcb->MsgQ,OS_OPT_DEL_ALWAYS,&err);/*删除任务内建消息队列*/
     OSTaskDelHook(p_tcb);/*调用钩子函数*/ 
     OS_TaskInitTCB(p_tcb);                                  /* Initialize the TCB to default values                   */
+    p_tcb->TaskState = (OS_STATE)OS_TASK_STATE_DEL;         /* Indicate that the task was deleted                     */
 }
 #endif
 
@@ -1662,7 +1661,7 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
 #endif
     
     /*---------Clear兼容层非必须成员变量---------*/
-    p_tcb->StkPtr             = (CPU_STK      **)0;
+    p_tcb->StkPtr             = (CPU_STK       *)0;
     p_tcb->SemCtr             = (OS_SEM_CTR    *)0u;   
     p_tcb->TickCtrMatch       = (OS_TICK       *)0u;
     p_tcb->TickCtrPrev        = (OS_TICK        )OS_TICK_TH_INIT; 
@@ -1670,8 +1669,8 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->StkSize            = (CPU_STK        )0u;
     p_tcb->StkLimitPtr        = (CPU_STK       *)0;    
     p_tcb->StkBasePtr         = (CPU_STK       *)0;     
-//    p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;    
-//    p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
+    p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;    
+    p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
     p_tcb->NamePtr            = (CPU_CHAR      *)((void *)"?Task");
     p_tcb->TaskEntryAddr      = (OS_TASK_PTR    )0;
     p_tcb->TaskEntryArg       = (void          *)0;

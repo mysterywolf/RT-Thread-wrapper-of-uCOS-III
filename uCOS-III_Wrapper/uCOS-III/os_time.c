@@ -88,6 +88,8 @@ void  OSTimeDly (OS_TICK   dly,
 {
     rt_err_t rt_err;
     
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -134,6 +136,10 @@ void  OSTimeDly (OS_TICK   dly,
     }
 #endif
     
+    CPU_CRITICAL_ENTER();
+    OSTCBCurPtr->TaskState = OS_TASK_STATE_DLY;
+    CPU_CRITICAL_EXIT();
+    
     if(opt == OS_OPT_TIME_MATCH)
     {
         rt_err = rt_thread_delay(dly - rt_tick_get());
@@ -144,6 +150,10 @@ void  OSTimeDly (OS_TICK   dly,
     }
     
     *p_err = rt_err_to_ucosiii(rt_err); 
+    
+    CPU_CRITICAL_ENTER();
+    OSTCBCurPtr->TaskState = OS_TASK_STATE_RDY;
+    CPU_CRITICAL_EXIT();    
 }
 
 /*
@@ -221,6 +231,8 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
     CPU_BOOLEAN  opt_non_strict;
 #endif
     
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -288,8 +300,16 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
     }
 #endif
     
+    CPU_CRITICAL_ENTER();
+    OSTCBCurPtr->TaskState = OS_TASK_STATE_DLY;
+    CPU_CRITICAL_EXIT();  
+    
     rt_err = rt_thread_mdelay(dly_ms);  
     *p_err = rt_err_to_ucosiii(rt_err);
+    
+    CPU_CRITICAL_ENTER();
+    OSTCBCurPtr->TaskState = OS_TASK_STATE_RDY;
+    CPU_CRITICAL_EXIT();      
 }
 #endif
 
@@ -351,6 +371,13 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
         *p_err = OS_ERR_TASK_NOT_DLY;
         return;
     }
+    
+    if(p_tcb->TaskState != OS_TASK_STATE_DLY)
+    {
+        *p_err = OS_ERR_TASK_NOT_DLY;
+        return;
+    }
+    
     *p_err = OS_ERR_NONE;
     
     p_tcb->Task.error = RT_ETIMEOUT;

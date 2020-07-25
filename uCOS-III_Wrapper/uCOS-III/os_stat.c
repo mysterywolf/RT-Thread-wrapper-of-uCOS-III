@@ -261,9 +261,10 @@ void  OS_StatTask (void  *p_arg)
                          &p_tcb->StkUsed,
                          &err);
 #endif
-
-            
             CPU_CRITICAL_ENTER();
+            p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp; /* 更新SP指针*/
+            
+            
             p_tcb = p_tcb->DbgNextPtr;                      /* 指向下一个TCB结构体                                    */
             CPU_CRITICAL_EXIT();
         }

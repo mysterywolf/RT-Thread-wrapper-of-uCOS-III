@@ -154,6 +154,8 @@
 ### 2020-7-25
 
 - 增加`os_dbg.c`、`os_cfg_app.c`文件，开始与μC/Probe软件进行对接
+- 实现`OS_TCB`成员变量`.TaskState`
+- `OS_TCB`成员变量`.StkPtr`改为在统计任务中定时更新
 
 
 
@@ -251,6 +253,8 @@
 **[add]** 增加μC/LIB全部文件（V1.39.00）
 
 **[add]** 实现μC/CPU中`CPU_NameClr`、`CPU_NameGet`、`CPU_NameSet`函数
+
+**[add]** 实现与μC/Probe软件的对接
 
 
 

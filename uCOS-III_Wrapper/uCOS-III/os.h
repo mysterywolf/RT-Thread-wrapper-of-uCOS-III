@@ -127,11 +127,11 @@
 #define  OS_TASK_STATE_RDY                    (OS_STATE)(  0u)  /*   0 0 0     Ready                                  */
 #define  OS_TASK_STATE_DLY                    (OS_STATE)(  1u)  /*   0 0 1     Delayed or Timeout                     */
 #define  OS_TASK_STATE_PEND                   (OS_STATE)(  2u)  /*   0 1 0     Pend                                   */
-#define  OS_TASK_STATE_PEND_TIMEOUT           (OS_STATE)(  3u)  /*   0 1 1     Pend + Timeout                         */
-#define  OS_TASK_STATE_SUSPENDED              (OS_STATE)(  4u)  /*   1 0 0     Suspended                              */
-#define  OS_TASK_STATE_DLY_SUSPENDED          (OS_STATE)(  5u)  /*   1 0 1     Suspended + Delayed or Timeout         */
-#define  OS_TASK_STATE_PEND_SUSPENDED         (OS_STATE)(  6u)  /*   1 1 0     Suspended + Pend                       */
-#define  OS_TASK_STATE_PEND_TIMEOUT_SUSPENDED (OS_STATE)(  7u)  /*   1 1 1     Suspended + Pend + Timeout             */
+//#define  OS_TASK_STATE_PEND_TIMEOUT           (OS_STATE)(  3u)  /*   0 1 1     Pend + Timeout                         */
+//#define  OS_TASK_STATE_SUSPENDED              (OS_STATE)(  4u)  /*   1 0 0     Suspended                              */
+//#define  OS_TASK_STATE_DLY_SUSPENDED          (OS_STATE)(  5u)  /*   1 0 1     Suspended + Delayed or Timeout         */
+//#define  OS_TASK_STATE_PEND_SUSPENDED         (OS_STATE)(  6u)  /*   1 1 0     Suspended + Pend                       */
+//#define  OS_TASK_STATE_PEND_TIMEOUT_SUSPENDED (OS_STATE)(  7u)  /*   1 1 1     Suspended + Pend + Timeout             */
 #define  OS_TASK_STATE_DEL                    (OS_STATE)(255u)
 
                                                                 /* ----------------- PENDING ON ... ----------------- */
@@ -707,13 +707,13 @@ struct os_tcb
     CPU_CHAR        *DbgNamePtr;
 #endif
     /*---------兼容层非必须成员变量---------*/
-    CPU_STK        **StkPtr;        /* 比原版多了一级指针,堆栈指针的指针,引用需要(*xxx.StkPtr) */
+    CPU_STK         *StkPtr;        /* 该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
     OS_SEM_CTR      *SemCtr;        /* 比原版多了一级指针,Task specific semaphore counter,引用需要(*xxx.SemCtr)*/
     OS_TICK         *TickCtrMatch;  /* 比原版多了一级指针,Absolute time when task is going to be ready */  
     OS_TICK          TickCtrPrev;   /* Previous time when task was */    
     OS_OPT           Opt;           /* Task options as passed by OSTaskCreate() */    
-//    OS_STATE         TaskState;     /* (未完成)See OS_TASK_STATE_xxx */
-//    OS_STATE         PendOn;        /* (未完成)Indicates what task is pending on */
+    OS_STATE         TaskState;     /* See OS_TASK_STATE_xxx */
+    OS_STATE         PendOn;        /* Indicates what task is pending on */
     CPU_STK          StkSize;       /* 任务堆栈大小*/    
     CPU_STK         *StkLimitPtr;   /* Pointer used to set stack 'watermark' limit */
     CPU_STK         *StkBasePtr;    /* Pointer to base address of stack */

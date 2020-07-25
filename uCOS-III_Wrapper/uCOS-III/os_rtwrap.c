@@ -75,6 +75,7 @@ rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
     thread = rt_list_entry(list->next, struct rt_thread, tlist);/* get thread entry */
     thread->error = -RT_ERROR;/* set error code to RT_ERROR */
     ((OS_TCB*)thread)->PendStatus = OS_STATUS_PEND_ABORT; /*标记当前任务放弃等待*/
+    ((OS_TCB*)thread)->TaskState = OS_TASK_STATE_RDY;/*标记当前任务已经不再等待,更新任务状态*/
     rt_hw_interrupt_enable(temp);
    
     rt_thread_resume(thread); /* resume it */
@@ -105,8 +106,9 @@ rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
         /* set error code to RT_ERROR */
         thread->error = -RT_ERROR;
         /*标记当前任务放弃等待*/
-        ((OS_TCB*)thread)->PendStatus = OS_STATUS_PEND_ABORT; 
-        
+        ((OS_TCB*)thread)->PendStatus = OS_STATUS_PEND_ABORT;
+        /*标记当前任务已经不再等待,更新任务状态*/
+        ((OS_TCB*)thread)->TaskState = OS_TASK_STATE_RDY;
         /*
          * resume thread
          * In rt_thread_resume function, it will remove current thread from
@@ -141,6 +143,9 @@ static rt_err_t rt_ipc_post_all (rt_list_t *list)
 
         /* get next suspend thread */
         thread = rt_list_entry(list->next, struct rt_thread, tlist);
+        
+        /*更新任务状态*/
+        ((OS_TCB*)thread)->TaskState = OS_TASK_STATE_RDY;
         
         /*
          * resume thread

@@ -572,11 +572,6 @@
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg.h</FilePath>
             </File>
             <File>
-              <FileName>os_cfg_app.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg_app.c</FilePath>
-            </File>
-            <File>
               <FileName>os_cfg_app.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg_app.h</FilePath>
@@ -585,6 +580,11 @@
               <FileName>os_app_hooks.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_app_hooks.h</FilePath>
+            </File>
+            <File>
+              <FileName>os_cfg_app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg_app.c</FilePath>
             </File>
             <File>
               <FileName>os_app_hooks.c</FileName>
@@ -1317,11 +1317,6 @@
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg.h</FilePath>
             </File>
             <File>
-              <FileName>os_cfg_app.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg_app.c</FilePath>
-            </File>
-            <File>
               <FileName>os_cfg_app.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg_app.h</FilePath>
@@ -1330,6 +1325,11 @@
               <FileName>os_app_hooks.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_app_hooks.h</FilePath>
+            </File>
+            <File>
+              <FileName>os_cfg_app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg_app.c</FilePath>
             </File>
             <File>
               <FileName>os_app_hooks.c</FileName>
@@ -2062,11 +2062,6 @@
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg.h</FilePath>
             </File>
             <File>
-              <FileName>os_cfg_app.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg_app.c</FilePath>
-            </File>
-            <File>
               <FileName>os_cfg_app.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg_app.h</FilePath>
@@ -2075,6 +2070,11 @@
               <FileName>os_app_hooks.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_app_hooks.h</FilePath>
+            </File>
+            <File>
+              <FileName>os_cfg_app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_cfg_app.c</FilePath>
             </File>
             <File>
               <FileName>os_app_hooks.c</FileName>

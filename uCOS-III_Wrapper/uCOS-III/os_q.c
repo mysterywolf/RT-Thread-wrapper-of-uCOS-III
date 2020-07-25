@@ -561,6 +561,7 @@ void  *OSQPend (OS_Q         *p_q,
     
     CPU_CRITICAL_ENTER();
     OSTCBCurPtr->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
+    OSTCBCurPtr->TaskState = OS_TASK_STATE_PEND;
     CPU_CRITICAL_EXIT();     
     
     /*开始消息接收以及处理*/
@@ -770,7 +771,8 @@ void  OSQPost (OS_Q         *p_q,
 {
     rt_err_t rt_err;
     ucos_msg_t  ucos_msg;
-    
+    struct rt_thread *thread;
+        
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -829,6 +831,13 @@ void  OSQPost (OS_Q         *p_q,
         return;
     }
     *p_err = rt_err_to_ucosiii(rt_err); 
+    
+    if(rt_err == RT_EOK)
+    {
+        /*获取当前等待MsgQ的线程*/
+        thread = rt_list_entry(p_q->Msg.parent.suspend_thread.next, struct rt_thread, tlist);
+        ((OS_TCB*)thread)->TaskState = OS_TASK_STATE_RDY;/*更新任务状态*/
+    }
 }
 /*
 ************************************************************************************************************************

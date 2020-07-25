@@ -174,7 +174,7 @@ OS_RATE_HZ     const  OSCfg_TmrTaskRate_Hz       = (OS_RATE_HZ  )OS_CFG_TMR_TASK
 ************************************************************************************************************************
 */
 
-CPU_INT32U     const  OSCfg_DataSizeRAM          = sizeof(OSCfg_StatTaskStk)
+CPU_INT32U     const  OSCfg_DataSizeRAM          = //sizeof(OSCfg_IdleTaskStk)
 
 #if (OS_CFG_ISR_POST_DEFERRED_EN > 0u)
                                                  + sizeof(OSCfg_IntQ)

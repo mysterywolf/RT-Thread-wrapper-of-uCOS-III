@@ -404,6 +404,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     
     CPU_CRITICAL_ENTER();
     OSTCBCurPtr->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
+    OSTCBCurPtr->TaskState = OS_TASK_STATE_PEND;
     CPU_CRITICAL_EXIT();     
     
     rt_err = rt_mutex_take(&p_mutex->Mutex,time);
@@ -572,6 +573,7 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
                    OS_ERR    *p_err)
 {
     rt_err_t rt_err;
+    struct rt_thread *thread;   
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -626,6 +628,12 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
     if(rt_err == -RT_ERROR)/*rt_mutex_release返回-RT_ERROR表示该线程非掌握互斥量的线程*/
     {
         *p_err = OS_ERR_MUTEX_NOT_OWNER;
+    }
+    else if (rt_err == RT_EOK)
+    {
+        /*获取当前等待Mutex的线程*/
+        thread = rt_list_entry(p_mutex->Mutex.parent.suspend_thread.next, struct rt_thread, tlist);
+        ((OS_TCB*)thread)->TaskState = OS_TASK_STATE_RDY;/*更新任务状态*/
     }
 }
 
