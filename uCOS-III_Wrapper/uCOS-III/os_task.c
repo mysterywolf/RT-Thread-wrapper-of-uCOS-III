@@ -337,14 +337,16 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         p_tcb->SemCreateSuc = RT_TRUE;
         CPU_CRITICAL_EXIT();
     }
-
+    
+    CPU_CRITICAL_ENTER();
 #if defined(OS_CFG_TLS_TBL_SIZE) && (OS_CFG_TLS_TBL_SIZE > 0u)/*线程私有变量暂时没有实现*/
     for (id = 0u; id < OS_CFG_TLS_TBL_SIZE; id++) {
         p_tcb->TLS_Tbl[id] = (OS_TLS)0;
     }
     OS_TLS_TaskCreate(p_tcb);                               /* Call TLS hook                                          */
 #endif
-       
+    CPU_CRITICAL_EXIT();
+    
     /*创建线程*/
     rt_err = rt_thread_init(&p_tcb->Task,
                             (const char*)p_name,
