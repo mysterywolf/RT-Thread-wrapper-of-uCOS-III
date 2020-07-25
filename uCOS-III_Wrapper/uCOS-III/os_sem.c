@@ -346,6 +346,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
 {  
     rt_err_t rt_err;
     rt_int32_t time;
+    OS_TCB *p_tcb;
     
     CPU_SR_ALLOC();
     
@@ -418,15 +419,18 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     }
     
     CPU_CRITICAL_ENTER();
-    OSTCBCurPtr->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
-    OSTCBCurPtr->TaskState = OS_TASK_STATE_PEND;
+    p_tcb = OSTCBCurPtr;
+    
+    p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
+    p_tcb->TaskState = OS_TASK_STATE_PEND;
+    p_tcb->DbgNamePtr = p_sem->NamePtr;
     CPU_CRITICAL_EXIT(); 
     
     rt_err = rt_sem_take(&p_sem->Sem,time);
     *p_err = rt_err_to_ucosiii(rt_err); 
     
     CPU_CRITICAL_ENTER();
-    if(OSTCBCurPtr->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
+    if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
     {
         CPU_CRITICAL_EXIT(); 
         *p_err = OS_ERR_PEND_ABORT;
@@ -589,7 +593,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
                        OS_ERR  *p_err)
 {
     rt_err_t rt_err;
-    struct rt_thread *thread;
+    OS_TCB *p_tcb;
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -628,12 +632,15 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
     switch (opt) 
     {
         case OS_OPT_POST_1:
+            /*获取当前等待sem的任务TCB*/
+            p_tcb = (OS_TCB*)rt_list_entry(p_sem->Sem.parent.suspend_thread.next, struct rt_thread, tlist);
             rt_err = rt_sem_release(&p_sem->Sem);
             if(rt_err == RT_EOK)
             {
-                /*获取当前等待sem的线程*/
-                thread = rt_list_entry(p_sem->Sem.parent.suspend_thread.next, struct rt_thread, tlist);
-                ((OS_TCB*)thread)->TaskState = OS_TASK_STATE_RDY;/*更新任务状态*/
+                /*更新任务状态*/
+                p_tcb->TaskState = OS_TASK_STATE_RDY;
+                /*清除当前任务等待状态*/
+                p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");                
             }
             break;
         

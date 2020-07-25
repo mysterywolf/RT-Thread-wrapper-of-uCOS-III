@@ -13,7 +13,7 @@
 #include <os.h>
 
 #define TASK_PRIORITY         6		/*任务优先级*/
-#define TASK_STACK_SIZE       64 	/*任务堆栈大小*/
+#define TASK_STACK_SIZE       80 	/*任务堆栈大小*/
 #define TASK_TIMESLICE        5		/*任务时间片*/
 
 ALIGN(RT_ALIGN_SIZE)

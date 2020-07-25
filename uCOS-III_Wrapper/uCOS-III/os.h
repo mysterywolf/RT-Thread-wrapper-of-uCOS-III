@@ -153,8 +153,8 @@
 
 #define  OS_STATUS_PEND_OK                   (OS_STATUS)(  0u)  /* Pending status OK, !pending, or pending complete   */
 #define  OS_STATUS_PEND_ABORT                (OS_STATUS)(  1u)  /* Pending aborted                                    */
-#define  OS_STATUS_PEND_DEL                  (OS_STATUS)(  2u)  /* Pending object deleted                             */
-#define  OS_STATUS_PEND_TIMEOUT              (OS_STATUS)(  3u)  /* Pending timed out                                  */
+//#define  OS_STATUS_PEND_DEL                  (OS_STATUS)(  2u)  /* Pending object deleted                             */
+//#define  OS_STATUS_PEND_TIMEOUT              (OS_STATUS)(  3u)  /* Pending timed out                                  */
 
 /*
 ========================================================================================================================
@@ -751,6 +751,7 @@ struct os_mem {                                             /* MEMORY CONTROL BL
 
 struct  os_mutex {
     struct rt_mutex     Mutex;
+    CPU_CHAR           *NamePtr;
     OS_OBJ_TYPE         Type;
 #if OS_CFG_DBG_EN > 0u
     OS_MUTEX           *DbgPrevPtr;
