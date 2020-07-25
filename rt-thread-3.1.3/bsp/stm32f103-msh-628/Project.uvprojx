@@ -597,6 +597,11 @@
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_rtwrap.c</FilePath>
             </File>
             <File>
+              <FileName>os_dbg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_dbg.c</FilePath>
+            </File>
+            <File>
               <FileName>os_core.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_core.c</FilePath>
@@ -1332,6 +1337,11 @@
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_rtwrap.c</FilePath>
             </File>
             <File>
+              <FileName>os_dbg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_dbg.c</FilePath>
+            </File>
+            <File>
               <FileName>os_core.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_core.c</FilePath>
@@ -2065,6 +2075,11 @@
               <FileName>os_rtwrap.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_rtwrap.c</FilePath>
+            </File>
+            <File>
+              <FileName>os_dbg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\uCOS-III\os_dbg.c</FilePath>
             </File>
             <File>
               <FileName>os_core.c</FileName>

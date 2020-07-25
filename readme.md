@@ -107,7 +107,7 @@ Keil工程路径：*\rt-thread-3.1.3\bsp\stm32f103-msh-628\Project.uvprojx*
 
 ### 2.5.1 官方标准初始化流程
 
-​	本兼容层完全兼容官方给出的标准初始化流程，如果您兼容老项目，μCOS-III初始化部分无需做任何修改。具体初始化流程代码参见工程`main.c`文件，参考文献参见 *docs/demo.pdf* 
+​	本兼容层完全兼容官方给出的标准初始化流程，如果您兼容老项目，μCOS-III初始化部分无需做任何修改。具体初始化流程代码参见工程`main.c`文件，参考文献参见 *docs/uCOS-III官方初始化流程.pdf* 
 
 
 
@@ -474,7 +474,15 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 
 
-# 4 支持
+# 4 μC/Probe
+
+
+
+
+
+
+
+# 5 支持
 
 如果您喜欢本项目**可以在本页右上角点一下Star**，可以赏我五毛钱，用以满足我小小的虚荣心，并激励我继续维护好这个项目。
 
@@ -484,7 +492,7 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 
 
-# 5 许可
+# 6 许可
 
 采用 Apache-2.0 开源协议，细节请阅读项目中的 LICENSE 文件内容。
 
@@ -492,7 +500,7 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 
 
-# 6 联系方式&致谢
+# 7 联系方式&致谢
 
 感谢RT-Thread工程师Willian Chan的技术支持：https://github.com/willianchanlovegithub
 

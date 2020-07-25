@@ -151,6 +151,10 @@
 - 更改工程结构，将工程文件提到一级目录
 - 实现μC/CPU中`CPU_NameClr`、`CPU_NameGet`、`CPU_NameSet`函数
 
+### 2020-7-25
+
+- 增加os_dbg.c文件，开始与μC/Probe软件进行对接
+
 
 
 
@@ -248,8 +252,11 @@
 
 **[add]** 实现μC/CPU中`CPU_NameClr`、`CPU_NameGet`、`CPU_NameSet`函数
 
+
+
 # TODO
 
 - [ ] 完善统计任务的其他统计项
 - [ ] 实现受限项opts
 - [ ] 补充例程
+- [ ] 与μC/Probe对接
