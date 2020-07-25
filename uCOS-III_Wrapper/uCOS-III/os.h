@@ -884,6 +884,31 @@ OS_EXT            OS_TMR                   *OSTmrDbgListPtr;
 OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Number of timers created                   */
 #endif
 
+/*
+************************************************************************************************************************
+************************************************************************************************************************
+*                                                   E X T E R N A L S
+************************************************************************************************************************
+************************************************************************************************************************
+*/
+
+extern  OS_PRIO       const OSCfg_StatTaskPrio;
+extern  OS_RATE_HZ    const OSCfg_StatTaskRate_Hz;
+extern  CPU_STK     * const OSCfg_StatTaskStkBasePtr;
+extern  CPU_STK_SIZE  const OSCfg_StatTaskStkLimit;
+extern  CPU_STK_SIZE  const OSCfg_StatTaskStkSize;
+extern  CPU_INT32U    const OSCfg_StatTaskStkSizeRAM;
+
+extern  CPU_STK_SIZE  const OSCfg_StkSizeMin;
+
+extern  OS_RATE_HZ    const OSCfg_TickRate_Hz;
+
+extern  OS_RATE_HZ    const OSCfg_TmrTaskRate_Hz;
+
+#if (OS_CFG_STAT_TASK_EN > 0u)
+extern  CPU_STK        OSCfg_StatTaskStk[];
+#endif
+
 
 /*
 ************************************************************************************************************************
