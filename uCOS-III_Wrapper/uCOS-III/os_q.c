@@ -414,6 +414,11 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
 
         entries ++;
     }
+    
+#if OS_CFG_DBG_EN > 0u
+    p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*Clear*/
+#endif
+
     CPU_CRITICAL_EXIT();
     
     return entries;
@@ -483,6 +488,7 @@ void  *OSQPend (OS_Q         *p_q,
 {
     rt_err_t    rt_err;
     rt_int32_t  time;
+    rt_thread_t thread;
     ucos_msg_t  ucos_msg;
     OS_TCB     *p_tcb;
     
@@ -562,7 +568,6 @@ void  *OSQPend (OS_Q         *p_q,
     
     CPU_CRITICAL_ENTER();
     p_tcb = OSTCBCurPtr;
-    
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
     p_tcb->TaskState = OS_TASK_STATE_PEND;
     p_tcb->DbgNamePtr = p_q->NamePtr;
@@ -570,6 +575,19 @@ void  *OSQPend (OS_Q         *p_q,
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_Q;
     }
+    
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待消息队列的线程赋值给.DbgNamePtr*/
+        thread = rt_list_entry((&(p_q->Msg.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_q->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif
     CPU_CRITICAL_EXIT();     
     
     /*开始消息接收以及处理*/
@@ -587,13 +605,27 @@ void  *OSQPend (OS_Q         *p_q,
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
                          
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待消息队列的线程赋值给.DbgNamePtr*/
+        thread = rt_list_entry((&(p_q->Msg.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_q->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif  
+    
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
     {
         CPU_CRITICAL_EXIT();
         *p_err = OS_ERR_PEND_ABORT;
         *p_msg_size = 0;
         return RT_NULL;
-    }    
+    }
+    
     CPU_CRITICAL_EXIT();                             
                          
     if(*p_err == OS_ERR_NONE)
@@ -645,6 +677,7 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
                           OS_ERR  *p_err)
 {
     rt_uint32_t pend_q_len;
+    rt_thread_t thread;
     
     CPU_SR_ALLOC();
 
@@ -705,17 +738,28 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
         rt_ipc_pend_abort_1(&(p_q->Msg.parent.suspend_thread));
     }
     
+    CPU_CRITICAL_ENTER();
+    pend_q_len = rt_list_len(&(p_q->Msg.parent.suspend_thread));/*获取当前还有多少个任务在等待该消息队列*/
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待消息队列的线程赋值给.DbgNamePtr*/
+        thread = rt_list_entry((&(p_q->Msg.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_q->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif  
+    CPU_CRITICAL_EXIT();   
+    
     if(!(opt&OS_OPT_POST_NO_SCHED))
     {
         rt_schedule();
     }
     
     *p_err = OS_ERR_NONE;
-    
-    CPU_CRITICAL_ENTER();
-    pend_q_len = rt_list_len(&(p_q->Msg.parent.suspend_thread));
-    CPU_CRITICAL_EXIT();
-    
     return pend_q_len;
 }
 #endif
@@ -784,8 +828,11 @@ void  OSQPost (OS_Q         *p_q,
                OS_ERR       *p_err)
 {
     rt_err_t rt_err;
+    rt_thread_t thread;
     ucos_msg_t  ucos_msg;
         
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -844,6 +891,21 @@ void  OSQPost (OS_Q         *p_q,
         return;
     }
     *p_err = rt_err_to_ucosiii(rt_err); 
+    
+    CPU_CRITICAL_ENTER();
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待消息队列的线程赋值给.DbgNamePtr*/
+        thread = rt_list_entry((&(p_q->Msg.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_q->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_q->DbgNamePtr = (CPU_CHAR *)((void *)" ");
+    }
+#endif
+    CPU_CRITICAL_EXIT();
 }
 
 /*

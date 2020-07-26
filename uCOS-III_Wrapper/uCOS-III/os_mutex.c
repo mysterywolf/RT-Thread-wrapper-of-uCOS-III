@@ -334,6 +334,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
 {
     rt_int32_t time;
     rt_err_t rt_err;
+    rt_thread_t thread;
     OS_TCB *p_tcb;
     
     CPU_SR_ALLOC();
@@ -406,11 +407,23 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     
     CPU_CRITICAL_ENTER();
     p_tcb = OSTCBCurPtr;
-    
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
     p_tcb->TaskState = OS_TASK_STATE_PEND;
     p_tcb->DbgNamePtr = p_mutex->NamePtr;
     p_tcb->PendOn = OS_TASK_PEND_ON_MUTEX;
+    
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待互斥量的线程赋值给.DbgNamePtr*/
+        thread = rt_list_entry((&(p_mutex->Mutex.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_mutex->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif
     CPU_CRITICAL_EXIT();     
     
     rt_err = rt_mutex_take(&p_mutex->Mutex,time);
@@ -423,6 +436,18 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");     
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
     
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待互斥量的线程赋值给.DbgNamePtr*/
+        thread = rt_list_entry((&(p_mutex->Mutex.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_mutex->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif    
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
     {
         CPU_CRITICAL_EXIT(); 
@@ -469,6 +494,7 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
                               OS_ERR    *p_err)
 {
     rt_uint32_t pend_mutex_len;
+    rt_thread_t thread;
     
     CPU_SR_ALLOC();
 
@@ -530,17 +556,29 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
         rt_ipc_pend_abort_1(&(p_mutex->Mutex.parent.suspend_thread));
     }
     
+    CPU_CRITICAL_ENTER();
+    pend_mutex_len = rt_list_len(&(p_mutex->Mutex.parent.suspend_thread));
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待互斥量的线程赋值给.DbgNamePtr*/
+        thread = rt_list_entry((&(p_mutex->Mutex.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_mutex->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif  
+    CPU_CRITICAL_EXIT();
+    
     if(!(opt&OS_OPT_POST_NO_SCHED))
     {
         rt_schedule();
     }
     
     *p_err = OS_ERR_NONE;
-    
-    CPU_CRITICAL_ENTER();
-    pend_mutex_len = rt_list_len(&(p_mutex->Mutex.parent.suspend_thread));
-    CPU_CRITICAL_EXIT();
-    
+        
     return pend_mutex_len;
 }
 #endif
@@ -585,6 +623,7 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
                    OS_ERR    *p_err)
 {
     rt_err_t rt_err;
+    rt_thread_t thread;
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -640,6 +679,19 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
     {
         *p_err = OS_ERR_MUTEX_NOT_OWNER;
     }
+    
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待互斥量的线程赋值给.DbgNamePtr*/
+        thread = rt_list_entry((&(p_mutex->Mutex.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_mutex->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif
 }
 
 /*

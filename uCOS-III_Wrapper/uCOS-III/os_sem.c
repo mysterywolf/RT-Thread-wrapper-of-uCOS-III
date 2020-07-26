@@ -454,13 +454,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     /*清除当前任务等待状态*/
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");     
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;   
-    if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
-    {
-        CPU_CRITICAL_EXIT(); 
-        *p_err = OS_ERR_PEND_ABORT;
-        return 0;
-    } 
-    
+
     p_sem->Ctr = p_sem->Sem.value;/*更新信号量的value*/
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
@@ -473,7 +467,15 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     {
         p_sem->DbgNamePtr =(CPU_CHAR *)((void *)" ");
     }
-#endif   
+#endif
+    
+    if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
+    {
+        CPU_CRITICAL_EXIT(); 
+        *p_err = OS_ERR_PEND_ABORT;
+        return 0;
+    } 
+    
     CPU_CRITICAL_EXIT();    
     
     return p_sem->Sem.value;/*返回信号量还剩多少value*/
@@ -578,7 +580,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
     }
    
     CPU_CRITICAL_ENTER();
-    pend_sem_len = rt_list_len(&(p_sem->Sem.parent.suspend_thread));
+    pend_sem_len = rt_list_len(&(p_sem->Sem.parent.suspend_thread));/*获取当前还有多少个任务在等待该信号量*/
     p_sem->Ctr =p_sem->Sem.value; /*更新信号量value值*/
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))

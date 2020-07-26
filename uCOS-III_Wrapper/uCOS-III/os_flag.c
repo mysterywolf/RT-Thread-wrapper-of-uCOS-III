@@ -364,6 +364,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 {
     rt_err_t        rt_err;
     rt_int32_t      time;
+    rt_thread_t     thread;
     CPU_BOOLEAN     consume;
     OS_OPT          mode;
     rt_uint8_t      rt_option;
@@ -492,11 +493,23 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 
     CPU_CRITICAL_ENTER();
     p_tcb = OSTCBCurPtr;
-    
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
     p_tcb->TaskState = OS_TASK_STATE_PEND;
     p_tcb->DbgNamePtr = p_grp->NamePtr;
     p_tcb->PendOn = OS_TASK_PEND_ON_FLAG;
+
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待事件组的线程赋值给.DbgNamePtr*/
+        thread = rt_list_entry((&(p_grp->FlagGrp.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_grp->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif
     CPU_CRITICAL_EXIT(); 
     
     rt_err = rt_event_recv(&p_grp->FlagGrp,
@@ -507,12 +520,24 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     *p_err = rt_err_to_ucosiii(rt_err);  
     
     CPU_CRITICAL_ENTER();
-    
     /*更新任务状态*/
     p_tcb->TaskState = OS_TASK_STATE_RDY;
     /*清除当前任务等待状态*/
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
+    
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待事件组的线程赋值给.DbgNamePtr*/
+        thread = rt_list_entry((&(p_grp->FlagGrp.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_grp->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif   
     
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
     {
@@ -564,6 +589,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
                              OS_ERR       *p_err)
 {
     rt_uint32_t pe_flag_len;
+    rt_thread_t thread;
     
     CPU_SR_ALLOC();
 
@@ -624,17 +650,28 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
         rt_ipc_pend_abort_1(&(p_grp->FlagGrp.parent.suspend_thread));
     }
     
+    CPU_CRITICAL_ENTER();
+    pe_flag_len = rt_list_len(&(p_grp->FlagGrp.parent.suspend_thread));  
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待信号量的线程赋值给.DbgNamePtr*/
+        thread = rt_list_entry((&(p_grp->FlagGrp.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_grp->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif 
+    CPU_CRITICAL_EXIT();  
+    
     if(!(opt&OS_OPT_POST_NO_SCHED))
     {
         rt_schedule();
     }
     
     *p_err = OS_ERR_NONE;
-    
-    CPU_CRITICAL_ENTER();
-    pe_flag_len = rt_list_len(&(p_grp->FlagGrp.parent.suspend_thread));
-    CPU_CRITICAL_EXIT();
-    
     return pe_flag_len;
 }
 #endif
@@ -732,6 +769,9 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
                       OS_ERR       *p_err)
 {
     rt_err_t rt_err;
+    rt_thread_t thread;
+    
+    CPU_SR_ALLOC();
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -777,11 +817,24 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     rt_err = rt_event_send(&p_grp->FlagGrp,flags);
     *p_err = rt_err_to_ucosiii(rt_err);
     
+    CPU_CRITICAL_ENTER();
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待信号量的线程赋值给.DbgNamePtr*/
+        thread = rt_list_entry((&(p_grp->FlagGrp.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_grp->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif   
+    CPU_CRITICAL_EXIT();
+    
     return p_grp->FlagGrp.set;/*返回执行后事件标志组的值*/
 }
 
-
-/*$PAGE*/
 /*
 ************************************************************************************************************************
 *                                      CLEAR THE CONTENTS OF AN EVENT FLAG GROUP
