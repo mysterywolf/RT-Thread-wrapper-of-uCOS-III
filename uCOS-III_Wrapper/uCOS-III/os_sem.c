@@ -430,19 +430,10 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
         p_tcb->PendOn = OS_TASK_PEND_ON_SEM;
     }
     
-    p_sem->Ctr = p_sem->Sem.value;/*更新信号量的value*/
 #if OS_CFG_DBG_EN > 0u
-    if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
-    {
-        /*若等待表不为空，则将当前等待信号量的线程赋值给p_sem->DbgNamePtr*/
-        thread = rt_list_entry((&(p_sem->Sem.parent.suspend_thread))->next, struct rt_thread, tlist);
-        p_sem->DbgNamePtr = thread->name;
-    }
-    else
-    {
-        p_sem->DbgNamePtr =(CPU_CHAR *)((void *)" ");
-    }
-#endif
+    p_sem->DbgNamePtr = p_tcb->Task.name;
+#endif    
+    p_sem->Ctr = p_sem->Sem.value;/*更新信号量的value*/
     CPU_CRITICAL_EXIT(); 
     
     rt_err = rt_sem_take(&p_sem->Sem,time);

@@ -574,19 +574,10 @@ void  *OSQPend (OS_Q         *p_q,
     if(p_tcb->PendOn != OS_TASK_PEND_ON_TASK_Q)
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_Q;
-    }
+    }  
     
 #if OS_CFG_DBG_EN > 0u
-    if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
-    {
-        /*若等待表不为空，则将当前等待消息队列的线程赋值给.DbgNamePtr*/
-        thread = rt_list_entry((&(p_q->Msg.parent.suspend_thread))->next, struct rt_thread, tlist);
-        p_q->DbgNamePtr = thread->name;
-    }
-    else
-    {
-        p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");
-    }
+    p_q->DbgNamePtr = p_tcb->Task.name;
 #endif
     CPU_CRITICAL_EXIT();     
     

@@ -497,18 +497,9 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_tcb->TaskState = OS_TASK_STATE_PEND;
     p_tcb->DbgNamePtr = p_grp->NamePtr;
     p_tcb->PendOn = OS_TASK_PEND_ON_FLAG;
-
+    
 #if OS_CFG_DBG_EN > 0u
-    if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
-    {
-        /*若等待表不为空，则将当前等待事件组的线程赋值给.DbgNamePtr*/
-        thread = rt_list_entry((&(p_grp->FlagGrp.parent.suspend_thread))->next, struct rt_thread, tlist);
-        p_grp->DbgNamePtr = thread->name;
-    }
-    else
-    {
-        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");
-    }
+    p_grp->DbgNamePtr = p_tcb->Task.name;
 #endif
     CPU_CRITICAL_EXIT(); 
     

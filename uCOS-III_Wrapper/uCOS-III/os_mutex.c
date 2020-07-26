@@ -413,16 +413,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     p_tcb->PendOn = OS_TASK_PEND_ON_MUTEX;
     
 #if OS_CFG_DBG_EN > 0u
-    if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
-    {
-        /*若等待表不为空，则将当前等待互斥量的线程赋值给.DbgNamePtr*/
-        thread = rt_list_entry((&(p_mutex->Mutex.parent.suspend_thread))->next, struct rt_thread, tlist);
-        p_mutex->DbgNamePtr = thread->name;
-    }
-    else
-    {
-        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");
-    }
+    p_mutex->DbgNamePtr = p_tcb->Task.name;
 #endif
     CPU_CRITICAL_EXIT();     
     
