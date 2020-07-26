@@ -385,7 +385,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_tcb->TaskEntryAddr = (OS_TASK_PTR)p_tcb->Task.entry;
     p_tcb->TaskEntryArg = p_tcb->Task.parameter;
     p_tcb->Prio = p_tcb->Task.init_priority;
-    p_tcb->SemCtr = &p_tcb->Sem.Sem.value; 
+    p_tcb->SemCtr = p_tcb->Sem.Sem.value;
+    
     CPU_CRITICAL_EXIT();   
     
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
@@ -1068,6 +1069,9 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
                            OS_ERR   *p_err)
 {    
     OS_TCB *p_tcb;
+    OS_SEM_CTR ctr;
+    
+    CPU_SR_ALLOC();
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -1079,8 +1083,16 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
     p_tcb = OSTCBCurPtr;   
     if(p_tcb->SemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
     {
-        p_tcb->PendOn = OS_TASK_PEND_ON_TASK_SEM;
-        return OSSemPend(&p_tcb->Sem,timeout,opt,p_ts,p_err); 
+        CPU_CRITICAL_ENTER();
+        p_tcb->PendOn = OS_TASK_PEND_ON_TASK_SEM;/*设置任务等待状态*/
+        CPU_CRITICAL_EXIT();
+        
+        ctr = OSSemPend(&p_tcb->Sem,timeout,opt,p_ts,p_err); 
+        
+        CPU_CRITICAL_ENTER();
+        p_tcb->SemCtr = p_tcb->Sem.Sem.value;/*更新value*/
+        CPU_CRITICAL_EXIT();
+        return ctr;
     }
     else
     {
@@ -1170,6 +1182,11 @@ CPU_BOOLEAN  OSTaskSemPendAbort (OS_TCB  *p_tcb,
     
     _opt = OS_OPT_PEND_ABORT_1 | opt;
     OSSemPendAbort(&p_tcb->Sem,_opt,p_err);
+    
+    CPU_CRITICAL_ENTER();
+    p_tcb->SemCtr = p_tcb->Sem.Sem.value;
+    CPU_CRITICAL_EXIT();
+    
     if(*p_err != OS_ERR_NONE)
     {
         return DEF_FALSE;
@@ -1214,6 +1231,10 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
                            OS_OPT   opt,
                            OS_ERR  *p_err)
 {
+    OS_SEM_CTR ctr;
+    
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -1227,7 +1248,11 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
     }
     if(p_tcb->SemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
     {
-        return OSSemPost(&p_tcb->Sem,opt,p_err);
+        ctr = OSSemPost(&p_tcb->Sem,opt,p_err);
+        CPU_CRITICAL_ENTER();
+        p_tcb->SemCtr = p_tcb->Sem.Sem.value;
+        CPU_CRITICAL_EXIT();
+        return ctr;
     }
     else
     {
@@ -1286,6 +1311,7 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
     CPU_CRITICAL_ENTER();
     ctr = p_tcb->Sem.Sem.value;
     p_tcb->Sem.Sem.value = (OS_SEM_CTR)cnt;
+    p_tcb->SemCtr = p_tcb->Sem.Sem.value;
     CPU_CRITICAL_EXIT();
     *p_err = OS_ERR_NONE;
     return ctr;
@@ -1666,7 +1692,7 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     
     /*---------Clear兼容层非必须成员变量---------*/
     p_tcb->StkPtr             = (CPU_STK       *)0;
-    p_tcb->SemCtr             = (OS_SEM_CTR    *)0u;   
+    p_tcb->SemCtr             = (OS_SEM_CTR     )0u;   
     p_tcb->TickCtrMatch       = (OS_TICK       *)0u;
     p_tcb->TickCtrPrev        = (OS_TICK        )OS_TICK_TH_INIT; 
     p_tcb->Opt                = (OS_OPT         )0u;

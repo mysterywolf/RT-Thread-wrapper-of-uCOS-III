@@ -259,7 +259,7 @@
 
 **[add]** 实现μC/CPU中`CPU_NameClr`、`CPU_NameGet`、`CPU_NameSet`函数
 
-**[add]** 实现与μC/Probe软件的对接
+**[add]** 实现与μC/Probe软件的对接以及对接所需的必要成员变量
 
 
 

@@ -98,7 +98,7 @@ void q_sample     (void);
 static void AppTaskCreate(void)
 {
     timer_sample();
-//    mutex_sample();
-//    sem_sample();
-//    q_sample();
+    mutex_sample();
+    sem_sample();
+    q_sample();
 }

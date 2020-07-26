@@ -711,8 +711,8 @@ struct os_tcb
     CPU_CHAR        *DbgNamePtr;
 #endif
     /*---------兼容层非必须成员变量---------*/
-    CPU_STK         *StkPtr;        /* 该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
-    OS_SEM_CTR      *SemCtr;        /* 比原版多了一级指针,Task specific semaphore counter,引用需要(*xxx.SemCtr)*/
+    CPU_STK         *StkPtr;        /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
+    OS_SEM_CTR       SemCtr;        /* Task specific semaphore counter,*/
     OS_TICK         *TickCtrMatch;  /* 比原版多了一级指针,Absolute time when task is going to be ready */  
     OS_TICK          TickCtrPrev;   /* Previous time when task was */    
     OS_OPT           Opt;           /* Task options as passed by OSTaskCreate() */    

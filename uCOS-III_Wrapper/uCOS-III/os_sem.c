@@ -148,7 +148,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
     CPU_CRITICAL_ENTER();
     p_sem->Type    = OS_OBJ_TYPE_SEM;                       /* Mark the data structure as a semaphore                 */    
     p_sem->NamePtr = p_name;
-    p_sem->Ctr     = cnt;                                   /* Set semaphore value                                    */
+    p_sem->Ctr = p_sem->Sem.value;                          /* Set semaphore value                                    */
 #if OS_CFG_DBG_EN > 0u
     OS_SemDbgListAdd(p_sem);
 #endif
@@ -423,16 +423,14 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     p_tcb = OSTCBCurPtr;
     
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
-    p_tcb->TaskState = OS_TASK_STATE_PEND;
-    p_tcb->DbgNamePtr = p_sem->NamePtr;
+    p_tcb->TaskState = OS_TASK_STATE_PEND;            /* 更改当前任务状态为等待*/
+    p_tcb->DbgNamePtr = p_sem->NamePtr;               /* 更新等待任务被哪个信号量所阻塞*/
     if(p_tcb->PendOn != OS_TASK_PEND_ON_TASK_SEM)     /*检查该函数是否被任务内建信号量调用*/
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_SEM;
     }
+    p_sem->Ctr = p_sem->Sem.value;
     
-    if (p_sem->Ctr > (OS_SEM_CTR)0) {                       /* Resource available?                                    */
-        p_sem->Ctr--;                                       /* Yes, caller may proceed                                */
-    }    
     CPU_CRITICAL_EXIT(); 
     
     rt_err = rt_sem_take(&p_sem->Sem,time);
@@ -552,6 +550,11 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
     {
         rt_ipc_pend_abort_1(&(p_sem->Sem.parent.suspend_thread));
     }
+   
+    CPU_CRITICAL_ENTER();
+    pend_sem_len = rt_list_len(&(p_sem->Sem.parent.suspend_thread));
+    p_sem->Ctr =p_sem->Sem.value; /*更新信号量value值*/
+    CPU_CRITICAL_EXIT();
     
     if(!(opt&OS_OPT_POST_NO_SCHED))
     {
@@ -560,11 +563,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
     
     *p_err = OS_ERR_NONE;
     
-    CPU_CRITICAL_ENTER();
-    pend_sem_len = rt_list_len(&(p_sem->Sem.parent.suspend_thread));
-    CPU_CRITICAL_EXIT();
-    
-    return pend_sem_len;
+    return pend_sem_len;/*返回当前信号量有几个任务在等待*/
 }
 #endif
 
@@ -609,6 +608,8 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
 {
     rt_err_t rt_err;
     
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -644,12 +645,6 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
     }
 #endif
     
-    /*若信号量的任务挂起队列中已经没有任务了*/
-    if (rt_list_isempty(&p_sem->Sem.parent.suspend_thread))
-    {
-         p_sem->Ctr++;
-    }
-    
     switch (opt) 
     {
         case OS_OPT_POST_1:
@@ -665,6 +660,10 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
             *p_err = OS_ERR_OPT_INVALID;
             return 0;
     }
+    CPU_CRITICAL_ENTER();
+    p_sem->Ctr = p_sem->Sem.value; /*更新信号量value值*/
+    CPU_CRITICAL_EXIT();
+    
     *p_err = rt_err_to_ucosiii(rt_err); 
     return p_sem->Sem.value;/*返回信号量还剩多少value*/
 }
@@ -746,9 +745,11 @@ void  OSSemSet (OS_SEM      *p_sem,
         }
         else
         {
-             *p_err = OS_ERR_TASK_WAITING;
+             *p_err = OS_ERR_TASK_WAITING;/*有任务正在等待该信号量,不可以设置value*/
         }
     }
+    
+    p_sem->Ctr = p_sem->Sem.value; /*更新信号量value值*/
     CPU_CRITICAL_EXIT();
 }
 #endif
