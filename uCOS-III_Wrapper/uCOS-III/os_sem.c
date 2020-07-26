@@ -148,6 +148,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
     CPU_CRITICAL_ENTER();
     p_sem->Type    = OS_OBJ_TYPE_SEM;                       /* Mark the data structure as a semaphore                 */    
     p_sem->NamePtr = p_name;
+    p_sem->Ctr     = cnt;                                   /* Set semaphore value                                    */
 #if OS_CFG_DBG_EN > 0u
     OS_SemDbgListAdd(p_sem);
 #endif
@@ -424,12 +425,26 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
     p_tcb->TaskState = OS_TASK_STATE_PEND;
     p_tcb->DbgNamePtr = p_sem->NamePtr;
+    if(p_tcb->PendOn != OS_TASK_PEND_ON_TASK_SEM)     /*检查该函数是否被任务内建信号量调用*/
+    {
+        p_tcb->PendOn = OS_TASK_PEND_ON_SEM;
+    }
+    
+    if (p_sem->Ctr > (OS_SEM_CTR)0) {                       /* Resource available?                                    */
+        p_sem->Ctr--;                                       /* Yes, caller may proceed                                */
+    }    
     CPU_CRITICAL_EXIT(); 
     
     rt_err = rt_sem_take(&p_sem->Sem,time);
     *p_err = rt_err_to_ucosiii(rt_err); 
     
     CPU_CRITICAL_ENTER();
+    /*更新任务状态*/
+    p_tcb->TaskState = OS_TASK_STATE_RDY;
+    /*清除当前任务等待状态*/
+    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");     
+    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
+    
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
     {
         CPU_CRITICAL_EXIT(); 
@@ -593,7 +608,6 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
                        OS_ERR  *p_err)
 {
     rt_err_t rt_err;
-    OS_TCB *p_tcb;
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -629,19 +643,17 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
         return 0;       
     }
 #endif
+    
+    /*若信号量的任务挂起队列中已经没有任务了*/
+    if (rt_list_isempty(&p_sem->Sem.parent.suspend_thread))
+    {
+         p_sem->Ctr++;
+    }
+    
     switch (opt) 
     {
         case OS_OPT_POST_1:
-            /*获取当前等待sem的任务TCB*/
-            p_tcb = (OS_TCB*)rt_list_entry(p_sem->Sem.parent.suspend_thread.next, struct rt_thread, tlist);
             rt_err = rt_sem_release(&p_sem->Sem);
-            if(rt_err == RT_EOK)
-            {
-                /*更新任务状态*/
-                p_tcb->TaskState = OS_TASK_STATE_RDY;
-                /*清除当前任务等待状态*/
-                p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");                
-            }
             break;
         
         case OS_OPT_POST_ALL:
@@ -761,6 +773,7 @@ void  OS_SemClr (OS_SEM  *p_sem)
 {
     p_sem->Type    = OS_OBJ_TYPE_NONE;                      /* Mark the data structure as a NONE                      */
     p_sem->NamePtr = (CPU_CHAR *)((void *)"?SEM");
+    p_sem->Ctr     = (OS_SEM_CTR)0;                         /* Set semaphore value                                    */
 }
 
 /*
@@ -780,6 +793,7 @@ void  OS_SemClr (OS_SEM  *p_sem)
 #if OS_CFG_DBG_EN > 0u
 void  OS_SemDbgListAdd (OS_SEM  *p_sem)
 {
+    p_sem->DbgNamePtr               = (CPU_CHAR *)((void *)" ");
     p_sem->DbgPrevPtr               = (OS_SEM   *)0;
     if (OSSemDbgListPtr == (OS_SEM *)0) {
         p_sem->DbgNextPtr           = (OS_SEM   *)0;

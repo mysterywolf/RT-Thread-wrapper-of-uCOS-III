@@ -16,7 +16,7 @@
 #include <os_app_hooks.h>
 
 /*宏定义*/
-#define APP_TASK_START_STK_SIZE     128   /*开始任务 任务堆栈大小*/
+#define APP_TASK_START_STK_SIZE     150   /*开始任务 任务堆栈大小*/
 #define APP_TASK_START_PRIO         5     /*开始任务 任务优先级*/
 
 /*任务堆栈以及TCB*/
@@ -98,7 +98,7 @@ void q_sample     (void);
 static void AppTaskCreate(void)
 {
     timer_sample();
-    mutex_sample();
-    sem_sample();
-    q_sample();
+//    mutex_sample();
+//    sem_sample();
+//    q_sample();
 }

@@ -566,6 +566,10 @@ void  *OSQPend (OS_Q         *p_q,
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
     p_tcb->TaskState = OS_TASK_STATE_PEND;
     p_tcb->DbgNamePtr = p_q->NamePtr;
+    if(p_tcb->PendOn != OS_TASK_PEND_ON_TASK_Q)
+    {
+        p_tcb->PendOn = OS_TASK_PEND_ON_Q;
+    }
     CPU_CRITICAL_EXIT();     
     
     /*开始消息接收以及处理*/
@@ -576,7 +580,13 @@ void  *OSQPend (OS_Q         *p_q,
 
     *p_err = rt_err_to_ucosiii(rt_err);
                          
-    CPU_CRITICAL_ENTER();
+    CPU_CRITICAL_ENTER();      
+    /*更新任务状态*/
+    p_tcb->TaskState = OS_TASK_STATE_RDY;
+    /*清除当前任务等待状态*/
+    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
+    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
+                         
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
     {
         CPU_CRITICAL_EXIT();
@@ -775,7 +785,6 @@ void  OSQPost (OS_Q         *p_q,
 {
     rt_err_t rt_err;
     ucos_msg_t  ucos_msg;
-    OS_TCB  *p_tcb;
         
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -816,9 +825,6 @@ void  OSQPost (OS_Q         *p_q,
     }
 #endif
     
-    /*获取当前等待MsgQ的任务TCB*/
-    p_tcb = (OS_TCB*)rt_list_entry(p_q->Msg.parent.suspend_thread.next, struct rt_thread, tlist);
-
     /*装填uCOS消息段*/
     ucos_msg.data_size = msg_size;
     ucos_msg.data_ptr = p_void;
@@ -838,15 +844,8 @@ void  OSQPost (OS_Q         *p_q,
         return;
     }
     *p_err = rt_err_to_ucosiii(rt_err); 
-    
-    if(rt_err == RT_EOK)
-    {
-        /*更新任务状态*/
-        p_tcb->TaskState = OS_TASK_STATE_RDY;
-        /*清除当前任务等待状态*/
-        p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");
-    }
 }
+
 /*
 ************************************************************************************************************************
 *                                        CLEAR THE CONTENTS OF A MESSAGE QUEUE
@@ -887,6 +886,7 @@ void  OS_QClr (OS_Q  *p_q)
 #if OS_CFG_DBG_EN > 0u
 void  OS_QDbgListAdd (OS_Q  *p_q)
 {
+    p_q->DbgNamePtr               = (CPU_CHAR *)((void *)" ");
     p_q->DbgPrevPtr               = (OS_Q     *)0;
     if (OSQDbgListPtr == (OS_Q *)0) {
         p_q->DbgNextPtr           = (OS_Q     *)0;

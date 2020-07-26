@@ -496,6 +496,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
     p_tcb->TaskState = OS_TASK_STATE_PEND;
     p_tcb->DbgNamePtr = p_grp->NamePtr;
+    p_tcb->PendOn = OS_TASK_PEND_ON_FLAG;
     CPU_CRITICAL_EXIT(); 
     
     rt_err = rt_event_recv(&p_grp->FlagGrp,
@@ -506,6 +507,13 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     *p_err = rt_err_to_ucosiii(rt_err);  
     
     CPU_CRITICAL_ENTER();
+    
+    /*更新任务状态*/
+    p_tcb->TaskState = OS_TASK_STATE_RDY;
+    /*清除当前任务等待状态*/
+    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
+    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
+    
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
     {
         CPU_CRITICAL_EXIT(); 
@@ -724,7 +732,6 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
                       OS_ERR       *p_err)
 {
     rt_err_t rt_err;
-    OS_TCB *p_tcb;
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -766,18 +773,9 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
         return 0;       
     }  
 #endif
-    /*获取当前等待Flag的任务TCB*/
-    p_tcb = (OS_TCB*)rt_list_entry(p_grp->FlagGrp.parent.suspend_thread.next, struct rt_thread, tlist);
 
     rt_err = rt_event_send(&p_grp->FlagGrp,flags);
     *p_err = rt_err_to_ucosiii(rt_err);
-    if(rt_err == RT_EOK)
-    {
-        /*更新任务状态*/
-        p_tcb->TaskState = OS_TASK_STATE_RDY;
-        /*清除当前任务等待状态*/
-        p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");
-    }
     
     return p_grp->FlagGrp.set;/*返回执行后事件标志组的值*/
 }
@@ -859,6 +857,7 @@ void  OS_FlagInit (OS_ERR  *p_err)
 #if OS_CFG_DBG_EN > 0u
 void  OS_FlagDbgListAdd (OS_FLAG_GRP  *p_grp)
 {
+    p_grp->DbgNamePtr                = (CPU_CHAR    *)((void *)" ");
     p_grp->DbgPrevPtr                = (OS_FLAG_GRP *)0;
     if (OSFlagDbgListPtr == (OS_FLAG_GRP *)0) {
         p_grp->DbgNextPtr            = (OS_FLAG_GRP *)0;

@@ -596,6 +596,7 @@ void  *OSTaskQPend (OS_TICK       timeout,
     
     if(p_tcb->MsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
     {
+        p_tcb->PendOn = OS_TASK_PEND_ON_TASK_Q;
         return OSQPend(&p_tcb->MsgQ,timeout,opt,p_msg_size,p_ts,p_err);
     }
     else
@@ -1078,6 +1079,7 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
     p_tcb = OSTCBCurPtr;   
     if(p_tcb->SemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
     {
+        p_tcb->PendOn = OS_TASK_PEND_ON_TASK_SEM;
         return OSSemPend(&p_tcb->Sem,timeout,opt,p_ts,p_err); 
     }
     else
@@ -1677,6 +1679,7 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->TaskEntryAddr      = (OS_TASK_PTR    )0;
     p_tcb->TaskEntryArg       = (void          *)0;
     p_tcb->Prio               = (OS_PRIO        )OS_PRIO_INIT;   
+    
     CPU_CRITICAL_EXIT();
 }
 

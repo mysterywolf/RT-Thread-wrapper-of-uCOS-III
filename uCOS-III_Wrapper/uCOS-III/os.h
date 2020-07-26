@@ -138,7 +138,7 @@
 #define  OS_TASK_PEND_ON_NOTHING              (OS_STATE)(  0u)  /* Pending on nothing                                 */
 #define  OS_TASK_PEND_ON_FLAG                 (OS_STATE)(  1u)  /* Pending on event flag group                        */
 #define  OS_TASK_PEND_ON_TASK_Q               (OS_STATE)(  2u)  /* Pending on message to be sent to task              */
-#define  OS_TASK_PEND_ON_MULTI                (OS_STATE)(  3u)  /* Pending on multiple semaphores and/or queues       */
+//#define  OS_TASK_PEND_ON_MULTI                (OS_STATE)(  3u)  /* Pending on multiple semaphores and/or queues       */
 #define  OS_TASK_PEND_ON_MUTEX                (OS_STATE)(  4u)  /* Pending on mutual exclusion semaphore              */
 #define  OS_TASK_PEND_ON_Q                    (OS_STATE)(  5u)  /* Pending on queue                                   */
 #define  OS_TASK_PEND_ON_SEM                  (OS_STATE)(  6u)  /* Pending on semaphore                               */
@@ -633,6 +633,7 @@ struct os_q
 #if OS_CFG_DBG_EN > 0u
     OS_Q                *DbgPrevPtr;
     OS_Q                *DbgNextPtr;
+    CPU_CHAR            *DbgNamePtr;
 #endif
 };
 #endif
@@ -650,7 +651,9 @@ struct  os_sem {
 #if OS_CFG_DBG_EN > 0u
     OS_SEM               *DbgPrevPtr;
     OS_SEM               *DbgNextPtr;
-#endif    
+    CPU_CHAR             *DbgNamePtr;
+#endif
+    OS_SEM_CTR           Ctr;    
 };
 /*
 ------------------------------------------------------------------------------------------------------------------------
@@ -666,6 +669,7 @@ struct  os_flag_grp {
 #if OS_CFG_DBG_EN > 0u
     OS_FLAG_GRP         *DbgPrevPtr;
     OS_FLAG_GRP         *DbgNextPtr;
+    CPU_CHAR            *DbgNamePtr;
 #endif
 };
 
@@ -756,6 +760,7 @@ struct  os_mutex {
 #if OS_CFG_DBG_EN > 0u
     OS_MUTEX           *DbgPrevPtr;
     OS_MUTEX           *DbgNextPtr;
+    CPU_CHAR           *DbgNamePtr;
 #endif  
 };
 
@@ -775,6 +780,7 @@ struct  os_tmr {
     OS_OPT               Opt;                               /* Options (see OS_OPT_TMR_xxx)                           */
     OS_TICK              Dly;                               /* Delay before start of repeat                           */
     OS_TICK              Period;                            /* Period to repeat timer                                 */
+    OS_TICK              _dly;                              /* 该变量为内部变量,用于带有延迟的周期延时*/
 #if OS_CFG_DBG_EN > 0u
     OS_TMR              *DbgPrevPtr;
     OS_TMR              *DbgNextPtr;

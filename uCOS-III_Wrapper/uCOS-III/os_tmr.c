@@ -64,7 +64,7 @@
 *                              -------------说明-------------
 *                              RTT和uCOS-III在定时器时钟源的设计不同：
 *                              ·RTT的定时器时钟频率与操作系统ostick频率相同
-*                              ·uCOS-III的定时器时钟由ostick分频得到，分频系数为OS_CFG_TMR_TASK_RATE_HZ
+*                              ·uCOS-III的定时器时钟由ostick分频得到，分频系数为OSCfg_TmrTaskRate_Hz
 *                              函数内部已经对上述两个操作系统定义的做出了转换
 *
 *              opt             Specifies either:
@@ -189,7 +189,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
             return;
         }
         /*RTT和uCOS-III在定时器时钟源的设计不同,需要进行转换*/
-        time = dly * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
+        time = dly * (1000 / OSCfg_TmrTaskRate_Hz);
     }
     else if(opt == OS_OPT_TMR_PERIODIC)
     {
@@ -200,7 +200,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
             return;
         }   
         /*RTT和uCOS-III在定时器时钟源的设计不同,需要进行转换*/        
-        time = period * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
+        time = period * (1000 / OSCfg_TmrTaskRate_Hz);
     }
     else
     {
@@ -217,16 +217,17 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     p_tmr->Opt            = (OS_OPT             )opt;
     p_tmr->Period         = (OS_TICK            )period;
     p_tmr->Dly            = (OS_TICK            )dly;
+    p_tmr->_dly           = (OS_TICK            )dly;/*该变量为内部变量,用于带有延迟的周期延时*/
 #if OS_CFG_DBG_EN > 0u
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
 #endif
     CPU_CRITICAL_EXIT();
     
-    if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->Dly && p_tmr->Period)
+    if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->_dly && p_tmr->Period)
     {
         /*带有延迟的周期延时，先延时一次延迟部分，该部分延时完毕后，周期部分由回调函数重新装填*/
-        time2 = p_tmr->Dly * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
+        time2 = p_tmr->Dly * (1000 / OSCfg_TmrTaskRate_Hz);
         rt_timer_init(&p_tmr->Tmr,
                       (const char*)p_name,
                       OS_TmrCallback,
@@ -730,6 +731,7 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
     p_tmr->Opt            = (OS_OPT             )0;
     p_tmr->Period         = (OS_TICK            )0;
     p_tmr->Dly            = (OS_TICK            )0;
+    p_tmr->_dly           = (OS_TICK            )0;
 #if OS_CFG_DBG_EN > 0u    
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgNextPtr     = (OS_TMR            *)0;
@@ -753,6 +755,7 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
 #if OS_CFG_DBG_EN > 0u
 void  OS_TmrDbgListAdd (OS_TMR  *p_tmr)
 {
+    
     p_tmr->DbgPrevPtr               = (OS_TMR *)0;
     if (OSTmrDbgListPtr == (OS_TMR *)0) {
         p_tmr->DbgNextPtr           = (OS_TMR *)0;
@@ -851,12 +854,12 @@ void OS_TmrCallback(void *p_ara)
     }
     CPU_CRITICAL_EXIT();   
 
-    if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->Dly && p_tmr->Period)
+    if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->_dly && p_tmr->Period)
     {
         /*带有延迟的周期延时，延迟延时已经完毕，开始进行正常周期延时*/
         CPU_CRITICAL_ENTER();
-        p_tmr->Dly = 0;/*延迟部分清零，防止再进入本条件分支语句*/
-        p_tmr->Tmr.init_tick = p_tmr->Period * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
+        p_tmr->_dly = 0;/*延迟部分清零，防止再进入本条件分支语句*/
+        p_tmr->Tmr.init_tick = p_tmr->Period * (1000 / OSCfg_TmrTaskRate_Hz);
         p_tmr->Tmr.timeout_tick = rt_tick_get() + p_tmr->Tmr.init_tick;
         p_tmr->Tmr.parent.flag |= RT_TIMER_FLAG_PERIODIC;/*定时器设置为周期模式*/
         CPU_CRITICAL_EXIT();

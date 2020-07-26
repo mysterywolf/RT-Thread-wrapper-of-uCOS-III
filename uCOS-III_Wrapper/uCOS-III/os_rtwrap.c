@@ -81,11 +81,6 @@ rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
     
     /*标记当前任务放弃等待*/
     p_tcb->PendStatus = OS_STATUS_PEND_ABORT; 
-    /*标记当前任务已经不再等待,更新任务状态*/
-    p_tcb->TaskState = OS_TASK_STATE_RDY;
-    
-    /*清除当前任务等待状态*/
-    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");
     
     rt_hw_interrupt_enable(temp);
     
@@ -122,11 +117,6 @@ rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
                 
         /*标记当前任务放弃等待*/
         p_tcb->PendStatus = OS_STATUS_PEND_ABORT;
-        /*标记当前任务已经不再等待,更新任务状态*/
-        p_tcb->TaskState = OS_TASK_STATE_RDY;
-        
-        /*清除当前任务等待状态*/
-        p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");
         
         /*
          * resume thread
@@ -153,7 +143,6 @@ static rt_err_t rt_ipc_post_all (rt_list_t *list)
 {
     struct rt_thread *thread;
     register rt_ubase_t temp;
-    OS_TCB *p_tcb;
     
     /* wakeup all suspend threads */
     while (!rt_list_isempty(list))
@@ -162,13 +151,7 @@ static rt_err_t rt_ipc_post_all (rt_list_t *list)
         temp = rt_hw_interrupt_disable();
 
         /* get next suspend thread */
-        thread = rt_list_entry(list->next, struct rt_thread, tlist);
-        p_tcb = ((OS_TCB*)thread);
-        
-        /*更新任务状态*/
-        p_tcb->TaskState = OS_TASK_STATE_RDY;
-        /*清除当前任务等待状态*/
-        p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
+        thread = rt_list_entry(list->next, struct rt_thread, tlist);       
         
         /*
          * resume thread

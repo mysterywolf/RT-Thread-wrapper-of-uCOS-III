@@ -410,12 +410,19 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
     p_tcb->TaskState = OS_TASK_STATE_PEND;
     p_tcb->DbgNamePtr = p_mutex->NamePtr;
+    p_tcb->PendOn = OS_TASK_PEND_ON_MUTEX;
     CPU_CRITICAL_EXIT();     
     
     rt_err = rt_mutex_take(&p_mutex->Mutex,time);
     *p_err = rt_err_to_ucosiii(rt_err);
     
     CPU_CRITICAL_ENTER();
+    /*更新任务状态*/
+    p_tcb->TaskState = OS_TASK_STATE_RDY;
+    /*清除当前任务等待状态*/
+    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");     
+    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
+    
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
     {
         CPU_CRITICAL_EXIT(); 
@@ -578,7 +585,6 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
                    OS_ERR    *p_err)
 {
     rt_err_t rt_err;
-    OS_TCB *p_tcb;  
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -626,21 +632,13 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
         return;       
     }
 #endif
-    /*获取当前等待Mutex的任务TCB*/
-    p_tcb = (OS_TCB*)rt_list_entry(p_mutex->Mutex.parent.suspend_thread.next, struct rt_thread, tlist); 
+
     rt_err = rt_mutex_release(&p_mutex->Mutex);
     *p_err = rt_err_to_ucosiii(rt_err);
     /*只有已经拥有互斥量控制权的线程才能释放*/
     if(rt_err == -RT_ERROR)/*rt_mutex_release返回-RT_ERROR表示该线程非掌握互斥量的线程*/
     {
         *p_err = OS_ERR_MUTEX_NOT_OWNER;
-    }
-    else if (rt_err == RT_EOK)
-    {
-        /*更新任务状态*/
-        p_tcb->TaskState = OS_TASK_STATE_RDY;
-        /*清除当前任务等待状态*/
-        p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");        
     }
 }
 
@@ -683,6 +681,7 @@ void  OS_MutexClr (OS_MUTEX  *p_mutex)
 #if OS_CFG_DBG_EN > 0u
 void  OS_MutexDbgListAdd (OS_MUTEX  *p_mutex)
 {
+    p_mutex->DbgNamePtr               = (CPU_CHAR *)((void *)" ");
     p_mutex->DbgPrevPtr               = (OS_MUTEX *)0;
     if (OSMutexDbgListPtr == (OS_MUTEX *)0) {
         p_mutex->DbgNextPtr           = (OS_MUTEX *)0;
