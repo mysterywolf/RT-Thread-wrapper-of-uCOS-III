@@ -41,8 +41,6 @@
 *
 *           You can contact us at www.micrium.com, or by phone at +1 (954) 217-2036.
 *
-* For       : ARMv7 Cortex-M4
-* Mode      : Thumb-2 ISA
 * Toolchain : RealView
 *********************************************************************************************************
 */
