@@ -11,6 +11,8 @@
 
 本文含有图片，受限于中国大陆互联网环境，访问github时，readme.md(本文件)的图片一般加载不出来，因此我导出了.html文件。如果您需要详细阅读，可以将项目下载或clone下来，阅读**readme.html**文件。或者使用**Typora**软件来阅读本文件。
 
+如果你喜欢本项目，请点击右上角的Star予以支持，谢谢！
+
 
 
 # 1 概述
@@ -58,7 +60,7 @@ Keil工程路径：*\rt-thread-3.1.3\bsp\stm32f103-msh-628\Project.uvprojx*
 
 **注意：调试串口使用的是USART2，不是USART1**
 
-<img src="docs/pic/usart2.png" alt="usart2" style="zoom: 67%;" />
+<img src="docs/pic/usart2.png" alt="usart2"  />
 
 
 
@@ -70,7 +72,7 @@ Keil工程路径：*\rt-thread-3.1.3\bsp\stm32f103-msh-628\Project.uvprojx*
 
 上述型号可以通过如图所示方式进行切换。
 
-<img src="docs/pic/stm32f1xx.png" alt="stm32f1xx" style="zoom:67%;" />
+<img src="docs/pic/stm32f1xx.png" alt="stm32f1xx" style="zoom: 80%;" />
 
 
 
