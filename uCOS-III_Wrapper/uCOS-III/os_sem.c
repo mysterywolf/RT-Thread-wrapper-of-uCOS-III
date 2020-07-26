@@ -348,6 +348,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     rt_err_t rt_err;
     rt_int32_t time;
     OS_TCB *p_tcb;
+    rt_thread_t thread;
     
     CPU_SR_ALLOC();
     
@@ -421,7 +422,6 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     
     CPU_CRITICAL_ENTER();
     p_tcb = OSTCBCurPtr;
-    
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
     p_tcb->TaskState = OS_TASK_STATE_PEND;            /* 更改当前任务状态为等待*/
     p_tcb->DbgNamePtr = p_sem->NamePtr;               /* 更新等待任务被哪个信号量所阻塞*/
@@ -429,8 +429,20 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_SEM;
     }
-    p_sem->Ctr = p_sem->Sem.value;
     
+    p_sem->Ctr = p_sem->Sem.value;/*更新信号量的value*/
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待信号量的线程赋值给p_sem->DbgNamePtr*/
+        thread = rt_list_entry((&(p_sem->Sem.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_sem->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_sem->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif
     CPU_CRITICAL_EXIT(); 
     
     rt_err = rt_sem_take(&p_sem->Sem,time);
@@ -441,14 +453,27 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     p_tcb->TaskState = OS_TASK_STATE_RDY;
     /*清除当前任务等待状态*/
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");     
-    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
-    
+    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;   
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
     {
         CPU_CRITICAL_EXIT(); 
         *p_err = OS_ERR_PEND_ABORT;
         return 0;
-    }    
+    } 
+    
+    p_sem->Ctr = p_sem->Sem.value;/*更新信号量的value*/
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待信号量的线程赋值给p_sem->DbgNamePtr*/
+        thread = rt_list_entry((&(p_sem->Sem.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_sem->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_sem->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif   
     CPU_CRITICAL_EXIT();    
     
     return p_sem->Sem.value;/*返回信号量还剩多少value*/
@@ -491,6 +516,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
                             OS_ERR  *p_err)
 {
     rt_uint32_t pend_sem_len;
+    rt_thread_t thread;
     
     CPU_SR_ALLOC();
 
@@ -554,6 +580,18 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
     CPU_CRITICAL_ENTER();
     pend_sem_len = rt_list_len(&(p_sem->Sem.parent.suspend_thread));
     p_sem->Ctr =p_sem->Sem.value; /*更新信号量value值*/
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待信号量的线程赋值给p_sem->DbgNamePtr*/
+        thread = rt_list_entry((&(p_sem->Sem.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_sem->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_sem->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif
     CPU_CRITICAL_EXIT();
     
     if(!(opt&OS_OPT_POST_NO_SCHED))
@@ -607,6 +645,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
                        OS_ERR  *p_err)
 {
     rt_err_t rt_err;
+    rt_thread_t thread;
     
     CPU_SR_ALLOC();
     
@@ -662,6 +701,18 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
     }
     CPU_CRITICAL_ENTER();
     p_sem->Ctr = p_sem->Sem.value; /*更新信号量value值*/
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待信号量的线程赋值给p_sem->DbgNamePtr*/
+        thread = rt_list_entry((&(p_sem->Sem.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_sem->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_sem->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif
     CPU_CRITICAL_EXIT();
     
     *p_err = rt_err_to_ucosiii(rt_err); 
@@ -698,6 +749,8 @@ void  OSSemSet (OS_SEM      *p_sem,
                 OS_SEM_CTR   cnt,
                 OS_ERR      *p_err)
 {
+    rt_thread_t thread;
+
     CPU_SR_ALLOC();
     
 #ifdef OS_SAFETY_CRITICAL
@@ -750,6 +803,18 @@ void  OSSemSet (OS_SEM      *p_sem,
     }
     
     p_sem->Ctr = p_sem->Sem.value; /*更新信号量value值*/
+#if OS_CFG_DBG_EN > 0u
+    if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
+    {
+        /*若等待表不为空，则将当前等待信号量的线程赋值给p_sem->DbgNamePtr*/
+        thread = rt_list_entry((&(p_sem->Sem.parent.suspend_thread))->next, struct rt_thread, tlist);
+        p_sem->DbgNamePtr = thread->name;
+    }
+    else
+    {
+        p_sem->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+    }
+#endif
     CPU_CRITICAL_EXIT();
 }
 #endif
@@ -812,7 +877,7 @@ void  OS_SemDbgListRemove (OS_SEM  *p_sem)
     OS_SEM  *p_sem_next;
     OS_SEM  *p_sem_prev;
 
-
+    p_sem->DbgNamePtr               = (CPU_CHAR *)((void *)" ");
     p_sem_prev = p_sem->DbgPrevPtr;
     p_sem_next = p_sem->DbgNextPtr;
 
@@ -833,6 +898,7 @@ void  OS_SemDbgListRemove (OS_SEM  *p_sem)
         p_sem->DbgNextPtr      = (OS_SEM *)0;
         p_sem->DbgPrevPtr      = (OS_SEM *)0;
     }
+    
 }
 #endif
 

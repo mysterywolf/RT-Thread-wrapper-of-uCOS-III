@@ -645,8 +645,8 @@ struct os_q
 */
 
 struct  os_sem { 
-    struct  rt_semaphore  Sem;
-    OS_OBJ_TYPE           Type;
+    struct  rt_semaphore Sem;
+    OS_OBJ_TYPE          Type;
     CPU_CHAR             *NamePtr;                           /* Pointer to Semaphore Name (NUL terminated ASCII)       */
 #if OS_CFG_DBG_EN > 0u
     OS_SEM               *DbgPrevPtr;

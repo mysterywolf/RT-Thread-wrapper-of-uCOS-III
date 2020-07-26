@@ -137,7 +137,7 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
 *                                 OS_OPT_TASK_NONE            No option selected
 *                                 OS_OPT_TASK_STK_CHK         Stack checking to be allowed for the task
 *                                 OS_OPT_TASK_STK_CLR         Clear the stack when the task is created
-*                               - OS_OPT_TASK_SAVE_FP         If the CPU has floating-point registers, save them
+*                                 OS_OPT_TASK_SAVE_FP         If the CPU has floating-point registers, save them
 *                                                             during a context switch.
 *                                 OS_OPT_TASK_NO_TLS          If the caller doesn't want or need TLS (Thread Local 
 *                                                             Storage) support for the task.  If you do not include this
@@ -323,8 +323,9 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     CPU_VAL_UNUSED(q_size);
 #endif
     
-    OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)p_name,0,&err);
-    if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
+    /*创建任务内建信号量*/
+    OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)p_name,0,&err);/*任务内建信号量value初始化为0*/
+    if(err != OS_ERR_NONE)/*任务内建信号量创建失败*/
     {
         CPU_CRITICAL_ENTER(); 
         p_tcb->SemCreateSuc = RT_FALSE;
