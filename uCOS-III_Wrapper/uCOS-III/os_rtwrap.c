@@ -95,13 +95,14 @@ rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
  *
  * @param 挂起表表头指针
  *
- * @return 错误码
+ * @return 放弃了多少个任务
  */
-rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
+rt_uint16_t rt_ipc_pend_abort_all (rt_list_t *list)
 {
     struct rt_thread *thread;
     register rt_ubase_t temp;
     OS_TCB *p_tcb;
+    rt_uint16_t i=0;
 
     /* wakeup all suspend threads */
     while (!rt_list_isempty(list))
@@ -127,9 +128,11 @@ rt_err_t rt_ipc_pend_abort_all (rt_list_t *list)
 
         /* enable interrupt */
         rt_hw_interrupt_enable(temp);
+        
+        i++;
     }
 
-    return RT_EOK;
+    return i;
 }
 
 /**

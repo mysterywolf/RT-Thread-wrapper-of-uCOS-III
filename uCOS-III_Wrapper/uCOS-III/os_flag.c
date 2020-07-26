@@ -579,7 +579,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
                              OS_OPT        opt,
                              OS_ERR       *p_err)
 {
-    rt_uint32_t pe_flag_len;
+    OS_OBJ_QTY abort_tasks = 0;
     rt_thread_t thread;
     
     CPU_SR_ALLOC();
@@ -634,15 +634,15 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
     
     if(opt&OS_OPT_PEND_ABORT_ALL)
     {
-        rt_ipc_pend_abort_all(&(p_grp->FlagGrp.parent.suspend_thread));
+        abort_tasks = rt_ipc_pend_abort_all(&(p_grp->FlagGrp.parent.suspend_thread));
     }
     else
     {
         rt_ipc_pend_abort_1(&(p_grp->FlagGrp.parent.suspend_thread));
+        abort_tasks = 1;
     }
     
-    CPU_CRITICAL_ENTER();
-    pe_flag_len = rt_list_len(&(p_grp->FlagGrp.parent.suspend_thread));  
+    CPU_CRITICAL_ENTER(); 
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
     {
@@ -663,7 +663,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
     }
     
     *p_err = OS_ERR_NONE;
-    return pe_flag_len;
+    return abort_tasks;
 }
 #endif
 

@@ -162,6 +162,10 @@
 - 实现`OS_TCB`成员变量`.PendOn`、`.DbgName`
 - 信号量、互斥量、消息队列、事件标志组结构体增加成员变量`.DbgName`
 
+### 2020-7-27
+
+- 修复`OSMutexPendAbort`、`OSSemPendAbort`、`OSQPendAbort`、`OSFlagPendAbort`函数返回值由当前还有多少任务在等待该内核对象 改为 放弃了多少个任务
+
 
 
 
@@ -261,6 +265,8 @@
 
 **[add]** 实现与μC/Probe软件的对接以及对接所需的必要成员变量
 
+**[fix]** 修复`OSMutexPendAbort`、`OSSemPendAbort`、`OSQPendAbort`、`OSFlagPendAbort`函数返回值由当前还有多少任务在等待该内核对象 改为 放弃了多少个任务
+
 
 
 # TODO
@@ -268,4 +274,4 @@
 - [ ] 完善统计任务的其他统计项
 - [ ] 实现受限项opts
 - [ ] 补充例程
-- [ ] 与μC/Probe对接
+- [x] 与μC/Probe对接

@@ -508,7 +508,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
                             OS_OPT   opt,
                             OS_ERR  *p_err)
 {
-    rt_uint32_t pend_sem_len;
+    OS_OBJ_QTY abort_tasks = 0;
     rt_thread_t thread;
     
     CPU_SR_ALLOC();
@@ -563,15 +563,15 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
     
     if(opt&OS_OPT_PEND_ABORT_ALL)
     {
-        rt_ipc_pend_abort_all(&(p_sem->Sem.parent.suspend_thread));
+        abort_tasks = rt_ipc_pend_abort_all(&(p_sem->Sem.parent.suspend_thread));
     }
     else
     {
         rt_ipc_pend_abort_1(&(p_sem->Sem.parent.suspend_thread));
+        abort_tasks = 1;
     }
    
     CPU_CRITICAL_ENTER();
-    pend_sem_len = rt_list_len(&(p_sem->Sem.parent.suspend_thread));/*获取当前还有多少个任务在等待该信号量*/
     p_sem->Ctr =p_sem->Sem.value; /*更新信号量value值*/
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
@@ -593,8 +593,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
     }
     
     *p_err = OS_ERR_NONE;
-    
-    return pend_sem_len;/*返回当前信号量有几个任务在等待*/
+    return abort_tasks;
 }
 #endif
 

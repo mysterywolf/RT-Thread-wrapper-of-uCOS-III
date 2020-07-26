@@ -484,7 +484,7 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
                               OS_OPT     opt,
                               OS_ERR    *p_err)
 {
-    rt_uint32_t pend_mutex_len;
+    OS_OBJ_QTY abort_tasks = 0;
     rt_thread_t thread;
     
     CPU_SR_ALLOC();
@@ -540,15 +540,15 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
     
     if(opt&OS_OPT_PEND_ABORT_ALL)
     {
-        rt_ipc_pend_abort_all(&(p_mutex->Mutex.parent.suspend_thread));
+        abort_tasks = rt_ipc_pend_abort_all(&(p_mutex->Mutex.parent.suspend_thread));
     }
     else
     {
         rt_ipc_pend_abort_1(&(p_mutex->Mutex.parent.suspend_thread));
+        abort_tasks = 1;
     }
     
     CPU_CRITICAL_ENTER();
-    pend_mutex_len = rt_list_len(&(p_mutex->Mutex.parent.suspend_thread));
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
     {
@@ -569,8 +569,7 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
     }
     
     *p_err = OS_ERR_NONE;
-        
-    return pend_mutex_len;
+    return abort_tasks;
 }
 #endif
 
