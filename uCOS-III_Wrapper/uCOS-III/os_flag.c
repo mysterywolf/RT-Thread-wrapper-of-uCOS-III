@@ -526,7 +526,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     }
     else
     {
-        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
     }
 #endif   
     
@@ -652,7 +652,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
     }
     else
     {
-        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
     }
 #endif 
     CPU_CRITICAL_EXIT();  
@@ -818,7 +818,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     }
     else
     {
-        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
     }
 #endif   
     CPU_CRITICAL_EXIT();

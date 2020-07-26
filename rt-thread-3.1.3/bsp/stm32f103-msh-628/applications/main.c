@@ -100,8 +100,8 @@ void task_sem_sample (void);
 static void AppTaskCreate(void)
 {
 //    timer_sample();
-//    mutex_sample();
+    mutex_sample();
 //    sem_sample();
 //    q_sample();
-    task_sem_sample();
+//    task_sem_sample();
 }

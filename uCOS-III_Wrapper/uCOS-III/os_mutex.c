@@ -131,7 +131,6 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
     p_mutex->NamePtr           =  p_name;
     p_mutex->Type              =  OS_OBJ_TYPE_MUTEX;
     p_mutex->OwnerNestingCtr   = (OS_NESTING_CTR)0;         /* Mutex is available                                     */
-
 #if OS_CFG_DBG_EN > 0u
     OS_MutexDbgListAdd(p_mutex);
 #endif
@@ -412,8 +411,8 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
     p_tcb->TaskState = OS_TASK_STATE_PEND;
     p_tcb->DbgNamePtr = p_mutex->NamePtr;
-    p_tcb->PendOn = OS_TASK_PEND_ON_MUTEX;
-    
+    p_tcb->PendOn = OS_TASK_PEND_ON_MUTEX;    
+    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;   /*更新互斥量的嵌套值*/
 #if OS_CFG_DBG_EN > 0u
     p_mutex->DbgNamePtr = p_tcb->Task.name;
 #endif
@@ -428,7 +427,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     /*清除当前任务等待状态*/
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");     
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
-    
+    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold; /*更新互斥量的嵌套值*/
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
     {
@@ -438,7 +437,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     }
     else
     {
-        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
     }
 #endif    
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
@@ -551,6 +550,7 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
     }
     
     CPU_CRITICAL_ENTER();
+    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold; /*更新互斥量的嵌套值*/
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
     {
@@ -560,7 +560,7 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
     }
     else
     {
-        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
     }
 #endif  
     CPU_CRITICAL_EXIT();
@@ -617,6 +617,8 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
     rt_err_t rt_err;
     rt_thread_t thread;
     
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -672,6 +674,8 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
         *p_err = OS_ERR_MUTEX_NOT_OWNER;
     }
     
+    CPU_CRITICAL_ENTER();
+    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold; /*更新互斥量的嵌套值*/
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
     {
@@ -681,9 +685,10 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
     }
     else
     {
-        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
     }
 #endif
+    CPU_CRITICAL_EXIT();
 }
 
 /*

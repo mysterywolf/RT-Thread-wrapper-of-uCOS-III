@@ -33,7 +33,7 @@ static void AppTask1 (void *param)
 	
 	while(1)
 	{
-        /*互斥量嵌套5次*/
+        /*互斥量嵌套4次*/
         OSMutexPend(&SyncMutex,0,OS_OPT_PEND_BLOCKING,0,&err); /*申请互斥量 请求访问共享资源*/ 
         OSMutexPend(&SyncMutex,0,OS_OPT_PEND_BLOCKING,0,&err); /*申请互斥量 请求访问共享资源*/ 
         OSMutexPend(&SyncMutex,0,OS_OPT_PEND_BLOCKING,0,&err); /*申请互斥量 请求访问共享资源*/ 
@@ -68,9 +68,9 @@ void mutex_sample (void)
     OS_ERR err;
     
     /*创建互斥量*/
-	OSMutexCreate ((OS_MUTEX*)&SyncMutex,
-                 (CPU_CHAR*	)"SyncMutex",	
-                 (OS_ERR*	)&err);    
+	OSMutexCreate ((OS_MUTEX   *)&SyncMutex,
+                   (CPU_CHAR*	)"SyncMutex",	
+                   (OS_ERR*	    )&err);    
     if(err!=OS_ERR_NONE)
     {
         rt_kprintf("create mutex err!\n");

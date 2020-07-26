@@ -605,7 +605,7 @@ void  *OSQPend (OS_Q         *p_q,
     }
     else
     {
-        p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+        p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
     }
 #endif  
     
@@ -740,7 +740,7 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
     }
     else
     {
-        p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");
+        p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
     }
 #endif  
     CPU_CRITICAL_EXIT();   
@@ -893,7 +893,7 @@ void  OSQPost (OS_Q         *p_q,
     }
     else
     {
-        p_q->DbgNamePtr = (CPU_CHAR *)((void *)" ");
+        p_q->DbgNamePtr = (CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
     }
 #endif
     CPU_CRITICAL_EXIT();
