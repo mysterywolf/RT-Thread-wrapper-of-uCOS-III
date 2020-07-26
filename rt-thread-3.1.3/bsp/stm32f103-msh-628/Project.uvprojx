@@ -741,6 +741,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\samples\q_sample.c</FilePath>
             </File>
+            <File>
+              <FileName>task_sem_sample.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\samples\task_sem_sample.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1486,6 +1491,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\samples\q_sample.c</FilePath>
             </File>
+            <File>
+              <FileName>task_sem_sample.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\samples\task_sem_sample.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2230,6 +2240,11 @@
               <FileName>q_sample.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\samples\q_sample.c</FilePath>
+            </File>
+            <File>
+              <FileName>task_sem_sample.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\samples\task_sem_sample.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -757,6 +757,7 @@ struct  os_mutex {
     struct rt_mutex     Mutex;
     CPU_CHAR           *NamePtr;
     OS_OBJ_TYPE         Type;
+    OS_NESTING_CTR      OwnerNestingCtr;                   /* Mutex is available when the counter is 0               */
 #if OS_CFG_DBG_EN > 0u
     OS_MUTEX           *DbgPrevPtr;
     OS_MUTEX           *DbgNextPtr;

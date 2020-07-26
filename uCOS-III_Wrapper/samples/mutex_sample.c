@@ -33,9 +33,16 @@ static void AppTask1 (void *param)
 	
 	while(1)
 	{
+        /*互斥量嵌套5次*/
+        OSMutexPend(&SyncMutex,0,OS_OPT_PEND_BLOCKING,0,&err); /*申请互斥量 请求访问共享资源*/ 
+        OSMutexPend(&SyncMutex,0,OS_OPT_PEND_BLOCKING,0,&err); /*申请互斥量 请求访问共享资源*/ 
+        OSMutexPend(&SyncMutex,0,OS_OPT_PEND_BLOCKING,0,&err); /*申请互斥量 请求访问共享资源*/ 
         OSMutexPend(&SyncMutex,0,OS_OPT_PEND_BLOCKING,0,&err); /*申请互斥量 请求访问共享资源*/ 
         OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_HMSM_NON_STRICT,&err);
         rt_kprintf("This is Task1\n");
+        OSMutexPost(&SyncMutex,OS_OPT_POST_NONE,&err);/*释放互斥量*/
+        OSMutexPost(&SyncMutex,OS_OPT_POST_NONE,&err);/*释放互斥量*/
+        OSMutexPost(&SyncMutex,OS_OPT_POST_NONE,&err);/*释放互斥量*/
         OSMutexPost(&SyncMutex,OS_OPT_POST_NONE,&err);/*释放互斥量*/
 	}
 }

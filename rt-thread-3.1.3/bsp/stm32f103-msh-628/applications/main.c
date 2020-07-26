@@ -94,11 +94,14 @@ void timer_sample (void);
 void mutex_sample (void);
 void sem_sample   (void);
 void q_sample     (void);
+void task_sem_sample (void);
+
 
 static void AppTaskCreate(void)
 {
-    timer_sample();
-    mutex_sample();
-    sem_sample();
-    q_sample();
+//    timer_sample();
+//    mutex_sample();
+//    sem_sample();
+//    q_sample();
+    task_sem_sample();
 }
