@@ -875,7 +875,7 @@ void  OS_FlagDbgListRemove (OS_FLAG_GRP  *p_grp)
     OS_FLAG_GRP  *p_grp_next;
     OS_FLAG_GRP  *p_grp_prev;
 
-
+    p_grp->DbgNamePtr                = (CPU_CHAR    *)((void *)" ");
     p_grp_prev = p_grp->DbgPrevPtr;
     p_grp_next = p_grp->DbgNextPtr;
 

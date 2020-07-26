@@ -904,7 +904,7 @@ void  OS_QDbgListRemove (OS_Q  *p_q)
     OS_Q  *p_q_next;
     OS_Q  *p_q_prev;
 
-
+    p_q->DbgNamePtr               = (CPU_CHAR *)((void *)" ");
     p_q_prev = p_q->DbgPrevPtr;
     p_q_next = p_q->DbgNextPtr;
 

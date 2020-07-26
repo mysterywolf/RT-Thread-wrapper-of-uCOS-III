@@ -699,7 +699,7 @@ void  OS_MutexDbgListRemove (OS_MUTEX  *p_mutex)
     OS_MUTEX  *p_mutex_next;
     OS_MUTEX  *p_mutex_prev;
 
-
+    p_mutex->DbgNamePtr               = (CPU_CHAR *)((void *)" ");
     p_mutex_prev = p_mutex->DbgPrevPtr;
     p_mutex_next = p_mutex->DbgNextPtr;
 
