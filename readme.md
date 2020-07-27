@@ -505,10 +505,16 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 ### 4.2.1 百度云
 
-更新时可能导致当前百度云链接失效，此百度云链接会随时更新（如果发现百度云链接失效请用issue告诉我）：
+更新时可能导致当前百度云链接失效，此百度云链接会随时更新（如果发现链接失效请用issue告诉我）：
 
 > 链接：https://pan.baidu.com/s/1WarXJcl0cf0sXfougtJ5bg 
 > 提取码：0000
+
+### 4.2.2 腾讯微云
+
+更新时可能导致当前微云链接失效，此微云链接会随时更新（如果发现链接失效请用issue告诉我）：
+
+> 链接：https://share.weiyun.com/BSBqVvO5
 
 
 
