@@ -65,6 +65,10 @@ void  App_OS_SetAllHooks (void)
     OS_AppTaskDelHookPtr    = App_OS_TaskDelHook;
     OS_AppIdleTaskHookPtr   = App_OS_IdleTaskHook;
     OS_AppStatTaskHookPtr   = App_OS_StatTaskHook;
+    
+    OS_AppTaskReturnHookPtr = App_OS_TaskReturnHook;
+    OS_AppTaskSwHookPtr     = App_OS_TaskSwHook;
+    OS_AppTimeTickHookPtr   = App_OS_TimeTickHook;    
     CPU_CRITICAL_EXIT();
 #endif
 }
@@ -91,6 +95,10 @@ void  App_OS_ClrAllHooks (void)
     OS_AppTaskDelHookPtr    = (OS_APP_HOOK_TCB)0;
     OS_AppIdleTaskHookPtr   = (OS_APP_HOOK_VOID)0; 
     OS_AppStatTaskHookPtr   = (OS_APP_HOOK_VOID)0;
+    
+    OS_AppTaskReturnHookPtr = (OS_APP_HOOK_TCB)0;
+    OS_AppTaskSwHookPtr     = (OS_APP_HOOK_VOID)0;
+    OS_AppTimeTickHookPtr   = (OS_APP_HOOK_VOID)0;    
     CPU_CRITICAL_EXIT();
 #endif
 }
@@ -163,6 +171,64 @@ void  App_OS_IdleTaskHook (void)
 */
 
 void  App_OS_StatTaskHook (void)
+{
+
+}
+
+
+/*-------------------------------------由RT-Thread钩子函数接管----------------------------------------*/
+/*
+************************************************************************************************************************
+*                                             APPLICATION TASK RETURN HOOK
+*
+* Description: This function is called if a task accidentally returns.  In other words, a task should either be an
+*              infinite loop or delete itself when done.
+*
+* Arguments  : p_tcb     is a pointer to the OS_TCB of the task that is returning.
+*
+* Note(s)    : none
+************************************************************************************************************************
+*/
+
+void  App_OS_TaskReturnHook (OS_TCB  *p_tcb)
+{
+    CPU_VAL_UNUSED(p_tcb);
+}
+
+/*
+************************************************************************************************************************
+*                                             APPLICATION TASK SWITCH HOOK
+*
+* Description: This function is called when a task switch is performed.  This allows you to perform other operations
+*              during a context switch.
+*
+* Arguments  : none
+*
+* Note(s)    : 1) Interrupts are disabled during this call.
+*              2) It is assumed that the global pointer 'OSTCBHighRdyPtr' points to the TCB of the task that will be
+*                 'switched in' (i.e. the highest priority task) and, 'OSTCBCurPtr' points to the task being switched out
+*                 (i.e. the preempted task).
+************************************************************************************************************************
+*/
+
+void  App_OS_TaskSwHook (void)
+{
+
+}
+
+/*
+************************************************************************************************************************
+*                                                APPLICATION TICK HOOK
+*
+* Description: This function is called every tick.
+*
+* Arguments  : none
+*
+* Note(s)    : 1) This function is assumed to be called from the Tick ISR.
+************************************************************************************************************************
+*/
+
+void  App_OS_TimeTickHook (void)
 {
 
 }

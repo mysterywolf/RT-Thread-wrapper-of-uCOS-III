@@ -223,12 +223,12 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
 #if OS_CFG_APP_HOOKS_EN > 0u
                                   + sizeof(OS_AppTaskCreateHookPtr)
                                   + sizeof(OS_AppTaskDelHookPtr)
-//                                  + sizeof(OS_AppTaskReturnHookPtr)
+                                  + sizeof(OS_AppTaskReturnHookPtr)
 
                                   + sizeof(OS_AppIdleTaskHookPtr)
                                   + sizeof(OS_AppStatTaskHookPtr)
- //                                 + sizeof(OS_AppTaskSwHookPtr)
-//                                  + sizeof(OS_AppTimeTickHookPtr)
+                                  + sizeof(OS_AppTaskSwHookPtr)
+                                  + sizeof(OS_AppTimeTickHookPtr)
 #endif
 
                                   + sizeof(OSIdleTaskCtr)

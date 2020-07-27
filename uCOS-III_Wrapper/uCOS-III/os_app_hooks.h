@@ -74,4 +74,8 @@ void  App_OS_InitHook      (void);
 void  App_OS_IdleTaskHook  (void);
 void  App_OS_StatTaskHook  (void);
 
+void  App_OS_TaskReturnHook(OS_TCB  *p_tcb);
+void  App_OS_TaskSwHook    (void);
+void  App_OS_TimeTickHook  (void);
+
 #endif

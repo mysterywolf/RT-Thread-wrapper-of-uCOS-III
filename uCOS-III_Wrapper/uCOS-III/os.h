@@ -813,6 +813,10 @@ OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskCreateHookPtr;    /* Appli
 OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskDelHookPtr;
 OS_EXT           OS_APP_HOOK_VOID           OS_AppIdleTaskHookPtr;
 OS_EXT           OS_APP_HOOK_VOID           OS_AppStatTaskHookPtr;
+
+OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskReturnHookPtr;
+OS_EXT           OS_APP_HOOK_VOID           OS_AppTaskSwHookPtr;
+OS_EXT           OS_APP_HOOK_VOID           OS_AppTimeTickHookPtr;
 #endif
 
 OS_EXT            OS_STATE                  OSRunning;                  /* Flag indicating that kernel is running     */
@@ -1445,7 +1449,10 @@ void          OSTaskCreateHook          (OS_TCB                *p_tcb);
 void          OSTaskDelHook             (OS_TCB                *p_tcb);
 void          OSIdleTaskHook            (void);
 void          OSStatTaskHook            (void);
-                                         
+
+void          OSTaskReturnHook          (OS_TCB                *p_tcb);
+void          OSTaskSwHook              (void);
+void          OSTimeTickHook            (void);
 
 /*
 ************************************************************************************************************************
