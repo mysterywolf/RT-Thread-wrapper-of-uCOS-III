@@ -131,6 +131,8 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
     p_mutex->NamePtr           =  p_name;
     p_mutex->Type              =  OS_OBJ_TYPE_MUTEX;
     p_mutex->OwnerNestingCtr   = (OS_NESTING_CTR)0;         /* Mutex is available                                     */
+    p_mutex->OwnerTCBPtr       = (OS_TCB       *)0;
+    p_mutex->OwnerOriginalPrio =  OS_CFG_PRIO_MAX;
 #if OS_CFG_DBG_EN > 0u
     OS_MutexDbgListAdd(p_mutex);
 #endif
@@ -413,6 +415,8 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     p_tcb->DbgNamePtr = p_mutex->NamePtr;
     p_tcb->PendOn = OS_TASK_PEND_ON_MUTEX;    
     p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;   /*更新互斥量的嵌套值*/
+    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/*更新互斥量原始优先级*/
+    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;/*更新互斥量所拥有的任务指针*/
 #if OS_CFG_DBG_EN > 0u
     p_mutex->DbgNamePtr = p_tcb->Task.name;
 #endif
@@ -428,6 +432,8 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");     
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
     p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold; /*更新互斥量的嵌套值*/
+    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/*更新互斥量原始优先级*/
+    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;/*更新互斥量所拥有的任务指针*/
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
     {
@@ -551,6 +557,8 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
     
     CPU_CRITICAL_ENTER();
     p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold; /*更新互斥量的嵌套值*/
+    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/*更新互斥量原始优先级*/
+    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;/*更新互斥量所拥有的任务指针*/
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
     {
@@ -676,6 +684,8 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
     
     CPU_CRITICAL_ENTER();
     p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold; /*更新互斥量的嵌套值*/
+    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/*更新互斥量原始优先级*/
+    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;/*更新互斥量所拥有的任务指针*/
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
     {
@@ -712,6 +722,8 @@ void  OS_MutexClr (OS_MUTEX  *p_mutex)
     p_mutex->NamePtr           = (CPU_CHAR     *)((void *)"?MUTEX");
     p_mutex->Type              =  OS_OBJ_TYPE_NONE;         /* Mark the data structure as a NONE                      */
     p_mutex->OwnerNestingCtr   = (OS_NESTING_CTR)0;
+    p_mutex->OwnerTCBPtr       = (OS_TCB       *)0;
+    p_mutex->OwnerOriginalPrio =  OS_CFG_PRIO_MAX;
 }
 
 /*

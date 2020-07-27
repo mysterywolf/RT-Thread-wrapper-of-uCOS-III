@@ -166,7 +166,7 @@
 
 - 修复`OSMutexPendAbort`、`OSSemPendAbort`、`OSQPendAbort`、`OSFlagPendAbort`函数返回值由当前还有多少任务在等待该内核对象 改为 放弃了多少个任务
 - 增加`task_sem_sample.c`例程
-- 实现`OS_MUTEX`结构体`.OwnerNestingCtr`成员变量
+- 实现`OS_MUTEX`结构体`.OwnerNestingCtr`、`.OwnerTCBPtr`、`.OwnerOriginalPrio`成员变量
 
 
 
