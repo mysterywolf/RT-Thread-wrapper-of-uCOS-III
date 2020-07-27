@@ -53,9 +53,9 @@
 
                                                             /* ---------------------------- MISCELLANEOUS -------------------------- */
 #if defined RT_USING_HOOK && defined RT_USING_IDLE_HOOK
-#define  OS_CFG_APP_HOOKS_EN             1u                 /* Ö»¶Á Enable (1) or Disable (0) application specific hooks                  */
+#define  OS_CFG_APP_HOOKS_EN             1u                 /* ¶ÁÐ´ Enable (1) or Disable (0) application specific hooks             */
 #else
-#define  OS_CFG_APP_HOOKS_EN             0u                 /* Ö»¶Á Enable (1) or Disable (0) application specific hooks                  */
+#define  OS_CFG_APP_HOOKS_EN             0u                 /* Ö»¶Á Enable (1) or Disable (0) application specific hooks             */
 #endif
 #define  OS_CFG_ARG_CHK_EN               1u                 /* Enable (1) or Disable (0) argument checking                           */
 #define  OS_CFG_CALLED_FROM_ISR_CHK_EN   1u                 /* Enable (1) or Disable (0) check for called from ISR                   */
