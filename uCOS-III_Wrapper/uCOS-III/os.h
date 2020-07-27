@@ -710,7 +710,7 @@ struct os_tcb
     OS_TCB          *DbgNextPtr;  
     CPU_CHAR        *DbgNamePtr;
 #endif
-    /*---------兼容层非必须成员变量---------*/
+
     CPU_STK         *StkPtr;        /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
     OS_SEM_CTR       SemCtr;        /* Task specific semaphore counter,*/
     OS_TICK         *TickCtrMatch;  /* 比原版多了一级指针,Absolute time when task is going to be ready */  

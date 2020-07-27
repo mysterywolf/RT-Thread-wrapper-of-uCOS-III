@@ -1086,6 +1086,7 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
     {
         CPU_CRITICAL_ENTER();
         p_tcb->PendOn = OS_TASK_PEND_ON_TASK_SEM;/*设置任务等待状态*/
+        p_tcb->SemCtr = p_tcb->Sem.Sem.value;/*更新value*/
         CPU_CRITICAL_EXIT();
         
         ctr = OSSemPend(&p_tcb->Sem,timeout,opt,p_ts,p_err); 
@@ -1311,8 +1312,8 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
     
     CPU_CRITICAL_ENTER();
     ctr = p_tcb->Sem.Sem.value;
-    p_tcb->Sem.Sem.value = (OS_SEM_CTR)cnt;
-    p_tcb->SemCtr = p_tcb->Sem.Sem.value;
+    p_tcb->Sem.Sem.value = (OS_SEM_CTR)cnt;/*设置RTT信号量value*/
+    p_tcb->SemCtr = p_tcb->Sem.Sem.value;/*更新.SemCtr*/
     CPU_CRITICAL_EXIT();
     *p_err = OS_ERR_NONE;
     return ctr;
@@ -1690,8 +1691,7 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->DbgNextPtr         = (OS_TCB        *)0;
     p_tcb->DbgNamePtr         = (CPU_CHAR      *)((void *)" ");
 #endif
-    
-    /*---------Clear兼容层非必须成员变量---------*/
+
     p_tcb->StkPtr             = (CPU_STK       *)0;
     p_tcb->SemCtr             = (OS_SEM_CTR     )0u;   
     p_tcb->TickCtrMatch       = (OS_TICK       *)0u;

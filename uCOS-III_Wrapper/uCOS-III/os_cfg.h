@@ -60,15 +60,15 @@
 #define  OS_CFG_ARG_CHK_EN               1u                 /* Enable (1) or Disable (0) argument checking                           */
 #define  OS_CFG_CALLED_FROM_ISR_CHK_EN   1u                 /* Enable (1) or Disable (0) check for called from ISR                   */
 #define  OS_CFG_DBG_EN                   1u                 /* Enable (1) debug code/variables                                       */
-#define  OS_CFG_ISR_POST_DEFERRED_EN     0u                 /* 只读,RTT没有该功能 Enable (1) or Disable (0) Deferred ISR posts       */
+#define  OS_CFG_ISR_POST_DEFERRED_EN     0u                 /* 只读,该功能不予实现 Enable (1) or Disable (0) Deferred ISR posts      */
 #define  OS_CFG_OBJ_TYPE_CHK_EN          1u                 /* Enable (1) or Disable (0) object type checking                        */
-#define  OS_CFG_TS_EN                    0u                 /* 只读,未实现该功能 Enable (1) or Disable (0) time stamping             */
+#define  OS_CFG_TS_EN                    0u                 /* 只读,该功能不予实现 Enable (1) or Disable (0) time stamping           */
 
-#define  OS_CFG_PEND_MULTI_EN            0u                 /* 只读,RTT没有等待多内核对象的功能 且在后续版本中uCOS-III也取消了该功能 */
+#define  OS_CFG_PEND_MULTI_EN            0u                 /* 只读,该功能不予实现 在后续版本中uCOS-III也取消了该功能                */
 
 #define  OS_CFG_PRIO_MAX        RT_THREAD_PRIORITY_MAX      /* 只读 Defines the maximum number of task priorities                    */
 
-#define  OS_CFG_SCHED_LOCK_TIME_MEAS_EN  0u                 /* 只读,未实现该功能 Include code to measure scheduler lock time         */
+#define  OS_CFG_SCHED_LOCK_TIME_MEAS_EN  0u                 /* 只读,该功能不予实现 Include code to measure scheduler lock time       */
 #define  OS_CFG_SCHED_ROUND_ROBIN_EN     1u                 /* 只读,RTT时间片轮转为必选项 Include code for Round-Robin scheduling    */
 #define  OS_CFG_STK_SIZE_MIN            64u                 /* Minimum allowable task stack size                                     */
 
@@ -129,7 +129,7 @@
 #define  OS_CFG_TASK_Q_EN                1u                 /* Include code for OSTaskQXXXX()                                        */
 #define  OS_CFG_TASK_Q_PEND_ABORT_EN     1u                 /* Include code for OSTaskQPendAbort()                                   */
 #define  OS_CFG_TASK_PROFILE_EN          0u                 /* Include variables in OS_TCB for profiling                             */
-#define  OS_CFG_TASK_REG_TBL_SIZE        3u                 /* Number of task specific registers                                     */
+#define  OS_CFG_TASK_REG_TBL_SIZE        1u                 /* Number of task specific registers                                     */
 #define  OS_CFG_TASK_SEM_PEND_ABORT_EN   1u                 /* Include code for OSTaskSemPendAbort()                                 */
 #define  OS_CFG_TASK_SUSPEND_EN          1u                 /* Include code for OSTaskSuspend() and OSTaskResume()                   */
 
