@@ -26,6 +26,7 @@
 - 之前学习过μCOS-III操作系统，意图转向学习RT-Thread国产操作系统。本兼容层可以帮您用已有的μCOS-III编程经验和习惯快速将项目跑起来，日后在应用过程中深入熟悉RT-Thread的API函数，逐步向RT-Thread过度，降低您的学习门槛和时间成本。**有了本兼容层，对RT-Thread API以及编程风格的不熟悉再也不是您学习RT-Thread的阻力！**
 - 现有任务（线程）模块采用μCOS-III编写，想要用在基于RT-Thread的工程上
 - 老项目需要从μCOS-III操作系统向RT-Thread操作系统迁移
+- 本兼容层实现了与Micriμm公司专门为其旗下产品μC/OS等开发的专用软件μC/Probe的对接，可以通过该软件以图像化形式查看、调试RT-Thread内核以及μCOS-III兼容层的相关信息
 
 
 
@@ -487,15 +488,33 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 ​	μC/Probe 是由Micriμm公司研发的一款基于Windows操作系统的、专门针对Micriμm公司旗下产品（μC/OS-II、μC/OS-III、uC/TCP-IP等）的应用程序。该软件以可视化的模式实时查看目标系统的内部变量，并且在不中断系统正常运行的情况下改变系统内部全局变量。全局变量可以通过刻度指针、数字表、柱状图、虚拟LED等可视化对象想试出来，通过滑块、开关或者按钮等来修改变量值。用户不需要编写任何代码就可以实现这些功能。目前μC/Probe也已经支持对FreeRTOS的调试。
 
-​	官网：https://www.micrium.com/ucprobe/about/
+​	μC/Probe可以通过多种方式与板卡通信，以获取调试信息：
 
-​	版权：从4.8版本开始μC/Probe**免费**，因此安装好后直接就是专业版，因此无需担心版权问题。
+- J-Link
+- CMSIS-DAP
+- 与Keil-MDK编译器联合调试 （硬件在线仿真以及软件仿真两种方式都支持，软件仿真模式下可以不需要板卡）
+- IAR Embedded Workbench plugin for µC/Probe
+- Analog Devices CCES 2.6.0 or newer
+- Eclipse plugin for µC/Probe 
+- TCP/IP （需要板载驻留代码支持）
+- USB （需要板载驻留代码支持）
+- RS-232/串口 （需要板载驻留代码支持）
+
+
+
+μC/Probe软件界面展示：
 
 <img src="docs/pic/ucprobe/KA-Screen-2.png" alt="KA-Screen-2" style="zoom:67%;" />
 
-<img src="docs/pic/ucprobe/uC-Probe-Dashboard.png" alt="uC-Probe-Dashboard"  />
+
+
+用户可以通过控件搭建自己的监控界面：
 
 <img src="docs/pic/ucprobe/uC-Probe-Gauges.png" alt="uC-Probe-Gauges" style="zoom: 80%;" />
+
+<img src="docs/pic/ucprobe/uC-Probe-Dashboard.png" alt="uC-Probe-Dashboard"  />
+
+
 
 
 
