@@ -374,7 +374,6 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #endif    
     OSTaskQty++; /* Increment the #tasks counter */
      
-    /*---------兼容层非必须成员变量初始化---------*/
     p_tcb->Opt = opt;
     p_tcb->TickCtrPrev = p_tcb->Task.thread_timer.timeout_tick - p_tcb->Task.thread_timer.init_tick;
     p_tcb->TickCtrMatch = &p_tcb->Task.thread_timer.timeout_tick;
