@@ -167,6 +167,7 @@
 - 修复`OSMutexPendAbort`、`OSSemPendAbort`、`OSQPendAbort`、`OSFlagPendAbort`函数返回值由当前还有多少任务在等待该内核对象 改为 放弃了多少个任务
 - 增加`task_sem_sample.c`例程
 - 实现`OS_MUTEX`结构体`.OwnerNestingCtr`、`.OwnerTCBPtr`、`.OwnerOriginalPrio`成员变量
+- 修复了CPU使用率突然飙升至100%的问题，该问题为μCOS-III原版（3.03版本）内部bug，即便是最新版的3.08版本该问题依然没有得到彻底解决（仅仅是将飙升至100%改成了骤降至0%）
 
 
 
@@ -245,13 +246,13 @@
 
 **[del]** 任务内建消息队列、任务内建信号量直接沿用任务的name，不再strcat字符串
 
-**[fix]** 实现了由RTT定时器回调函数一个参数，到μCOS-III定时器回调函数两个参数的转换，在移植时可以直接沿用原版回调函数，无需再修改为RTT定时器的回调函数样式。（已知）
+**[bug fix]** 实现了由RTT定时器回调函数一个参数，到μCOS-III定时器回调函数两个参数的转换，在移植时可以直接沿用原版回调函数，无需再修改为RTT定时器的回调函数样式。（已知）
 
 **[add]** 完整实现了`p_tmr->State`的所有选项，重新实现了`OSTmrStateGet`函数
 
-**[fix]** 实现μCOS-III软件定时器带有延迟的周期延时功能(已知，`os_tmr.c`受限项全部解决)
+**[bug fix]** 实现μCOS-III软件定时器带有延迟的周期延时功能(已知，`os_tmr.c`受限项全部解决)
 
-**[fix]** `OSInit`函数内加入临界区保护
+**[bug fix]** `OSInit`函数内加入临界区保护
 
 **[add]** 内核对象双向Dbg链表全部实现，并与FinSH对接，可以在msh模式下使用ucos命令查看兼容层管理的内核对象以及相关信息（例如CPU使用率）
 
@@ -259,7 +260,7 @@
 
 ## v0.5.0
 
-**[fix]** 实现并解决`OSSemPost`函数`OS_OPT_POST_ALL`选项（已知）
+**[bug fix]** 实现并解决`OSSemPost`函数`OS_OPT_POST_ALL`选项（已知）
 
 **[add]** 增加μC/LIB全部文件（V1.39.00）
 
@@ -267,5 +268,7 @@
 
 **[add]** 实现与μC/Probe软件的对接以及对接所需的必要成员变量
 
-**[fix]** 修复`OSMutexPendAbort`、`OSSemPendAbort`、`OSQPendAbort`、`OSFlagPendAbort`函数返回值由当前还有多少任务在等待该内核对象 改为 放弃了多少个任务
+**[bug fix]** 修复`OSMutexPendAbort`、`OSSemPendAbort`、`OSQPendAbort`、`OSFlagPendAbort`函数返回值由当前还有多少任务在等待该内核对象 改为 放弃了多少个任务
+
+**[bug fix]** 修复了CPU使用率突然飙升至100%的问题，该问题为μCOS-III原版（3.03版本）内部bug，即便是最新版的3.08版本该问题依然没有得到彻底解决（仅仅是将飙升至100%改成了骤降至0%）
 
