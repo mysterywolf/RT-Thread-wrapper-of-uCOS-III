@@ -245,7 +245,7 @@ void  OS_StatTask (void  *p_arg)
                 OSStatTaskCPUUsageMax = OSStatTaskCPUUsage;
             }
         } else {
-            OSStatTaskCtrMax = OSStatTaskCtrRun;
+            //OSStatTaskCtrMax = OSStatTaskCtrRun;
         }
 
         OSStatTaskHook();                                   /* Invoke user definable hook                             */
