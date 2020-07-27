@@ -483,32 +483,40 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 # 4 μC/Probe
 
-## 4.1 官网
+## 4.1 介绍
 
-https://www.micrium.com/ucprobe/about/
+​	μC/Probe 是由Micriμm公司研发的一款基于Windows操作系统的、专门针对Micriμm公司旗下产品（μC/OS-II、μC/OS-III、uC/TCP-IP等）的应用程序。该软件以可视化的模式实时查看目标系统的内部变量，并且在不中断系统正常运行的情况下改变系统内部全局变量。全局变量可以通过刻度指针、数字表、柱状图、虚拟LED等可视化对象想试出来，通过滑块、开关或者按钮等来修改变量值。用户不需要编写任何代码就可以实现这些功能。目前μC/Probe也已经支持对FreeRTOS的调试。
+
+​	官网：https://www.micrium.com/ucprobe/about/
+
+​	版权：从4.8版本开始μC/Probe**免费**，因此安装好后直接就是专业版，因此无需担心版权问题。
+
+<img src="docs/pic/ucprobe/KA-Screen-2.png" alt="KA-Screen-2" style="zoom:67%;" />
+
+<img src="docs/pic/ucprobe/uC-Probe-Dashboard.png" alt="uC-Probe-Dashboard"  />
+
+<img src="docs/pic/ucprobe/uC-Probe-Gauges.png" alt="uC-Probe-Gauges" style="zoom: 80%;" />
 
 
 
 ## 4.2 下载
 
-由于官方服务器部署在美国，在中国大陆访问非常慢，需要注册才能下载，而且软件是放在国外的dropbox云盘上，国内根本上不去，因此我已经帮大家下载整理好，与官网最新版保持一致。
+​	由于官方服务器部署在美国，在中国大陆访问非常慢，需要注册才能下载，而且软件是放在国外的dropbox云盘上，国内根本上不去，因此我已经帮大家下载整理好，与官网最新版保持一致。
 
 ### 4.2.1 百度云
 
 更新时可能导致当前百度云链接失效，此百度云链接会随时更新（如果发现百度云链接失效请用issue告诉我）：
 
-链接：https://pan.baidu.com/s/1WarXJcl0cf0sXfougtJ5bg 
-提取码：0000
+> 链接：https://pan.baidu.com/s/1WarXJcl0cf0sXfougtJ5bg 
+> 提取码：0000
 
 
 
-## 4.3 版权问题
+## 4.3 使用
 
-从4.8版本开始μC/Probe**免费**，因此安装好后直接就是专业版，因此无需担心版权问题。
+​	本兼容层已经实现与μC/Probe的对接，虽然不能和原版μCOS-III一样将所有内核信息全部显示，但是绝大多数信息以及所有内核关键信息均已实现与μC/Probe的对接。同时用户可以借助本兼容层，实现通过μC/Probe直接显示、调试RT-Thread内核信息和数据。
 
 
-
-## 4.4 使用
 
 
 
@@ -532,12 +540,16 @@ https://www.micrium.com/ucprobe/about/
 
 # 7 联系方式&致谢
 
-感谢RT-Thread工程师Willian Chan的技术支持：https://github.com/willianchanlovegithub
+> 维护：Meco Man
+>
+> 联系方式：jiantingman@foxmail.com
+>
+> 主页：https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III 
+>
+> ​		   https://gitee.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III
 
-感谢RT-Thread工程师yangjie的技术支持：https://github.com/yangjie11
 
-维护：Meco Man
 
-联系方式：jiantingman@foxmail.com
-
-主页：https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III
+> 感谢RT-Thread工程师Willian Chan的技术支持：https://github.com/willianchanlovegithub
+>
+> 感谢RT-Thread工程师yangjie的技术支持：https://github.com/yangjie11
