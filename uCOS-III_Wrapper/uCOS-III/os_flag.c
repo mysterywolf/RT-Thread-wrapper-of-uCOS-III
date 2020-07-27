@@ -364,12 +364,14 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 {
     rt_err_t        rt_err;
     rt_int32_t      time;
-    rt_thread_t     thread;
     CPU_BOOLEAN     consume;
     OS_OPT          mode;
     rt_uint8_t      rt_option;
     rt_uint32_t     recved;
     OS_TCB         *p_tcb;
+#if OS_CFG_DBG_EN > 0u
+    rt_thread_t thread;
+#endif   
     
     CPU_SR_ALLOC();
     
@@ -495,10 +497,10 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_tcb = OSTCBCurPtr;
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
     p_tcb->TaskState = OS_TASK_STATE_PEND;
-    p_tcb->DbgNamePtr = p_grp->NamePtr;
     p_tcb->PendOn = OS_TASK_PEND_ON_FLAG;
     
 #if OS_CFG_DBG_EN > 0u
+    p_tcb->DbgNamePtr = p_grp->NamePtr;
     p_grp->DbgNamePtr = p_tcb->Task.name;
 #endif
     CPU_CRITICAL_EXIT(); 
@@ -514,10 +516,10 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     /*更新任务状态*/
     p_tcb->TaskState = OS_TASK_STATE_RDY;
     /*清除当前任务等待状态*/
-    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
     
 #if OS_CFG_DBG_EN > 0u
+    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
     {
         /*若等待表不为空，则将当前等待事件组的线程赋值给.DbgNamePtr*/
@@ -580,7 +582,9 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
                              OS_ERR       *p_err)
 {
     OS_OBJ_QTY abort_tasks = 0;
+#if OS_CFG_DBG_EN > 0u
     rt_thread_t thread;
+#endif   
     
     CPU_SR_ALLOC();
 
@@ -760,7 +764,9 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
                       OS_ERR       *p_err)
 {
     rt_err_t rt_err;
+#if OS_CFG_DBG_EN > 0u
     rt_thread_t thread;
+#endif   
     
     CPU_SR_ALLOC();
     

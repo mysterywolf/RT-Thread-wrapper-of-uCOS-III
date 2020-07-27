@@ -488,9 +488,11 @@ void  *OSQPend (OS_Q         *p_q,
 {
     rt_err_t    rt_err;
     rt_int32_t  time;
-    rt_thread_t thread;
     ucos_msg_t  ucos_msg;
     OS_TCB     *p_tcb;
+#if OS_CFG_DBG_EN > 0u
+    rt_thread_t thread;
+#endif   
     
     CPU_SR_ALLOC();
     
@@ -570,13 +572,13 @@ void  *OSQPend (OS_Q         *p_q,
     p_tcb = OSTCBCurPtr;
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
     p_tcb->TaskState = OS_TASK_STATE_PEND;
-    p_tcb->DbgNamePtr = p_q->NamePtr;
     if(p_tcb->PendOn != OS_TASK_PEND_ON_TASK_Q)
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_Q;
     }  
     
 #if OS_CFG_DBG_EN > 0u
+    p_tcb->DbgNamePtr = p_q->NamePtr;
     p_q->DbgNamePtr = p_tcb->Task.name;
 #endif
     CPU_CRITICAL_EXIT();     
@@ -593,10 +595,10 @@ void  *OSQPend (OS_Q         *p_q,
     /*更新任务状态*/
     p_tcb->TaskState = OS_TASK_STATE_RDY;
     /*清除当前任务等待状态*/
-    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
                          
 #if OS_CFG_DBG_EN > 0u
+    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
     if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
     {
         /*若等待表不为空，则将当前等待消息队列的线程赋值给.DbgNamePtr*/
@@ -668,7 +670,9 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
                           OS_ERR  *p_err)
 {
     OS_OBJ_QTY abort_tasks = 0;
+#if OS_CFG_DBG_EN > 0u
     rt_thread_t thread;
+#endif   
     
     CPU_SR_ALLOC();
 
@@ -819,9 +823,11 @@ void  OSQPost (OS_Q         *p_q,
                OS_ERR       *p_err)
 {
     rt_err_t rt_err;
-    rt_thread_t thread;
     ucos_msg_t  ucos_msg;
-        
+#if OS_CFG_DBG_EN > 0u
+    rt_thread_t thread;
+#endif   
+    
     CPU_SR_ALLOC();
     
 #ifdef OS_SAFETY_CRITICAL

@@ -144,6 +144,7 @@ void  OSInit (OS_ERR  *p_err)
 #if OS_CFG_DBG_EN > 0u
     OS_Dbg_Init();
 #endif
+    
     OSCfg_Init();
     
     /*这部分内容是在原版OSStart()函数中运行的,但是在本兼容层中,操作系统已经启动,因此直接在此处进行标记*/
