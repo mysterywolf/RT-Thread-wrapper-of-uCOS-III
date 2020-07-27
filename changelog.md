@@ -269,12 +269,3 @@
 
 **[fix]** 修复`OSMutexPendAbort`、`OSSemPendAbort`、`OSQPendAbort`、`OSFlagPendAbort`函数返回值由当前还有多少任务在等待该内核对象 改为 放弃了多少个任务
 
-
-
-# TODO
-
-- [ ] 完善统计任务的其他统计项
-- [ ] 实现受限项opts
-- [ ] 补充例程
-- [x] 与μC/Probe对接
-- [x] p_mutex->OwnerNestingCtr
