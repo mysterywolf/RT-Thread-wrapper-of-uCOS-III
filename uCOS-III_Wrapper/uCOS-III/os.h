@@ -1461,9 +1461,8 @@ void          OSTimeTickHook            (void);
 ************************************************************************************************************************
 */
 
-void          OSCfg_Init                (void);
-
 #if OS_CFG_DBG_EN > 0u
+void          OSCfg_Init                (void);
 void          OS_Dbg_Init               (void);
 #endif
 

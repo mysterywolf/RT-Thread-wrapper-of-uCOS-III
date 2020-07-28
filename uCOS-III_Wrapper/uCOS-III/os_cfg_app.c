@@ -46,23 +46,16 @@
 #include <os.h>
 #include <rtconfig.h>
 
-//#define  OS_CFG_IDLE_TASK_STK_LIMIT      ((OS_CFG_IDLE_TASK_STK_SIZE  * OS_CFG_TASK_STK_LIMIT_PCT_EMPTY) / 100u)
-#define  OS_CFG_STAT_TASK_STK_LIMIT      ((OS_CFG_STAT_TASK_STK_SIZE  * OS_CFG_TASK_STK_LIMIT_PCT_EMPTY) / 100u)
-
 /*
 ************************************************************************************************************************
 *                                                    DATA STORAGE
 ************************************************************************************************************************
 */
-
-//CPU_STK        OSCfg_IdleTaskStk   [OS_CFG_IDLE_TASK_STK_SIZE];
-
 #if (OS_CFG_STAT_TASK_EN > 0u)
 CPU_STK        OSCfg_StatTaskStk   [OS_CFG_STAT_TASK_STK_SIZE];
 #endif
 
-
-/*$PAGE*/
+#if OS_CFG_DBG_EN > 0u
 /*
 ************************************************************************************************************************
 *                                                      CONSTANTS
@@ -201,7 +194,6 @@ CPU_INT32U     const  OSCfg_DataSizeRAM          = //sizeof(OSCfg_IdleTaskStk)
 //                                                 + sizeof(OSCfg_TickWheel)
                                                  ;
 
-/*$PAGE*/
 /*
 ************************************************************************************************************************
 *                                             OS CONFIGURATION INITIALIZATION
@@ -275,3 +267,5 @@ void  OSCfg_Init (void)
 #endif
     p_temp = p_temp;
 }
+
+#endif

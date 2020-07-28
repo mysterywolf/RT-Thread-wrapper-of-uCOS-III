@@ -52,6 +52,7 @@
 */
 
 #define  OS_CFG_TASK_STK_LIMIT_PCT_EMPTY  10u               /* Stack limit position in percentage to empty            */
+#define  OS_CFG_STAT_TASK_STK_LIMIT      ((OS_CFG_STAT_TASK_STK_SIZE  * OS_CFG_TASK_STK_LIMIT_PCT_EMPTY) / 100u)
 
                                                             /* ------------------- STATISTIC TASK ------------------- */
 #define  OS_CFG_STAT_TASK_PRIO  	(OS_CFG_PRIO_MAX-2u)   	/* 只读 统计任务优先级总是为OS_CFG_PRIO_MAX-2             */
@@ -63,7 +64,6 @@
 #define  OS_CFG_TMR_TASK_RATE_HZ         100u               /* 参数要和原版工程一致,用于与RTT定时器兼容转换Rate for timers (100 Hz Typ.)*/
 #define  OS_CFG_TMR_TASK_STK_SIZE \
     RT_TIMER_THREAD_STACK_SIZE/sizeof(CPU_STK)              /* 只读 Stack size (number of CPU_STK elements)           */
-
 
                                                             /* ------------------------ TICKS ----------------------- */
 #define  OS_CFG_TICK_RATE_HZ         RT_TICK_PER_SECOND     /* 只读 Tick rate in Hertz (10 to 1000 Hz)                */

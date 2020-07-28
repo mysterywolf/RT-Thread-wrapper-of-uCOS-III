@@ -143,11 +143,11 @@ void  OSStatTaskCPUUsageInit (OS_ERR  *p_err)
     CPU_CRITICAL_EXIT();
 
     dly = (OS_TICK)0;
-    if (OSCfg_TickRate_Hz > OSCfg_StatTaskRate_Hz) {
-        dly = (OS_TICK)(OSCfg_TickRate_Hz / OSCfg_StatTaskRate_Hz);
+    if (OS_CFG_TICK_RATE_HZ > OS_CFG_STAT_TASK_RATE_HZ) {
+        dly = (OS_TICK)(OS_CFG_TICK_RATE_HZ / OS_CFG_STAT_TASK_RATE_HZ);
     }
     if (dly == (OS_TICK)0) {
-        dly =  (OS_TICK)(OSCfg_TickRate_Hz / (OS_RATE_HZ)10);
+        dly =  (OS_TICK)(OS_CFG_TICK_RATE_HZ / (OS_RATE_HZ)10);
     } 
     OSTimeDly(dly,                                          /* Determine MAX. idle counter value                      */
               OS_OPT_TIME_PERIODIC,
@@ -202,18 +202,18 @@ void  OS_StatTask (void  *p_arg)
 
     p_arg = p_arg;                                          /* Prevent compiler warning for not using 'p_arg'         */
     while (OSStatTaskRdy != OS_STATE_RDY) {
-        OSTimeDly(2u * OSCfg_StatTaskRate_Hz,            /* Wait until statistic task is ready                     */
+        OSTimeDly(2u * OS_CFG_STAT_TASK_RATE_HZ,            /* Wait until statistic task is ready                     */
                   OS_OPT_TIME_PERIODIC,
                   &err);
     }
     OSStatReset(&err);                                      /* Reset statistics                                       */
 
     dly = (OS_TICK)0;                                       /* Compute statistic task sleep delay                     */
-    if (OSCfg_TickRate_Hz > OSCfg_StatTaskRate_Hz) {
-        dly = (OS_TICK)(OSCfg_TickRate_Hz / OSCfg_StatTaskRate_Hz);
+    if (OS_CFG_TICK_RATE_HZ > OS_CFG_STAT_TASK_RATE_HZ) {
+        dly = (OS_TICK)(OS_CFG_TICK_RATE_HZ / OS_CFG_STAT_TASK_RATE_HZ);
     }
     if (dly == (OS_TICK)0) {
-        dly =  (OS_TICK)(OSCfg_TickRate_Hz / (OS_RATE_HZ)10);
+        dly =  (OS_TICK)(OS_CFG_TICK_RATE_HZ / (OS_RATE_HZ)10);
     }
 
     while (DEF_ON) {
@@ -321,12 +321,12 @@ void  OS_StatTaskInit (OS_ERR  *p_err)
         return;
     }
 
-    if (OSCfg_StatTaskStkSize < OSCfg_StkSizeMin) {
+    if (OS_CFG_STAT_TASK_STK_SIZE < OS_CFG_STK_SIZE_MIN) {
        *p_err = OS_ERR_STAT_STK_SIZE_INVALID;
         return;
     }
 
-    if (OSCfg_StatTaskPrio >= (OS_CFG_PRIO_MAX - 1u)) {
+    if (OS_CFG_STAT_TASK_PRIO >= (OS_CFG_PRIO_MAX - 1u)) {
        *p_err = OS_ERR_STAT_PRIO_INVALID;
         return;
     }
@@ -335,10 +335,10 @@ void  OS_StatTaskInit (OS_ERR  *p_err)
                  (CPU_CHAR   *)((void *)"Stat Task"),
                  (OS_TASK_PTR )OS_StatTask,
                  (void       *)0,
-                 (OS_PRIO     )OSCfg_StatTaskPrio,
-                 (CPU_STK    *)OSCfg_StatTaskStk,
-                 (CPU_STK_SIZE)OSCfg_StatTaskStkLimit,
-                 (CPU_STK_SIZE)OSCfg_StatTaskStkSize,
+                 (OS_PRIO     )OS_CFG_STAT_TASK_PRIO,
+                 (CPU_STK    *)&OSCfg_StatTaskStk[0],
+                 (CPU_STK_SIZE)OS_CFG_STAT_TASK_STK_LIMIT,
+                 (CPU_STK_SIZE)OS_CFG_STAT_TASK_STK_SIZE,
                  (OS_MSG_QTY  )0,
                  (OS_TICK     )0,
                  (void       *)0,
