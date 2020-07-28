@@ -169,6 +169,11 @@
 - 实现`OS_MUTEX`结构体`.OwnerNestingCtr`、`.OwnerTCBPtr`、`.OwnerOriginalPrio`成员变量
 - 修复了CPU使用率突然飙升至100%的问题，该问题为μCOS-III原版（3.03版本）内部bug，即便是最新版的3.08版本该问题依然没有得到彻底解决（仅仅是将飙升至100%改成了骤降至0%）
 
+### 2020-7-28
+
+- 增加`OS_CFG_TASK_PROFILE_EN`宏定义，用以降低资源占用
+- 在`os_cfg_zpp.c`文件中增加`OS_CFG_DBG_EN`宏定义，用以降低资源占用
+
 
 
 
