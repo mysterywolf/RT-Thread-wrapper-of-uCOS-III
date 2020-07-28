@@ -174,6 +174,10 @@
 - 增加`OS_CFG_TASK_PROFILE_EN`宏定义，用以降低资源占用
 - 在`os_cfg_zpp.c`文件中增加`OS_CFG_DBG_EN`宏定义，用以降低资源占用
 
+### 2020-7-29
+
+- 完善readme
+
 
 
 

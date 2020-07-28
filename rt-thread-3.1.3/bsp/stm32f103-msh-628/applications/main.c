@@ -96,10 +96,11 @@ void sem_sample   (void);
 void q_sample     (void);
 void task_sem_sample (void);
 
-
 static void AppTaskCreate(void)
 {
-    timer_sample();
+    /*可以打开注释,运行测试例程*/
+    
+//    timer_sample();
 //    mutex_sample();
 //    sem_sample();
 //    q_sample();

@@ -486,7 +486,6 @@ OS_EXT            OS_TMR                   *OSTmrDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Number of timers created                   */
 #endif
-
  ```
 
 
@@ -556,7 +555,32 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 
 
-# 5 支持
+# 5  FinSH命令
+
+​	本兼容层向RT-Thread注册了FinSh命令用以显示兼容层相关信息，用户在调试台中输入`ucos --help`即可显示可查的兼容层信息。
+
+```shell
+ \ | /
+- RT -     Thread Operating System
+ / | \     3.1.3 build Jul 27 2020
+ 2006 - 2019 Copyright by rt-thread team
+msh >ucos --help
+-v version
+-u cpu usage
+-t task
+-s sem
+-m mutex
+-q message queue
+-f event flag
+-r timer
+-m memory pool
+```
+
+
+
+
+
+# 6 支持
 
 如果您喜欢本项目**可以在本页右上角点一下Star**，可以赏我五毛钱，用以满足我小小的虚荣心，并激励我继续维护好这个项目。
 
@@ -566,7 +590,7 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 
 
-# 6 许可
+# 7 许可
 
 采用 Apache-2.0 开源协议，细节请阅读项目中的 LICENSE 文件内容。
 
@@ -574,7 +598,7 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 
 
-# 7 联系方式&致谢
+# 8 联系方式&致谢
 
 > 维护：Meco Man
 >
@@ -591,3 +615,11 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 > 感谢RT-Thread工程师Willian Chan的技术支持：https://github.com/willianchanlovegithub
 >
 > 感谢RT-Thread工程师yangjie的技术支持：https://github.com/yangjie11
+
+
+
+
+
+# 9 友情链接
+
+- 将RT-Thread内核封装成CMSIS-RTOS接口：https://github.com/RT-Thread-packages/CMSIS
