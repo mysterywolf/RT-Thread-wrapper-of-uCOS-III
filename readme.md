@@ -26,6 +26,7 @@
 - 之前学习过μCOS-III操作系统，意图转向学习RT-Thread国产操作系统。本兼容层可以帮您用已有的μCOS-III编程经验和习惯快速将项目跑起来，日后在应用过程中深入熟悉RT-Thread的API函数，逐步向RT-Thread过度，降低您的学习门槛和时间成本。**有了本兼容层，对RT-Thread API以及编程风格的不熟悉再也不是您学习RT-Thread的阻力！**
 - 现有任务（线程）模块采用μCOS-III编写，想要用在基于RT-Thread的工程上
 - 老项目需要从μCOS-III操作系统向RT-Thread操作系统迁移
+- 当需要快速基于RT-Thread开发产品，但是工程师之前均采用μC/OS开发，从未用过RT-Thread的开发经验。本兼容层可以帮助让工程师快速基于μC/OS开发经验开发产品，简化软件的重用、缩短微控制器新开发人员的学习过程，并缩短新设备的上市时间。
 - 本兼容层实现了与Micriμm公司专门为其旗下产品μC/OS等开发的专用软件μC/Probe的对接，可以通过该软件以图像化形式查看、调试RT-Thread内核以及μCOS-III兼容层的相关信息
 
 
@@ -55,7 +56,7 @@ RT-Thread：https://www.rt-thread.org/
 ## 2.1 Keil-MDK仿真工程
 本仿真工程是基于*STM32F103RB*平台。
 
-Keil工程路径：*\rt-thread-3.1.3\bsp\stm32f103-msh-628\Project.uvprojx*
+Keil工程路径：*<u>rt-thread-3.1.3/bsp/stm32f103-msh-628/Project.uvprojx</u>*
 
 需要提前安装好RT-Thread Nano-3.1.3 Keil支持包：https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.1.3.pack
 
@@ -127,7 +128,7 @@ Keil工程路径：*\rt-thread-3.1.3\bsp\stm32f103-msh-628\Project.uvprojx*
 
 ### 2.5.1 官方标准初始化流程
 
-​	本兼容层完全兼容官方给出的标准初始化流程，如果您兼容老项目，μCOS-III初始化部分无需做任何修改。具体初始化流程代码参见工程`main.c`文件，参考文献参见 *docs/uCOS-III官方初始化流程.pdf* 
+​	本兼容层完全兼容官方给出的标准初始化流程，如果您兼容老项目，μCOS-III初始化部分无需做任何修改。具体初始化流程代码参见工程`main.c`文件，参考文献参见 <u>*docs/uCOS-III官方初始化流程.pdf*</u> 
 
 
 
@@ -502,7 +503,7 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 - J-Link
 - CMSIS-DAP
-- 与Keil-MDK编译器联合调试 （硬件在线仿真以及软件仿真两种方式都支持，软件仿真模式下可以不需要板卡）
+- 与Keil-MDK编译器联合调试 （硬件在线仿真以及软件仿真两种方式都支持，软件仿真模式下不需要板卡）
 - IAR Embedded Workbench plugin for µC/Probe
 - Analog Devices CCES 2.6.0 or newer
 - Eclipse plugin for µC/Probe 
