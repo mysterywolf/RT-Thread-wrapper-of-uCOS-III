@@ -194,7 +194,9 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     OS_REG_ID      reg_nbr;
 #endif
+#if OS_CFG_TASK_PROFILE_EN > 0u
     CPU_STK       *p_stk_limit;
+#endif
     CPU_STK       *p_sp;
     CPU_STK_SIZE   i;
     
@@ -273,13 +275,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
             }
         }
     }
-    
-#if (CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO)
-    p_stk_limit = p_stk_base + stk_limit;
-#else
-    p_stk_limit = p_stk_base + (stk_size - 1u) - stk_limit;
-#endif   
-    
+        
     CPU_CRITICAL_ENTER();        
     p_tcb->MsgCreateSuc = RT_FALSE;
     p_tcb->SemCreateSuc = RT_FALSE;
@@ -373,10 +369,15 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     OS_TaskDbgListAdd(p_tcb);/*将任务加入到Debug链表中*/
 #endif    
     OSTaskQty++; /* Increment the #tasks counter */
-     
+
+#if OS_CFG_TASK_PROFILE_EN > 0u  
+#if (CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO)
+    p_stk_limit = p_stk_base + stk_limit;
+#else
+    p_stk_limit = p_stk_base + (stk_size - 1u) - stk_limit;
+#endif   
+
     p_tcb->Opt = opt;
-    p_tcb->TickCtrPrev = p_tcb->Task.thread_timer.timeout_tick - p_tcb->Task.thread_timer.init_tick;
-    p_tcb->TickCtrMatch = &p_tcb->Task.thread_timer.timeout_tick;
     p_tcb->StkSize = stk_size;
     p_tcb->StkBasePtr = p_stk_base;
     p_tcb->StkLimitPtr = p_stk_limit;
@@ -386,7 +387,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_tcb->TaskEntryArg = p_tcb->Task.parameter;
     p_tcb->Prio = p_tcb->Task.init_priority;
     p_tcb->SemCtr = p_tcb->Sem.Sem.value;
-    
+#endif    
     CPU_CRITICAL_EXIT();   
     
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
@@ -1085,13 +1086,17 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
     {
         CPU_CRITICAL_ENTER();
         p_tcb->PendOn = OS_TASK_PEND_ON_TASK_SEM;/*设置任务等待状态*/
+#if OS_CFG_TASK_PROFILE_EN > 0u
         p_tcb->SemCtr = p_tcb->Sem.Sem.value;/*更新value*/
+#endif
         CPU_CRITICAL_EXIT();
         
         ctr = OSSemPend(&p_tcb->Sem,timeout,opt,p_ts,p_err); 
         
         CPU_CRITICAL_ENTER();
+#if OS_CFG_TASK_PROFILE_EN > 0u
         p_tcb->SemCtr = p_tcb->Sem.Sem.value;/*更新value*/
+#endif
         CPU_CRITICAL_EXIT();
         return ctr;
     }
@@ -1185,7 +1190,9 @@ CPU_BOOLEAN  OSTaskSemPendAbort (OS_TCB  *p_tcb,
     OSSemPendAbort(&p_tcb->Sem,_opt,p_err);
     
     CPU_CRITICAL_ENTER();
+#if OS_CFG_TASK_PROFILE_EN > 0u    
     p_tcb->SemCtr = p_tcb->Sem.Sem.value;
+#endif
     CPU_CRITICAL_EXIT();
     
     if(*p_err != OS_ERR_NONE)
@@ -1251,7 +1258,9 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
     {
         ctr = OSSemPost(&p_tcb->Sem,opt,p_err);
         CPU_CRITICAL_ENTER();
+#if OS_CFG_TASK_PROFILE_EN > 0u
         p_tcb->SemCtr = p_tcb->Sem.Sem.value;
+#endif
         CPU_CRITICAL_EXIT();
         return ctr;
     }
@@ -1312,7 +1321,9 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
     CPU_CRITICAL_ENTER();
     ctr = p_tcb->Sem.Sem.value;
     p_tcb->Sem.Sem.value = (OS_SEM_CTR)cnt;/*设置RTT信号量value*/
+#if OS_CFG_TASK_PROFILE_EN > 0u
     p_tcb->SemCtr = p_tcb->Sem.Sem.value;/*更新.SemCtr*/
+#endif
     CPU_CRITICAL_EXIT();
     *p_err = OS_ERR_NONE;
     return ctr;
@@ -1690,22 +1701,20 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->DbgNextPtr         = (OS_TCB        *)0;
     p_tcb->DbgNamePtr         = (CPU_CHAR      *)((void *)" ");
 #endif
-
+    p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;    
+    p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
+#if OS_CFG_TASK_PROFILE_EN > 0u   
+    p_tcb->SemCtr             = (OS_SEM_CTR     )0u;
     p_tcb->StkPtr             = (CPU_STK       *)0;
-    p_tcb->SemCtr             = (OS_SEM_CTR     )0u;   
-    p_tcb->TickCtrMatch       = (OS_TICK       *)0u;
-    p_tcb->TickCtrPrev        = (OS_TICK        )OS_TICK_TH_INIT; 
     p_tcb->Opt                = (OS_OPT         )0u;
     p_tcb->StkSize            = (CPU_STK        )0u;
     p_tcb->StkLimitPtr        = (CPU_STK       *)0;    
     p_tcb->StkBasePtr         = (CPU_STK       *)0;     
-    p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;    
-    p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
     p_tcb->NamePtr            = (CPU_CHAR      *)((void *)"?Task");
     p_tcb->TaskEntryAddr      = (OS_TASK_PTR    )0;
     p_tcb->TaskEntryArg       = (void          *)0;
     p_tcb->Prio               = (OS_PRIO        )OS_PRIO_INIT;   
-    
+#endif    
     CPU_CRITICAL_EXIT();
 }
 

@@ -128,7 +128,7 @@
 #define  OS_CFG_TASK_DEL_EN              1u                 /* Include code for OSTaskDel()                                          */
 #define  OS_CFG_TASK_Q_EN                1u                 /* Include code for OSTaskQXXXX()                                        */
 #define  OS_CFG_TASK_Q_PEND_ABORT_EN     1u                 /* Include code for OSTaskQPendAbort()                                   */
-#define  OS_CFG_TASK_PROFILE_EN          0u                 /* Include variables in OS_TCB for profiling                             */
+#define  OS_CFG_TASK_PROFILE_EN          1u                 /* Include variables in OS_TCB for profiling                             */
 #define  OS_CFG_TASK_REG_TBL_SIZE        1u                 /* Number of task specific registers                                     */
 #define  OS_CFG_TASK_SEM_PEND_ABORT_EN   1u                 /* Include code for OSTaskSemPendAbort()                                 */
 #define  OS_CFG_TASK_SUSPEND_EN          1u                 /* Include code for OSTaskSuspend() and OSTaskResume()                   */

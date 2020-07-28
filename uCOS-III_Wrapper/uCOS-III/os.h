@@ -710,14 +710,12 @@ struct os_tcb
     OS_TCB          *DbgNextPtr;  
     CPU_CHAR        *DbgNamePtr;
 #endif
-
-    CPU_STK         *StkPtr;        /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
-    OS_SEM_CTR       SemCtr;        /* Task specific semaphore counter,*/
-    OS_TICK         *TickCtrMatch;  /* 比原版多了一级指针,Absolute time when task is going to be ready */  
-    OS_TICK          TickCtrPrev;   /* Previous time when task was */    
-    OS_OPT           Opt;           /* Task options as passed by OSTaskCreate() */    
     OS_STATE         TaskState;     /* See OS_TASK_STATE_xxx */
     OS_STATE         PendOn;        /* Indicates what task is pending on */
+#if OS_CFG_TASK_PROFILE_EN > 0u
+    CPU_STK         *StkPtr;        /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
+    OS_SEM_CTR       SemCtr;        /* Task specific semaphore counter,*/  
+    OS_OPT           Opt;           /* Task options as passed by OSTaskCreate() */    
     CPU_STK          StkSize;       /* 任务堆栈大小*/    
     CPU_STK         *StkLimitPtr;   /* Pointer used to set stack 'watermark' limit */
     CPU_STK         *StkBasePtr;    /* Pointer to base address of stack */
@@ -725,6 +723,7 @@ struct os_tcb
     OS_TASK_PTR      TaskEntryAddr; /* Pointer to task entry point address */
     void            *TaskEntryArg;  /* Argument passed to task when it was created */
     OS_PRIO          Prio;          /* Task priority (0 == highest) */          
+#endif
 };
 
 /*

@@ -85,10 +85,10 @@ void  OSStatReset (OS_ERR  *p_err)
     CPU_CRITICAL_EXIT();
     while (p_tcb != (OS_TCB *)0) {                          /* Reset per-Task statistics                              */
         CPU_CRITICAL_ENTER();
-#if OS_CFG_TASK_PROFILE_EN > 0u        
-        p_tcb->CPUUsage         = (OS_CPU_USAGE)0;
-        p_tcb->CPUUsageMax      = (OS_CPU_USAGE)0;    
-#endif
+//#if OS_CFG_TASK_PROFILE_EN > 0u        
+//        p_tcb->CPUUsage         = (OS_CPU_USAGE)0;
+//        p_tcb->CPUUsageMax      = (OS_CPU_USAGE)0;    
+//#endif
         
         p_tcb                   = p_tcb->DbgNextPtr;
         CPU_CRITICAL_EXIT();    
@@ -262,8 +262,9 @@ void  OS_StatTask (void  *p_arg)
                          &err);
 #endif
             CPU_CRITICAL_ENTER();
+#if OS_CFG_TASK_PROFILE_EN > 0u
             p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp; /* 更新SP指针*/
-            
+#endif            
             
             p_tcb = p_tcb->DbgNextPtr;                      /* 指向下一个TCB结构体                                    */
             CPU_CRITICAL_EXIT();

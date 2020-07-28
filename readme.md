@@ -100,10 +100,20 @@ Keil工程路径：*\rt-thread-3.1.3\bsp\stm32f103-msh-628\Project.uvprojx*
  ```
 ​    该宏定义定义是否启用兼容层调试，建议在第一次迁移时打开，因为在兼容层内部，一部分uCOS-III原版功能没有实现，如果用户用到了这部分没有实现的功能，将会通过调试的方式输出，予以提示。用户务必对业务逻辑予以修改。
 
+
+
  ```c
 #define  OS_CFG_TMR_TASK_RATE_HZ 100u /* Rate for timers (100 Hz Typ.) */
  ```
 ​    在原版μCOS-III中，该宏定义定义了软件定时器的时基信号，这与RT-Thread的软件定时器有本质的不同，在RT-Thread中，软件定时器的时基信号就等于OS Ticks。因此为了能够将μCOS-III软件定时器时间参数转为RT-Thread软件定时器的时间参数，需要用到该宏定义。请使该宏定义与原工程使用μCOS-III时的该宏定义参数一致。
+
+
+
+```c
+#define  OS_CFG_TASK_PROFILE_EN  1u /* Include variables in OS_TCB for profiling*/
+```
+
+​	若置1，OS_TCB结构体将尽全力兼容原版结构体的所有成员变量；若为1，OS_TCB结构体将保留兼容层必须成员变量，用以节省空间。如果您需要使用μC/Probe软件进行调试或者调用受该宏定义控制的OS_TCB成员变量，则需要将其置1.
 
 
 
