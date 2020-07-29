@@ -622,4 +622,5 @@ msh >ucos --help
 
 # 9 友情链接
 
-- 将RT-Thread内核封装成CMSIS-RTOS接口：https://github.com/RT-Thread-packages/CMSIS
+- 将RT-Thread内核封装成CMSIS-RTOS规范接口：https://github.com/RT-Thread-packages/CMSIS
+

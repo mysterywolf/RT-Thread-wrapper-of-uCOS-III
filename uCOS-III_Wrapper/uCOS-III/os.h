@@ -713,7 +713,9 @@ struct os_tcb
     OS_STATE         TaskState;     /* See OS_TASK_STATE_xxx */
     OS_STATE         PendOn;        /* Indicates what task is pending on */
 #if OS_CFG_TASK_PROFILE_EN > 0u
+#if OS_CFG_DBG_EN > 0u
     CPU_STK         *StkPtr;        /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
+#endif
     OS_SEM_CTR       SemCtr;        /* Task specific semaphore counter,*/  
     OS_OPT           Opt;           /* Task options as passed by OSTaskCreate() */    
     CPU_STK          StkSize;       /* 任务堆栈大小*/    

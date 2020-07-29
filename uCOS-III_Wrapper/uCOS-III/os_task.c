@@ -375,13 +375,14 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_stk_limit = p_stk_base + stk_limit;
 #else
     p_stk_limit = p_stk_base + (stk_size - 1u) - stk_limit;
-#endif   
-
+#endif 
+#if OS_CFG_DBG_EN > 0u    
+    p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp;/* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
+#endif
     p_tcb->Opt = opt;
     p_tcb->StkSize = stk_size;
     p_tcb->StkBasePtr = p_stk_base;
     p_tcb->StkLimitPtr = p_stk_limit;
-    p_tcb->StkPtr = 0;
     p_tcb->NamePtr = p_tcb->Task.name;
     p_tcb->TaskEntryAddr = (OS_TASK_PTR)p_tcb->Task.entry;
     p_tcb->TaskEntryArg = p_tcb->Task.parameter;
@@ -1704,8 +1705,10 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;    
     p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
 #if OS_CFG_TASK_PROFILE_EN > 0u   
-    p_tcb->SemCtr             = (OS_SEM_CTR     )0u;
+#if OS_CFG_DBG_EN > 0u 
     p_tcb->StkPtr             = (CPU_STK       *)0;
+#endif
+    p_tcb->SemCtr             = (OS_SEM_CTR     )0u;
     p_tcb->Opt                = (OS_OPT         )0u;
     p_tcb->StkSize            = (CPU_STK        )0u;
     p_tcb->StkLimitPtr        = (CPU_STK       *)0;    
