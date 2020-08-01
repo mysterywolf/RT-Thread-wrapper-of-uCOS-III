@@ -244,10 +244,8 @@ void  OS_StatTask (void  *p_arg)
             if (OSStatTaskCPUUsageMax < OSStatTaskCPUUsage) {
                 OSStatTaskCPUUsageMax = OSStatTaskCPUUsage;
             }
-        } else {
-            OSStatTaskCtrMax = OSStatTaskCtrRun;
         }
-
+        
         OSStatTaskHook();                                   /* Invoke user definable hook                             */
 
 #if OS_CFG_DBG_EN > 0u
