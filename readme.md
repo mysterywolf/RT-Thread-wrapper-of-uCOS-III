@@ -27,6 +27,10 @@
 - 现有任务（线程）模块采用μCOS-III编写，想要用在基于RT-Thread的工程上
 - 老项目需要从μCOS-III操作系统向RT-Thread操作系统迁移
 - 当需要快速基于RT-Thread开发产品，但是工程师之前均采用μC/OS开发，从未用过RT-Thread的开发经验。本兼容层可以帮助让工程师快速基于μC/OS开发经验开发产品，简化软件的重用、缩短微控制器新开发人员的学习过程，并缩短新设备的上市时间。
+- 避免在从μCOS-III迁移到RT-Thread时，由于μCOS-III的编程经验导致的思维定式引发的错误，这种错误一般很难被发现
+         例如：两个操作系统对于任务/线程挂起、解挂函数的区别。
+                      RT-Thread不支持任务嵌套挂起、解挂
+                      μCOS-III支持任务嵌套挂起、解挂
 - 本兼容层实现了与Micriμm公司专门为其旗下产品μC/OS等开发的专用软件μC/Probe的对接，可以通过该软件以图像化形式查看、调试RT-Thread内核以及μCOS-III兼容层的相关信息
 
 
@@ -235,7 +239,13 @@ void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
 
 ## 3.2 功能受限API（仅8个，全部为轻度受限，对正常使用没有影响）
 
-功能受限函数是指该函数虽然在兼容层中实现，但是实现不完全。即无法完全实现该函数在原版μCOS-III中的所有功能，予以列出：
+功能受限函数是指该函数虽然在兼容层中实现，但是实现不完全。即无法完全实现该函数在原版μCOS-III中的所有功能，每一个API函数的注释上如果opt字段可选项之前出现了减号'-'，即表示该功能在本兼容层中无法实现。
+
+![opts](docs/pic/opts.png)
+
+下面予以列出：
+
+
 
 ### 3.2.1 os_flag.c
 
@@ -248,7 +258,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
                     OS_ERR       *p_err);
 ```
 
-​	flags字段必须填`0`，在μCOS-III中可以让用户选择是位置1为事件发生还是位清0为事件发生，但是在RTT中直接定死，必须位置1为事件发生，因此该位必须填`0`（即32位全部为0）。
+​	flags字段必须填`0`，在μCOS-III中可以让用户选择是位置1为事件发生还是位清0为事件发生，但是在RT-Thread中直接定死，必须bit置1为事件发生，因此该参数必须填`0`（即32位全部为0）。
 
 #### 3.2.1.2 OSFlagPost()
 
@@ -259,7 +269,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
                       OS_ERR       *p_err);
 ```
 
-​	flags字段，必须填`OS_OPT_POST_FLAG_SET`，在μCOS-III中可以让用户选择是位置1为事件发生还是位清0为事件发生，但是在RTT中直接定死，必须位置1为事件发生，因此该位必须填`OS_OPT_POST_FLAG_SET`。
+​	flags字段，必须填`OS_OPT_POST_FLAG_SET`。
 ​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
 
 #### 3.2.1.3 OSFlagPend()
