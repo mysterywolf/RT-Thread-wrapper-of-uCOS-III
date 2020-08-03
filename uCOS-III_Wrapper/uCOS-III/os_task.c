@@ -1019,6 +1019,7 @@ void  OSTaskResume (OS_TCB  *p_tcb,
     }
     else
     {
+        p_tcb->TaskState = OS_TASK_STATE_RDY;
         rt_err = rt_thread_resume(&p_tcb->Task);
         *p_err = rt_err_to_ucosiii(rt_err);       
     }
@@ -1518,6 +1519,7 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
     else if((p_tcb->Task.stat & RT_THREAD_STAT_MASK) == RT_THREAD_READY)
     {
         /*任务处于运行态才能被挂起*/
+        p_tcb->TaskState = OS_TASK_STATE_SUSPENDED;
         rt_err = rt_thread_suspend(&p_tcb->Task);
         if(rt_thread_self() == &p_tcb->Task)/*是否要将自己挂起*/
         {

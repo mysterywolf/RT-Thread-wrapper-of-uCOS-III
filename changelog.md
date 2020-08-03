@@ -178,6 +178,10 @@
 
 - 完善readme
 
+### 2020-8-3
+
+- 增加`OS_TASK_STATE_SUSPENDED`任务状态
+
 
 
 
