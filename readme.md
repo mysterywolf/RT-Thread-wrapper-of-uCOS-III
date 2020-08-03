@@ -567,7 +567,7 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 # 5  FinSH命令
 
-​	本兼容层向RT-Thread注册了FinSh命令用以显示兼容层相关信息，用户在调试台中输入`ucos --help`即可显示可查的兼容层信息。
+​	本兼容层向RT-Thread FinSH注册了msh命令用以显示兼容层相关信息，用户在调试台中输入`ucos --help`即可显示可查的兼容层信息。
 
 ```shell
  \ | /
