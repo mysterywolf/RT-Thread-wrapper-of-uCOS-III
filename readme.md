@@ -173,7 +173,7 @@ int main(void) /*RT-Thread main线程*/
 
 
 ## 2.6 注意
-2. μCOS-III的任务堆栈大小单位是`sizeof(CPU_STK)`，而RT-Thread的线程堆栈大小单位是`sizeof(rt_uint8_t)`，虽然在兼容层已经做了转换，但是在填写时一定要注意，所有涉及到μCOS-III的API、宏定义全部是按照μCOS-III的标准，即堆栈大小为`sizeof(CPU_STK)`，**切勿混搭**！这种错误极其隐晦，一定要注意！**下面是混搭的错误示例**：</br>
+1. μCOS-III的任务堆栈大小单位是`sizeof(CPU_STK)`，而RT-Thread的线程堆栈大小单位是`sizeof(rt_uint8_t)`，虽然在兼容层已经做了转换，但是在填写时一定要注意，所有涉及到μCOS-III的API、宏定义全部是按照μCOS-III的标准，即堆栈大小为`sizeof(CPU_STK)`，**切勿混搭**！这种错误极其隐晦，一定要注意！**下面是混搭的错误示例**：</br>
 
     ```c
     ALIGN(RT_ALIGN_SIZE)
@@ -215,16 +215,16 @@ int main(void) /*RT-Thread main线程*/
                  &err);
     ```
 
-3. **切勿将RT-Thread和μCOS-III的API混搭使用。**   
+2. **切勿将RT-Thread和μCOS-III的API混搭使用。**   
     例如RT-Thread中的`rt_thread_suspend` / `rt_thread_resume` 函数仅支持一次挂起/解挂；而μCOS-III的`OSTaskSuspend` / `OSTaskResume` 函数是支持嵌套挂起/解挂的，为此需要继承`struct rt_thread`结构体并在其基础上增加成员`.SuspendCtr`变量实现该功能。若采用`rt_thread_init`函数初始化线程，该函数并不会管理μCOS-III兼容层的成员变量，`.SuspendCtr`也不会创建和初始化，若此时调用`OSTaskSuspend` / `OSTaskResume`函数试图指向`.SuspendCtr`成员变量，将会访问非法内存地址(因为`rt_thread_init`初始化的线程`.SuspendCtr`成员变量根本不存在)！
    
-4. 兼容层取消了原版μCOS-III中的时间戳功能  
+3. 兼容层取消了原版μCOS-III中的时间戳功能  
     在μCOS-III中，时间戳主要用于测量中断关闭时间，以及任务单次执行时间以及最大时间等涉及到精度较高的时长测量。该特性在μCOS-II以及RT-Thread中均没有，因此本兼容层不予实现。
    
-5. 兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能  
+4. 兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能  
     该功能在原版3.05.00版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06.00版本开始删除了该功能，因此本兼容层不再予以实现。
     
-6. 本封装层文件内含有中文，编码格式ANSI - GB2312，并非UTF-8编码。
+5. 本封装层文件内含有中文，编码格式ANSI - GB2312，并非UTF-8编码。
 
 
 
