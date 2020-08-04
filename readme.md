@@ -64,7 +64,7 @@ RT-Thread：https://www.rt-thread.org/
 # 2 使用
 
 ## 2.1 Keil-MDK仿真工程
-本仿真工程是基于*STM32F103RB*平台。
+本仿真工程是基于STM32F103平台。
 
 Keil工程路径：*<u>rt-thread-3.1.3/bsp/stm32f103-msh-628/Project.uvprojx</u>*
 
