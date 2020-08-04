@@ -1,5 +1,5 @@
 # RT-Thread操作系统的μC/OS-III兼容层
-## μCOS-III Wrapper
+## μCOS-III Wrapper：让基于μC/OS-III开发的应用层无感地迁移到RT-Thread操作系统
 
 [TOC]
 
@@ -17,7 +17,7 @@
 
 # 1 概述
 
-这是一个针对国产RT-Thread操作系统的μCOS-III操作系统兼容层，可以让基于美国Micriμm公司的μCOS-III操作系统的项目快速迁移到RT-Thread操作系统上。
+这是一个针对国产RT-Thread操作系统的μCOS-III操作系统兼容层，可以让基于美国Micriμm公司的μCOS-III操作系统的项目快速、无感地迁移到RT-Thread操作系统上。
 
 支持版本：μC/OS-III 3.00-3.08全部版本
 
