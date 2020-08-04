@@ -638,6 +638,35 @@ msh >ucos --help
 
 # 9 友情链接
 
+## 9.1 RT-Thread Nano移植教程
+
+官方文档：
+
+> https://www.rt-thread.org/document/site/tutorial/nano/an0038-nano-introduction/
+
+视频教程：
+
+> 基于 MDK 移植 RT-Thread Nano：https://www.bilibili.com/video/BV1TJ411673o
+>
+> 基于 IAR 移植 RT-Thread Nano：https://www.bilibili.com/video/BV1BJ41177CW
+>
+> 基于 CubeMX 移植 RT-Thread Nano：https://www.bilibili.com/video/BV1KJ41167qg
+
+
+
+## 9.2 FinSH控制台
+
+官方文档：
+
+> https://www.rt-thread.org/document/site/programming-manual/finsh/finsh/
+
+视频教程：
+
+> https://www.bilibili.com/video/BV1r741137sY?p=1
+
+
+
+## 9.2 CMSIS-RTOS规范接口
+
 - 将RT-Thread内核封装成CMSIS-RTOS规范接口：https://github.com/RT-Thread-packages/CMSIS
 - 将FreeRTOS内核封装成CMSIS-RTOS规范接口：https://github.com/ARM-software/CMSIS-FreeRTOS
-
