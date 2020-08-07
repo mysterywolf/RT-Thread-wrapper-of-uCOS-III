@@ -185,6 +185,7 @@
 ### 2020-8-7
 
 - 将例程由sample字眼改成example
+- 增加`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏
 
 
 
