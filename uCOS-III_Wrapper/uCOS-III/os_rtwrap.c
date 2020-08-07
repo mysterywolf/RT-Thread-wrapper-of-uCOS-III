@@ -217,7 +217,7 @@ rt_err_t rt_sem_release_all(rt_sem_t sem)
  * msh命令：uCOS-III兼容层信息获取
  */
 #if defined RT_USING_FINSH && OS_CFG_DBG_EN > 0u
-static void ucos_wrap_info (int argc, char *argv[])
+static void rt_ucosiii_wrapper_info (int argc, char *argv[])
 {
     OS_CPU_USAGE cpu_usage;
     OS_TCB *p_tcb;
@@ -342,5 +342,38 @@ static void ucos_wrap_info (int argc, char *argv[])
         rt_kprintf("invalid parameter,use --help to get more information.\n");
     }
 }
-MSH_CMD_EXPORT_ALIAS(ucos_wrap_info, ucos, get ucos wrapper info);
+MSH_CMD_EXPORT_ALIAS(rt_ucosiii_wrapper_info, ucos, get ucos-iii wrapper info);
+#endif
+
+
+/**
+ *自动初始化
+ *uCOS-III兼容层支持按照uCOS-III原版的初始化步骤进行初始化，但是在有些情况，
+ *用户不想手动初始化uCOS-III兼容层，想要直接运行应用层任务或模块，则可以使用该
+ *宏定义。在rtconfig.h中定义本宏定义后，在RT-Thread初始化完成并进入到main线程之前
+ *会自动将uCOS-III兼容层初始化完毕，用户仅需要专注于uCOS-III的应用级任务即可。
+ */
+#ifdef PKG_USING_UCOSIII_WRAPPER_AUTOINIT
+#include <os_app_hooks.h>
+static int rt_ucosiii_autoinit(void)
+{
+    OS_ERR err;
+    
+    OSInit(&err);                                   /*uCOS-III操作系统初始化*/
+    OSStart(&err);                                  /*开始运行uCOS-III操作系统*/
+    
+    CPU_Init();
+    
+#if OS_CFG_APP_HOOKS_EN > 0u
+    App_OS_SetAllHooks();                           /*设置钩子函数*/
+#endif  
+    
+#if OS_CFG_STAT_TASK_EN > 0u
+    OSStatTaskCPUUsageInit(&err);  	                /*统计任务*/    
+    OSStatReset(&err);                              /*复位统计数据*/    
+#endif
+    
+    return 0;
+}
+INIT_COMPONENT_EXPORT(rt_ucosiii_autoinit);
 #endif
