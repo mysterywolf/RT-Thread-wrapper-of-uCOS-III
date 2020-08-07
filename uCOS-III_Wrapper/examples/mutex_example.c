@@ -56,7 +56,7 @@ static void AppTask2 (void *param)
 }
 
 
-void mutex_sample (void)
+void mutex_example (void)
 {
     OS_ERR err;
     

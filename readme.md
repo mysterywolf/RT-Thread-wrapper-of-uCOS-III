@@ -66,7 +66,7 @@ RT-Thread：https://www.rt-thread.org/
 ## 2.1 Keil-MDK仿真工程
 本仿真工程是基于STM32F103平台。
 
-Keil工程路径：*<u>rt-thread-3.1.3/bsp/stm32f103-msh-628/Project.uvprojx</u>*
+Keil工程路径：*<u>rt-thread-3.1.3/bsp/stm32f103/Project.uvprojx</u>*
 
 需要提前安装好RT-Thread Nano-3.1.3 Keil支持包：https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.1.3.pack
 

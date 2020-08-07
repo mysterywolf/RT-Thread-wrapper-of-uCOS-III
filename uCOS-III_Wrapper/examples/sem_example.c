@@ -106,7 +106,7 @@ static void AppTask3 (void *param)
 
 
 
-void sem_sample (void)
+void sem_example (void)
 {
     OS_ERR err;
 

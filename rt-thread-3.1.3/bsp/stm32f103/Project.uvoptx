@@ -1306,7 +1306,7 @@
   </Group>
 
   <Group>
-    <GroupName>uCOS-III_Wrapper/samples</GroupName>
+    <GroupName>uCOS-III_Wrapper/examples</GroupName>
     <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
@@ -1318,8 +1318,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\uCOS-III_Wrapper\samples\mutex_sample.c</PathWithFileName>
-      <FilenameWithoutPath>mutex_sample.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\uCOS-III_Wrapper\examples\mutex_example.c</PathWithFileName>
+      <FilenameWithoutPath>mutex_example.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1330,8 +1330,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\uCOS-III_Wrapper\samples\timer_sample.c</PathWithFileName>
-      <FilenameWithoutPath>timer_sample.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\uCOS-III_Wrapper\examples\q_example.c</PathWithFileName>
+      <FilenameWithoutPath>q_example.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1342,8 +1342,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\uCOS-III_Wrapper\samples\sem_sample.c</PathWithFileName>
-      <FilenameWithoutPath>sem_sample.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\uCOS-III_Wrapper\examples\sem_example.c</PathWithFileName>
+      <FilenameWithoutPath>sem_example.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1354,8 +1354,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\uCOS-III_Wrapper\samples\q_sample.c</PathWithFileName>
-      <FilenameWithoutPath>q_sample.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\uCOS-III_Wrapper\examples\task_sem_example.c</PathWithFileName>
+      <FilenameWithoutPath>task_sem_example.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1366,8 +1366,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\uCOS-III_Wrapper\samples\task_sem_sample.c</PathWithFileName>
-      <FilenameWithoutPath>task_sem_sample.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\uCOS-III_Wrapper\examples\timer_example.c</PathWithFileName>
+      <FilenameWithoutPath>timer_example.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

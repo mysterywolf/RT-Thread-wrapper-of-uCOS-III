@@ -62,7 +62,7 @@ static void thread2_entry(void *param)
 }
                  
 
-void task_sem_sample (void)
+void task_sem_example (void)
 {
     OS_ERR err;
         

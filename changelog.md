@@ -182,6 +182,10 @@
 
 - 增加`OS_TASK_STATE_SUSPENDED`任务状态
 
+### 2020-8-7
+
+- 将例程由sample字眼改成example
+
 
 
 

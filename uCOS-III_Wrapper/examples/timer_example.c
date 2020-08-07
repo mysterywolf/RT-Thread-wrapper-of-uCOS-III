@@ -55,7 +55,7 @@ static void AppTask1 (void *param)
     }
 }
 
-void timer_sample (void)
+void timer_example (void)
 {
     OS_ERR err;
 

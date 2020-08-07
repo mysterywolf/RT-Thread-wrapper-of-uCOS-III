@@ -81,7 +81,7 @@ static void AppTask2 (void *param)
 }
 
 
-void q_sample (void)
+void q_example (void)
 {
     OS_ERR err;
     

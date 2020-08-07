@@ -90,19 +90,19 @@ static void AppTaskStart(void *p_arg)
 
 
 /*示例任务*/
-void timer_sample (void);
-void mutex_sample (void);
-void sem_sample   (void);
-void q_sample     (void);
-void task_sem_sample (void);
+void timer_example (void);
+void mutex_example (void);
+void sem_example   (void);
+void q_example     (void);
+void task_sem_example (void);
 
 static void AppTaskCreate(void)
 {
     /*可以打开注释,运行测试例程*/
     
-//    timer_sample();
-//    mutex_sample();
-//    sem_sample();
-//    q_sample();
-//    task_sem_sample();
+//    timer_example();
+//    mutex_example();
+//    sem_example();
+//    q_example();
+//    task_sem_example();
 }

@@ -719,32 +719,32 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>uCOS-III_Wrapper/samples</GroupName>
+          <GroupName>uCOS-III_Wrapper/examples</GroupName>
           <Files>
             <File>
-              <FileName>mutex_sample.c</FileName>
+              <FileName>mutex_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\mutex_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\mutex_example.c</FilePath>
             </File>
             <File>
-              <FileName>timer_sample.c</FileName>
+              <FileName>q_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\timer_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\q_example.c</FilePath>
             </File>
             <File>
-              <FileName>sem_sample.c</FileName>
+              <FileName>sem_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\sem_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\sem_example.c</FilePath>
             </File>
             <File>
-              <FileName>q_sample.c</FileName>
+              <FileName>task_sem_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\q_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\task_sem_example.c</FilePath>
             </File>
             <File>
-              <FileName>task_sem_sample.c</FileName>
+              <FileName>timer_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\task_sem_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\timer_example.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1469,32 +1469,32 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>uCOS-III_Wrapper/samples</GroupName>
+          <GroupName>uCOS-III_Wrapper/examples</GroupName>
           <Files>
             <File>
-              <FileName>mutex_sample.c</FileName>
+              <FileName>mutex_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\mutex_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\mutex_example.c</FilePath>
             </File>
             <File>
-              <FileName>timer_sample.c</FileName>
+              <FileName>q_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\timer_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\q_example.c</FilePath>
             </File>
             <File>
-              <FileName>sem_sample.c</FileName>
+              <FileName>sem_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\sem_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\sem_example.c</FilePath>
             </File>
             <File>
-              <FileName>q_sample.c</FileName>
+              <FileName>task_sem_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\q_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\task_sem_example.c</FilePath>
             </File>
             <File>
-              <FileName>task_sem_sample.c</FileName>
+              <FileName>timer_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\task_sem_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\timer_example.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2219,32 +2219,32 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>uCOS-III_Wrapper/samples</GroupName>
+          <GroupName>uCOS-III_Wrapper/examples</GroupName>
           <Files>
             <File>
-              <FileName>mutex_sample.c</FileName>
+              <FileName>mutex_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\mutex_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\mutex_example.c</FilePath>
             </File>
             <File>
-              <FileName>timer_sample.c</FileName>
+              <FileName>q_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\timer_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\q_example.c</FilePath>
             </File>
             <File>
-              <FileName>sem_sample.c</FileName>
+              <FileName>sem_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\sem_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\sem_example.c</FilePath>
             </File>
             <File>
-              <FileName>q_sample.c</FileName>
+              <FileName>task_sem_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\q_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\task_sem_example.c</FilePath>
             </File>
             <File>
-              <FileName>task_sem_sample.c</FileName>
+              <FileName>timer_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\uCOS-III_Wrapper\samples\task_sem_sample.c</FilePath>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\timer_example.c</FilePath>
             </File>
           </Files>
         </Group>
