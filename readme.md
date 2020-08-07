@@ -17,7 +17,7 @@
 
 # 1 概述
 
-这是一个针对国产RT-Thread操作系统的μCOS-III操作系统兼容层，可以让基于美国Micriμm公司的μCOS-III操作系统的项目快速、无感地迁移到RT-Thread操作系统上。
+这是一个针对RT-Thread国产操作系统的μCOS-III操作系统兼容层，可以让基于美国Micriμm公司的μCOS-III操作系统的项目快速、无感地迁移到RT-Thread操作系统上。
 
 支持版本：μC/OS-III 3.00-3.08全部版本
 
@@ -596,17 +596,7 @@ msh >ucos --help
 
 
 
-# 6 支持
-
-如果您喜欢本项目**可以在本页右上角点一下Star**，可以赏我五毛钱，用以满足我小小的虚荣心，并激励我继续维护好这个项目。
-
-<img src="docs/pic/donate.png" style="zoom: 67%;" />
-
-
-
-
-
-# 7 许可
+# 6 许可
 
 采用 Apache-2.0 开源协议，细节请阅读项目中的 LICENSE 文件内容。
 
@@ -614,31 +604,9 @@ msh >ucos --help
 
 
 
-# 8 联系方式&致谢
+# 7 友情链接
 
-> 维护：Meco Man
->
-> 联系方式：jiantingman@foxmail.com
->
-> 主页：
->
-> https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III 
->
-> https://gitee.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III （更新迟滞）
-
-
-
-> 感谢RT-Thread工程师Willian Chan的技术支持：https://github.com/willianchanlovegithub
->
-> 感谢RT-Thread工程师yangjie的技术支持：https://github.com/yangjie11
-
-
-
-
-
-# 9 友情链接
-
-## 9.1 RT-Thread Nano移植教程
+## 7.1 RT-Thread Nano移植教程
 
 官方文档：
 
@@ -654,7 +622,7 @@ msh >ucos --help
 
 
 
-## 9.2 FinSH控制台
+## 7.2 RT-Thread FinSH控制台教程
 
 官方文档：
 
@@ -666,7 +634,45 @@ msh >ucos --help
 
 
 
-## 9.2 CMSIS-RTOS规范接口
+## 7.3 CMSIS-RTOS规范接口
 
 - 将RT-Thread内核封装成CMSIS-RTOS规范接口：https://github.com/RT-Thread-packages/CMSIS
 - 将FreeRTOS内核封装成CMSIS-RTOS规范接口：https://github.com/ARM-software/CMSIS-FreeRTOS
+
+
+
+
+
+# 8 联系方式&致谢&支持
+
+## 8.1 联系方式
+
+维护：Meco Man
+
+联系方式：jiantingman@foxmail.com
+
+
+
+## 8.2 主页
+
+> https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III 
+>
+> https://gitee.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III （更新迟滞）
+
+
+
+## 8.3 致谢
+
+- 感谢RT-Thread工程师Willian Chan的技术支持：https://github.com/willianchanlovegithub
+
+
+- 感谢RT-Thread工程师yangjie的技术支持：https://github.com/yangjie11
+
+
+
+## 8.4 支持
+
+如果您喜欢本项目**可以在本页右上角点一下Star**，可以赏我五毛钱，用以满足我小小的虚荣心，并激励我继续维护好这个项目。
+
+<img src="docs/pic/donate.png" style="zoom: 67%;" />
+
