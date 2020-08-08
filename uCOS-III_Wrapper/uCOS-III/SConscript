@@ -4,7 +4,8 @@ from building import *
 cwd = GetCurrentDir()
 src	= Glob('*.c')
 
-print(src)
+for item in src
+    print(item)
 
 # src = src + ['os.h','os_cfg.h','os_cfg_app.h']
 
