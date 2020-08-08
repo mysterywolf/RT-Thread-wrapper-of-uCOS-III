@@ -144,7 +144,11 @@
 
 
                                                             /* ------------------------- TIMER MANAGEMENT -------------------------- */
-#define  OS_CFG_TMR_EN             RT_USING_TIMER_SOFT      /* Ö»¶Á Enable (1) or Disable (0) code generation for TIMERS */
+#if defined RT_USING_TIMER_SOFT
+#define  OS_CFG_TMR_EN                   1u                 /* Ö»¶Á Enable (1) or Disable (0) code generation for TIMERS             */
+#else
+#define  OS_CFG_TMR_EN                   0u                 /* Ö»¶Á Enable (1) or Disable (0) code generation for TIMERS             */
+#endif
 #define  OS_CFG_TMR_DEL_EN               1u                 /* Enable (1) or Disable (0) code generation for OSTmrDel()              */
 
 
