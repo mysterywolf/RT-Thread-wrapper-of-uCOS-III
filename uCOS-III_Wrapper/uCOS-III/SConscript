@@ -3,6 +3,8 @@ from building import *
 
 cwd = GetCurrentDir()
 src	= Glob('*.c')
+src = src + ['os_cfg.h','os_cfg_app.h']
+
 CPPPATH = [cwd]
 
 group = DefineGroup('uCOS-III', src, depend = ['PKG_USING_UCOSIII_WRAPPER'], CPPPATH = CPPPATH)
