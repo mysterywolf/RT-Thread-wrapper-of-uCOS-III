@@ -51,7 +51,7 @@
 ************************************************************************************************************************
 */
 
-#define  OS_CFG_TASK_STK_LIMIT_PCT_EMPTY  10u               /* Stack limit position in percentage to empty            */
+#define  OS_CFG_TASK_STK_LIMIT_PCT_EMPTY  10u               /* Ö»¶Á Stack limit position in percentage to empty       */
 #define  OS_CFG_STAT_TASK_STK_LIMIT      ((OS_CFG_STAT_TASK_STK_SIZE  * OS_CFG_TASK_STK_LIMIT_PCT_EMPTY) / 100u)
 
                                                             /* ------------------- STATISTIC TASK ------------------- */
