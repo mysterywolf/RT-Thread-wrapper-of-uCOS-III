@@ -187,6 +187,10 @@
 - 将例程由sample字眼改成example
 - 增加`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏
 
+### 2020-8-8
+
+- 增加SConscript脚本，以支持env工具进行自动化添加软件包
+
 
 
 
