@@ -3,7 +3,14 @@ from building import *
 
 cwd = GetCurrentDir()
 src	= Glob('*.c')
-src = src + ['os_cfg.h','os_cfg_app.h']
+
+config_head = Split('''
+os.h
+os_cfg.h
+os_cfg_app.h
+''')
+
+src = src + config_head
 
 CPPPATH = [cwd]
 
