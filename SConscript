@@ -14,6 +14,9 @@ for d in list:
         objs = objs + SConscript(os.path.join(d, 'SConscript'))
 
 #delate non-used files
-shutil.rmtree(os.path.join(cwd,'rt-thread-3.1.3'))
-
+try:
+    shutil.rmtree(os.path.join(cwd,'rt-thread-3.1.3'))
+except:
+    pass
+    
 Return('objs')
