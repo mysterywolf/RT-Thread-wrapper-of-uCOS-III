@@ -645,15 +645,15 @@ struct os_q
 */
 
 struct  os_sem { 
-    struct  rt_semaphore Sem;
-    OS_OBJ_TYPE          Type;
+    struct  rt_semaphore  Sem;
+    OS_OBJ_TYPE           Type;
     CPU_CHAR             *NamePtr;                           /* Pointer to Semaphore Name (NUL terminated ASCII)       */
 #if OS_CFG_DBG_EN > 0u
     OS_SEM               *DbgPrevPtr;
     OS_SEM               *DbgNextPtr;
     CPU_CHAR             *DbgNamePtr;
 #endif
-    OS_SEM_CTR           Ctr;    
+    OS_SEM_CTR            Ctr;    
 };
 /*
 ------------------------------------------------------------------------------------------------------------------------
@@ -712,6 +712,7 @@ struct os_tcb
 #endif
     OS_STATE         TaskState;     /* See OS_TASK_STATE_xxx */
     OS_STATE         PendOn;        /* Indicates what task is pending on */
+
 #if OS_CFG_TASK_PROFILE_EN > 0u
 #if OS_CFG_DBG_EN > 0u
     CPU_STK         *StkPtr;        /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
@@ -799,25 +800,25 @@ struct  os_tmr {
 ************************************************************************************************************************
 ************************************************************************************************************************
 */
-extern           rt_uint8_t                 rt_current_priority;
-extern           rt_list_t                  rt_thread_priority_table[RT_THREAD_PRIORITY_MAX];
+extern            rt_uint8_t                rt_current_priority;
+extern            rt_list_t                 rt_thread_priority_table[RT_THREAD_PRIORITY_MAX];
 
-#define          OSSchedLockNestingCtr      rt_critical_level()         /* Lock nesting level                         */
-#define          OSIntNestingCtr            rt_interrupt_get_nest()     /* Interrupt nesting level                    */
-#define          OSTCBCurPtr                ((OS_TCB*)rt_thread_self()) /* Pointer to currently running TCB           */
+#define           OSSchedLockNestingCtr     rt_critical_level()         /* Lock nesting level                         */
+#define           OSIntNestingCtr           rt_interrupt_get_nest()     /* Interrupt nesting level                    */
+#define           OSTCBCurPtr               ((OS_TCB*)rt_thread_self()) /* Pointer to currently running TCB           */
                                                                         /* PRIORITIES ------------------------------- */
-#define          OSPrioCur                  rt_current_priority         /* Priority of current task                   */
-#define          OSPrioTbl                  rt_thread_priority_table
+#define           OSPrioCur                 rt_current_priority         /* Priority of current task                   */
+#define           OSPrioTbl                 rt_thread_priority_table
 
 #if OS_CFG_APP_HOOKS_EN > 0u
-OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskCreateHookPtr;    /* Application hooks                          */
-OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskDelHookPtr;
-OS_EXT           OS_APP_HOOK_VOID           OS_AppIdleTaskHookPtr;
-OS_EXT           OS_APP_HOOK_VOID           OS_AppStatTaskHookPtr;
+OS_EXT            OS_APP_HOOK_TCB           OS_AppTaskCreateHookPtr;    /* Application hooks                          */
+OS_EXT            OS_APP_HOOK_TCB           OS_AppTaskDelHookPtr;
+OS_EXT            OS_APP_HOOK_VOID          OS_AppIdleTaskHookPtr;
+OS_EXT            OS_APP_HOOK_VOID          OS_AppStatTaskHookPtr;
 
-OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskReturnHookPtr;
-OS_EXT           OS_APP_HOOK_VOID           OS_AppTaskSwHookPtr;
-OS_EXT           OS_APP_HOOK_VOID           OS_AppTimeTickHookPtr;
+OS_EXT            OS_APP_HOOK_TCB           OS_AppTaskReturnHookPtr;
+OS_EXT            OS_APP_HOOK_VOID          OS_AppTaskSwHookPtr;
+OS_EXT            OS_APP_HOOK_VOID          OS_AppTimeTickHookPtr;
 #endif
 
 OS_EXT            OS_STATE                  OSRunning;                  /* Flag indicating that kernel is running     */
