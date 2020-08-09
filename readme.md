@@ -604,9 +604,27 @@ msh >ucos --help
 
 
 
-# 6 许可
+# 6 Env工具自动化配置到工程中
 
-采用 Apache-2.0 开源协议，细节请阅读项目中的 LICENSE 文件内容。
+## 6.1 配置方法
+
+uCOS-III兼容层在RT-Thread Nano版中需要手动添加到工程中，但如果使用RT-Thread完整版，则可以通过Env工具进行自动化添加到工程中。方法如下：
+
+```
+RT-Thread online packages
+    system packages --->
+        [*] uCOS-III Wrapper: uCOS-III APIs wrapper --->
+            [*]   Enable uCOS-III wrapper automatically init
+            Version (latest)  --->
+```
+
+
+
+## 6.2 可选功能说明
+
+### 6.2.1 Enable uCOS-III wrapper automatically init
+
+​	uCOS-III兼容层支持按照uCOS-III原版的初始化步骤进行初始化，但是在有些情况，用户不想手动初始化uCOS-III兼容层，想要直接运行应用层任务或模块，则可以使用该宏定义。在rtconfig.h中定义本宏定义后，在RT-Thread初始化完成并进入到main线程之前会自动将uCOS-III兼容层初始化完毕，用户仅需要专注于uCOS-III的应用级任务即可。
 
 
 
@@ -651,7 +669,7 @@ msh >ucos --help
 
 
 
-# 8 联系方式&致谢&支持
+# 8 其他
 
 ## 8.1 联系方式
 
@@ -678,7 +696,13 @@ msh >ucos --help
 
 
 
-## 8.4 支持
+## 8.4 协议
+
+采用 Apache-2.0 开源协议，细节请阅读项目中的 LICENSE 文件内容。
+
+
+
+## 8.5 支持
 
 如果您喜欢本项目**可以在本页右上角点一下Star**，可以赏我五毛钱，用以满足我小小的虚荣心，并激励我继续维护好这个项目。
 
