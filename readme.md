@@ -33,13 +33,15 @@
 
 - 避免在从μCOS-III迁移到RT-Thread时，由于μCOS-III的编程经验导致的思维定式引发的错误，这种错误一般很难被发现 
   
-     > ​    例如：1. 两个操作系统对于任务/线程挂起、解挂函数的区别。   
-     > ​                   RT-Thread不支持任务嵌套挂起、解挂   
-     > ​                   μCOS-III支持任务嵌套挂起、解挂
+     > ​    例如：
      >
-     > ​                2. 软件定时器参数的不同
+     > 1. 两个操作系统对于任务/线程挂起、解挂函数的区别。   
+     > RT-Thread不支持任务嵌套挂起、解挂   
+     > ​μCOS-III支持任务嵌套挂起、解挂
      >
-     > ​                3. 任务堆栈的数据类型不同
+     > 2. 软件定时器参数的不同
+     >
+     > 3. 务堆栈的数据类型不同
      
 - 本兼容层实现了与Micriμm公司专门为其旗下产品μC/OS等开发的专用软件μC/Probe的对接，可以通过该软件以图像化形式查看、调试RT-Thread内核以及μCOS-III兼容层的相关信息
 
@@ -219,15 +221,17 @@ int main(void) /*RT-Thread main线程*/
                  &err);
     ```
 
-2. **切勿将RT-Thread和μCOS-III的API混搭使用。**   
+2. **切勿将同一个内核对象/线程的RT-Thread和μCOS-III的API混搭使用。**   
     例如RT-Thread中的`rt_thread_suspend` / `rt_thread_resume` 函数仅支持一次挂起/解挂；而μCOS-III的`OSTaskSuspend` / `OSTaskResume` 函数是支持嵌套挂起/解挂的，为此需要继承`struct rt_thread`结构体并在其基础上增加成员`.SuspendCtr`变量实现该功能。若采用`rt_thread_init`函数初始化线程，该函数并不会管理μCOS-III兼容层的成员变量，`.SuspendCtr`也不会创建和初始化，若此时调用`OSTaskSuspend` / `OSTaskResume`函数试图指向`.SuspendCtr`成员变量，将会访问非法内存地址(因为`rt_thread_init`初始化的线程`.SuspendCtr`成员变量根本不存在)！
+   
+   但是允许非同一个内核对象/线程的RT-Thread和μCOS-III的API混搭使用。例如可以使用`OSTaskCreate`函数创建任务，同时在该任务内部可以使用RT-Thread的信号量API进行操作。总之，如果你用μCOS-III的API创建内核对象或者线程，在后续对**该**内核对象或任务的操作必须沿用μCOS-III的API；反之，也必须沿用RT-Thread的API。
    
 3. 兼容层取消了原版μCOS-III中的时间戳功能  
     在μCOS-III中，时间戳主要用于测量中断关闭时间，以及任务单次执行时间以及最大时间等涉及到精度较高的时长测量。该特性在μCOS-II以及RT-Thread中均没有，因此本兼容层不予实现。
-   
+
 4. 兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能  
     该功能在原版3.05.00版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06.00版本开始删除了该功能，因此本兼容层不再予以实现。
-    
+
 5. 本封装层文件内含有中文，编码格式ANSI - GB2312，并非UTF-8编码。
 
 
