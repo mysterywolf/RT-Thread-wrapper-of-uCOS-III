@@ -726,6 +726,11 @@ struct os_tcb
     OS_TASK_PTR      TaskEntryAddr; /* Pointer to task entry point address */
     void            *TaskEntryArg;  /* Argument passed to task when it was created */
     OS_PRIO          Prio;          /* Task priority (0 == highest) */          
+#if OS_CFG_FLAG_EN > 0u
+    OS_FLAGS         FlagsPend;     /* Event flag(s) to wait on */
+    OS_FLAGS         FlagsRdy;      /* Event flags that made task ready to run */
+    OS_OPT           FlagsOpt;      /* Options (See OS_OPT_FLAG_xxx) */
+#endif
 #endif
 };
 
