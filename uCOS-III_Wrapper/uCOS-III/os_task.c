@@ -1706,6 +1706,7 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
 #endif
     p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;    
     p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
+    
 #if OS_CFG_TASK_PROFILE_EN > 0u   
 #if OS_CFG_DBG_EN > 0u 
     p_tcb->StkPtr             = (CPU_STK       *)0;
@@ -1718,7 +1719,12 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->NamePtr            = (CPU_CHAR      *)((void *)"?Task");
     p_tcb->TaskEntryAddr      = (OS_TASK_PTR    )0;
     p_tcb->TaskEntryArg       = (void          *)0;
-    p_tcb->Prio               = (OS_PRIO        )OS_PRIO_INIT;   
+    p_tcb->Prio               = (OS_PRIO        )OS_PRIO_INIT;
+#if OS_CFG_FLAG_EN > 0u
+    p_tcb->FlagsPend          = (OS_FLAGS       )0u;
+    p_tcb->FlagsOpt           = (OS_OPT         )0u;
+    p_tcb->FlagsRdy           = (OS_FLAGS       )0u;
+#endif    
 #endif    
     CPU_CRITICAL_EXIT();
 }

@@ -633,7 +633,7 @@ struct os_q
 #if OS_CFG_DBG_EN > 0u
     OS_Q                *DbgPrevPtr;
     OS_Q                *DbgNextPtr;
-    CPU_CHAR            *DbgNamePtr;
+    CPU_CHAR            *DbgNamePtr;                        /*等待该内核对象挂起表中第一个任务的名字*/
 #endif
 };
 #endif
@@ -647,11 +647,11 @@ struct os_q
 struct  os_sem { 
     struct  rt_semaphore  Sem;
     OS_OBJ_TYPE           Type;
-    CPU_CHAR             *NamePtr;                           /* Pointer to Semaphore Name (NUL terminated ASCII)       */
+    CPU_CHAR             *NamePtr;                          /* Pointer to Semaphore Name (NUL terminated ASCII)       */
 #if OS_CFG_DBG_EN > 0u
     OS_SEM               *DbgPrevPtr;
     OS_SEM               *DbgNextPtr;
-    CPU_CHAR             *DbgNamePtr;
+    CPU_CHAR             *DbgNamePtr;                       /*等待该内核对象挂起表中第一个任务的名字*/
 #endif
     OS_SEM_CTR            Ctr;    
 };
@@ -669,7 +669,7 @@ struct  os_flag_grp {
 #if OS_CFG_DBG_EN > 0u
     OS_FLAG_GRP         *DbgPrevPtr;
     OS_FLAG_GRP         *DbgNextPtr;
-    CPU_CHAR            *DbgNamePtr;
+    CPU_CHAR            *DbgNamePtr;                        /*等待该内核对象挂起表中第一个任务的名字*/
 #endif
 };
 
@@ -708,7 +708,7 @@ struct os_tcb
 #if OS_CFG_DBG_EN > 0u
     OS_TCB          *DbgPrevPtr;
     OS_TCB          *DbgNextPtr;  
-    CPU_CHAR        *DbgNamePtr;
+    CPU_CHAR        *DbgNamePtr;    /*正在等待内核对象的名称*/
 #endif
     OS_STATE         TaskState;     /* See OS_TASK_STATE_xxx */
     OS_STATE         PendOn;        /* Indicates what task is pending on */
@@ -727,9 +727,9 @@ struct os_tcb
     void            *TaskEntryArg;  /* Argument passed to task when it was created */
     OS_PRIO          Prio;          /* Task priority (0 == highest) */          
 #if OS_CFG_FLAG_EN > 0u
-    OS_FLAGS         FlagsPend;     /* Event flag(s) to wait on */
-    OS_FLAGS         FlagsRdy;      /* Event flags that made task ready to run */
-    OS_OPT           FlagsOpt;      /* Options (See OS_OPT_FLAG_xxx) */
+    OS_FLAGS         FlagsPend;     /* （未完成）Event flag(s) to wait on */
+    OS_FLAGS         FlagsRdy;      /* （未完成）Event flags that made task ready to run */
+    OS_OPT           FlagsOpt;      /* （未完成）Options (See OS_OPT_FLAG_xxx) */
 #endif
 #endif
 };
@@ -764,13 +764,13 @@ struct  os_mutex {
     struct rt_mutex     Mutex;
     CPU_CHAR           *NamePtr;
     OS_OBJ_TYPE         Type;
-    OS_NESTING_CTR      OwnerNestingCtr;                   /* Mutex is available when the counter is 0               */
+    OS_NESTING_CTR      OwnerNestingCtr;                    /* Mutex is available when the counter is 0               */
     OS_TCB             *OwnerTCBPtr;
     OS_PRIO             OwnerOriginalPrio;
 #if OS_CFG_DBG_EN > 0u
     OS_MUTEX           *DbgPrevPtr;
     OS_MUTEX           *DbgNextPtr;
-    CPU_CHAR           *DbgNamePtr;
+    CPU_CHAR           *DbgNamePtr;                         /*等待该内核对象挂起表中第一个任务的名字*/
 #endif  
 };
 

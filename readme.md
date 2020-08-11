@@ -683,7 +683,7 @@ RT-Thread online packages
 
 > https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III 
 >
-> https://gitee.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III （更新迟滞）
+> https://gitee.com/mysterywolf/RT-Thread-wrapper-of-uCOS-III （国内镜像，定时同步）
 
 
 
