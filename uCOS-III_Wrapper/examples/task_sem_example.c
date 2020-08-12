@@ -33,7 +33,6 @@ static void thread1_entry(void *param)
     {
         OSTaskSemPost(&thread2,OS_OPT_POST_NONE,&err);
         OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_HMSM_NON_STRICT,&err);
-        //OSTaskSemPendAbort(&thread2,OS_OPT_POST_NONE,&err);
     }
 }
     

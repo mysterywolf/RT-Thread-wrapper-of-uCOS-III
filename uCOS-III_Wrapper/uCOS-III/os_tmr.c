@@ -215,6 +215,8 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)p_callback;
     p_tmr->CallbackPtrArg = (void              *)p_callback_arg;
     p_tmr->Opt            = (OS_OPT             )opt;
+    p_tmr->Match          = (OS_TICK            )0;
+    p_tmr->Remain         = (OS_TICK            )0;
     p_tmr->Period         = (OS_TICK            )period;
     p_tmr->Dly            = (OS_TICK            )dly;
     p_tmr->_dly           = (OS_TICK            )dly;/*该变量为内部变量,用于带有延迟的周期延时*/
@@ -729,6 +731,8 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)0;
     p_tmr->CallbackPtrArg = (void              *)0;
     p_tmr->Opt            = (OS_OPT             )0;
+    p_tmr->Match          = (OS_TICK            )0;
+    p_tmr->Remain         = (OS_TICK            )0;
     p_tmr->Period         = (OS_TICK            )0;
     p_tmr->Dly            = (OS_TICK            )0;
     p_tmr->_dly           = (OS_TICK            )0;

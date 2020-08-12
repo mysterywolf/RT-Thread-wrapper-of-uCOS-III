@@ -603,7 +603,6 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 |            Item            |                 列表序号                 |
 |            Name            |                信号量名称                |
 |          Counter           |              信号量的计数值              |
-|     Pend List Entries      |          等待该信号量的任务数量          |
 | High Priority Task Waiting | 等待该信号量的列表中最高优先级任务的名称 |
 
 
@@ -616,7 +615,6 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 |            Name            |                互斥量名称                |
 |      Nesting Counter       |            互斥量递归调用深度            |
 |    Owner Original Prio     |      拥有该互斥量的任务的原始优先级      |
-|     Pend List Entries      |          等待该互斥量的任务数量          |
 | High Priority Task Waiting | 等待该互斥量的列表中最高优先级任务的名称 |
 
 
@@ -628,32 +626,43 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 |            Item            |                   列表序号                   |
 |            Name            |                事件标志组名称                |
 |           Flags            |                     事件                     |
-|     Pend List Entries      |          等待该事件标志组的任务数量          |
 | High Priority Task Waiting | 等待该事件标志组的列表中最高优先级任务的名称 |
 
 
 
 ### 4.3.5 Queue(s)选项卡可用项
 
-
+|         可用项名称         |                     说明                     |
+| :------------------------: | :------------------------------------------: |
+|            Item            |                   列表序号                   |
+|            Name            |                 消息队列名称                 |
+| High Priority Task Waiting | 等待该事件标志组的列表中最高优先级任务的名称 |
 
 
 
 ### 4.3.6 Timers选项卡可用项
 
-
+|         可用项名称         |          说明          |
+| :------------------------: | :--------------------: |
+|            Item            |        列表序号        |
+|            Name            |       定时器名称       |
+|            Mode            |       定时器模式       |
+|           State            |       定时器状态       |
+|           Period           |     定时器周期大小     |
+| Callback Function Pointer  |   定时器回调函数地址   |
+| Callback Function Argument | 定时器回调函数参数地址 |
 
 
 
 ### 4.3.7 Tick Lists选项卡可用项
 
-
+无可用项。
 
 
 
 ### 4.3.8 Memory Partition(s)选项卡可用项
 
-全部可用
+全部可用。
 
 
 

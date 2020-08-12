@@ -788,9 +788,11 @@ struct  os_tmr {
     void                *CallbackPtrArg;                    /* Argument to pass to function when timer expires        */
     OS_STATE             State;
     OS_OPT               Opt;                               /* Options (see OS_OPT_TMR_xxx)                           */
+    OS_TICK              Match;                             /* Timer expires when OSTmrTickCtr matches this value     */
+    OS_TICK              Remain;                            /* Amount of time remaining before timer expires          */
     OS_TICK              Dly;                               /* Delay before start of repeat                           */
     OS_TICK              Period;                            /* Period to repeat timer                                 */
-    OS_TICK              _dly;                              /* 该变量为内部变量,用于带有延迟的周期延时*/
+    OS_TICK              _dly;                              /* 该变量为兼容层内部使用,用于带有延迟的周期延时          */
 #if OS_CFG_DBG_EN > 0u
     OS_TMR              *DbgPrevPtr;
     OS_TMR              *DbgNextPtr;

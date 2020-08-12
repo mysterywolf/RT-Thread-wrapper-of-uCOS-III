@@ -100,7 +100,7 @@ static void AppTaskCreate(void)
 {
     /*可以打开注释,运行测试例程*/
     
-//    timer_example();
+    timer_example();
 //    mutex_example();
 //    sem_example();
 //    q_example();
