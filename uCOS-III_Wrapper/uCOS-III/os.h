@@ -633,7 +633,7 @@ struct os_q
 #if OS_CFG_DBG_EN > 0u
     OS_Q                *DbgPrevPtr;
     OS_Q                *DbgNextPtr;
-    CPU_CHAR            *DbgNamePtr;                        /*等待该内核对象挂起表中第一个任务的名字*/
+    CPU_CHAR            *DbgNamePtr;                        /* 等待该内核对象挂起表中第一个任务的名字*/
 #endif
 };
 #endif
@@ -669,7 +669,7 @@ struct  os_flag_grp {
 #if OS_CFG_DBG_EN > 0u
     OS_FLAG_GRP         *DbgPrevPtr;
     OS_FLAG_GRP         *DbgNextPtr;
-    CPU_CHAR            *DbgNamePtr;                        /*等待该内核对象挂起表中第一个任务的名字*/
+    CPU_CHAR            *DbgNamePtr;                        /* 等待该内核对象挂起表中第一个任务的名字*/
 #endif
 };
 
@@ -680,19 +680,19 @@ struct  os_flag_grp {
 */
 struct os_tcb
 {
-    struct rt_thread Task;          /*任务,要确保该成员位于结构体第一个*/
-    OS_SEM           Sem;           /*任务内建信号量*/
-    CPU_BOOLEAN      SemCreateSuc;  /*标记任务内建信号量是否创建成功*/
+    struct rt_thread Task;          /* 任务,要确保该成员位于结构体第一个*/
+    OS_SEM           Sem;           /* 任务内建信号量*/
+    CPU_BOOLEAN      SemCreateSuc;  /* 标记任务内建信号量是否创建成功*/
 #if OS_CFG_TASK_Q_EN > 0u      
-    OS_Q             MsgQ;          /*任务内建消息队列*/
-    void            *MsgPtr;        /*任务内建消息队列消息指针*/
-    OS_MSG_SIZE      MsgSize;       /*任务内建消息队列消息大小*/
-    CPU_BOOLEAN      MsgCreateSuc;  /*标记任务内建消息队列是否创建成功*/
+    OS_Q             MsgQ;          /* 任务内建消息队列*/
+    void            *MsgPtr;        /* 任务内建消息队列消息指针*/
+    OS_MSG_SIZE      MsgSize;       /* 任务内建消息队列消息大小*/
+    CPU_BOOLEAN      MsgCreateSuc;  /* 标记任务内建消息队列是否创建成功*/
 #endif    
-    void            *ExtPtr;        /*指向用户附加区指针*/
+    void            *ExtPtr;        /* 指向用户附加区指针*/
 
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u       
-    OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];/*任务寄存器*/
+    OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];/* 任务寄存器*/
 #endif    
 
     OS_STATUS        PendStatus;    /* Pend status：OS_STATUS_PEND_ABORT OS_STATUS_PEND_OK可用*/ 
@@ -708,7 +708,7 @@ struct os_tcb
 #if OS_CFG_DBG_EN > 0u
     OS_TCB          *DbgPrevPtr;
     OS_TCB          *DbgNextPtr;  
-    CPU_CHAR        *DbgNamePtr;    /*正在等待内核对象的名称*/
+    CPU_CHAR        *DbgNamePtr;    /* 正在等待内核对象的名称*/
 #endif
     OS_STATE         TaskState;     /* See OS_TASK_STATE_xxx */
     OS_STATE         PendOn;        /* Indicates what task is pending on */
@@ -727,9 +727,9 @@ struct os_tcb
     void            *TaskEntryArg;  /* Argument passed to task when it was created */
     OS_PRIO          Prio;          /* Task priority (0 == highest) */          
 #if OS_CFG_FLAG_EN > 0u
-    OS_FLAGS         FlagsPend;     /* （未完成）Event flag(s) to wait on */
-    OS_FLAGS         FlagsRdy;      /* （未完成）Event flags that made task ready to run */
-    OS_OPT           FlagsOpt;      /* （未完成）Options (See OS_OPT_FLAG_xxx) */
+    OS_FLAGS         FlagsPend;     /* Event flag(s) to wait on */
+    OS_FLAGS         FlagsRdy;      /* Event flags that made task ready to run */
+    OS_OPT           FlagsOpt;      /* Options (See OS_OPT_FLAG_xxx) */
 #endif
 #endif
 };
@@ -770,7 +770,7 @@ struct  os_mutex {
 #if OS_CFG_DBG_EN > 0u
     OS_MUTEX           *DbgPrevPtr;
     OS_MUTEX           *DbgNextPtr;
-    CPU_CHAR           *DbgNamePtr;                         /*等待该内核对象挂起表中第一个任务的名字*/
+    CPU_CHAR           *DbgNamePtr;                         /* 等待该内核对象挂起表中第一个任务的名字*/
 #endif  
 };
 

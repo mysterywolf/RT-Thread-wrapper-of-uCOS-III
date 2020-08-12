@@ -306,3 +306,22 @@
 
 
 
+## TODO
+
+OS_TCB
+
+```c
+	OS_FLAGS         FlagsPend;     /* Event flag(s) to wait on */
+    OS_FLAGS         FlagsRdy;      /* Event flags that made task ready to run */
+    OS_OPT           FlagsOpt;      /* Options (See OS_OPT_FLAG_xxx) */
+```
+
+
+
+OS_TMR
+
+```c
+    OS_TICK              Match;                             /* Timer expires when OSTmrTickCtr matches this value     */
+    OS_TICK              Remain;                            /* Amount of time remaining before timer expires          */
+```
+
