@@ -575,7 +575,85 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 ​	本兼容层已经实现与μC/Probe的对接，虽然不能和原版μCOS-III一样将所有内核信息全部显示，但是绝大多数信息以及所有内核关键信息均已实现与μC/Probe的对接。同时用户可以借助本兼容层，实现通过μC/Probe直接显示、调试RT-Thread内核信息和数据。
 
+​	**目前可以查看的任务以及内核对象信息，如下所示。**
 
+### 4.3.1 Task(s)选项卡可用项
+
+|    可用项名称     |                             说明                             |
+| :---------------: | :----------------------------------------------------------: |
+|       Item        |                           列表序号                           |
+|       Name        |                           任务名称                           |
+|       Prio        |                          任务优先级                          |
+|       State       | 任务状态<br /> Ready 任务就绪<br /> Pend 任务正在等待内核对象 <br /> Suspend 任务挂起 <br /> Delay 任务延时中 |
+| Pending On Object |   若任务处于Pend等待内核对象状态，则显示等待内核对象的种类   |
+|    Pending On     |   若任务处于Pend等待内核对象状态，则显示等待内核对象的名称   |
+|       #Used       |                     任务堆栈最大使用情况                     |
+|       #Free       |                     任务堆栈最小剩余情况                     |
+|       Size        |                    初始分配任务堆栈的大小                    |
+|    Stack Usage    |                          堆栈使用率                          |
+|       Name        |                       堆栈静态数组名称                       |
+|        SP         |                     堆栈指针/堆栈基地址                      |
+
+
+
+### 4.3.2 Semaphore(s) 选项卡可用项
+
+|         可用项名称         |                   说明                   |
+| :------------------------: | :--------------------------------------: |
+|            Item            |                 列表序号                 |
+|            Name            |                信号量名称                |
+|          Counter           |              信号量的计数值              |
+|     Pend List Entries      |          等待该信号量的任务数量          |
+| High Priority Task Waiting | 等待该信号量的列表中最高优先级任务的名称 |
+
+
+
+### 4.3.3 Mutex(s)选项卡可用项
+
+|         可用项名称         |                   说明                   |
+| :------------------------: | :--------------------------------------: |
+|            Item            |                 列表序号                 |
+|            Name            |                互斥量名称                |
+|      Nesting Counter       |            互斥量递归调用深度            |
+|    Owner Original Prio     |      拥有该互斥量的任务的原始优先级      |
+|     Pend List Entries      |          等待该互斥量的任务数量          |
+| High Priority Task Waiting | 等待该互斥量的列表中最高优先级任务的名称 |
+
+
+
+### 4.3.4 Event Flag(s)选项卡可用项
+
+|         可用项名称         |                     说明                     |
+| :------------------------: | :------------------------------------------: |
+|            Item            |                   列表序号                   |
+|            Name            |                事件标志组名称                |
+|           Flags            |                     事件                     |
+|     Pend List Entries      |          等待该事件标志组的任务数量          |
+| High Priority Task Waiting | 等待该事件标志组的列表中最高优先级任务的名称 |
+
+
+
+### 4.3.5 Queue(s)选项卡可用项
+
+
+
+
+
+### 4.3.6 Timers选项卡可用项
+
+
+
+
+
+### 4.3.7 Tick Lists选项卡可用项
+
+
+
+
+
+### 4.3.8 Memory Partition(s)选项卡可用项
+
+全部可用
 
 
 
@@ -625,6 +703,45 @@ RT-Thread online packages
 ### 6.2.1 Enable uCOS-III wrapper automatically init
 
 ​	uCOS-III兼容层支持按照uCOS-III原版的初始化步骤进行初始化，但是在有些情况，用户不想手动初始化uCOS-III兼容层，想要直接运行应用层任务或模块，则可以使用该宏定义。在rtconfig.h中定义本宏定义后，在RT-Thread初始化完成并进入到main线程之前会自动将uCOS-III兼容层初始化完毕，用户仅需要专注于uCOS-III的应用级任务即可。
+
+​	若将该功能开启，则会`rtconfig.h`文件中中定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏。在`os_rtwrap.c`文件中的以下函数将被使能并**在RT-Thread初始化时自动执行**。
+
+```c
+/**
+ * 自动初始化
+ * uCOS-III兼容层支持按照uCOS-III原版的初始化步骤进行初始化，但是在有些情况，
+ * 用户不想手动初始化uCOS-III兼容层，想要直接运行应用层任务或模块，则可以使用该
+ * 宏定义。在rtconfig.h中定义本宏定义后，在RT-Thread初始化完成并进入到main线程之前
+ * 会自动将uCOS-III兼容层初始化完毕，用户仅需要专注于uCOS-III的应用级任务即可。
+ * The wrapper supports uCOS-III standard startup procedure. Alternatively,
+ * if you want to run uCOS-III apps directly and ignore the startup procedure, 
+ * you can choose this option.
+ */
+#ifdef PKG_USING_UCOSIII_WRAPPER_AUTOINIT
+#include <os_app_hooks.h>
+static int rt_ucosiii_autoinit(void)
+{
+    OS_ERR err;
+    
+    OSInit(&err);                                   /*uCOS-III操作系统初始化*/
+    OSStart(&err);                                  /*开始运行uCOS-III操作系统*/
+    
+    CPU_Init();
+    
+#if OS_CFG_APP_HOOKS_EN > 0u
+    App_OS_SetAllHooks();                           /*设置钩子函数*/
+#endif  
+    
+#if OS_CFG_STAT_TASK_EN > 0u
+    OSStatTaskCPUUsageInit(&err);  	                /*统计任务*/    
+    OSStatReset(&err);                              /*复位统计数据*/    
+#endif
+    
+    return 0;
+}
+INIT_COMPONENT_EXPORT(rt_ucosiii_autoinit);
+#endif
+```
 
 
 
@@ -696,7 +813,7 @@ RT-Thread online packages
 
 
 
-## 8.4 协议
+## 8.4 开源协议
 
 采用 Apache-2.0 开源协议，细节请阅读项目中的 LICENSE 文件内容。
 
