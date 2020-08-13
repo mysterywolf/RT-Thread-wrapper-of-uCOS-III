@@ -215,7 +215,6 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)p_callback;
     p_tmr->CallbackPtrArg = (void              *)p_callback_arg;
     p_tmr->Opt            = (OS_OPT             )opt;
-    p_tmr->Match          = (OS_TICK            )0;
     p_tmr->Remain         = (OS_TICK            )0;
     p_tmr->Period         = (OS_TICK            )period;
     p_tmr->Dly            = (OS_TICK            )dly;
@@ -254,6 +253,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     OS_TmrDbgListAdd(p_tmr);
 #endif
     OSTmrQty++;                                             /* Keep track of the number of timers created             */                  
+    p_tmr->Match = p_tmr->Tmr.timeout_tick;
     CPU_CRITICAL_EXIT();
 }
 
@@ -408,7 +408,7 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
 #endif
     
     *p_err = OS_ERR_NONE;  
-    return rt_tick_get() - p_tmr->Tmr.timeout_tick;
+    return p_tmr->Tmr.timeout_tick - rt_tick_get();
 }
 
 /*

@@ -195,6 +195,12 @@
 
 - 完善readme文档
 
+### 2020-8-13
+
+-  修复`OSTmrRemainGet`函数计算剩余时间的错误
+
+
+
 
 
 
@@ -303,6 +309,8 @@
 ## v0.6.0
 
 **[add]** 增加`OS_TASK_STATE_SUSPENDED`任务状态
+
+**[bug fix]** 修复`OSTmrRemainGet`函数计算剩余时间的错误
 
 
 
