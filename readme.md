@@ -648,7 +648,9 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 |            Name            |       定时器名称       |
 |            Mode            |       定时器模式       |
 |           State            |       定时器状态       |
-|           Period           |     定时器周期大小     |
+|        Time Remain         |     定时器剩余时长     |
+|        Start Delay         |      首次延时时长      |
+|           Period           |   定时器周期延时时长   |
 | Callback Function Pointer  |   定时器回调函数地址   |
 | Callback Function Argument | 定时器回调函数参数地址 |
 

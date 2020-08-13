@@ -758,8 +758,7 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
 
 #if OS_CFG_DBG_EN > 0u
 void  OS_TmrDbgListAdd (OS_TMR  *p_tmr)
-{
-    
+{ 
     p_tmr->DbgPrevPtr               = (OS_TMR *)0;
     if (OSTmrDbgListPtr == (OS_TMR *)0) {
         p_tmr->DbgNextPtr           = (OS_TMR *)0;
