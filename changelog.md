@@ -198,6 +198,7 @@
 ### 2020-8-13
 
 -  修复`OSTmrRemainGet`函数计算剩余时间的错误
+-  实现`OS_TMR`结构体`.Match`成员变量
 
 
 
@@ -312,6 +313,8 @@
 
 **[bug fix]** 修复`OSTmrRemainGet`函数计算剩余时间的错误
 
+**[add]**  实现`OS_TMR`结构体`.Match`成员变量
+
 
 
 # TODO
@@ -329,7 +332,6 @@ OS_TCB
 OS_TMR
 
 ```c
-    OS_TICK              Match;                             /* Timer expires when OSTmrTickCtr matches this value     */
     OS_TICK              Remain;                            /* Amount of time remaining before timer expires          */
 ```
 

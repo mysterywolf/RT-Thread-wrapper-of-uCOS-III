@@ -850,13 +850,6 @@ void OS_TmrCallback(void *p_ara)
     OSSchedLock(&err);
     p_tmr->CallbackPtr((void *)p_tmr, p_tmr->CallbackPtrArg);
     OSSchedUnlock(&err);
-    
-    CPU_CRITICAL_ENTER();
-    if(p_tmr->Opt == OS_OPT_TMR_ONE_SHOT)
-    {
-        p_tmr->State = OS_TMR_STATE_COMPLETED;
-    }
-    CPU_CRITICAL_EXIT();   
 
     if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->_dly && p_tmr->Period)
     {
@@ -868,5 +861,13 @@ void OS_TmrCallback(void *p_ara)
         p_tmr->Tmr.parent.flag |= RT_TIMER_FLAG_PERIODIC;/*定时器设置为周期模式*/
         CPU_CRITICAL_EXIT();
         rt_timer_start(&(p_tmr->Tmr));/*开启定时器*/
-    }        
+    } 
+
+    CPU_CRITICAL_ENTER();
+    if(p_tmr->Opt == OS_OPT_TMR_ONE_SHOT)
+    {
+        p_tmr->State = OS_TMR_STATE_COMPLETED;
+    }
+    p_tmr->Match = rt_tick_get() + p_tmr->Tmr.init_tick;
+    CPU_CRITICAL_EXIT();      
 }
