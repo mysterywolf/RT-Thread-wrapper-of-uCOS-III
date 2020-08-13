@@ -299,7 +299,7 @@
 
 **[add]** 实现与μC/Probe软件的对接以及对接所需的必要成员变量
 
-**[bug fix]** 修复`OSMutexPendAbort`、`OSSemPendAbort`、`OSQPendAbort`、`OSFlagPendAbort`函数返回值由当前还有多少任务在等待该内核对象 改为 放弃了多少个任务
+**[bug fix]** 修复`OSMutexPendAbort`、`OSSemPendAbort`、`OSQPendAbort`、`OSFlagPendAbort`函数返回值由 当前还有多少任务在等待该内核对象 改为 放弃了多少个任务
 
 **[bug fix]** 修复了CPU使用率突然飙升至100%的问题，该问题为μCOS-III原版（3.03版本）内部bug，即便是最新版的3.08版本该问题依然没有得到彻底解决（仅仅是将飙升至100%改成了骤降至0%）
 
