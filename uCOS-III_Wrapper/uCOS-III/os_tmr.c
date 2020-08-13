@@ -829,6 +829,7 @@ void  OS_TmrInit (OS_ERR  *p_err)
 #endif
 }
 
+
 /*
 ************************************************************************************************************************
 *                                                   内部回调函数
@@ -846,11 +847,6 @@ void OS_TmrCallback(void *p_ara)
     
     p_tmr = (OS_TMR*)p_ara;
         
-    /*调用真正uCOS-III的软件定时器回调函数*/
-    OSSchedLock(&err);
-    p_tmr->CallbackPtr((void *)p_tmr, p_tmr->CallbackPtrArg);
-    OSSchedUnlock(&err);
-
     if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->_dly && p_tmr->Period)
     {
         /*带有延迟的周期延时，延迟延时已经完毕，开始进行正常周期延时*/
@@ -869,5 +865,10 @@ void OS_TmrCallback(void *p_ara)
         p_tmr->State = OS_TMR_STATE_COMPLETED;
     }
     p_tmr->Match = rt_tick_get() + p_tmr->Tmr.init_tick;
-    CPU_CRITICAL_EXIT();      
+    CPU_CRITICAL_EXIT();    
+
+    /*调用真正uCOS-III的软件定时器回调函数*/
+    OSSchedLock(&err);
+    p_tmr->CallbackPtr((void *)p_tmr, p_tmr->CallbackPtrArg);
+    OSSchedUnlock(&err);    
 }
