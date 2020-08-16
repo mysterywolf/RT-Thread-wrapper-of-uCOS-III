@@ -200,6 +200,10 @@
 -  修复`OSTmrRemainGet`函数计算剩余时间的错误
 -  实现`OS_TMR`结构体`.Match`和`.Remain`成员变量
 
+### 2020-8-16
+
+- 增加错误代码`OS_ERR_TASK_SUSPENDED`和`OS_ERR_TASK_OPT`
+
 
 
 

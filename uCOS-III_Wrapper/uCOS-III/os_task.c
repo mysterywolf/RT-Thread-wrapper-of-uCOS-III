@@ -1353,7 +1353,7 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
 *                              OS_ERR_NONE               upon success
 *                              OS_ERR_PTR_INVALID        if either 'p_free' or 'p_used' are NULL pointers
 *                              OS_ERR_TASK_NOT_EXIST     if the stack pointer of the task is a NULL pointer
-*                            - OS_ERR_TASK_OPT           if you did NOT specified OS_OPT_TASK_STK_CHK when the task
+*                              OS_ERR_TASK_OPT           if you did NOT specified OS_OPT_TASK_STK_CHK when the task
 *                                                        was created
 *                              OS_ERR_TASK_STK_CHK_ISR   you called this function from an ISR
 *                         -------------说明-------------
@@ -1380,6 +1380,8 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     rt_uint8_t *ptr;
     rt_thread_t thread;
     
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -1393,7 +1395,19 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
         *p_err = OS_ERR_TASK_STK_CHK_ISR;
         return;
     }
-#endif   
+#endif  
+    
+#if OS_CFG_ARG_CHK_EN > 0u
+    if (p_free == (CPU_STK_SIZE*)0) {                       /* User must specify valid destinations for the sizes     */
+       *p_err  = OS_ERR_PTR_INVALID;
+        return;
+    }
+
+    if (p_used == (CPU_STK_SIZE*)0) {
+       *p_err  = OS_ERR_PTR_INVALID;
+        return;
+    }
+#endif
     
     /*若TCB指针为NULL,表示当前线程*/
     if(p_tcb ==RT_NULL)
@@ -1403,26 +1417,30 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     else
     {
         thread = &p_tcb->Task;
-    }        
+    }  
     
-#if OS_CFG_ARG_CHK_EN > 0u
-    if(p_free == RT_NULL ||
-       p_used == RT_NULL)
-    {
-        *p_err = OS_ERR_PTR_INVALID;
+    CPU_CRITICAL_ENTER();
+    if (p_tcb->StkPtr == (CPU_STK*)0) {                     /* Make sure task exist                                   */
+        CPU_CRITICAL_EXIT();
+       *p_free = (CPU_STK_SIZE)0;
+       *p_used = (CPU_STK_SIZE)0;
+       *p_err  =  OS_ERR_TASK_NOT_EXIST;
         return;
     }
-    if(thread->stack_addr == RT_NULL)/*检查任务堆栈是否为NULL*/
-    {
-        *p_err = OS_ERR_TASK_NOT_EXIST;
-        return;        
+
+    if ((p_tcb->Opt & OS_OPT_TASK_STK_CHK) == (OS_OPT)0) {  /* Make sure stack checking option is set                 */
+        CPU_CRITICAL_EXIT();
+       *p_free = (CPU_STK_SIZE)0;
+       *p_used = (CPU_STK_SIZE)0;
+       *p_err  =  OS_ERR_TASK_OPT;
+        return;
     }
-#endif
+    CPU_CRITICAL_EXIT();
     
     *p_err = OS_ERR_NONE;
     
-#if CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO    
-    /*计算RT-Thread堆栈最大使用情况*/
+    /*计算RT-Thread堆栈最大使用情况*/    
+#if CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO       
     ptr = (rt_uint8_t *)thread->stack_addr;
     while (*ptr == '#')ptr ++;
     stack_size = thread->stack_size;

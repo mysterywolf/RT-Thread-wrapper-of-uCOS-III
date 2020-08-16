@@ -374,7 +374,7 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
     
     if(p_tcb->TaskState != OS_TASK_STATE_DLY)
     {
-        *p_err = OS_ERR_TASK_NOT_DLY;
+        *p_err = OS_ERR_TASK_SUSPENDED;
         return;
     }
     
