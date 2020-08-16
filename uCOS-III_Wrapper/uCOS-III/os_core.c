@@ -267,14 +267,9 @@ void  OSSched (void)
 * Arguments  : p_err     is a pointer to a variable that will receive an error code:
 *
 *                            OS_ERR_NONE                 The scheduler is locked
-*                          - OS_ERR_LOCK_NESTING_OVF     If you attempted to nest call to this function > 250 levels
+*                            OS_ERR_LOCK_NESTING_OVF     If you attempted to nest call to this function > 250 levels
 *                            OS_ERR_OS_NOT_RUNNING       If uC/OS-III is not running yet.
 *                            OS_ERR_SCHED_LOCK_ISR       If you called this function from an ISR.
-*                        -------------说明-------------
-*                            OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                          - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                          + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                         应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : none
 *
@@ -302,6 +297,11 @@ void  OSSchedLock (OS_ERR  *p_err)
     
     if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Make sure multitasking is running                      */
        *p_err = OS_ERR_OS_NOT_RUNNING;
+        return;
+    }
+
+    if (OSSchedLockNestingCtr >= (OS_NESTING_CTR)250u) {    /* Prevent OSSchedLockNestingCtr overflowing              */
+       *p_err = OS_ERR_LOCK_NESTING_OVF;
         return;
     }
     
@@ -428,7 +428,7 @@ void  OSSchedRoundRobinCfg (CPU_BOOLEAN   en,
 *
 *                             OS_ERR_NONE                   The call was successful
 *                           - OS_ERR_ROUND_ROBIN_1          Only 1 task at this priority, nothing to yield to
-*                           - OS_ERR_ROUND_ROBIN_DISABLED   Round Robin is not enabled
+*                             OS_ERR_ROUND_ROBIN_DISABLED   Round Robin is not enabled
 *                             OS_ERR_SCHED_LOCKED           The scheduler has been locked
 *                             OS_ERR_YIELD_ISR              Can't be called from an ISR
 *                         -------------说明-------------
@@ -468,6 +468,11 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
         *p_err = OS_ERR_SCHED_LOCKED;
         return;         
     }
+    
+    if (OSSchedRoundRobinEn != DEF_TRUE) {                  /* Make sure round-robin has been enabled                 */
+       *p_err = OS_ERR_ROUND_ROBIN_DISABLED;
+        return;
+    } 
     
     rt_err = rt_thread_yield();
     *p_err = rt_err_to_ucosiii(rt_err); 

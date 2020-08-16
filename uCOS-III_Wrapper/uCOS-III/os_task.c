@@ -226,37 +226,41 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     }
 #endif
     
-#if OS_CFG_ARG_CHK_EN > 0u        
-    if(p_tcb == RT_NULL)/*检查TCB指针是否为空*/
+#if OS_CFG_ARG_CHK_EN > 0u                                  /* ---------------- VALIDATE ARGUMENTS ------------------ */   
+    if(p_tcb == RT_NULL)                                    /* User must supply a valid OS_TCB                        */
     {
         *p_err = OS_ERR_TCB_INVALID;
         return;
     }     
-    if(p_task == RT_NULL)/*检查任务函数指针是否为空*/
+    if(p_task == RT_NULL)                                   /* User must supply a valid task                          */
     {
         *p_err = OS_ERR_TASK_INVALID;
         return;
     }
-    if(p_name == RT_NULL)/*检查任务名是否为NULL*/
+    if(p_name == RT_NULL)                                   /*检查任务名是否为NULL*/
     {
         *p_err = OS_ERR_NAME;
         return;
     }
-    if(prio >= RT_THREAD_PRIORITY_MAX-1)/*检查任务优先级*/
+    if(prio >= RT_THREAD_PRIORITY_MAX-1)                    /* 检查任务优先级,不可占用空闲任务优先级*/
     {
         *p_err = OS_ERR_PRIO_INVALID;
         return;        
     }
-    if(p_stk_base == RT_NULL)/*检查任务堆栈指针是否为NULL*/
+    if(p_stk_base == RT_NULL)                               /* User must supply a valid stack base address            */
     {
         *p_err = OS_ERR_STK_INVALID;
         return;
     }  
-    if(stk_size < OS_CFG_STK_SIZE_MIN)/*检查堆栈大小是否低于最小堆栈大小*/
+    if(stk_size < OS_CFG_STK_SIZE_MIN)                      /* User must supply a valid minimum stack size            */
     {
         *p_err = OS_ERR_STK_SIZE_INVALID;
         return;
-    }   
+    }
+    if (stk_limit >= stk_size) {                            /* User must supply a valid stack limit                   */
+       *p_err = OS_ERR_STK_LIMIT_INVALID;
+        return;
+    }    
     if (prio == (OS_CFG_PRIO_MAX - 1u)) {
        *p_err = OS_ERR_PRIO_INVALID;                        /* Not allowed to use same priority as idle task          */
         return;
@@ -1412,14 +1416,13 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     /*若TCB指针为NULL,表示当前线程*/
     if(p_tcb ==RT_NULL)
     {
-        thread = rt_thread_self();
+        p_tcb = OSTCBCurPtr;
     }
-    else
-    {
-        thread = &p_tcb->Task;
-    }  
+    
+    thread = (rt_thread_t)p_tcb;
     
     CPU_CRITICAL_ENTER();
+#if OS_CFG_TASK_PROFILE_EN > 0u  
     if (p_tcb->StkPtr == (CPU_STK*)0) {                     /* Make sure task exist                                   */
         CPU_CRITICAL_EXIT();
        *p_free = (CPU_STK_SIZE)0;
@@ -1435,6 +1438,7 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
        *p_err  =  OS_ERR_TASK_OPT;
         return;
     }
+#endif
     CPU_CRITICAL_EXIT();
     
     *p_err = OS_ERR_NONE;

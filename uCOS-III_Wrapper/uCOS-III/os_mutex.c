@@ -453,7 +453,15 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
         CPU_CRITICAL_EXIT(); 
         *p_err = OS_ERR_PEND_ABORT;
         return;
-    }    
+    }
+    
+    if (OSTCBCurPtr == p_mutex->OwnerTCBPtr &&
+        p_mutex->OwnerNestingCtr > (OS_NESTING_CTR)1) {     /* See if current task is already the owner of the mutex  */
+        CPU_CRITICAL_EXIT();
+       *p_err = OS_ERR_MUTEX_OWNER;                         /* Indicate that current task already owns the mutex      */
+        return;
+    } 
+    
     CPU_CRITICAL_EXIT();      
 }
 
@@ -605,7 +613,7 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
 *              p_err    is a pointer to a variable that will contain an error code returned by this function.
 *
 *                           OS_ERR_NONE             The call was successful and the mutex was signaled.
-*                         - OS_ERR_MUTEX_NESTING    Mutex owner nested its use of the mutex
+*                           OS_ERR_MUTEX_NESTING    Mutex owner nested its use of the mutex
 *                           OS_ERR_MUTEX_NOT_OWNER  If the task posting is not the Mutex owner
 *                           OS_ERR_OBJ_PTR_NULL     If 'p_mutex' is a NULL pointer.
 *                           OS_ERR_OBJ_TYPE         If 'p_mutex' is not pointing at a mutex
@@ -704,6 +712,13 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
         p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
     }
 #endif
+    
+    if (p_mutex->OwnerNestingCtr > (OS_NESTING_CTR)0) {     /* Are we done with all nestings?                         */
+        CPU_CRITICAL_EXIT();                                /* No                                                     */
+       *p_err = OS_ERR_MUTEX_NESTING;
+        return;
+    }
+    
     CPU_CRITICAL_EXIT();
 }
 

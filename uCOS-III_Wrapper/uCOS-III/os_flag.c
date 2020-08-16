@@ -459,9 +459,13 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
             break;
         
         case OS_OPT_PEND_FLAG_CLR_ANY:
-        case OS_OPT_PEND_FLAG_CLR_ALL:    
+            /*TODO*/
+        
+        case OS_OPT_PEND_FLAG_CLR_ALL:  
+            /*TODO*/
+        
         default:
-            *p_err = OS_ERR_OPT_INVALID;
+            *p_err = OS_ERR_FLAG_PEND_OPT;
     }
     
     if (consume == DEF_TRUE)

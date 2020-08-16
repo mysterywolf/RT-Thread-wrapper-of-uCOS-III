@@ -622,7 +622,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
 *                           OS_ERR_NONE          The call was successful and the semaphore was signaled.
 *                           OS_ERR_OBJ_PTR_NULL  If 'p_sem' is a NULL pointer.
 *                           OS_ERR_OBJ_TYPE      If 'p_sem' is not pointing at a semaphore
-*                         - OS_ERR_SEM_OVF       If the post would cause the semaphore count to overflow.
+*                           OS_ERR_SEM_OVF       If the post would cause the semaphore count to overflow.
 *                         + OS_ERR_OPT_INVALID   原版中少了一个opt无效的错误码
 *                       -------------说明-------------
 *                           OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
@@ -697,6 +697,36 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
     }
     CPU_CRITICAL_ENTER();
     p_sem->Ctr = p_sem->Sem.value; /*更新信号量value值*/
+    
+    switch (sizeof(p_sem->Sem.value)) {  /*检查信号量value值是否超出rt-thread信号量数据类型数值范围*/
+        case 1u:
+             if (p_sem->Ctr == DEF_INT_08U_MAX_VAL) {
+                 CPU_CRITICAL_EXIT();
+                *p_err = OS_ERR_SEM_OVF;
+                 return ((OS_SEM_CTR)0);
+             }
+             break;
+
+        case 2u:
+             if (p_sem->Ctr == DEF_INT_16U_MAX_VAL) {
+                 CPU_CRITICAL_EXIT();
+                *p_err = OS_ERR_SEM_OVF;
+                 return ((OS_SEM_CTR)0);
+             }
+             break;
+
+        case 4u:
+             if (p_sem->Ctr == DEF_INT_32U_MAX_VAL) {
+                 CPU_CRITICAL_EXIT();
+                *p_err = OS_ERR_SEM_OVF;
+                 return ((OS_SEM_CTR)0);
+             }
+             break;
+
+        default:
+             break;
+    }
+    
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
     {

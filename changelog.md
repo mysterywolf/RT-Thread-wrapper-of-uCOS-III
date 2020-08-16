@@ -202,7 +202,8 @@
 
 ### 2020-8-16
 
-- 增加错误代码`OS_ERR_TASK_SUSPENDED`和`OS_ERR_TASK_OPT`
+- 实现错误代码`OS_ERR_TASK_SUSPENDED`  、`OS_ERR_TASK_OPT`、`OS_ERR_LOCK_NESTING_OVF`、`OS_ERR_MUTEX_NESTING`、`OS_ERR_MUTEX_OWNER`、`OS_ERR_ROUND_ROBIN_DISABLED`、`OS_ERR_STK_LIMIT_INVALID` 、`OS_ERR_FLAG_PEND_OPT`
+- 对`OSTaskStkChk`函数当传入`OS_TCB*`参数为空时，转换为当前`OS_TCB*`的逻辑做了调整
 
 
 
@@ -315,7 +316,11 @@
 
 **[bug fix]** 修复`OSTmrRemainGet`函数计算剩余时间的错误
 
-**[add]**  实现`OS_TMR`结构体`.Match`和`.Remain`成员变量
+**[add]** 实现`OS_TMR`结构体`.Match`和`.Remain`成员变量
+
+**[add]** 实现错误代码`OS_ERR_TASK_SUSPENDED`  、`OS_ERR_TASK_OPT`、`OS_ERR_LOCK_NESTING_OVF`、`OS_ERR_MUTEX_NESTING`、`OS_ERR_MUTEX_OWNER`、`OS_ERR_ROUND_ROBIN_DISABLED`、`OS_ERR_STK_LIMIT_INVALID` 、`OS_ERR_FLAG_PEND_OPT`
+
+**[enhance]**  对`OSTaskStkChk`函数当传入`OS_TCB*`参数为空时，转换为当前`OS_TCB*`的逻辑做了调整
 
 
 
@@ -330,3 +335,5 @@ OS_TCB
 ```
 
 
+
+OSTmrRemainGet函数需要对着原版重新检查一下参数
