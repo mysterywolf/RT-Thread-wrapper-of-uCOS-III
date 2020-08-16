@@ -520,7 +520,7 @@ typedef  enum  os_err {
 
     OS_ERR_TIMEOUT                   = 29401u,
 
-//    OS_ERR_TMR_INACTIVE              = 29501u,
+    OS_ERR_TMR_INACTIVE              = 29501u,
     OS_ERR_TMR_INVALID_DEST          = 29502u, /*原版3.03中仅定义未使用*/
     OS_ERR_TMR_INVALID_DLY           = 29503u,
     OS_ERR_TMR_INVALID_PERIOD        = 29504u,

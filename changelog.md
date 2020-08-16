@@ -205,6 +205,10 @@
 - 实现错误代码`OS_ERR_TASK_SUSPENDED`  、`OS_ERR_TASK_OPT`、`OS_ERR_LOCK_NESTING_OVF`、`OS_ERR_MUTEX_NESTING`、`OS_ERR_MUTEX_OWNER`、`OS_ERR_ROUND_ROBIN_DISABLED`、`OS_ERR_STK_LIMIT_INVALID` 、`OS_ERR_FLAG_PEND_OPT`
 - 对`OSTaskStkChk`函数当传入`OS_TCB*`参数为空时，转换为当前`OS_TCB*`的逻辑做了调整
 
+### 202-8-17
+
+- 对函数`OSTmrRemainGet`、`OSTmrStop`、`OSTmrStateGet`、`OSTmrStart`、`OSTmrDel`仿照原版增加定时器状态检查功能
+
 
 
 
@@ -322,11 +326,13 @@
 
 **[enhance]**  对`OSTaskStkChk`函数当传入`OS_TCB*`参数为空时，转换为当前`OS_TCB*`的逻辑做了调整
 
+**[bug fix]** 对函数`OSTmrRemainGet`、`OSTmrStop`、`OSTmrStateGet`、`OSTmrStart`、`OSTmrDel`仿照原版增加定时器状态检查功能
+
 
 
 # TODO
 
-OS_TCB
+1. OS_TCB
 
 ```c
 	OS_FLAGS         FlagsPend;     /* Event flag(s) to wait on */
@@ -334,6 +340,3 @@ OS_TCB
     OS_OPT           FlagsOpt;      /* Options (See OS_OPT_FLAG_xxx) */
 ```
 
-
-
-OSTmrRemainGet函数需要对着原版重新检查一下参数

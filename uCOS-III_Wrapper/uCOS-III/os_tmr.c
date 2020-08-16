@@ -271,13 +271,8 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 *                                 OS_ERR_OBJ_TYPE             'p_tmr' is not pointing to a timer
 *                                 OS_ERR_TMR_INVALID          'p_tmr' is a NULL pointer
 *                                 OS_ERR_TMR_ISR              if the function was called from an ISR
-*                               - OS_ERR_TMR_INACTIVE         if the timer was not created
-*                               - OS_ERR_TMR_INVALID_STATE    the timer is in an invalid state
-*                             -------------说明-------------
-*                                 OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                               - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                               + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                               应用层需要对API返回的错误码判断做出相应的修改
+*                                 OS_ERR_TMR_INACTIVE         if the timer was not created
+*                                 OS_ERR_TMR_INVALID_STATE    the timer is in an invalid state
 *
 * Returns    : DEF_TRUE   if the timer was deleted
 *              DEF_FALSE  if not or upon an error
@@ -323,7 +318,22 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
         return DEF_FALSE;       
     }
 #endif
-    
+
+    switch (p_tmr->State) {
+        case OS_TMR_STATE_RUNNING:
+        case OS_TMR_STATE_STOPPED:                              /* Timer has not started or ...                           */
+        case OS_TMR_STATE_COMPLETED:                            /* ... timer has completed the ONE-SHOT time              */
+            break;
+        
+        case OS_TMR_STATE_UNUSED:                               /* Already deleted                                        */
+            *p_err = OS_ERR_TMR_INACTIVE;
+            return (DEF_FALSE);
+        
+        default:
+            *p_err = OS_ERR_TMR_INVALID_STATE;
+            return (DEF_FALSE);            
+    }
+        
     rt_err = rt_timer_detach(&p_tmr->Tmr);    
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err == RT_EOK)
@@ -358,13 +368,8 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
 *                           OS_ERR_OBJ_TYPE           'p_tmr' is not pointing to a timer
 *                           OS_ERR_TMR_INVALID        'p_tmr' is a NULL pointer
 *                           OS_ERR_TMR_ISR            if the call was made from an ISR
-*                         - OS_ERR_TMR_INACTIVE       'p_tmr' points to a timer that is not active
-*                         - OS_ERR_TMR_INVALID_STATE  the timer is in an invalid state
-*                        -------------说明-------------
-*                            OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                          - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                          + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                         应用层需要对API返回的错误码判断做出相应的修改
+*                           OS_ERR_TMR_INACTIVE       'p_tmr' points to a timer that is not active
+*                           OS_ERR_TMR_INVALID_STATE  the timer is in an invalid state
 *
 * Returns    : The time remaining for the timer to expire.  The time represents 'timer' increments.  In other words, if
 *              OS_TmrTask() is signaled every 1/10 of a second then the returned value represents the number of 1/10 of
@@ -375,6 +380,10 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
 OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
                          OS_ERR  *p_err)
 {
+    OS_TICK  remain;
+    
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -406,9 +415,43 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
         return 0;       
     }
 #endif
+    switch (p_tmr->State) {
+        case OS_TMR_STATE_RUNNING:
+            *p_err = OS_ERR_NONE;
+            remain = p_tmr->Tmr.timeout_tick - rt_tick_get();
+            CPU_CRITICAL_ENTER();
+            p_tmr->Remain = remain;
+            CPU_CRITICAL_EXIT();
+        
+        case OS_TMR_STATE_STOPPED:
+             if (p_tmr->Opt == OS_OPT_TMR_PERIODIC) {
+                 if (p_tmr->Dly == 0u) {
+                     remain = p_tmr->Period;
+                 } else {
+                     remain = p_tmr->Dly;
+                 }
+             } else {
+                 remain = p_tmr->Dly;
+             }
+             CPU_CRITICAL_ENTER();
+             p_tmr->Remain = remain;
+             CPU_CRITICAL_EXIT();
+             *p_err = OS_ERR_NONE;
+             
+        case OS_TMR_STATE_COMPLETED: 
+            *p_err = OS_ERR_NONE;
+            remain = 0;
+        
+        case OS_TMR_STATE_UNUSED:
+            *p_err = OS_ERR_TMR_INACTIVE;
+            remain = 0;
+        
+        default:
+            *p_err = OS_ERR_TMR_INVALID_STATE;
+            remain = 0;
+    }
     
-    *p_err = OS_ERR_NONE;  
-    return p_tmr->Tmr.timeout_tick - rt_tick_get();
+    return (remain);
 }
 
 /*
@@ -424,14 +467,9 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
 *                           OS_ERR_NONE
 *                           OS_ERR_OBJ_TYPE            if 'p_tmr' is not pointing to a timer
 *                           OS_ERR_TMR_INVALID
-*                         - OS_ERR_TMR_INACTIVE        if the timer was not created
-*                         - OS_ERR_TMR_INVALID_STATE   the timer is in an invalid state
+*                           OS_ERR_TMR_INACTIVE        if the timer was not created
+*                           OS_ERR_TMR_INVALID_STATE   the timer is in an invalid state
 *                           OS_ERR_TMR_ISR             if the call was made from an ISR
-*                       -------------说明-------------
-*                           OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                         - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                         + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                        应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : DEF_TRUE      is the timer was started
 *              DEF_FALSE     if not or upon an error
@@ -477,6 +515,21 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
         return DEF_FALSE;       
     }
 #endif
+    
+    switch (p_tmr->State) {
+        case OS_TMR_STATE_RUNNING:                              /* Restart the timer                                      */
+        case OS_TMR_STATE_STOPPED:                              /* Start the timer                                        */
+        case OS_TMR_STATE_COMPLETED:
+            break;
+        
+        case OS_TMR_STATE_UNUSED:                               /* Timer not created                                      */
+            *p_err = OS_ERR_TMR_INACTIVE;
+            return (DEF_FALSE);
+        
+        default:
+            *p_err = OS_ERR_TMR_INVALID_STATE;
+            return (DEF_FALSE);            
+    }
     
     rt_err = rt_timer_start(&p_tmr->Tmr);
     *p_err = rt_err_to_ucosiii(rt_err);
@@ -556,6 +609,7 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
 
     CPU_CRITICAL_ENTER();
     state = p_tmr->State;
+    CPU_CRITICAL_EXIT();
     switch (state) {
         case OS_TMR_STATE_UNUSED:
         case OS_TMR_STATE_STOPPED:
@@ -568,7 +622,7 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
             *p_err = OS_ERR_TMR_INVALID_STATE;
              break;
     }
-    CPU_CRITICAL_EXIT();
+    
     return (state);
 }
 
@@ -596,17 +650,12 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
 *                               OS_ERR_NONE
 *                               OS_ERR_OBJ_TYPE            if 'p_tmr' is not pointing to a timer
 *                               OS_ERR_OPT_INVALID         if you specified an invalid option for 'opt'
-*                             - OS_ERR_TMR_INACTIVE        if the timer was not created
+*                               OS_ERR_TMR_INACTIVE        if the timer was not created
 *                               OS_ERR_TMR_INVALID         'p_tmr' is a NULL pointer
-*                             - OS_ERR_TMR_INVALID_STATE   the timer is in an invalid state
+*                               OS_ERR_TMR_INVALID_STATE   the timer is in an invalid state
 *                               OS_ERR_TMR_ISR             if the function was called from an ISR
 *                               OS_ERR_TMR_NO_CALLBACK     if the timer does not have a callback function defined
 *                               OS_ERR_TMR_STOPPED         if the timer was already stopped
-*                            -------------说明-------------
-*                               OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                             - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                             + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                             应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : DEF_TRUE       If we stopped the timer (if the timer is already stopped, we also return DEF_TRUE)
 *              DEF_FALSE      If not
@@ -665,8 +714,27 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
     
     CPU_CRITICAL_ENTER();
     p_tmr->State = OS_TMR_STATE_STOPPED;/*标记目前定时器状态已经停止*/
-    p_fnct = p_tmr->CallbackPtr;                         /* Execute callback function ...           */
+    p_fnct = p_tmr->CallbackPtr;                                      /* Execute callback function ...           */
     CPU_CRITICAL_EXIT();
+    
+    switch (p_tmr->State) {
+        case OS_TMR_STATE_RUNNING:
+            break;
+        
+        case OS_TMR_STATE_COMPLETED:                                  /* Timer has already completed the ONE-SHOT or  */
+        case OS_TMR_STATE_STOPPED:                                    /* ... timer has not started yet.               */
+            *p_err = OS_ERR_TMR_STOPPED;    
+            return (DEF_TRUE);
+        
+        case OS_TMR_STATE_UNUSED:                                     /* Timer was not created                        */
+            *p_err = OS_ERR_TMR_INACTIVE;
+             return (DEF_FALSE);
+        
+        default:
+            *p_err = OS_ERR_TMR_INVALID_STATE;
+             return (DEF_FALSE);        
+    }
+    
     
     *p_err = OS_ERR_NONE;
     OSSchedLock(&err);
