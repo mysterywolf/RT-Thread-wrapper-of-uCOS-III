@@ -190,7 +190,9 @@ void  OS_StatTask (void  *p_arg)
 {
 #if OS_CFG_DBG_EN > 0u
     OS_TCB      *p_tcb;
+#if OS_CFG_TMR_EN > 0u
     OS_TMR      *p_tmr;
+#endif
 #endif
     OS_TICK      ctr_max;
     OS_TICK      ctr_mult;
@@ -269,8 +271,8 @@ void  OS_StatTask (void  *p_arg)
             p_tcb = p_tcb->DbgNextPtr;                      /* 指向下一个TCB结构体                                    */
             CPU_CRITICAL_EXIT();
         }
-#endif /*#if OS_CFG_DBG_EN > 0u*/
         
+#if OS_CFG_TMR_EN > 0u        
         /*--------------定时器--------------------*/
         CPU_CRITICAL_ENTER();
         p_tmr = OSTmrDbgListPtr;
@@ -281,7 +283,9 @@ void  OS_StatTask (void  *p_arg)
             CPU_CRITICAL_EXIT();
             p_tmr = p_tmr->DbgNextPtr;                      /*指向下一个定时器控制块*/
         }
+#endif
         
+#endif /*#if OS_CFG_DBG_EN > 0u*/        
 
         if (OSStatResetFlag == DEF_TRUE) {                  /* Check if need to reset statistics                      */
             OSStatResetFlag  = DEF_FALSE;

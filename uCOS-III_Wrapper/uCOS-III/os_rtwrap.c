@@ -219,7 +219,9 @@ rt_err_t rt_sem_release_all(rt_sem_t sem)
 #if defined RT_USING_FINSH && OS_CFG_DBG_EN > 0u
 static void rt_ucosiii_wrapper_info (int argc, char *argv[])
 {
+#if OS_CFG_STAT_TASK_EN >0u
     OS_CPU_USAGE cpu_usage;
+#endif
     OS_TCB *p_tcb;
     OS_TMR *p_tmr;
     OS_SEM *p_sem;
@@ -238,20 +240,32 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
     if(!strcmp((const char *)argv[1],(const char *)"--help"))
     {
         rt_kprintf("-v version\n");
+#if OS_CFG_STAT_TASK_EN >0u
         rt_kprintf("-u cpu usage\n");
+#endif
         rt_kprintf("-t task\n");
+#if OS_CFG_SEM_EN > 0u
         rt_kprintf("-s sem\n");
+#endif
+#if OS_CFG_MUTEX_EN > 0u
         rt_kprintf("-m mutex\n");
+#endif
+#if OS_CFG_Q_EN > 0u
         rt_kprintf("-q message queue\n");
+#endif
+#if OS_CFG_FLAG_EN > 0u
         rt_kprintf("-f event flag\n");
+#endif
+#if OS_CFG_TMR_EN > 0u
         rt_kprintf("-r timer\n");
-        rt_kprintf("-m memory pool\n");
+#endif
     }
     else if(!strcmp((const char *)argv[1],(const char *)"-v"))
     {
         rt_kprintf("template's version: 3.03.00\n");
         rt_kprintf("compatible version: 3.00 - 3.08\n");
-    }    
+    }      
+#if OS_CFG_STAT_TASK_EN >0u
     else if(!strcmp((const char *)argv[1],(const char *)"-u"))
     {
         CPU_CRITICAL_ENTER();
@@ -259,6 +273,8 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
         CPU_CRITICAL_EXIT();
         rt_kprintf("CPU Usage: %d.%d%%\n",cpu_usage/100,cpu_usage%100);
     }
+#endif
+#if OS_CFG_TMR_EN > 0u
     else if(!strcmp((const char *)argv[1],(const char *)"-r"))
     {
         CPU_CRITICAL_ENTER();
@@ -272,6 +288,7 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
         }
         rt_kprintf("\n");
     }
+#endif
     else if(!strcmp((const char *)argv[1],(const char *)"-t"))
     {
         CPU_CRITICAL_ENTER();
@@ -285,6 +302,7 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
         }
         rt_kprintf("\n");        
     }
+#if OS_CFG_SEM_EN > 0u
     else if(!strcmp((const char *)argv[1],(const char *)"-s"))
     {
         CPU_CRITICAL_ENTER();
@@ -298,6 +316,8 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
         }
         rt_kprintf("\n");          
     }
+#endif
+#if OS_CFG_MUTEX_EN > 0u
     else if(!strcmp((const char *)argv[1],(const char *)"-m"))
     {
         CPU_CRITICAL_ENTER();
@@ -311,6 +331,8 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
         }
         rt_kprintf("\n");          
     }
+#endif
+#if OS_CFG_Q_EN > 0u
     else if(!strcmp((const char *)argv[1],(const char *)"-q"))
     {
         CPU_CRITICAL_ENTER();
@@ -324,6 +346,8 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
         }
         rt_kprintf("\n");          
     } 
+#endif
+#if OS_CFG_FLAG_EN > 0u
     else if(!strcmp((const char *)argv[1],(const char *)"-f"))
     {
         CPU_CRITICAL_ENTER();
@@ -336,7 +360,8 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
             p_flag = p_flag->DbgNextPtr;
         }
         rt_kprintf("\n");          
-    }     
+    }  
+#endif    
     else
     {
         rt_kprintf("invalid parameter,use --help to get more information.\n");

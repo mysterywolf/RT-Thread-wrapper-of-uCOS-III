@@ -170,8 +170,8 @@ OS_RATE_HZ     const  OSCfg_TmrTaskRate_Hz       = (OS_RATE_HZ  )OS_CFG_TMR_TASK
 CPU_INT32U     const  OSCfg_DataSizeRAM          = //sizeof(OSCfg_IdleTaskStk)
 
 #if (OS_CFG_ISR_POST_DEFERRED_EN > 0u)
-                                                 + sizeof(OSCfg_IntQ)
-                                                 + sizeof(OSCfg_IntQTaskStk)
+//                                                 + sizeof(OSCfg_IntQ)
+//                                                 + sizeof(OSCfg_IntQTaskStk)
 #endif
 
 #if (OS_MSG_EN > 0u)
@@ -180,6 +180,8 @@ CPU_INT32U     const  OSCfg_DataSizeRAM          = //sizeof(OSCfg_IdleTaskStk)
 
 #if (OS_CFG_STAT_TASK_EN > 0u)
                                                  + sizeof(OSCfg_StatTaskStk)
+#else
+                                                 + 0
 #endif
 
 #if (OS_CFG_TMR_EN > 0u)
@@ -188,7 +190,7 @@ CPU_INT32U     const  OSCfg_DataSizeRAM          = //sizeof(OSCfg_IdleTaskStk)
 #endif
 
 #if (OS_CFG_ISR_STK_SIZE > 0u)
-                                                 + sizeof(OSCfg_ISRStk)
+//                                                 + sizeof(OSCfg_ISRStk)
 #endif
 //                                                 + sizeof(OSCfg_TickTaskStk)
 //                                                 + sizeof(OSCfg_TickWheel)

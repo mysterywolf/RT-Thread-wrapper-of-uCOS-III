@@ -562,7 +562,7 @@ OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
 *                            messages are:
 *
 *                                OS_ERR_NONE               The call was successful and your task received a message.
-*                              - OS_ERR_PEND_ABORT
+*                                OS_ERR_PEND_ABORT
 *                                OS_ERR_PEND_ISR           If you called this function from an ISR and the result
 *                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but the queue was not empty
 *                              - OS_ERR_Q_EMPTY
@@ -1052,11 +1052,11 @@ void  OSTaskResume (OS_TCB  *p_tcb,
 *              p_err         is a pointer to an error code that will be set by this function
 *
 *                                OS_ERR_NONE               The call was successful and your task received a message.
-*                              - OS_ERR_PEND_ABORT
+*                                OS_ERR_PEND_ABORT
 *                                OS_ERR_PEND_ISR           If you called this function from an ISR and the result
 *                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but no signal was received
 *                                OS_ERR_SCHED_LOCKED       If the scheduler is locked
-*                                OS_ERR_STATUS_INVALID     If the pend status is invalid
+*                              - OS_ERR_STATUS_INVALID     If the pend status is invalid
 *                                OS_ERR_TIMEOUT            A message was not received within the specified timeout
 *                                                          would lead to a suspension.
 *                              + OS_ERR_TASK_SEM_CREATE_FALSE 任务内建信号量创建失败
@@ -1422,7 +1422,8 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     thread = (rt_thread_t)p_tcb;
     
     CPU_CRITICAL_ENTER();
-#if OS_CFG_TASK_PROFILE_EN > 0u  
+#if OS_CFG_TASK_PROFILE_EN > 0u 
+#if OS_CFG_DBG_EN > 0u    
     if (p_tcb->StkPtr == (CPU_STK*)0) {                     /* Make sure task exist                                   */
         CPU_CRITICAL_EXIT();
        *p_free = (CPU_STK_SIZE)0;
@@ -1430,7 +1431,7 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
        *p_err  =  OS_ERR_TASK_NOT_EXIST;
         return;
     }
-
+#endif
     if ((p_tcb->Opt & OS_OPT_TASK_STK_CHK) == (OS_OPT)0) {  /* Make sure stack checking option is set                 */
         CPU_CRITICAL_EXIT();
        *p_free = (CPU_STK_SIZE)0;

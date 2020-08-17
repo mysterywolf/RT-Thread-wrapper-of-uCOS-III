@@ -42,6 +42,7 @@
 
 #include <os.h>
 
+#if OS_CFG_TMR_EN > 0u
 /*
 ************************************************************************************************************************
 *                                                   CREATE A TIMER
@@ -86,16 +87,11 @@
 *                                                                  OSSafetyCriticalStart().
 *                                 OS_ERR_OBJ_CREATED             if the timer has already been created
 *                                 OS_ERR_OBJ_PTR_NULL            is 'p_tmr' is a NULL pointer
-*                               - OS_ERR_OBJ_TYPE                if the object type is invalid
+*                                 OS_ERR_OBJ_TYPE                if the object type is invalid
 *                                 OS_ERR_OPT_INVALID             you specified an invalid option
 *                                 OS_ERR_TMR_INVALID_DLY         you specified an invalid delay
 *                                 OS_ERR_TMR_INVALID_PERIOD      you specified an invalid period
 *                                 OS_ERR_TMR_ISR                 if the call was made from an ISR
-*                              -------------说明-------------
-*                                 OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                               - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                               + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                               应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : none
 *
@@ -939,3 +935,5 @@ void OS_TmrCallback(void *p_ara)
     p_tmr->CallbackPtr((void *)p_tmr, p_tmr->CallbackPtrArg);
     OSSchedUnlock(&err);    
 }
+
+#endif

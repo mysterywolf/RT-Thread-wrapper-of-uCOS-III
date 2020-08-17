@@ -150,15 +150,15 @@ Keil工程路径：*<u>rt-thread-3.1.3/bsp/stm32f103/Project.uvprojx</u>*
 
 ## 2.5 运行
 
-### 2.5.1 官方标准初始化流程
+### 2.5.1 官方标准手动初始化流程
 
 ​	本兼容层完全兼容官方给出的标准初始化流程，如果您兼容老项目，μCOS-III初始化部分无需做任何修改。具体初始化流程代码参见工程`main.c`文件，参考文献参见 <u>*docs/uCOS-III官方初始化流程.pdf*</u> 
 
 
 
-### 2.5.2 最简初始化流程
+### 2.5.2 最简手动初始化流程
 
-​	最简初始化流程是指本兼容层的初始化流程，不必像官方给出的初始化流程一样复杂。如果您不是想要兼容已有老工程，而是新建一个工程的话，**建议采用最简初始化流程**：
+​	最简初始化流程是指本兼容层的初始化流程，不必像官方给出的初始化流程一样复杂。如果您不是想要兼容已有老工程，而是新建一个工程的话，可以采用最简手动初始化流程：
 
 ```c
 #include <os.h> /*头文件保持和原版μCOS-III相同*/
@@ -183,6 +183,14 @@ int main(void) /*RT-Thread main线程*/
 }
 
 ```
+
+
+
+### 2.5.3 自动初始化流程
+
+​	如果您在应用层中不想手动初始化本兼容层，请参见本文以下章节（**如无特殊要求，建议采用该种方式**）：
+
+> 6.2.1 Enable uCOS-III wrapper automatically init 
 
 
 
@@ -694,7 +702,6 @@ msh >ucos --help
 -q message queue
 -f event flag
 -r timer
--m memory pool
 ```
 
 
@@ -724,6 +731,8 @@ RT-Thread online packages
 ​	uCOS-III兼容层支持按照uCOS-III原版的初始化步骤进行初始化，但是在有些情况，用户不想手动初始化uCOS-III兼容层，想要直接运行应用层任务或模块，则可以使用该宏定义。在`rtconfig.h`中定义本宏定义后，在RT-Thread初始化完成并进入到main线程之前会自动将uCOS-III兼容层初始化完毕，用户仅需要专注于uCOS-III的应用级任务即可。
 
 ​	若将该功能开启，则会在`rtconfig.h`文件中中定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏。在`os_rtwrap.c`文件中的以下函数将被使能并**在RT-Thread初始化时自动执行**。
+
+​	若没有使用完整版（即nano版）也想使用本功能，可以在`rtconfig.h`中手动添加定义宏定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`。
 
 ```c
 /**
