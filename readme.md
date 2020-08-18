@@ -25,6 +25,10 @@
 
 支持版本：μC/OS-III 3.00-3.08全部版本
 
+视频介绍&教程：https://www.bilibili.com/video/BV1b54y1U7AG
+
+
+
 ## 1.1 本兼容层适合于：
 
 - 之前学习过μCOS-III操作系统，意图转向学习RT-Thread国产操作系统。本兼容层可以帮您用已有的μCOS-III编程经验和习惯快速将项目跑起来，日后在应用过程中深入熟悉RT-Thread的API函数，逐步向RT-Thread过度，降低您的学习门槛和时间成本。**有了本兼容层，对RT-Thread API以及编程风格的不熟悉再也不是您学习RT-Thread的阻力！**

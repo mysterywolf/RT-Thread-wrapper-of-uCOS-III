@@ -212,6 +212,7 @@
 ### 2020-8-18
 
 - 修复`OSInit`函数return分支没有调用`CPU_CRITICAL_EXIT()`打开中断的bug
+- 增加视频介绍&教程链接
 
 
 
