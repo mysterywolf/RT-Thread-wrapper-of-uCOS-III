@@ -205,9 +205,13 @@
 - 实现错误代码`OS_ERR_TASK_SUSPENDED`  、`OS_ERR_TASK_OPT`、`OS_ERR_LOCK_NESTING_OVF`、`OS_ERR_MUTEX_NESTING`、`OS_ERR_MUTEX_OWNER`、`OS_ERR_ROUND_ROBIN_DISABLED`、`OS_ERR_STK_LIMIT_INVALID` 、`OS_ERR_FLAG_PEND_OPT`
 - 对`OSTaskStkChk`函数当传入`OS_TCB*`参数为空时，转换为当前`OS_TCB*`的逻辑做了调整
 
-### 202-8-17
+### 2020-8-17
 
 - 对函数`OSTmrRemainGet`、`OSTmrStop`、`OSTmrStateGet`、`OSTmrStart`、`OSTmrDel`仿照原版增加定时器状态检查功能
+
+### 2020-8-18
+
+- 修复`OSInit`函数return分支没有调用`CPU_CRITICAL_EXIT()`打开中断的bug
 
 
 
@@ -324,9 +328,17 @@
 
 **[add]** 实现错误代码`OS_ERR_TASK_SUSPENDED`  、`OS_ERR_TASK_OPT`、`OS_ERR_LOCK_NESTING_OVF`、`OS_ERR_MUTEX_NESTING`、`OS_ERR_MUTEX_OWNER`、`OS_ERR_ROUND_ROBIN_DISABLED`、`OS_ERR_STK_LIMIT_INVALID` 、`OS_ERR_FLAG_PEND_OPT`
 
-**[enhance]**  对`OSTaskStkChk`函数当传入`OS_TCB*`参数为空时，转换为当前`OS_TCB*`的逻辑做了调整
+**[enhance]** 对`OSTaskStkChk`函数当传入`OS_TCB*`参数为空时，转换为当前`OS_TCB*`的逻辑做了调整
 
 **[bug fix]** 对函数`OSTmrRemainGet`、`OSTmrStop`、`OSTmrStateGet`、`OSTmrStart`、`OSTmrDel`仿照原版增加定时器状态检查功能
+
+
+
+## v0.7.0
+
+**[bug fix]** 修复`OSInit`函数return分支没有调用`CPU_CRITICAL_EXIT()`打开中断的bug
+
+
 
 
 

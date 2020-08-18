@@ -690,17 +690,13 @@ struct os_tcb
     CPU_BOOLEAN      MsgCreateSuc;  /* 标记任务内建消息队列是否创建成功*/
 #endif    
     void            *ExtPtr;        /* 指向用户附加区指针*/
-
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u       
     OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];/* 任务寄存器*/
-#endif    
-
+#endif
     OS_STATUS        PendStatus;    /* Pend status：OS_STATUS_PEND_ABORT OS_STATUS_PEND_OK可用*/ 
 #if OS_CFG_TASK_SUSPEND_EN > 0u
     OS_NESTING_CTR   SuspendCtr;    /* Nesting counter for OSTaskSuspend() */
 #endif
-    OS_TICK          TimeQuanta;
-    OS_TICK          TimeQuantaCtr;
 #if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
     CPU_STK_SIZE     StkUsed;       /* Number of stack elements used from the stack */
     CPU_STK_SIZE     StkFree;       /* Number of stack elements free on   the stack */
@@ -712,11 +708,12 @@ struct os_tcb
 #endif
     OS_STATE         TaskState;     /* See OS_TASK_STATE_xxx */
     OS_STATE         PendOn;        /* Indicates what task is pending on */
-
 #if OS_CFG_TASK_PROFILE_EN > 0u
 #if OS_CFG_DBG_EN > 0u
     CPU_STK         *StkPtr;        /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
 #endif
+    OS_TICK          TimeQuanta;
+    OS_TICK          TimeQuantaCtr;
     OS_SEM_CTR       SemCtr;        /* Task specific semaphore counter,*/  
     OS_OPT           Opt;           /* Task options as passed by OSTaskCreate() */    
     CPU_STK          StkSize;       /* 任务堆栈大小*/    
@@ -1484,6 +1481,7 @@ void          OS_Dbg_Init               (void);
 ************************************************************************************************************************
 ************************************************************************************************************************
 */
+
 OS_ERR        rt_err_to_ucosiii         (rt_err_t rt_err);
 rt_err_t      rt_ipc_pend_abort_1       (rt_list_t *list);
 rt_uint16_t   rt_ipc_pend_abort_all     (rt_list_t *list);

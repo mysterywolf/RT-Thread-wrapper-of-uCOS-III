@@ -285,6 +285,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_tcb->SemCreateSuc = RT_FALSE;
     p_tcb->ExtPtr = p_ext;/*用户附加区指针*/
     p_tcb->SuspendCtr = 0;/*嵌套挂起为0层*/
+    
+#if OS_CFG_TASK_PROFILE_EN > 0u
     p_tcb->TimeQuanta    = time_quanta;                     /* Save the #ticks for time slice (0 means not sliced)    */
 #if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
     if (time_quanta == (OS_TICK)0) {
@@ -293,7 +295,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         p_tcb->TimeQuantaCtr = time_quanta;
     }
 #endif    
-
+#endif
+    
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     for (reg_nbr = 0u; reg_nbr < OS_CFG_TASK_REG_TBL_SIZE; reg_nbr++) {
         p_tcb->RegTbl[reg_nbr] = (OS_REG)0;
@@ -356,8 +359,12 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
                             p_stk_base,
                             stk_size*sizeof(CPU_STK),/*uCOS-III的任务堆栈时以CPU_STK为单位，而RTT是以字节为单位，因此需要进行转换*/
                             prio,
-                            p_tcb->TimeQuantaCtr);
-    
+#if OS_CFG_TASK_PROFILE_EN > 0u
+                            p_tcb->TimeQuantaCtr
+#else
+                            time_quanta
+#endif
+                            );
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err != RT_EOK)
     {
@@ -1716,8 +1723,6 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
 #if OS_CFG_TASK_SUSPEND_EN > 0u
     p_tcb->SuspendCtr         = (OS_NESTING_CTR )0u;
 #endif
-    p_tcb->TimeQuanta         = (OS_TICK        )0u;
-    p_tcb->TimeQuantaCtr      = (OS_TICK        )0u;
 #if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
     p_tcb->StkFree            = (CPU_STK_SIZE   )0u;
     p_tcb->StkUsed            = (CPU_STK_SIZE   )0u;
@@ -1730,10 +1735,12 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;    
     p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
     
-#if OS_CFG_TASK_PROFILE_EN > 0u   
+#if OS_CFG_TASK_PROFILE_EN > 0u 
 #if OS_CFG_DBG_EN > 0u 
     p_tcb->StkPtr             = (CPU_STK       *)0;
 #endif
+    p_tcb->TimeQuanta         = (OS_TICK        )0u;
+    p_tcb->TimeQuantaCtr      = (OS_TICK        )0u;
     p_tcb->SemCtr             = (OS_SEM_CTR     )0u;
     p_tcb->Opt                = (OS_OPT         )0u;
     p_tcb->StkSize            = (CPU_STK        )0u;

@@ -92,6 +92,7 @@ void  OSInit (OS_ERR  *p_err)
 #if OS_CFG_SEM_EN > 0u                                      /* Initialize the Semaphore Manager module                */
     OS_SemInit(p_err);
     if (*p_err != OS_ERR_NONE) {
+        CPU_CRITICAL_EXIT();
         return;
     }
 #endif
@@ -99,6 +100,7 @@ void  OSInit (OS_ERR  *p_err)
 #if OS_CFG_MUTEX_EN > 0u                                    /* Initialize the Mutex Manager module                    */
     OS_MutexInit(p_err);
     if (*p_err != OS_ERR_NONE) {
+        CPU_CRITICAL_EXIT();
         return;
     }
 #endif
@@ -106,6 +108,7 @@ void  OSInit (OS_ERR  *p_err)
 #if OS_CFG_FLAG_EN > 0u                                     /* Initialize the Event Flag module                       */
     OS_FlagInit(p_err);
     if (*p_err != OS_ERR_NONE) {
+        CPU_CRITICAL_EXIT();
         return;
     }
 #endif
@@ -113,23 +116,27 @@ void  OSInit (OS_ERR  *p_err)
 #if OS_CFG_Q_EN > 0u
     OS_QInit(p_err);                                        /* Initialize the Message Queue Manager module            */
     if (*p_err != OS_ERR_NONE) {
+        CPU_CRITICAL_EXIT();
         return;
     }
 #endif
     
     OS_TaskInit(p_err);                                     /* Initialize the task manager                            */
     if (*p_err != OS_ERR_NONE) {
+        CPU_CRITICAL_EXIT();
         return;
     }
     
     OS_IdleTaskInit(p_err);                                 /* Initialize the Idle Task                               */
     if (*p_err != OS_ERR_NONE) {
+        CPU_CRITICAL_EXIT();
         return;
     }
 
 #if OS_CFG_STAT_TASK_EN > 0u                                /* Initialize the Statistic Task                          */
     OS_StatTaskInit(p_err);
     if (*p_err != OS_ERR_NONE) {
+        CPU_CRITICAL_EXIT();
         return;
     }
 #endif    
@@ -137,6 +144,7 @@ void  OSInit (OS_ERR  *p_err)
 #if OS_CFG_TMR_EN > 0u                                      /* Initialize the Timer Manager module                    */
     OS_TmrInit(p_err);
     if (*p_err != OS_ERR_NONE) {
+        CPU_CRITICAL_EXIT();
         return;
     }
 #endif  
