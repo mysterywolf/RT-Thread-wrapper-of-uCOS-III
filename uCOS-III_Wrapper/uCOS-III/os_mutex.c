@@ -158,6 +158,8 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 *
 *                                OS_ERR_NONE                 The call was successful and the mutex was deleted
 *                                OS_ERR_DEL_ISR              If you attempted to delete the mutex from an ISR
+*                                OS_ERR_ILLEGAL_DEL_RUN_TIME If you are trying to delete the event flag group after you
+*                                                               called OSStart()
 *                                OS_ERR_OBJ_PTR_NULL         If 'p_mutex' is a NULL pointer.
 *                                OS_ERR_OBJ_TYPE             If 'p_mutex' is not pointing to a mutex
 *                                OS_ERR_OPT_INVALID          An invalid option was specified
@@ -196,6 +198,13 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return ((OS_OBJ_QTY)0);
+    }
+#endif
+
+#ifdef OS_SAFETY_CRITICAL_IEC61508
+    if (OSSafetyCriticalStartFlag == OS_TRUE) {
+       *p_err = OS_ERR_ILLEGAL_DEL_RUN_TIME;
+        return (0u);
     }
 #endif
     
@@ -303,7 +312,8 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 *              p_err         is a pointer to a variable that will contain an error code returned by this function.
 *
 *                                OS_ERR_NONE               The call was successful and your task owns the resource
-*                              - OS_ERR_MUTEX_OWNER        If calling task already owns the mutex
+*                                OS_ERR_MUTEX_OWNER        If calling task already owns the mutex
+*                                OS_ERR_MUTEX_OVF          Mutex nesting counter overflowed
 *                              - OS_ERR_OBJ_DEL            If 'p_mutex' was deleted
 *                                OS_ERR_OBJ_PTR_NULL       If 'p_mutex' is a NULL pointer.
 *                                OS_ERR_OBJ_TYPE           If 'p_mutex' is not pointing at a mutex
@@ -416,6 +426,11 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     p_tcb->TaskState = OS_TASK_STATE_PEND;
     p_tcb->PendOn = OS_TASK_PEND_ON_MUTEX;    
     p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;   /*更新互斥量的嵌套值*/
+    if (p_mutex->OwnerNestingCtr == (OS_NESTING_CTR)-1) {
+        CPU_CRITICAL_EXIT();
+       *p_err = OS_ERR_MUTEX_OVF;
+        return;
+    }
     p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/*更新互斥量原始优先级*/
     p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;/*更新互斥量所拥有的任务指针*/
 #if OS_CFG_DBG_EN > 0u

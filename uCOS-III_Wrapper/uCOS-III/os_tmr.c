@@ -89,6 +89,7 @@
 *                                 OS_ERR_OBJ_PTR_NULL            is 'p_tmr' is a NULL pointer
 *                                 OS_ERR_OBJ_TYPE                if the object type is invalid
 *                                 OS_ERR_OPT_INVALID             you specified an invalid option
+*                                 OS_ERR_TMR_INVALID_CALLBACK    You specified an invalid callback for a periodic timer
 *                                 OS_ERR_TMR_INVALID_DLY         you specified an invalid delay
 *                                 OS_ERR_TMR_INVALID_PERIOD      you specified an invalid period
 *                                 OS_ERR_TMR_ISR                 if the call was made from an ISR
@@ -148,6 +149,11 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
         case OS_OPT_TMR_PERIODIC:
              if (period == (OS_TICK)0) {
                 *p_err = OS_ERR_TMR_INVALID_PERIOD;
+                 return;
+             }
+             
+             if (p_callback == (OS_TMR_CALLBACK_PTR)0) {        /* No point in a periodic timer without a callback      */
+                *p_err = OS_ERR_TMR_INVALID_CALLBACK;
                  return;
              }
              break;
@@ -265,6 +271,8 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 *
 *                                 OS_ERR_NONE
 *                                 OS_ERR_OBJ_TYPE             'p_tmr' is not pointing to a timer
+*                                 OS_ERR_ILLEGAL_DEL_RUN_TIME If you are trying to delete the timer after you called
+*                                                                OSStart()
 *                                 OS_ERR_TMR_INVALID          'p_tmr' is a NULL pointer
 *                                 OS_ERR_TMR_ISR              if the function was called from an ISR
 *                                 OS_ERR_TMR_INACTIVE         if the timer was not created
@@ -290,6 +298,13 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
     }
 #endif
 
+#ifdef OS_SAFETY_CRITICAL_IEC61508
+    if (OSSafetyCriticalStartFlag == OS_TRUE) {
+       *p_err = OS_ERR_ILLEGAL_DEL_RUN_TIME;
+        return (OS_FALSE);
+    }
+#endif
+    
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u   
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
@@ -449,6 +464,132 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
     
     return (remain);
 }
+
+/*
+************************************************************************************************************************
+*                                                    SET A TIMER
+*
+* Description: This function is called by your application code to set a timer.
+*
+* Arguments  : p_tmr           Is a pointer to a timer control block
+*
+*              dly             Initial delay.
+*                              If the timer is configured for ONE-SHOT mode, this is the timeout used
+*                              If the timer is configured for PERIODIC mode, this is the first timeout to wait for
+*                              before the timer starts entering periodic mode
+*
+*              period          The 'period' being repeated for the timer.
+*                              If you specified 'OS_OPT_TMR_PERIODIC' as an option, when the timer expires, it will
+*                              automatically restart with the same period.
+*
+*              p_callback      Is a pointer to a callback function that will be called when the timer expires.  The
+*                              callback function must be declared as follows:
+*
+*                                  void  MyCallback (OS_TMR *p_tmr, void *p_arg);
+*
+*              p_callback_arg  Is an argument (a pointer) that is passed to the callback function when it is called.
+*
+*              p_err           Is a pointer to an error code.  '*p_err' will contain one of the following:
+*
+*                                 OS_ERR_NONE                    The timer was configured as expected
+*                                 OS_ERR_OBJ_TYPE                If the object type is invalid
+*                                 OS_ERR_OS_NOT_RUNNING          If uC/OS-III is not running yet
+*                                 OS_ERR_TMR_INVALID             If 'p_tmr' is a NULL pointer or invalid option
+*                                 OS_ERR_TMR_INVALID_CALLBACK    you specified an invalid callback for a periodic timer
+*                                 OS_ERR_TMR_INVALID_DLY         You specified an invalid delay
+*                                 OS_ERR_TMR_INVALID_PERIOD      You specified an invalid period
+*                                 OS_ERR_TMR_ISR                 If the call was made from an ISR
+*
+* Returns    : none
+*
+* Note(s)    : 1) This function can be called on a running timer. The change to the delay and period will only
+*                 take effect after the current period or delay has passed. Change to the callback will take
+*                 effect immediately.
+************************************************************************************************************************
+*/
+
+void  OSTmrSet (OS_TMR               *p_tmr,
+                OS_TICK               dly,
+                OS_TICK               period,
+                OS_TMR_CALLBACK_PTR   p_callback,
+                void                 *p_callback_arg,
+                OS_ERR               *p_err)
+{
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+#if (OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u)
+    if (OSIntNestingCtr > 0u) {                                 /* See if trying to call from an ISR                    */
+       *p_err = OS_ERR_TMR_ISR;
+        return;
+    }
+#endif
+
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return;
+    }
+#endif
+
+#if (OS_CFG_ARG_CHK_EN > 0u)
+    if (p_tmr == (OS_TMR *)0) {                                 /* Validate 'p_tmr'                                     */
+       *p_err = OS_ERR_TMR_INVALID;
+        return;
+    }
+#endif
+
+#if (OS_CFG_OBJ_TYPE_CHK_EN > 0u)
+    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)
+    {
+        *p_err = OS_ERR_OBJ_TYPE;
+        return;       
+    }
+#endif
+
+#if (OS_CFG_ARG_CHK_EN > 0u)
+    switch (p_tmr->Opt) {
+        case OS_OPT_TMR_PERIODIC:
+             if (period == 0u) {
+                *p_err = OS_ERR_TMR_INVALID_PERIOD;
+                 return;
+             }
+
+             if (p_callback == (OS_TMR_CALLBACK_PTR)0) {        /* No point in a periodic timer without a callback      */
+                *p_err = OS_ERR_TMR_INVALID_CALLBACK;
+                 return;
+             }
+             break;
+
+        case OS_OPT_TMR_ONE_SHOT:
+             if (dly == 0u) {
+                *p_err = OS_ERR_TMR_INVALID_DLY;
+                 return;
+             }
+             break;
+
+        default:
+            *p_err = OS_ERR_TMR_INVALID;
+             return;
+    }
+#endif
+
+//    OS_TmrLock();
+
+//    p_tmr->Dly            = dly    * OSTmrToTicksMult;             /* Convert Timer Delay  to ticks                     */
+//    p_tmr->Period         = period * OSTmrToTicksMult;             /* Convert Timer Period to ticks                     */
+//    p_tmr->CallbackPtr    = p_callback;
+//    p_tmr->CallbackPtrArg = p_callback_arg;
+
+//   *p_err                 = OS_ERR_NONE;
+
+//    OS_TmrUnlock();
+}
+
 
 /*
 ************************************************************************************************************************

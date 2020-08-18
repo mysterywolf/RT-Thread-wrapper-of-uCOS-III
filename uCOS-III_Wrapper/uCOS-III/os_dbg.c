@@ -249,6 +249,7 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
 #endif
 
                                   + sizeof(OSRunning)
+                                  + sizeof(OSInitialized)
 
 #ifdef OS_SAFETY_CRITICAL_IEC61508
                                   + sizeof(OSSafetyCriticalStartFlag)

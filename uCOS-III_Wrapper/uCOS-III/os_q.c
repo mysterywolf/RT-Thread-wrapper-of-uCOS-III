@@ -221,6 +221,8 @@ void  OSQCreate (OS_Q        *p_q,
 *
 *                            OS_ERR_NONE                 The call was successful and the queue was deleted
 *                            OS_ERR_DEL_ISR              If you tried to delete the queue from an ISR
+*                            OS_ERR_ILLEGAL_DEL_RUN_TIME If you are trying to delete the event flag group after you
+*                                                           called OSStart()
 *                            OS_ERR_OBJ_PTR_NULL         if you pass a NULL pointer for 'p_q'
 *                            OS_ERR_OBJ_TYPE             if the message queue was not created
 *                            OS_ERR_OPT_INVALID          An invalid option was specified
@@ -256,6 +258,13 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
     }
 #endif
 
+#ifdef OS_SAFETY_CRITICAL_IEC61508
+    if (OSSafetyCriticalStartFlag == OS_TRUE) {
+       *p_err = OS_ERR_ILLEGAL_DEL_RUN_TIME;
+        return (0u);
+    }
+#endif
+    
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {

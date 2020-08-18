@@ -174,6 +174,8 @@ void  OSSemCreate (OS_SEM      *p_sem,
 *
 *                                OS_ERR_NONE                 The call was successful and the semaphore was deleted
 *                                OS_ERR_DEL_ISR              If you attempted to delete the semaphore from an ISR
+*                                OS_ERR_ILLEGAL_DEL_RUN_TIME If you are trying to delete the event flag group after you
+*                                                               called OSStart()
 *                                OS_ERR_OBJ_PTR_NULL         If 'p_sem' is a NULL pointer.
 *                                OS_ERR_OBJ_TYPE             If 'p_sem' is not pointing at a semaphore
 *                                OS_ERR_OPT_INVALID          An invalid option was specified
@@ -205,6 +207,13 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return ((OS_OBJ_QTY)0);
+    }
+#endif
+  
+#ifdef OS_SAFETY_CRITICAL_IEC61508
+    if (OSSafetyCriticalStartFlag == OS_TRUE) {
+       *p_err = OS_ERR_ILLEGAL_DEL_RUN_TIME;
+        return (0u);
     }
 #endif
     

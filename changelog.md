@@ -213,6 +213,12 @@
 
 - 修复`OSInit`函数return分支没有调用`CPU_CRITICAL_EXIT()`打开中断的bug
 - 增加视频介绍&教程链接
+- 增加3.08版本中新增的`OSInitialized`全局变量；`OS_FALSE`、`OS_TRUE`宏定义；错误代码`OS_ERR_OS_NOT_INIT`、`OS_ERR_OS_NO_APP_TASK`
+- 删除已经在3.08中废弃的错误代码`OS_ERR_INT_Q`、`OS_ERR_INT_Q_FULL`、`OS_ERR_INT_Q_SIZE`、`OS_ERR_INT_Q_STK_INVALID`、`OS_ERR_INT_Q_STK_SIZE_INVALID`；增加3.08错误代码`OS_ERR_ILLEGAL_DEL_RUN_TIME`，同时补充该错误代码的相关实现
+- 在`OSTmrDel`、`OSTaskDel`、`OSMutexDel`、`OSSemDel`、`OSQDel`、`OSFlagDel`函数增加`OS_SAFETY_CRITICAL_IEC61508`相关检查
+- 增加错误代码`OS_ERR_MUTEX_OVF`，同时补充该错误代码的相关实现
+- 增加错误代码`OS_ERR_TASK_SUSPEND_CTR_OVF`，同时补充该错误代码的相关实现
+- 增加错误代码`OS_ERR_TMR_INVALID_CALLBACK`，同时补充该错误代码的相关实现
 
 
 
@@ -339,7 +345,17 @@
 
 **[bug fix]** 修复`OSInit`函数return分支没有调用`CPU_CRITICAL_EXIT()`打开中断的bug
 
+**[add 3.08]** 增加3.08版本中新增的`OSInitialized`全局变量；`OS_FALSE`、`OS_TRUE`宏定义；错误代码`OS_ERR_OS_NOT_INIT`、`OS_ERR_OS_NO_APP_TASK`
 
+**[add 3.08]** 删除已经在3.08中废弃的错误代码`OS_ERR_INT_Q`、`OS_ERR_INT_Q_FULL`、`OS_ERR_INT_Q_SIZE`、`OS_ERR_INT_Q_STK_INVALID`、`OS_ERR_INT_Q_STK_SIZE_INVALID`；增加3.08错误代码`OS_ERR_ILLEGAL_DEL_RUN_TIME`，同时补充该错误代码的相关实现
+
+**[add 3.08]** 在`OSTmrDel`、`OSTaskDel`、`OSMutexDel`、`OSSemDel`、`OSQDel`、`OSFlagDel`函数增加`OS_SAFETY_CRITICAL_IEC61508`相关检查
+
+**[add 3.08]** 增加错误代码`OS_ERR_MUTEX_OVF`，同时补充该错误代码的相关实现
+
+**[add 3.08]** 增加错误代码`OS_ERR_TASK_SUSPEND_CTR_OVF`，同时补充该错误代码的相关实现
+
+**[add 3.08]** 增加错误代码`OS_ERR_TMR_INVALID_CALLBACK`，同时补充该错误代码的相关实现
 
 
 
@@ -353,3 +369,6 @@
     OS_OPT           FlagsOpt;      /* Options (See OS_OPT_FLAG_xxx) */
 ```
 
+
+
+2. 3.08版本中多出一个`OSTmrSet`函数

@@ -154,6 +154,7 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
 *                                                                   allowed (i.e. >= OS_CFG_PRIO_MAX-1) or,
 *                                                                if OS_CFG_ISR_POST_DEFERRED_EN is set to 1 and you tried
 *                                                                   to use priority 0 which is reserved.
+*                                 OS_ERR_STK_OVF                 If the stack was overflowed during stack init
 *                                 OS_ERR_STK_INVALID             if you specified a NULL pointer for 'p_stk_base'
 *                                 OS_ERR_STK_SIZE_INVALID        if you specified zero for the 'stk_size'
 *                                 OS_ERR_STK_LIMIT_INVALID       if you specified a 'stk_limit' greater than or equal
@@ -279,7 +280,20 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
             }
         }
     }
-        
+
+    p_sp = p_stk_base;
+#if (CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO)         /* Check if we overflown the stack during init          */
+    if (p_sp < p_stk_base) {
+       *p_err = OS_ERR_STK_OVF;
+        return;
+    }
+#else
+    if (p_sp > (p_stk_base + stk_size)) {
+       *p_err = OS_ERR_STK_OVF;
+        return;
+    }
+#endif
+    
     CPU_CRITICAL_ENTER();        
     p_tcb->MsgCreateSuc = RT_FALSE;
     p_tcb->SemCreateSuc = RT_FALSE;
@@ -420,6 +434,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 *              p_err      is a pointer to an error code returned by this function:
 *
 *                             OS_ERR_NONE                  if the call is successful
+*                             OS_ERR_ILLEGAL_DEL_RUN_TIME  If you are trying to delete the task after you called
+*                                                             OSStart()
 *                           - OS_ERR_STATE_INVALID         if the state of the task is invalid
 *                           - OS_ERR_TASK_DEL_IDLE         if you attempted to delete uC/OS-III's idle task
 *                           - OS_ERR_TASK_DEL_INVALID      if you attempted to delete uC/OS-III's ISR handler task
@@ -451,6 +467,13 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+    
+#ifdef OS_SAFETY_CRITICAL_IEC61508
+    if (OSSafetyCriticalStartFlag == OS_TRUE) {
+       *p_err = OS_ERR_ILLEGAL_DEL_RUN_TIME;
         return;
     }
 #endif
@@ -1485,8 +1508,11 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
 *              p_err    is a pointer to a variable that will receive an error code from this function.
 *
 *                           OS_ERR_NONE                      if the requested task is suspended
+*                           OS_ERR_OS_NOT_RUNNING            If uC/OS-III is not running yet
 *                           OS_ERR_SCHED_LOCKED              you can't suspend the current task is the scheduler is
 *                                                            locked
+*                           OS_ERR_STATE_INVALID             If the task is in an invalid state
+*                           OS_ERR_TASK_SUSPEND_CTR_OVF      If the nesting counter overflowed.
 *                           OS_ERR_TASK_SUSPEND_ISR          if you called this function from an ISR
 *                         - OS_ERR_TASK_SUSPEND_IDLE         if you attempted to suspend the idle task which is not
 *                                                            allowed.
@@ -1531,12 +1557,23 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
         *p_err = OS_ERR_SCHED_LOCKED;
         return;         
     }
+
+    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Can't suspend self when the kernel isn't running     */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return;
+    }
     
     /*TCB指针是否为空,若为空则为当前线程*/
     if(p_tcb == RT_NULL)
     {
         p_tcb = OSTCBCurPtr;
     } 
+
+    /*检查.SuspendCtr是否将要溢出*/
+    if (p_tcb->SuspendCtr == (OS_NESTING_CTR)-1) {
+       *p_err = OS_ERR_TASK_SUSPEND_CTR_OVF;
+        return;
+    }
     
     if((p_tcb->Task.stat & RT_THREAD_STAT_MASK) == RT_THREAD_SUSPEND)
     {

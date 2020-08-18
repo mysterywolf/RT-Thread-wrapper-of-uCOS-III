@@ -154,6 +154,7 @@ void  OSInit (OS_ERR  *p_err)
     OSCfg_Init();
 #endif
     
+    OSInitialized = OS_TRUE;                                    /* Kernel is initialized                                */
     
     /*这部分内容是在原版OSStart()函数中运行的,但是在本兼容层中,操作系统已经启动,因此直接在此处进行标记*/
     if (OSRunning == OS_STATE_OS_STOPPED) {
@@ -499,6 +500,8 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
 *
 *                             OS_ERR_FATAL_RETURN    OS was running and OSStart() returned.
 *                             OS_ERR_OS_RUNNING      OS is already running, OSStart() has no effect
+*                             OS_ERR_OS_NO_APP_TASK  No application task created, OSStart() has no effect
+*                             OS_ERR_OS_NOT_INIT     OS is not initialized, OSStart() has no effect
 *
 * Returns    : none
 *
@@ -513,6 +516,8 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
 
 void  OSStart (OS_ERR  *p_err)
 {    
+    OS_OBJ_QTY  kernel_task_cnt;
+    
     CPU_SR_ALLOC();    
     
 #ifdef OS_SAFETY_CRITICAL
@@ -521,15 +526,39 @@ void  OSStart (OS_ERR  *p_err)
         return;
     }
 #endif
+
+    kernel_task_cnt = 0u;                                       /* Calculate the number of kernel tasks                 */
+#if (OS_CFG_STAT_TASK_EN > 0u)
+    kernel_task_cnt++;
+#endif
+#if (OS_CFG_TMR_EN > 0u)
+    kernel_task_cnt++;
+#endif
+#if (OS_CFG_TASK_IDLE_EN > 0u)
+    kernel_task_cnt++;
+#endif  
     
     CPU_CRITICAL_ENTER();
-    
+
+    if (OSInitialized != OS_TRUE) {
+       *p_err = OS_ERR_OS_NOT_INIT;
+        CPU_CRITICAL_EXIT();
+        return;
+    }
+
     /*由于在兼容层运行之前,RT-Thread操作系统已经运行,因此在本函数对OSRunning的操作转移到OSInit函数中*/
     if (OSRunning == OS_STATE_OS_STOPPED) {
-        *p_err           = OS_ERR_FATAL_RETURN;             /* OSStart() is not supposed to return                    */
+        *p_err           = OS_ERR_FATAL_RETURN;                 /* OSStart() is not supposed to return                    */
     } else {
-        *p_err           = OS_ERR_OS_RUNNING;               /* OS is already running                                  */
-    }      
+        *p_err           = OS_ERR_OS_RUNNING;                   /* OS is already running                                  */
+    }
+    
+    /*检查OSStart调用之前是否创建了用户应用级任务，该检查在兼容层中意义不大，因此放在最后*/
+    if (OSTaskQty <= kernel_task_cnt) {                         /* No application task created                          */
+        *p_err = OS_ERR_OS_NO_APP_TASK;
+        CPU_CRITICAL_EXIT(); 
+        return;
+    }   
     
     CPU_CRITICAL_EXIT();
 }

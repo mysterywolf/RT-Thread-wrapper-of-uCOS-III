@@ -91,6 +91,14 @@
 #define  OS_EXT  extern
 #endif
 
+#ifndef  OS_FALSE
+#define  OS_FALSE                       0u
+#endif
+
+#ifndef  OS_TRUE
+#define  OS_TRUE                        1u
+#endif
+
 #define  OS_MSG_EN                 (((OS_CFG_TASK_Q_EN > 0u) || (OS_CFG_Q_EN > 0u)) ? 1u : 0u)
 
 
@@ -345,7 +353,7 @@ typedef  enum  os_err {
     OS_ERR_NONE                      =     0u,
 
     OS_ERR_A                         = 10000u,
-    OS_ERR_ACCEPT_ISR                = 10001u, /*原版3.03中仅定义未使用*/
+    OS_ERR_ACCEPT_ISR                = 10001u, /*原版3.03/3.08中仅定义未使用*/
 
     OS_ERR_B                         = 11000u,
 
@@ -360,8 +368,8 @@ typedef  enum  os_err {
     OS_ERR_F                         = 15000u,
     OS_ERR_FATAL_RETURN              = 15001u,
 
-    OS_ERR_FLAG_GRP_DEPLETED         = 15101u, /*原版3.03中仅定义未使用*/
-    OS_ERR_FLAG_NOT_RDY              = 15102u, /*原版3.03中仅定义未使用*/
+    OS_ERR_FLAG_GRP_DEPLETED         = 15101u, /*原版3.03/3.08中仅定义未使用*/
+    OS_ERR_FLAG_NOT_RDY              = 15102u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_FLAG_PEND_OPT             = 15103u,
     OS_ERR_FLUSH_ISR                 = 15104u,
 
@@ -371,11 +379,7 @@ typedef  enum  os_err {
 
     OS_ERR_I                         = 18000u,
     OS_ERR_ILLEGAL_CREATE_RUN_TIME   = 18001u,
-//    OS_ERR_INT_Q                     = 18002u,
-//    OS_ERR_INT_Q_FULL                = 18003u,
-//    OS_ERR_INT_Q_SIZE                = 18004u,
-//    OS_ERR_INT_Q_STK_INVALID         = 18005u,
-//    OS_ERR_INT_Q_STK_SIZE_INVALID    = 18006u,
+    OS_ERR_ILLEGAL_DEL_RUN_TIME      = 18007u,
 
     OS_ERR_J                         = 19000u,
 
@@ -397,13 +401,14 @@ typedef  enum  os_err {
     OS_ERR_MEM_INVALID_SIZE          = 22209u,
     OS_ERR_MEM_NO_FREE_BLKS          = 22210u,
 
-//    OS_ERR_MSG_POOL_EMPTY            = 22301u,
-//    OS_ERR_MSG_POOL_NULL_PTR         = 22302u,
+//  OS_ERR_MSG_POOL_EMPTY            = 22301u,
+//  OS_ERR_MSG_POOL_NULL_PTR         = 22302u,
 
     OS_ERR_MUTEX_NOT_OWNER           = 22401u,
     OS_ERR_MUTEX_OWNER               = 22402u,
     OS_ERR_MUTEX_NESTING             = 22403u,
-
+    OS_ERR_MUTEX_OVF                 = 22404u,
+    
     OS_ERR_N                         = 23000u,
     OS_ERR_NAME                      = 23001u,
     OS_ERR_NO_MORE_ID_AVAIL          = 23002u,
@@ -418,39 +423,41 @@ typedef  enum  os_err {
 
     OS_ERR_OS_NOT_RUNNING            = 24201u,
     OS_ERR_OS_RUNNING                = 24202u,
-
+    OS_ERR_OS_NOT_INIT               = 24203u,
+    OS_ERR_OS_NO_APP_TASK            = 24204u,
+    
     OS_ERR_P                         = 25000u,
     OS_ERR_PEND_ABORT                = 25001u,
     OS_ERR_PEND_ABORT_ISR            = 25002u,
     OS_ERR_PEND_ABORT_NONE           = 25003u,
     OS_ERR_PEND_ABORT_SELF           = 25004u,
-    OS_ERR_PEND_DEL                  = 25005u, /*原版3.03中仅定义未使用*/
+    OS_ERR_PEND_DEL                  = 25005u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_PEND_ISR                  = 25006u,
-    OS_ERR_PEND_LOCKED               = 25007u, /*原版3.03中仅定义未使用*/
-//    OS_ERR_PEND_WOULD_BLOCK          = 25008u,
+    OS_ERR_PEND_LOCKED               = 25007u, /*原版3.03/3.08中仅定义未使用*/
+//  OS_ERR_PEND_WOULD_BLOCK          = 25008u,
 
-    OS_ERR_POST_NULL_PTR             = 25101u, /*原版3.03中仅定义未使用*/
+    OS_ERR_POST_NULL_PTR             = 25101u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_POST_ISR                  = 25102u,
 
-    OS_ERR_PRIO_EXIST                = 25201u, /*原版3.03中仅定义未使用*/
-    OS_ERR_PRIO                      = 25202u, /*原版3.03中仅定义未使用*/
+    OS_ERR_PRIO_EXIST                = 25201u, /*原版3.03/3.08中仅定义未使用*/
+    OS_ERR_PRIO                      = 25202u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_PRIO_INVALID              = 25203u,
 
     OS_ERR_PTR_INVALID               = 25301u,
 
     OS_ERR_Q                         = 26000u,
-    OS_ERR_Q_FULL                    = 26001u, /*原版3.03中仅定义未使用*/
-//    OS_ERR_Q_EMPTY                   = 26002u,
+    OS_ERR_Q_FULL                    = 26001u, /*原版3.03/3.08中仅定义未使用*/
+//  OS_ERR_Q_EMPTY                   = 26002u,
     OS_ERR_Q_MAX                     = 26003u,
     OS_ERR_Q_SIZE                    = 26004u,
 
     OS_ERR_R                         = 27000u,
     OS_ERR_REG_ID_INVALID            = 27001u,
-//    OS_ERR_ROUND_ROBIN_1             = 27002u,
+//  OS_ERR_ROUND_ROBIN_1             = 27002u,
     OS_ERR_ROUND_ROBIN_DISABLED      = 27003u,
 
     OS_ERR_S                         = 28000u,
-    OS_ERR_SCHED_INVALID_TIME_SLICE  = 28001u, /*原版3.03中仅定义未使用*/
+    OS_ERR_SCHED_INVALID_TIME_SLICE  = 28001u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_SCHED_LOCK_ISR            = 28002u,
     OS_ERR_SCHED_LOCKED              = 28003u,
     OS_ERR_SCHED_NOT_LOCKED          = 28004u,
@@ -464,36 +471,38 @@ typedef  enum  os_err {
     OS_ERR_STAT_STK_INVALID          = 28203u,
     OS_ERR_STAT_STK_SIZE_INVALID     = 28204u,
     OS_ERR_STATE_INVALID             = 28205u,
-//    OS_ERR_STATUS_INVALID            = 28206u,
+//  OS_ERR_STATUS_INVALID            = 28206u,
     OS_ERR_STK_INVALID               = 28207u,
     OS_ERR_STK_SIZE_INVALID          = 28208u,
     OS_ERR_STK_LIMIT_INVALID         = 28209u,
-
+    OS_ERR_STK_OVF                   = 28210u,
+    
     OS_ERR_T                         = 29000u,
-//    OS_ERR_TASK_CHANGE_PRIO_ISR      = 29001u,
+//  OS_ERR_TASK_CHANGE_PRIO_ISR      = 29001u,
     OS_ERR_TASK_CREATE_ISR           = 29002u,
-    OS_ERR_TASK_DEL                  = 29003u, /*原版3.03中仅定义未使用*/
-//    OS_ERR_TASK_DEL_IDLE             = 29004u,
-//    OS_ERR_TASK_DEL_INVALID          = 29005u,
+    OS_ERR_TASK_DEL                  = 29003u, /*原版3.03/3.08中仅定义未使用*/
+//  OS_ERR_TASK_DEL_IDLE             = 29004u,
+//  OS_ERR_TASK_DEL_INVALID          = 29005u,
     OS_ERR_TASK_DEL_ISR              = 29006u,
     OS_ERR_TASK_INVALID              = 29007u,
-    OS_ERR_TASK_NO_MORE_TCB          = 29008u, /*原版3.03中仅定义未使用*/
+    OS_ERR_TASK_NO_MORE_TCB          = 29008u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_TASK_NOT_DLY              = 29009u,
     OS_ERR_TASK_NOT_EXIST            = 29010u,
     OS_ERR_TASK_NOT_SUSPENDED        = 29011u,
     OS_ERR_TASK_OPT                  = 29012u,
     OS_ERR_TASK_RESUME_ISR           = 29013u,
-    OS_ERR_TASK_RESUME_PRIO          = 29014u, /*原版3.03中仅定义未使用*/
+    OS_ERR_TASK_RESUME_PRIO          = 29014u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_TASK_RESUME_SELF          = 29015u,
-    OS_ERR_TASK_RUNNING              = 29016u, /*原版3.03中仅定义未使用*/
+    OS_ERR_TASK_RUNNING              = 29016u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_TASK_STK_CHK_ISR          = 29017u,
     OS_ERR_TASK_SUSPENDED            = 29018u,
-//    OS_ERR_TASK_SUSPEND_IDLE         = 29019u,
-//    OS_ERR_TASK_SUSPEND_INT_HANDLER  = 29020u,
+//  OS_ERR_TASK_SUSPEND_IDLE         = 29019u,
+//  OS_ERR_TASK_SUSPEND_INT_HANDLER  = 29020u,
     OS_ERR_TASK_SUSPEND_ISR          = 29021u,
-    OS_ERR_TASK_SUSPEND_PRIO         = 29022u, /*原版3.03中仅定义未使用*/
+    OS_ERR_TASK_SUSPEND_PRIO         = 29022u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_TASK_WAITING              = 29023u,
-
+    OS_ERR_TASK_SUSPEND_CTR_OVF      = 29024u,
+    
     OS_ERR_TCB_INVALID               = 29101u,
 
     OS_ERR_TLS_ID_INVALID            = 29120u,
@@ -502,38 +511,39 @@ typedef  enum  os_err {
     OS_ERR_TLS_NOT_EN                = 29123u,
     OS_ERR_TLS_DESTRUCT_ASSIGNED     = 29124u,
 
-//    OS_ERR_TICK_PRIO_INVALID         = 29201u,
-//    OS_ERR_TICK_STK_INVALID          = 29202u,
-//    OS_ERR_TICK_STK_SIZE_INVALID     = 29203u,
-//    OS_ERR_TICK_WHEEL_SIZE           = 29204u,
+//  OS_ERR_TICK_PRIO_INVALID         = 29201u,
+//  OS_ERR_TICK_STK_INVALID          = 29202u,
+//  OS_ERR_TICK_STK_SIZE_INVALID     = 29203u,
+//  OS_ERR_TICK_WHEEL_SIZE           = 29204u,
 
     OS_ERR_TIME_DLY_ISR              = 29301u,
     OS_ERR_TIME_DLY_RESUME_ISR       = 29302u,
-    OS_ERR_TIME_GET_ISR              = 29303u, /*原版3.03中仅定义未使用*/
+    OS_ERR_TIME_GET_ISR              = 29303u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_TIME_INVALID_HOURS        = 29304u,
     OS_ERR_TIME_INVALID_MINUTES      = 29305u,
     OS_ERR_TIME_INVALID_SECONDS      = 29306u,
     OS_ERR_TIME_INVALID_MILLISECONDS = 29307u,
-    OS_ERR_TIME_NOT_DLY              = 29308u, /*原版3.03中仅定义未使用*/
-    OS_ERR_TIME_SET_ISR              = 29309u, /*原版3.03中仅定义未使用*/
+    OS_ERR_TIME_NOT_DLY              = 29308u, /*原版3.03/3.08中仅定义未使用*/
+    OS_ERR_TIME_SET_ISR              = 29309u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_TIME_ZERO_DLY             = 29310u,
 
     OS_ERR_TIMEOUT                   = 29401u,
 
     OS_ERR_TMR_INACTIVE              = 29501u,
-    OS_ERR_TMR_INVALID_DEST          = 29502u, /*原版3.03中仅定义未使用*/
+    OS_ERR_TMR_INVALID_DEST          = 29502u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_TMR_INVALID_DLY           = 29503u,
     OS_ERR_TMR_INVALID_PERIOD        = 29504u,
     OS_ERR_TMR_INVALID_STATE         = 29505u,
     OS_ERR_TMR_INVALID               = 29506u,
     OS_ERR_TMR_ISR                   = 29507u,
     OS_ERR_TMR_NO_CALLBACK           = 29508u,
-    OS_ERR_TMR_NON_AVAIL             = 29509u, /*原版3.03中仅定义未使用*/
-//    OS_ERR_TMR_PRIO_INVALID          = 29510u,
-//    OS_ERR_TMR_STK_INVALID           = 29511u,
-//    OS_ERR_TMR_STK_SIZE_INVALID      = 29512u,
+    OS_ERR_TMR_NON_AVAIL             = 29509u, /*原版3.03/3.08中仅定义未使用*/
+//  OS_ERR_TMR_PRIO_INVALID          = 29510u,
+//  OS_ERR_TMR_STK_INVALID           = 29511u,
+//  OS_ERR_TMR_STK_SIZE_INVALID      = 29512u,
     OS_ERR_TMR_STOPPED               = 29513u,
-
+    OS_ERR_TMR_INVALID_CALLBACK      = 29514u,
+    
     OS_ERR_U                         = 30000u,
 
     OS_ERR_V                         = 31000u,
@@ -826,6 +836,7 @@ OS_EXT            OS_APP_HOOK_VOID          OS_AppTimeTickHookPtr;
 #endif
 
 OS_EXT            OS_STATE                  OSRunning;                  /* Flag indicating that kernel is running     */
+OS_EXT            OS_STATE                  OSInitialized;              /* Flag indicating the kernel is initialized  */
 
 #ifdef OS_SAFETY_CRITICAL_IEC61508
 OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag indicating that all init. done        */
@@ -1384,6 +1395,13 @@ CPU_BOOLEAN   OSTmrDel                  (OS_TMR                *p_tmr,
 OS_TICK       OSTmrRemainGet            (OS_TMR                *p_tmr,
                                          OS_ERR                *p_err);
 
+void          OSTmrSet                  (OS_TMR                *p_tmr,
+                                         OS_TICK                dly,
+                                         OS_TICK                period,
+                                         OS_TMR_CALLBACK_PTR    p_callback,
+                                         void                  *p_callback_arg,
+                                         OS_ERR                *p_err);
+                                         
 CPU_BOOLEAN   OSTmrStart                (OS_TMR                *p_tmr,
                                          OS_ERR                *p_err);
 
