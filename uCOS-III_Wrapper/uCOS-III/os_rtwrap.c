@@ -9,7 +9,6 @@
  */
  
 #include <os.h>
-#include <stdlib.h>
 #include <string.h>
 #include <rthw.h>
 
@@ -22,7 +21,7 @@
  */
 OS_ERR rt_err_to_ucosiii(rt_err_t rt_err)
 {
-    int rt_err2 = abs((int)rt_err);/*RTT返回的错误码都是带负号的*/
+    int rt_err2 = -rt_err;/*RTT返回的错误码都是带负号的*/
     switch(rt_err2)
     {
         /*以下RTT错误码可以用原版uCOS-III错误码进行兼容*/
