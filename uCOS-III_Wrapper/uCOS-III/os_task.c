@@ -408,7 +408,9 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_tcb->StkSize = stk_size;
     p_tcb->StkBasePtr = p_stk_base;
     p_tcb->StkLimitPtr = p_stk_limit;
+#if (OS_CFG_DBG_EN > 0u)
     p_tcb->NamePtr = p_tcb->Task.name;
+#endif
     p_tcb->TaskEntryAddr = (OS_TASK_PTR)p_tcb->Task.entry;
     p_tcb->TaskEntryArg = p_tcb->Task.parameter;
     p_tcb->Prio = p_tcb->Task.init_priority;
@@ -1783,7 +1785,9 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->StkSize            = (CPU_STK        )0u;
     p_tcb->StkLimitPtr        = (CPU_STK       *)0;    
     p_tcb->StkBasePtr         = (CPU_STK       *)0;     
+#if (OS_CFG_DBG_EN > 0u)
     p_tcb->NamePtr            = (CPU_CHAR      *)((void *)"?Task");
+#endif
     p_tcb->TaskEntryAddr      = (OS_TASK_PTR    )0;
     p_tcb->TaskEntryArg       = (void          *)0;
     p_tcb->Prio               = (OS_PRIO        )OS_PRIO_INIT;

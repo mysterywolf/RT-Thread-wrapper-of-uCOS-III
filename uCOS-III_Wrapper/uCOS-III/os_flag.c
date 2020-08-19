@@ -154,7 +154,9 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
     
     CPU_CRITICAL_ENTER();
     p_grp->Type    = OS_OBJ_TYPE_FLAG;                      /* Set to event flag group type                           */
+#if (OS_CFG_DBG_EN > 0u)
     p_grp->NamePtr = p_name;
+#endif
     p_grp->Flags   = flags;                                 /* Set to desired initial value                           */
 #if OS_CFG_DBG_EN > 0u
     OS_FlagDbgListAdd(p_grp);
@@ -864,7 +866,9 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
 void  OS_FlagClr (OS_FLAG_GRP  *p_grp)
 {
     p_grp->Type             = OS_OBJ_TYPE_NONE;
+#if (OS_CFG_DBG_EN > 0u)
     p_grp->NamePtr          = (CPU_CHAR *)((void *)"?FLAG");    /* Unknown name                                       */
+#endif
     p_grp->Flags            = (OS_FLAGS )0;
 }
 

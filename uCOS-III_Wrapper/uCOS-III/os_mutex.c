@@ -128,7 +128,9 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
     }
     
     CPU_CRITICAL_ENTER();
+#if (OS_CFG_DBG_EN > 0u)
     p_mutex->NamePtr           =  p_name;
+#endif
     p_mutex->Type              =  OS_OBJ_TYPE_MUTEX;
     p_mutex->OwnerNestingCtr   = (OS_NESTING_CTR)0;         /* Mutex is available                                     */
     p_mutex->OwnerTCBPtr       = (OS_TCB       *)0;
@@ -755,7 +757,9 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
 
 void  OS_MutexClr (OS_MUTEX  *p_mutex)
 {
+#if (OS_CFG_DBG_EN > 0u)
     p_mutex->NamePtr           = (CPU_CHAR     *)((void *)"?MUTEX");
+#endif
     p_mutex->Type              =  OS_OBJ_TYPE_NONE;         /* Mark the data structure as a NONE                      */
     p_mutex->OwnerNestingCtr   = (OS_NESTING_CTR)0;
     p_mutex->OwnerTCBPtr       = (OS_TCB       *)0;

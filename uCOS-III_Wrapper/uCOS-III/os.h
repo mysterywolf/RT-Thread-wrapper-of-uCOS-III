@@ -637,7 +637,9 @@ struct os_q
 {
     struct  rt_messagequeue Msg;
     OS_OBJ_TYPE          Type;
+#if (OS_CFG_DBG_EN > 0u)
     CPU_CHAR            *NamePtr;                           /* Pointer to Message Queue Name (NUL terminated ASCII)   */
+#endif
     void                *p_pool;
     ucos_msg_t ucos_msg;
 #if OS_CFG_DBG_EN > 0u
@@ -657,8 +659,8 @@ struct os_q
 struct  os_sem { 
     struct  rt_semaphore  Sem;
     OS_OBJ_TYPE           Type;
+#if (OS_CFG_DBG_EN > 0u)
     CPU_CHAR             *NamePtr;                          /* Pointer to Semaphore Name (NUL terminated ASCII)       */
-#if OS_CFG_DBG_EN > 0u
     OS_SEM               *DbgPrevPtr;
     OS_SEM               *DbgNextPtr;
     CPU_CHAR             *DbgNamePtr;                       /*等待该内核对象挂起表中第一个任务的名字*/
@@ -674,7 +676,9 @@ struct  os_sem {
 struct  os_flag_grp {
     struct  rt_event     FlagGrp;
     OS_OBJ_TYPE          Type;
+#if (OS_CFG_DBG_EN > 0u)
     CPU_CHAR            *NamePtr;                           /* Pointer to Event Flag Name (NUL terminated ASCII)      */
+#endif
     OS_FLAGS             Flags;                             /* 8, 16 or 32 bit flags                                  */
 #if OS_CFG_DBG_EN > 0u
     OS_FLAG_GRP         *DbgPrevPtr;
@@ -729,7 +733,9 @@ struct os_tcb
     CPU_STK          StkSize;       /* 任务堆栈大小*/    
     CPU_STK         *StkLimitPtr;   /* Pointer used to set stack 'watermark' limit */
     CPU_STK         *StkBasePtr;    /* Pointer to base address of stack */
+#if (OS_CFG_DBG_EN > 0u)
     CPU_CHAR        *NamePtr;       /* Pointer to task name */    
+#endif
     OS_TASK_PTR      TaskEntryAddr; /* Pointer to task entry point address */
     void            *TaskEntryArg;  /* Argument passed to task when it was created */
     OS_PRIO          Prio;          /* Task priority (0 == highest) */          
@@ -750,7 +756,9 @@ struct os_tcb
 struct os_mem {                                             /* MEMORY CONTROL BLOCK                                   */
     OS_OBJ_TYPE          Type;                              /* Should be set to OS_OBJ_TYPE_MEM                       */
     void                *AddrPtr;                           /* Pointer to beginning of memory partition               */
+#if (OS_CFG_DBG_EN > 0u)
     CPU_CHAR            *NamePtr;
+#endif
     void                *FreeListPtr;                       /* Pointer to list of free memory blocks                  */
     OS_MEM_SIZE          BlkSize;                           /* Size (in bytes) of each block of memory                */
     OS_MEM_QTY           NbrMax;                            /* Total number of blocks in this partition               */
@@ -769,7 +777,9 @@ struct os_mem {                                             /* MEMORY CONTROL BL
 
 struct  os_mutex {
     struct rt_mutex     Mutex;
+#if (OS_CFG_DBG_EN > 0u)
     CPU_CHAR           *NamePtr;
+#endif
     OS_OBJ_TYPE         Type;
     OS_NESTING_CTR      OwnerNestingCtr;                    /* Mutex is available when the counter is 0               */
     OS_TCB             *OwnerTCBPtr;
@@ -790,7 +800,9 @@ struct  os_mutex {
 struct  os_tmr {
     struct  rt_timer     Tmr;
     OS_OBJ_TYPE          Type;
+#if (OS_CFG_DBG_EN > 0u)
     CPU_CHAR            *NamePtr;                           /* Pointer to Semaphore Name (NUL terminated ASCII)       */
+#endif
     OS_TMR_CALLBACK_PTR  CallbackPtr;                       /* Function to call when timer expires                    */
     void                *CallbackPtrArg;                    /* Argument to pass to function when timer expires        */
     OS_STATE             State;

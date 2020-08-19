@@ -213,7 +213,9 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     CPU_CRITICAL_ENTER();
     p_tmr->State          = (OS_STATE           )OS_TMR_STATE_STOPPED;     /* Initialize the timer fields             */
     p_tmr->Type           = (OS_OBJ_TYPE        )OS_OBJ_TYPE_TMR; 
+#if (OS_CFG_DBG_EN > 0u)
     p_tmr->NamePtr        = (CPU_CHAR          *)p_name;    
+#endif
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)p_callback;
     p_tmr->CallbackPtrArg = (void              *)p_callback_arg;
     p_tmr->Opt            = (OS_OPT             )opt;
@@ -582,10 +584,10 @@ void  OSTmrSet (OS_TMR               *p_tmr,
 
 //    p_tmr->Dly            = dly    * OSTmrToTicksMult;             /* Convert Timer Delay  to ticks                     */
 //    p_tmr->Period         = period * OSTmrToTicksMult;             /* Convert Timer Period to ticks                     */
-//    p_tmr->CallbackPtr    = p_callback;
-//    p_tmr->CallbackPtrArg = p_callback_arg;
+    p_tmr->CallbackPtr    = p_callback;
+    p_tmr->CallbackPtrArg = p_callback_arg;
 
-//   *p_err                 = OS_ERR_NONE;
+   *p_err                 = OS_ERR_NONE;
 
 //    OS_TmrUnlock();
 }
@@ -932,7 +934,9 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
 {
     p_tmr->State          = OS_TMR_STATE_UNUSED;            /* Clear timer fields                                     */
     p_tmr->Type           = OS_OBJ_TYPE_NONE;
+#if (OS_CFG_DBG_EN > 0u)
     p_tmr->NamePtr        = (CPU_CHAR          *)((void *)"?TMR");
+#endif
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)0;
     p_tmr->CallbackPtrArg = (void              *)0;
     p_tmr->Opt            = (OS_OPT             )0;

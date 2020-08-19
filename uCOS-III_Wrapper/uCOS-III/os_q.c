@@ -195,8 +195,8 @@ void  OSQCreate (OS_Q        *p_q,
     
     CPU_CRITICAL_ENTER();
     p_q->Type    = OS_OBJ_TYPE_Q;                           /* Mark the data structure as a message queue             */
+#if (OS_CFG_DBG_EN > 0u)
     p_q->NamePtr = p_name;
-#if OS_CFG_DBG_EN > 0u
     OS_QDbgListAdd(p_q);
 #endif
     OSQQty++;                                               /* One more queue created                                 */      
@@ -933,7 +933,9 @@ void  OSQPost (OS_Q         *p_q,
 void  OS_QClr (OS_Q  *p_q)
 {
     p_q->Type    =  OS_OBJ_TYPE_NONE;                       /* Mark the data structure as a NONE                      */
+#if (OS_CFG_DBG_EN > 0u)
     p_q->NamePtr = (CPU_CHAR *)((void *)"?Q");
+#endif
 }
 
 /*

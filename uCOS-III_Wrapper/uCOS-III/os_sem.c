@@ -147,7 +147,9 @@ void  OSSemCreate (OS_SEM      *p_sem,
     
     CPU_CRITICAL_ENTER();
     p_sem->Type    = OS_OBJ_TYPE_SEM;                       /* Mark the data structure as a semaphore                 */    
+#if (OS_CFG_DBG_EN > 0u)
     p_sem->NamePtr = p_name;
+#endif
     p_sem->Ctr = p_sem->Sem.value;                          /* Set semaphore value                                    */
 #if OS_CFG_DBG_EN > 0u
     OS_SemDbgListAdd(p_sem);
@@ -875,7 +877,9 @@ void  OSSemSet (OS_SEM      *p_sem,
 void  OS_SemClr (OS_SEM  *p_sem)
 {
     p_sem->Type    = OS_OBJ_TYPE_NONE;                      /* Mark the data structure as a NONE                      */
+#if (OS_CFG_DBG_EN > 0u)
     p_sem->NamePtr = (CPU_CHAR *)((void *)"?SEM");
+#endif
     p_sem->Ctr     = (OS_SEM_CTR)0;                         /* Set semaphore value                                    */
 }
 

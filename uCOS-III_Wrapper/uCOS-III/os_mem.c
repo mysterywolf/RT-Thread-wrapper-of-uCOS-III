@@ -153,7 +153,9 @@ void  OSMemCreate (OS_MEM       *p_mem,
 
     CPU_CRITICAL_ENTER();
     p_mem->Type        = OS_OBJ_TYPE_MEM;                   /* Set the type of object                                 */
+#if (OS_CFG_DBG_EN > 0u)
     p_mem->NamePtr     = p_name;                            /* Save name of memory partition                          */
+#endif
     p_mem->AddrPtr     = p_addr;                            /* Store start address of memory partition                */
     p_mem->FreeListPtr = p_addr;                            /* Initialize pointer to pool of free blocks              */
     p_mem->NbrFree     = n_blks;                            /* Store number of free blocks in MCB                     */
