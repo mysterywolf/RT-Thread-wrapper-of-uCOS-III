@@ -811,6 +811,8 @@ struct  os_tmr {
     OS_TICK              Remain;                            /* Amount of time remaining before timer expires          */
     OS_TICK              Dly;                               /* Delay before start of repeat                           */
     OS_TICK              Period;                            /* Period to repeat timer                                 */
+    OS_TICK              _set_dly;                          /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数  */
+    OS_TICK              _set_period;                       /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数  */
     OS_TICK              _dly;                              /* 该变量为兼容层内部使用,用于带有延迟的周期延时          */
 #if OS_CFG_DBG_EN > 0u
     OS_TMR              *DbgPrevPtr;

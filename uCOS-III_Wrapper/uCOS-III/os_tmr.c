@@ -222,7 +222,9 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     p_tmr->Remain         = (OS_TICK            )0;
     p_tmr->Period         = (OS_TICK            )period;
     p_tmr->Dly            = (OS_TICK            )dly;
-    p_tmr->_dly           = (OS_TICK            )dly;/*该变量为内部变量,用于带有延迟的周期延时*/
+    p_tmr->_dly           = (OS_TICK            )dly;   /* 该变量为兼容层内部使用,用于带有延迟的周期延时          */
+    p_tmr->_set_dly       = (OS_TICK            )0;     /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数  */
+    p_tmr->_set_period    = (OS_TICK            )0;     /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数  */
 #if OS_CFG_DBG_EN > 0u
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
@@ -517,6 +519,8 @@ void  OSTmrSet (OS_TMR               *p_tmr,
                 void                 *p_callback_arg,
                 OS_ERR               *p_err)
 {
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -580,16 +584,14 @@ void  OSTmrSet (OS_TMR               *p_tmr,
     }
 #endif
 
-//    OS_TmrLock();
-
-//    p_tmr->Dly            = dly    * OSTmrToTicksMult;             /* Convert Timer Delay  to ticks                     */
-//    p_tmr->Period         = period * OSTmrToTicksMult;             /* Convert Timer Period to ticks                     */
+    CPU_CRITICAL_ENTER();
+    p_tmr->_set_dly       = dly;                                   /* Convert Timer Delay  to ticks                     */
+    p_tmr->_set_period    = period;                                /* Convert Timer Period to ticks                     */
     p_tmr->CallbackPtr    = p_callback;
     p_tmr->CallbackPtrArg = p_callback_arg;
-
+    CPU_CRITICAL_EXIT();
+    
    *p_err                 = OS_ERR_NONE;
-
-//    OS_TmrUnlock();
 }
 
 
@@ -944,7 +946,9 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
     p_tmr->Remain         = (OS_TICK            )0;
     p_tmr->Period         = (OS_TICK            )0;
     p_tmr->Dly            = (OS_TICK            )0;
-    p_tmr->_dly           = (OS_TICK            )0;
+    p_tmr->_set_dly       = (OS_TICK            )0; /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数  */
+    p_tmr->_set_period    = (OS_TICK            )0; /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数  */
+    p_tmr->_dly           = (OS_TICK            )0; /* 该变量为兼容层内部使用,用于带有延迟的周期延时          */
 #if OS_CFG_DBG_EN > 0u    
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgNextPtr     = (OS_TMR            *)0;

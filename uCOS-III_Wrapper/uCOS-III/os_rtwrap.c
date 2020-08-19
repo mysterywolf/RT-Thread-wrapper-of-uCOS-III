@@ -34,9 +34,9 @@ OS_ERR rt_err_to_ucosiii(rt_err_t rt_err)
         case RT_EFULL:/* 资源已满,该参数仅在IPC中使用*/
             return OS_ERR_Q_MAX;        
         /*
-        由于uCOS-III的错误码分类较细，而RTT的错误码分类较为笼统，
-        以下RTT错误码使用uCOS-III的错误码很难准确描述
-        因此将针对RTT的错误码重新定义(新增)uCOS-III的错误码
+            由于uCOS-III的错误码分类较细，而RTT的错误码分类较为笼统，
+            以下RTT错误码使用uCOS-III的错误码很难准确描述
+            因此将针对RTT的错误码重新定义(新增)uCOS-III的错误码
         */
         case RT_ERROR:/* 普通错误    */
             return OS_ERR_RT_ERROR;
