@@ -437,22 +437,26 @@ void  App_OS_TimeTickHook (void);
 目前，本兼容层可以使用以下μCOS-III原版全局变量（位于`os.h`）。这些全局变量的具体含义请参见**2.2节**中所列举出的参考资料。
 
  ```c
-
-#define          OSSchedLockNestingCtr      rt_critical_level()         /* Lock nesting level                         */
-#define          OSIntNestingCtr            rt_interrupt_get_nest()     /* Interrupt nesting level                    */
-#define          OSTCBCurPtr                ((OS_TCB*)rt_thread_self()) /* Pointer to currently running TCB           */
+#define           OSSchedLockNestingCtr     rt_critical_level()         /* Lock nesting level                         */
+#define           OSIntNestingCtr           rt_interrupt_get_nest()     /* Interrupt nesting level                    */
+#define           OSTCBCurPtr               ((OS_TCB*)rt_thread_self()) /* Pointer to currently running TCB           */
                                                                         /* PRIORITIES ------------------------------- */
-#define          OSPrioCur                  rt_current_priority         /* Priority of current task                   */
-#define          OSPrioTbl                  rt_thread_priority_table
+#define           OSPrioCur                 rt_current_priority         /* Priority of current task                   */
+#define           OSPrioTbl                 rt_thread_priority_table
 
 #if OS_CFG_APP_HOOKS_EN > 0u
-OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskCreateHookPtr;    /* Application hooks                          */
-OS_EXT           OS_APP_HOOK_TCB            OS_AppTaskDelHookPtr;
-OS_EXT           OS_APP_HOOK_VOID           OS_AppIdleTaskHookPtr;
-OS_EXT           OS_APP_HOOK_VOID           OS_AppStatTaskHookPtr;
+OS_EXT            OS_APP_HOOK_TCB           OS_AppTaskCreateHookPtr;    /* Application hooks                          */
+OS_EXT            OS_APP_HOOK_TCB           OS_AppTaskDelHookPtr;
+OS_EXT            OS_APP_HOOK_VOID          OS_AppIdleTaskHookPtr;
+OS_EXT            OS_APP_HOOK_VOID          OS_AppStatTaskHookPtr;
+
+OS_EXT            OS_APP_HOOK_TCB           OS_AppTaskReturnHookPtr;
+OS_EXT            OS_APP_HOOK_VOID          OS_AppTaskSwHookPtr;
+OS_EXT            OS_APP_HOOK_VOID          OS_AppTimeTickHookPtr;
 #endif
 
 OS_EXT            OS_STATE                  OSRunning;                  /* Flag indicating that kernel is running     */
+OS_EXT            OS_STATE                  OSInitialized;              /* Flag indicating the kernel is initialized  */
 
 #ifdef OS_SAFETY_CRITICAL_IEC61508
 OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag indicating that all init. done        */
