@@ -514,7 +514,7 @@ typedef  enum  os_err {
 //  OS_ERR_TASK_CHANGE_PRIO_ISR      = 29001u,
     OS_ERR_TASK_CREATE_ISR           = 29002u,
     OS_ERR_TASK_DEL                  = 29003u, /*原版3.03/3.08中仅定义未使用*/
-//  OS_ERR_TASK_DEL_IDLE             = 29004u,
+    OS_ERR_TASK_DEL_IDLE             = 29004u,
 //  OS_ERR_TASK_DEL_INVALID          = 29005u,
     OS_ERR_TASK_DEL_ISR              = 29006u,
     OS_ERR_TASK_INVALID              = 29007u,
@@ -529,7 +529,7 @@ typedef  enum  os_err {
     OS_ERR_TASK_RUNNING              = 29016u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_TASK_STK_CHK_ISR          = 29017u,
     OS_ERR_TASK_SUSPENDED            = 29018u,
-//  OS_ERR_TASK_SUSPEND_IDLE         = 29019u,
+    OS_ERR_TASK_SUSPEND_IDLE         = 29019u,
 //  OS_ERR_TASK_SUSPEND_INT_HANDLER  = 29020u,
     OS_ERR_TASK_SUSPEND_ISR          = 29021u,
     OS_ERR_TASK_SUSPEND_PRIO         = 29022u, /*原版3.03/3.08中仅定义未使用*/

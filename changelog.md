@@ -229,6 +229,8 @@
 - 完成对`CPU_CRITICAL_ENTER`/`CPU_CRITICAL_EXIT`匹配检查
 - 增加3.08版本的向下兼容宏定义（os.h）
 - 增加`OS_CFG_INVALID_OS_CALLS_CHK_EN`宏及其实现
+- 修复`OSTaskDel`函数在TCB指针为NULL即删除任务自己时，没有及时将内部变量`p_tcb`赋值为当前任务指针的bug
+- 实现`OS_CFG_TASK_IDLE_EN`宏以及相关检查
 
 
 
@@ -375,6 +377,10 @@
 
 **[add]** 在每个c和h文件开始位置都补充了μCOS-III最新的开源协议信息
 
+**[bug fix]** 修复`OSTaskDel`函数在TCB指针为NULL即删除任务自己时，没有及时将内部变量`p_tcb`赋值为当前任务指针的bug
+
+**[add]** 实现`OS_CFG_TASK_IDLE_EN`宏以及相关检查
+
 
 
 # TODO
@@ -388,4 +394,3 @@
 ```
 
 2. 3.08版本中多出一个`OSTmrSet`函数
-3. OS_CFG_TASK_IDLE_EN 检查

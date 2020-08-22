@@ -496,7 +496,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                                 */
     {
         *p_err = OS_ERR_TASK_DEL_ISR;
         return;
@@ -510,12 +510,17 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     }
 #endif
 
-//#if (OS_CFG_TASK_IDLE_EN > 0u)
-//    if (p_tcb == &OSIdleTaskTCB) {                              /* Not allowed to delete the idle task                  */
-//       *p_err = OS_ERR_TASK_DEL_IDLE;
-//        return;
-//    }
-//#endif
+    if(p_tcb == RT_NULL)                                       /* 若为NULL表示删除当前任务                             */
+    {
+        p_tcb = (OS_TCB*)rt_thread_self();
+    }
+    
+#if (OS_CFG_TASK_IDLE_EN > 0u)
+    if ((rt_thread_t)p_tcb == rt_thread_find("tidle")) {       /* Not allowed to delete the idle task                  */
+       *p_err = OS_ERR_TASK_DEL_IDLE;
+        return;
+    }
+#endif
     
     CPU_CRITICAL_ENTER();
 #if OS_CFG_DBG_EN > 0u
@@ -523,24 +528,17 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 #endif
     OSTaskQty--;                                            /* One less task being managed                            */
     CPU_CRITICAL_EXIT();
-     
-    if(p_tcb == RT_NULL)/*若为NULL表示删除当前任务*/
-    {
-        rt_err = rt_thread_detach(rt_thread_self());
-        *p_err = rt_err_to_ucosiii(rt_err);   
-        rt_schedule();  
-    } 
-    else
-    {
-        rt_err = rt_thread_detach(&p_tcb->Task);
-        *p_err = rt_err_to_ucosiii(rt_err);   
-    }
+    
+    rt_err = rt_thread_detach(&p_tcb->Task);
+    *p_err = rt_err_to_ucosiii(rt_err);
     
     OSSemDel(&p_tcb->Sem,OS_OPT_DEL_ALWAYS,&err);/*删除任务内建信号量*/
     OSQDel(&p_tcb->MsgQ,OS_OPT_DEL_ALWAYS,&err);/*删除任务内建消息队列*/
     OSTaskDelHook(p_tcb);/*调用钩子函数*/ 
     OS_TaskInitTCB(p_tcb);                                  /* Initialize the TCB to default values                   */
     p_tcb->TaskState = (OS_STATE)OS_TASK_STATE_DEL;         /* Indicate that the task was deleted                     */
+
+    rt_schedule();/*必须要调度一下,否则突然间删除任务,在rtt中可能会引发错误*/
 }
 #endif
 
@@ -1599,29 +1597,35 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                    /* 检查是否在中断中运行                                 */
     {
         *p_err = OS_ERR_TASK_SUSPEND_ISR;
         return;
     }
 #endif
-
-    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否被锁*/
+    
+    if(p_tcb == RT_NULL)                                       /* TCB指针是否为空,若为空则为当前线程                   */
+    {
+        p_tcb = OSTCBCurPtr;
+    } 
+    
+#if (OS_CFG_TASK_IDLE_EN > 0u)
+    if ((rt_thread_t)p_tcb == rt_thread_find("tidle")) {       /* Not allowed to delete the idle task                  */
+       *p_err = OS_ERR_TASK_SUSPEND_IDLE;
+        return;
+    }
+#endif
+    
+    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)             /* 检查调度器是否被锁                                   */
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;         
     }
 
-    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Can't suspend self when the kernel isn't running     */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                    /* Can't suspend self when the kernel isn't running     */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
     }
-    
-    /*TCB指针是否为空,若为空则为当前线程*/
-    if(p_tcb == RT_NULL)
-    {
-        p_tcb = OSTCBCurPtr;
-    } 
 
     /*检查.SuspendCtr是否将要溢出*/
     if (p_tcb->SuspendCtr == (OS_NESTING_CTR)-1) {
