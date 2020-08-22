@@ -385,6 +385,5 @@
     OS_OPT           FlagsOpt;      /* Options (See OS_OPT_FLAG_xxx) */
 ```
 
-
-
 2. 3.08版本中多出一个`OSTmrSet`函数
+3. OS_CFG_TASK_IDLE_EN 检查
