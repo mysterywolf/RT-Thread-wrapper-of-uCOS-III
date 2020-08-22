@@ -168,7 +168,7 @@ void  OSMemCreate (OS_MEM       *p_mem,
 
     OSMemQty++;
 
-    OS_CRITICAL_EXIT_NO_SCHED();
+    OS_CRITICAL_EXIT();
    *p_err = OS_ERR_NONE;
 }
 

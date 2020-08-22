@@ -600,7 +600,8 @@ void  *OSQPend (OS_Q         *p_q,
 
     *p_err = rt_err_to_ucosiii(rt_err);
                          
-    CPU_CRITICAL_ENTER();      
+    CPU_CRITICAL_ENTER();
+                         
     /*更新任务状态*/
     p_tcb->TaskState = OS_TASK_STATE_RDY;
     /*清除当前任务等待状态*/

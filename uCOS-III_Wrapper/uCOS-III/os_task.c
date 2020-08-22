@@ -717,11 +717,11 @@ CPU_BOOLEAN  OSTaskQPendAbort (OS_TCB  *p_tcb,
         return (DEF_FALSE);
     }
 #endif
-//    if (p_tcb->PendOn != OS_TASK_PEND_ON_TASK_Q) {          /* Is task waiting for a message?                         */
-//        CPU_CRITICAL_EXIT();                                /* No                                                     */
-//       *p_err = OS_ERR_PEND_ABORT_NONE;
-//        return (DEF_FALSE);
-//    }    
+    if (p_tcb->PendOn != OS_TASK_PEND_ON_TASK_Q) {          /* Is task waiting for a message?                         */
+        CPU_CRITICAL_EXIT();                                /* No                                                     */
+       *p_err = OS_ERR_PEND_ABORT_NONE;
+        return (DEF_FALSE);
+    }    
     CPU_CRITICAL_EXIT();  
     
     _opt = OS_OPT_PEND_ABORT_1 | opt;

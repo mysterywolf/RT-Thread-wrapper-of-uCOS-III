@@ -224,6 +224,10 @@
 
 - 将各个内核对象的名字指针归为到`OS_CFG_DBG_EN`宏定义管理范围（3.08版本如此）
 
+### 2020-8-22
+
+- 完成对`CPU_CRITICAL_ENTER`/`CPU_CRITICAL_EXIT`匹配检查
+
 
 
 
