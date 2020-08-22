@@ -373,6 +373,8 @@
 
 **[add 3.08]** 增加`OS_CFG_INVALID_OS_CALLS_CHK_EN`宏及其实现
 
+**[add]** 在每个c和h文件开始位置都补充了μCOS-III最新的开源协议信息
+
 
 
 # TODO
