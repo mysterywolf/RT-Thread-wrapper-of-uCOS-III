@@ -274,6 +274,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 *              p_err          Is a pointer to an error code.  '*p_err' will contain one of the following:
 *
 *                                 OS_ERR_NONE
+*                                 OS_ERR_OS_NOT_RUNNING       If uC/OS-III is not running yet
 *                                 OS_ERR_OBJ_TYPE             'p_tmr' is not pointing to a timer
 *                                 OS_ERR_ILLEGAL_DEL_RUN_TIME If you are trying to delete the timer after you called
 *                                                                OSStart()
@@ -316,6 +317,13 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
         return DEF_FALSE;
     }  
 #endif 
+    
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (OS_FALSE);
+    }
+#endif
     
 #if OS_CFG_ARG_CHK_EN > 0u    
     if(p_tmr == RT_NULL)/*检查指针是否为空*/
@@ -381,6 +389,7 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
 *
 *                           OS_ERR_NONE
 *                           OS_ERR_OBJ_TYPE           'p_tmr' is not pointing to a timer
+*                           OS_ERR_OS_NOT_RUNNING     If uC/OS-III is not running yet
 *                           OS_ERR_TMR_INVALID        'p_tmr' is a NULL pointer
 *                           OS_ERR_TMR_ISR            if the call was made from an ISR
 *                           OS_ERR_TMR_INACTIVE       'p_tmr' points to a timer that is not active
@@ -414,6 +423,13 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
     }  
 #endif   
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
+    
 #if OS_CFG_ARG_CHK_EN > 0u    
     if(p_tmr == RT_NULL)/*检查指针是否为空*/
     {
@@ -607,6 +623,7 @@ void  OSTmrSet (OS_TMR               *p_tmr,
 *
 *                           OS_ERR_NONE
 *                           OS_ERR_OBJ_TYPE            if 'p_tmr' is not pointing to a timer
+*                           OS_ERR_OS_NOT_RUNNING      If uC/OS-III is not running yet
 *                           OS_ERR_TMR_INVALID
 *                           OS_ERR_TMR_INACTIVE        if the timer was not created
 *                           OS_ERR_TMR_INVALID_STATE   the timer is in an invalid state
@@ -639,6 +656,13 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
         return DEF_FALSE;
     }  
 #endif  
+    
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (OS_FALSE);
+    }
+#endif
     
 #if OS_CFG_ARG_CHK_EN > 0u   
     if(p_tmr == RT_NULL)/*检查指针是否为空*/
@@ -703,7 +727,8 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
 *              p_err    Is a pointer to an error code.  '*p_err' will contain one of the following:
 *
 *                           OS_ERR_NONE
-*                           OS_ERR_OBJ_TYPE            if 'p_tmr' is not pointing to a timer
+*                           OS_ERR_OBJ_TYPE           if 'p_tmr' is not pointing to a timer
+*                           OS_ERR_OS_NOT_RUNNING     If uC/OS-III is not running yet
 *                           OS_ERR_TMR_INVALID        'p_tmr' is a NULL pointer
 *                           OS_ERR_TMR_INVALID_STATE  if the timer is not in a valid state
 *                           OS_ERR_TMR_ISR            if the call was made from an ISR
@@ -734,6 +759,13 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
     }
 #endif
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (OS_TMR_STATE_UNUSED);
+    }
+#endif
+    
 #if OS_CFG_ARG_CHK_EN > 0u
     if (p_tmr == (OS_TMR *)0) {
        *p_err = OS_ERR_TMR_INVALID;
@@ -791,6 +823,7 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
 *                               OS_ERR_NONE
 *                               OS_ERR_OBJ_TYPE            if 'p_tmr' is not pointing to a timer
 *                               OS_ERR_OPT_INVALID         if you specified an invalid option for 'opt'
+*                               OS_ERR_OS_NOT_RUNNING      If uC/OS-III is not running yet
 *                               OS_ERR_TMR_INACTIVE        if the timer was not created
 *                               OS_ERR_TMR_INVALID         'p_tmr' is a NULL pointer
 *                               OS_ERR_TMR_INVALID_STATE   the timer is in an invalid state
@@ -828,6 +861,13 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
         return DEF_FALSE;
     }  
 #endif   
+    
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (OS_FALSE);
+    }
+#endif
     
 #if OS_CFG_ARG_CHK_EN > 0u    
     if(p_tmr == RT_NULL)/*检查指针是否为空*/

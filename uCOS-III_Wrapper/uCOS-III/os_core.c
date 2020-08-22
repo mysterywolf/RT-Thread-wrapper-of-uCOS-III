@@ -263,6 +263,20 @@ void  OSSafetyCriticalStart (void)
 
 void  OSSched (void)
 {
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)                       /* Can't schedule when the kernel is stopped.           */
+    if (OSRunning != OS_STATE_OS_RUNNING) {
+        return;
+    }
+#endif
+
+    if (OSIntNestingCtr > 0u) {                                 /* ISRs still nested?                                   */
+        return;                                                 /* Yes ... only schedule when no nested ISRs            */
+    }
+
+    if (OSSchedLockNestingCtr > 0u) {                           /* Scheduler locked?                                    */
+        return;                                                 /* Yes                                                  */
+    }
+    
     rt_schedule();
 }
 

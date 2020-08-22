@@ -61,6 +61,7 @@
 #define  OS_CFG_CALLED_FROM_ISR_CHK_EN   1u                 /* Enable (1) or Disable (0) check for called from ISR                   */
 #define  OS_CFG_DBG_EN                   1u                 /* Enable (1) debug code/variables                                       */
 #define  OS_CFG_ISR_POST_DEFERRED_EN     0u                 /* 只读,该功能不予实现 Enable (1) or Disable (0) Deferred ISR posts      */
+#define OS_CFG_INVALID_OS_CALLS_CHK_EN   1u                 /* Enable (1) or Disable (0) checks for invalid kernel calls             */
 #define  OS_CFG_OBJ_TYPE_CHK_EN          1u                 /* Enable (1) or Disable (0) object type checking                        */
 #define  OS_CFG_TS_EN                    0u                 /* 只读,该功能不予实现 Enable (1) or Disable (0) time stamping           */
 

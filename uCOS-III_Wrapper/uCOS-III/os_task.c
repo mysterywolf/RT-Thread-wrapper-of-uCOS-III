@@ -438,8 +438,9 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 *                             OS_ERR_NONE                  if the call is successful
 *                             OS_ERR_ILLEGAL_DEL_RUN_TIME  If you are trying to delete the task after you called
 *                                                             OSStart()
+*                             OS_ERR_OS_NOT_RUNNING        If uC/OS-III is not running yet
 *                           - OS_ERR_STATE_INVALID         if the state of the task is invalid
-*                           - OS_ERR_TASK_DEL_IDLE         if you attempted to delete uC/OS-III's idle task
+*                             OS_ERR_TASK_DEL_IDLE         if you attempted to delete uC/OS-III's idle task
 *                           - OS_ERR_TASK_DEL_INVALID      if you attempted to delete uC/OS-III's ISR handler task
 *                             OS_ERR_TASK_DEL_ISR          if you tried to delete a task from an ISR
 *                         -------------说明-------------
@@ -488,6 +489,20 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     }
 #endif
     
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return;
+    }
+#endif
+
+//#if (OS_CFG_TASK_IDLE_EN > 0u)
+//    if (p_tcb == &OSIdleTaskTCB) {                              /* Not allowed to delete the idle task                  */
+//       *p_err = OS_ERR_TASK_DEL_IDLE;
+//        return;
+//    }
+//#endif
+    
     CPU_CRITICAL_ENTER();
 #if OS_CFG_DBG_EN > 0u
     OS_TaskDbgListRemove(p_tcb);
@@ -528,6 +543,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 *
 *                              OS_ERR_NONE           upon success
 *                              OS_ERR_FLUSH_ISR      if you called this function from an ISR
+*                              OS_ERR_OS_NOT_RUNNING If uC/OS-III is not running yet
 *
 * Returns     : The number of entries freed from the queue
 *
@@ -558,6 +574,13 @@ OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
     }
 #endif
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
+    
     if (p_tcb == (OS_TCB *)0) {                             /* Flush message queue of calling task?                   */
         CPU_CRITICAL_ENTER();
         p_tcb = OSTCBCurPtr;
@@ -594,6 +617,7 @@ OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
 *                            messages are:
 *
 *                                OS_ERR_NONE               The call was successful and your task received a message.
+*                                OS_ERR_OS_NOT_RUNNING     If uC/OS-III is not running yet
 *                                OS_ERR_PEND_ABORT
 *                                OS_ERR_PEND_ISR           If you called this function from an ISR and the result
 *                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but the queue was not empty
@@ -663,6 +687,7 @@ void  *OSTaskQPend (OS_TICK       timeout,
 *              p_err     is a pointer to a variable that will contain an error code returned by this function.
 *
 *                            OS_ERR_NONE              If the task was readied and informed of the aborted wait
+*                            OS_ERR_OS_NOT_RUNNING    If uC/OS-III is not running yet
 *                            OS_ERR_PEND_ABORT_ISR    If you called this function from an ISR
 *                            OS_ERR_PEND_ABORT_NONE   If task was not pending on a message and thus there is nothing to
 *                                                     abort.
@@ -766,6 +791,7 @@ CPU_BOOLEAN  OSTaskQPendAbort (OS_TCB  *p_tcb,
 *
 *                             OS_ERR_NONE            The call was successful and the message was sent
 *                             OS_ERR_Q_MAX           If the queue is full
+*                             OS_ERR_OS_NOT_RUNNING  If uC/OS-III is not running yet
 *                           - OS_ERR_MSG_POOL_EMPTY  If there are no more OS_MSGs available from the pool
 *                           + OS_ERR_TASK_Q_CREATE_FALSE 任务内建消息队列创建失败
 *                         -------------说明-------------
@@ -990,6 +1016,7 @@ void  OSTaskRegSet (OS_TCB     *p_tcb,
 *              p_err      Is a pointer to a variable that will contain an error code returned by this function
 *
 *                             OS_ERR_NONE                  if the requested task is resumed
+*                             OS_ERR_OS_NOT_RUNNING        If uC/OS-III is not running yet
 *                           - OS_ERR_STATE_INVALID         if the task is in an invalid state
 *                             OS_ERR_TASK_RESUME_ISR       if you called this function from an ISR
 *                             OS_ERR_TASK_RESUME_SELF      You cannot resume 'self'
@@ -1023,6 +1050,14 @@ void  OSTaskResume (OS_TCB  *p_tcb,
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_TASK_RESUME_ISR;
+        return;
+    }
+#endif
+    
+
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
     }
 #endif
@@ -1084,6 +1119,7 @@ void  OSTaskResume (OS_TCB  *p_tcb,
 *              p_err         is a pointer to an error code that will be set by this function
 *
 *                                OS_ERR_NONE               The call was successful and your task received a message.
+*                                OS_ERR_OS_NOT_RUNNING     If uC/OS-III is not running yet
 *                                OS_ERR_PEND_ABORT
 *                                OS_ERR_PEND_ISR           If you called this function from an ISR and the result
 *                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but no signal was received
@@ -1162,6 +1198,7 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
 *              p_err     is a pointer to a variable that will contain an error code returned by this function.
 *
 *                            OS_ERR_NONE              If the task was readied and informed of the aborted wait
+*                            OS_ERR_OS_NOT_RUNNING    If uC/OS-III is not running yet
 *                            OS_ERR_PEND_ABORT_ISR    If you tried calling this function from an ISR
 *                            OS_ERR_PEND_ABORT_NONE   If the task was not waiting for a signal
 *                            OS_ERR_PEND_ABORT_SELF   If you attempted to pend abort the calling task.  This is not
@@ -1261,6 +1298,7 @@ CPU_BOOLEAN  OSTaskSemPendAbort (OS_TCB  *p_tcb,
 *              p_err     is a pointer to an error code returned by this function:
 *
 *                            OS_ERR_NONE              If the requested task is signaled
+*                            OS_ERR_OS_NOT_RUNNING    If uC/OS-III is not running yet
 *                            OS_ERR_SEM_OVF           If the post would cause the semaphore count to overflow.
 *                          + OS_ERR_TASK_SEM_CREATE_FALSE 任务内建信号量创建失败
 *                        -------------说明-------------

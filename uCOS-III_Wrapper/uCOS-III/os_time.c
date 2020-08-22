@@ -74,6 +74,7 @@
 *
 *                            OS_ERR_NONE            the call was successful and the delay occurred.
 *                            OS_ERR_OPT_INVALID     if you specified an invalid option for this function.
+*                            OS_ERR_OS_NOT_RUNNING  If uC/OS-III is not running yet
 *                            OS_ERR_SCHED_LOCKED    can't delay when the scheduler is locked.
 *                            OS_ERR_TIME_DLY_ISR    if you called this function from an ISR.
 *                            OS_ERR_TIME_ZERO_DLY   if you specified a delay of zero.
@@ -102,6 +103,13 @@ void  OSTimeDly (OS_TICK   dly,
     {
         *p_err = OS_ERR_TIME_DLY_ISR;
         return; 
+    }
+#endif
+    
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return;
     }
 #endif
     
@@ -194,6 +202,7 @@ void  OSTimeDly (OS_TICK   dly,
 *
 *                            OS_ERR_NONE                        If the function returns from the desired delay
 *                            OS_ERR_OPT_INVALID                 If you specified an invalid option for 'opt'
+*                            OS_ERR_OS_NOT_RUNNING              If uC/OS-III is not running yet
 *                            OS_ERR_SCHED_LOCKED                Can't delay when the scheduler is locked
 *                            OS_ERR_TIME_DLY_ISR                If called from an ISR
 *                            OS_ERR_TIME_INVALID_HOURS          If you didn't specify a valid value for 'hours'
@@ -247,7 +256,14 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
         return; 
     }
 #endif
-      
+
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return;
+    }
+#endif
+    
     if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否被锁*/
     {
         *p_err = OS_ERR_SCHED_LOCKED;
@@ -326,6 +342,7 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
 *              p_err    is a pointer to a variable that will receive an error code
 *
 *                           OS_ERR_NONE                  Task has been resumed
+*                           OS_ERR_OS_NOT_RUNNING        If uC/OS-III is not running yet
 *                           OS_ERR_STATE_INVALID         Task is in an invalid state
 *                           OS_ERR_TIME_DLY_RESUME_ISR   If called from an ISR
 *                           OS_ERR_TIME_NOT_DLY          Task is not waiting for time to expire
@@ -360,6 +377,13 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
     }
 #endif 
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return;
+    }
+#endif
+    
     if (p_tcb == (OS_TCB*)rt_thread_self()) {               /* Not possible for the running task to be delayed!       */
        *p_err = OS_ERR_TASK_NOT_DLY;
         return;

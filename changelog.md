@@ -227,6 +227,8 @@
 ### 2020-8-22
 
 - 完成对`CPU_CRITICAL_ENTER`/`CPU_CRITICAL_EXIT`匹配检查
+- 增加3.08版本的向下兼容宏定义（os.h）
+- 增加`OS_CFG_INVALID_OS_CALLS_CHK_EN`宏及其实现
 
 
 
@@ -366,6 +368,10 @@
 **[add 3.08]** 增加错误代码`OS_ERR_TMR_INVALID_CALLBACK`，同时补充该错误代码的相关实现
 
 3.08版本错误代码相关的兼容已经全部完成
+
+**[add 3.08]** 增加3.08版本的向下兼容宏定义（os.h）
+
+**[add 3.08]** 增加`OS_CFG_INVALID_OS_CALLS_CHK_EN`宏及其实现
 
 
 

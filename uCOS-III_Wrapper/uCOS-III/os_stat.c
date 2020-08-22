@@ -113,6 +113,7 @@ void  OSStatReset (OS_ERR  *p_err)
 * Argument(s): p_err      is a pointer to a variable that will contain an error code returned by this function.
 *
 *                             OS_ERR_NONE
+*                             OS_ERR_OS_NOT_RUNNING    If uC/OS-III is not running yet
 *
 * Returns    : none
 ************************************************************************************************************************
@@ -131,6 +132,14 @@ void  OSStatTaskCPUUsageInit (OS_ERR  *p_err)
         return;
     }
 #endif
+    
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return;
+    }
+#endif
+    
     OSTimeDly((OS_TICK )2,                                  /* Synchronize with clock tick                            */
               (OS_OPT  )OS_OPT_TIME_PERIODIC,
               (OS_ERR *)&err);

@@ -165,13 +165,8 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 *                                OS_ERR_OBJ_PTR_NULL         If 'p_mutex' is a NULL pointer.
 *                                OS_ERR_OBJ_TYPE             If 'p_mutex' is not pointing to a mutex
 *                                OS_ERR_OPT_INVALID          An invalid option was specified
-*                              - OS_ERR_STATE_INVALID        Task is in an invalid state
+*                                OS_ERR_OS_NOT_RUNNING       If uC/OS-III is not running yet
 *                                OS_ERR_TASK_WAITING         One or more tasks were waiting on the mutex
-*                            -------------说明-------------
-*                                OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
-*                              - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
-*                              + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
-*                              应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : == 0          if no tasks were waiting on the mutex, or upon error.
 *              >  0          if one or more tasks waiting on the mutex are now readied and informed.
@@ -218,6 +213,13 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
     }
 #endif    
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
+    
 #if OS_CFG_ARG_CHK_EN > 0u    
     if(p_mutex == RT_NULL)/*检查指针是否为空*/
     {
@@ -320,6 +322,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 *                                OS_ERR_OBJ_PTR_NULL       If 'p_mutex' is a NULL pointer.
 *                                OS_ERR_OBJ_TYPE           If 'p_mutex' is not pointing at a mutex
 *                                OS_ERR_OPT_INVALID        If you didn't specify a valid option
+*                                OS_ERR_OS_NOT_RUNNING     If uC/OS-III is not running yet
 *                                OS_ERR_PEND_ABORT         If the pend was aborted by another task
 *                                OS_ERR_PEND_ISR           If you called this function from an ISR and the result
 *                                                          would lead to a suspension.
@@ -372,6 +375,13 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
         return;
     }
 #endif  
+
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return;
+    }
+#endif
     
 #if OS_CFG_ARG_CHK_EN > 0u    
     if(p_mutex == RT_NULL)/*检查互斥量指针是否为空*/
@@ -505,6 +515,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
 *                            OS_ERR_OBJ_PTR_NULL          If 'p_mutex' is a NULL pointer.
 *                            OS_ERR_OBJ_TYPE              If 'p_mutex' is not pointing at a mutex
 *                            OS_ERR_OPT_INVALID           If you specified an invalid option
+*                            OS_ERR_OS_NOT_RUNNING        If uC/OS-III is not running yet
 *                            OS_ERR_PEND_ABORT_ISR        If you attempted to call this function from an ISR
 *                            OS_ERR_PEND_ABORT_NONE       No task were pending
 *
@@ -539,6 +550,13 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
     }
 #endif
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
+    
 #if OS_CFG_ARG_CHK_EN > 0u
     if (p_mutex == (OS_MUTEX *)0) {                             /* Validate 'p_sem'                                       */
        *p_err =  OS_ERR_OBJ_PTR_NULL;
@@ -635,6 +653,7 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
 *                           OS_ERR_OBJ_PTR_NULL     If 'p_mutex' is a NULL pointer.
 *                           OS_ERR_OBJ_TYPE         If 'p_mutex' is not pointing at a mutex
 *                           OS_ERR_POST_ISR         If you attempted to post from an ISR
+*                           OS_ERR_OS_NOT_RUNNING   If uC/OS-III is not running yet
 *                         + OS_ERR_OPT_INVALID
 *                         + OS_RT_ERROR
 *                       -------------说明-------------
@@ -672,6 +691,13 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
         return;
     }      
 #endif 
+    
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return;
+    }
+#endif
     
 #if OS_CFG_ARG_CHK_EN > 0u    
     if(p_mutex == RT_NULL)/*检查指针是否为空*/

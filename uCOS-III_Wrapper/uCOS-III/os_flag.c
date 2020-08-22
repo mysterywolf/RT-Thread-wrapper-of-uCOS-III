@@ -188,6 +188,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 *                            OS_ERR_OBJ_PTR_NULL          If 'p_grp' is a NULL pointer.
 *                            OS_ERR_OBJ_TYPE              If you didn't pass a pointer to an event flag group
 *                            OS_ERR_OPT_INVALID           An invalid option was specified
+*                            OS_ERR_OS_NOT_RUNNING        If uC/OS-III is not running yet
 *                            OS_ERR_TASK_WAITING          One or more tasks were waiting on the event flag group.
 *
 * Returns    : == 0          if no tasks were waiting on the event flag group, or upon error.
@@ -230,6 +231,13 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
     }        
 #endif    
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
+    
 #if OS_CFG_ARG_CHK_EN > 0u    
     if(p_grp == RT_NULL)/*检查指针是否为空*/
     {
@@ -347,6 +355,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 *                                OS_ERR_OBJ_PTR_NULL        If 'p_grp' is a NULL pointer.
 *                                OS_ERR_OBJ_TYPE            You are not pointing to an event flag group
 *                                OS_ERR_OPT_INVALID         You didn't specify a proper 'opt' argument.
+*                                OS_ERR_OS_NOT_RUNNING      If uC/OS-III is not running yet
 *                                OS_ERR_PEND_ABORT          The wait on the flag was aborted.
 *                                OS_ERR_PEND_ISR            If you tried to PEND from an ISR
 *                              - OS_ERR_PEND_WOULD_BLOCK    If you specified non-blocking but the flags were not
@@ -401,6 +410,13 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         *p_err = OS_ERR_PEND_ISR;
         return ((OS_OBJ_QTY)0);
     }       
+#endif
+
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
 #endif
     
 #if OS_CFG_ARG_CHK_EN > 0u    
@@ -583,6 +599,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 *                            OS_ERR_OBJ_PTR_NULL          If 'p_grp' is a NULL pointer.
 *                            OS_ERR_OBJ_TYPE              If 'p_grp' is not pointing at an event flag group
 *                            OS_ERR_OPT_INVALID           If you specified an invalid option
+*                            OS_ERR_OS_NOT_RUNNING        If uC/OS-III is not running yet
 *                            OS_ERR_PEND_ABORT_ISR        If you called this function from an ISR
 *                            OS_ERR_PEND_ABORT_NONE       No task were pending
 *
@@ -617,6 +634,13 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
     }
 #endif
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
+    
 #if OS_CFG_ARG_CHK_EN > 0u
     if (p_grp == (OS_FLAG_GRP *)0) {                             /* Validate 'p_sem'                                       */
        *p_err =  OS_ERR_OBJ_PTR_NULL;
@@ -696,6 +720,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
 * Arguments  : p_err     is a pointer to an error code
 *
 *                            OS_ERR_NONE       if the call was successful
+*                            OS_ERR_OS_NOT_RUNNING If uC/OS-III is not running yet
 *                            OS_ERR_PEND_ISR   if called from an ISR
 *
 * Returns    : The flags that caused the task to be ready.
@@ -715,6 +740,13 @@ OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err)
     }
 #endif
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
+    
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if (OSIntNestingCtr > (OS_NESTING_CTR)0) {              /* See if called from ISR ...                             */
        *p_err = OS_ERR_PEND_ISR;                            /* ... can't get from an ISR                              */
@@ -766,6 +798,7 @@ OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err)
 *                                OS_ERR_OBJ_PTR_NULL        You passed a NULL pointer
 *                                OS_ERR_OBJ_TYPE            You are not pointing to an event flag group
 *                                OS_ERR_OPT_INVALID         You specified an invalid option
+*                                OS_ERR_OS_NOT_RUNNING      If uC/OS-III is not running yet
 *
 * Returns    : the new value of the event flags bits that are still set.
 *
@@ -791,6 +824,13 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
         return ((OS_FLAGS)0);
     }
 #endif    
+    
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
     
 #if OS_CFG_ARG_CHK_EN > 0u   
     if(p_grp == RT_NULL) /*检查指针是否为空*/

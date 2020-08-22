@@ -226,6 +226,7 @@ void  OSQCreate (OS_Q        *p_q,
 *                            OS_ERR_OBJ_PTR_NULL         if you pass a NULL pointer for 'p_q'
 *                            OS_ERR_OBJ_TYPE             if the message queue was not created
 *                            OS_ERR_OPT_INVALID          An invalid option was specified
+*                            OS_ERR_OS_NOT_RUNNING       If uC/OS-III is not running yet
 *                            OS_ERR_TASK_WAITING         One or more tasks were waiting on the queue
 *
 * Returns    : == 0          if no tasks were waiting on the queue, or upon error.
@@ -270,6 +271,13 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0; 
+    }
+#endif
+    
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
     }
 #endif
     
@@ -355,6 +363,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
 *                              OS_ERR_FLUSH_ISR      if you called this function from an ISR
 *                              OS_ERR_OBJ_PTR_NULL   If you passed a NULL pointer for 'p_q'
 *                              OS_ERR_OBJ_TYPE       If you didn't create the message queue
+*                              OS_ERR_OS_NOT_RUNNING If uC/OS-III is not running yet
 *
 * Returns     : The number of entries freed from the queue
 *
@@ -388,6 +397,13 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
     }
 #endif
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
+    
 #if OS_CFG_ARG_CHK_EN > 0u
     if (p_q == (OS_Q *)0) {                                 /* Validate arguments                                     */
        *p_err = OS_ERR_OBJ_PTR_NULL;
@@ -466,6 +482,7 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
 *                                OS_ERR_NONE               The call was successful and your task received a message.
 *                                OS_ERR_OBJ_PTR_NULL       if you pass a NULL pointer for 'p_q'
 *                                OS_ERR_OBJ_TYPE           if the message queue was not created
+*                                OS_ERR_OS_NOT_RUNNING     If uC/OS-III is not running yet
 *                                OS_ERR_PEND_ABORT         the pend was aborted
 *                                OS_ERR_PEND_ISR           if you called this function from an ISR
 *                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but the queue was not empty
@@ -521,7 +538,14 @@ void  *OSQPend (OS_Q         *p_q,
         return RT_NULL; 
     }   
 #endif
-        
+    
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return ((void *)0);
+    }
+#endif
+    
 #if OS_CFG_ARG_CHK_EN > 0u
     if(p_q == RT_NULL)/*检查消息队列指针是否为NULL*/
     {
@@ -666,6 +690,7 @@ void  *OSQPend (OS_Q         *p_q,
 *                            OS_ERR_OPT_INVALID           if you specified an invalid option
 *                            OS_ERR_OBJ_PTR_NULL          if you pass a NULL pointer for 'p_q'
 *                            OS_ERR_OBJ_TYPE              if the message queue was not created
+*                            OS_ERR_OS_NOT_RUNNING        If uC/OS-III is not running yet
 *                            OS_ERR_PEND_ABORT_ISR        If this function was called from an ISR
 *                            OS_ERR_PEND_ABORT_NONE       No task were pending
 *
@@ -700,6 +725,13 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
     }
 #endif
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
+    
 #if OS_CFG_ARG_CHK_EN > 0u
     if (p_q == (OS_Q *)0) {                             /* Validate 'p_sem'                                       */
        *p_err =  OS_ERR_OBJ_PTR_NULL;
@@ -814,8 +846,9 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
 *                              - OS_ERR_MSG_POOL_EMPTY  If there are no more OS_MSGs to use to place the message into
 *                                OS_ERR_OBJ_PTR_NULL    If 'p_q' is a NULL pointer
 *                                OS_ERR_OBJ_TYPE        If the message queue was not initialized
+*                                OS_ERR_OS_NOT_RUNNING  If uC/OS-III is not running yet
 *                                OS_ERR_Q_MAX           If the queue is full
-8                              + OS_ERR_OPT_INVALID     You specified an invalid option
+*                              + OS_ERR_OPT_INVALID     You specified an invalid option
 *                            -------------说明-------------
 *                                OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
 *                              - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
@@ -843,6 +876,13 @@ void  OSQPost (OS_Q         *p_q,
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+    
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
     }
 #endif

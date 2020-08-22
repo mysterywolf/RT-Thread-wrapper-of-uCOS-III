@@ -181,6 +181,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
 *                                OS_ERR_OBJ_PTR_NULL         If 'p_sem' is a NULL pointer.
 *                                OS_ERR_OBJ_TYPE             If 'p_sem' is not pointing at a semaphore
 *                                OS_ERR_OPT_INVALID          An invalid option was specified
+*                                OS_ERR_OS_NOT_RUNNING       If uC/OS-III is not running yet
 *                                OS_ERR_TASK_WAITING         One or more tasks were waiting on the semaphore
 *
 * Returns    : == 0          if no tasks were waiting on the semaphore, or upon error.
@@ -227,6 +228,13 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
     }
 #endif
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
+    
 #if OS_CFG_ARG_CHK_EN > 0u   
     if(p_sem == RT_NULL)/*检查指针是否为空*/
     {
@@ -328,6 +336,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
 *                                OS_ERR_OBJ_PTR_NULL       If 'p_sem' is a NULL pointer.
 *                                OS_ERR_OBJ_TYPE           If 'p_sem' is not pointing at a semaphore
 *                                OS_ERR_OPT_INVALID        If you specified an invalid value for 'opt'
+*                                OS_ERR_OS_NOT_RUNNING     If uC/OS-III is not running yet
 *                                OS_ERR_PEND_ABORT         If the pend was aborted by another task
 *                                OS_ERR_PEND_ISR           If you called this function from an ISR and the result
 *                                                          would lead to a suspension.
@@ -381,6 +390,13 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
         return 0;
     }
 #endif  
+    
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
     
 #if OS_CFG_ARG_CHK_EN > 0u    
     if(p_sem == RT_NULL)/*检查信号量指针是否为空*/
@@ -506,6 +522,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
 *                            OS_ERR_OBJ_PTR_NULL          If 'p_sem' is a NULL pointer.
 *                            OS_ERR_OBJ_TYPE              If 'p_sem' is not pointing at a semaphore
 *                            OS_ERR_OPT_INVALID           If you specified an invalid option
+*                            OS_ERR_OS_NOT_RUNNING        If uC/OS-III is not running yet
 *                            OS_ERR_PEND_ABORT_ISR        If you called this function from an ISR
 *                            OS_ERR_PEND_ABORT_NONE       No task were pending
 *
@@ -540,6 +557,13 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
     }
 #endif
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
+    
 #if OS_CFG_ARG_CHK_EN > 0u
     if (p_sem == (OS_SEM *)0) {                             /* Validate 'p_sem'                                       */
        *p_err =  OS_ERR_OBJ_PTR_NULL;
@@ -633,6 +657,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
 *                           OS_ERR_NONE          The call was successful and the semaphore was signaled.
 *                           OS_ERR_OBJ_PTR_NULL  If 'p_sem' is a NULL pointer.
 *                           OS_ERR_OBJ_TYPE      If 'p_sem' is not pointing at a semaphore
+*                           OS_ERR_OS_NOT_RUNNING If uC/OS-III is not running yet
 *                           OS_ERR_SEM_OVF       If the post would cause the semaphore count to overflow.
 *                         + OS_ERR_OPT_INVALID   原版中少了一个opt无效的错误码
 *                       -------------说明-------------
@@ -663,6 +688,14 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
     }
 #endif
 
+#if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+       *p_err = OS_ERR_OS_NOT_RUNNING;
+        return (0u);
+    }
+#endif
+
+    
 #if OS_CFG_ARG_CHK_EN > 0u    
     if(p_sem == RT_NULL)/*检查指针是否为空*/
     {
