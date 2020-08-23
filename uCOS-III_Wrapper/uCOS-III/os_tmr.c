@@ -1166,36 +1166,24 @@ void OS_TmrCallback(void *p_ara)
     p_tmr->CallbackPtr((void *)p_tmr, p_tmr->CallbackPtrArg);
     OSSchedUnlock(&err);
     
-    /*-----处理OSTmrSet函数------*/
+    /*开始处理OSTmrSet函数的设置*/
     if(p_tmr->_set_dly || p_tmr->_set_period)               /* 检查是否调用OSTmrSet函数                             */
     {
-        OSTmrStop(p_tmr,OS_OPT_TMR_NONE,0,&err);            /* 删除当前定时器                                       */
-        /*将老定时器的参数保存*/
-        nameptr = p_tmr->NamePtr;
+        OSTmrStop(p_tmr,OS_OPT_TMR_NONE,0,&err);            /* 停止当前定时器                                       */
+        if(err!=OS_ERR_NONE)
+        {
+            return;
+        }        
+        nameptr = p_tmr->NamePtr;                           /* 将老定时器的参数保存                                 */
         callback = p_tmr->CallbackPtr;
         arg = p_tmr->CallbackPtrArg;
         opt = p_tmr->Opt;
         dly = p_tmr->_set_dly;
         period = p_tmr->_set_period;
-        OSTmrDel(p_tmr,&err);
-        if(err!=OS_ERR_NONE)
-        {
-            return;
-        }
-        
-        if(dly && period)
-        {
-            OSTmrCreate(p_tmr, nameptr, dly, period, opt, callback, arg, &err);
-        }
-        else if(dly)
-        {
-            OSTmrCreate(p_tmr, nameptr, dly, period, opt, callback, arg, &err);
-        }
-        else if(period)
-        {
-            OSTmrCreate(p_tmr, nameptr, dly, period, opt, callback, arg, &err);
-        }
-        OSTmrStart(p_tmr, &err);                            /* 启动装填新参数的定时器                                */
+        OSTmrDel(p_tmr,&err);                               /* 删除老定时器,_set_dly/_set_period会在此函数中清零    */
+        OSTmrCreate(p_tmr, nameptr, dly, period,            /* 创建新定时器,并装填新的参数                          */
+                    opt, callback, arg, &err);
+        OSTmrStart(p_tmr, &err);                            /* 启动装填新参数的定时器                               */
     }
 }
 
