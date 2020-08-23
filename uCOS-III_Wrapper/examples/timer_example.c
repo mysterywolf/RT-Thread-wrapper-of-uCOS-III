@@ -45,8 +45,8 @@ static void AppTask1 (void *param)
                 (void	    *)0,/*参数为0*/
                 (OS_ERR	    *)&err);/*返回的错误码*/
                 
-    OSTmrStart(&CPUUsageTimer,&err);/*开启定时器*/
-              
+    OSTmrStart(&CPUUsageTimer,&err);/*开启定时器*/  
+    
     while(1)
     {
  		OSTaskStkChk(RT_NULL,&free,&used,&err);/*获取当前任务堆栈信息*/ 

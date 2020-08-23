@@ -235,6 +235,7 @@
 ### 2020-8-23
 
 - 修改`OS_TMR`结构体`.Remain`、`.Match`成员变量赋值的bug
+- 实现3.06版本中新增的`OSTmrSet`函数
 
 
 
@@ -387,6 +388,8 @@
 
 **[bug fix]** 修改`OS_TMR`结构体`.Remain`、`.Match`成员变量赋值的bug
 
+**[add 3.08]** 实现3.06版本中新增的`OSTmrSet`函数
+
 
 
 # TODO
@@ -399,5 +402,3 @@
     OS_OPT           FlagsOpt;      /* Options (See OS_OPT_FLAG_xxx) */
 ```
 
-2. 3.08版本中多出一个`OSTmrSet`函数
-3. 调整注释排版

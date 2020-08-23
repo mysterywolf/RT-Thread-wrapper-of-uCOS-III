@@ -1114,6 +1114,12 @@ void OS_TmrCallback(void *p_ara)
 {
     OS_TMR *p_tmr;
     OS_ERR err;
+    char* nameptr;
+    OS_TMR_CALLBACK_PTR callback;
+    void * arg;
+    OS_OPT opt;
+    OS_TICK dly;
+    OS_TICK period;
     
     CPU_SR_ALLOC();
     
@@ -1135,31 +1141,62 @@ void OS_TmrCallback(void *p_ara)
         p_tmr->Tmr.init_tick = p_tmr->Period * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
         p_tmr->Tmr.timeout_tick = rt_tick_get() + p_tmr->Tmr.init_tick;
         p_tmr->Tmr.parent.flag |= RT_TIMER_FLAG_PERIODIC;/*定时器设置为周期模式*/
-        p_tmr->Remain = p_tmr->Period;
         CPU_CRITICAL_EXIT();
         rt_timer_start(&(p_tmr->Tmr));/*开启定时器*/
     } 
-    else if(p_tmr->Opt==OS_OPT_TMR_PERIODIC)
+
+    if(p_tmr->Opt == OS_OPT_TMR_ONE_SHOT)
     {
-        /*若不是带有延迟的周期模式模式，而仅仅是周期模式*/
         CPU_CRITICAL_ENTER();
+        p_tmr->State = OS_TMR_STATE_COMPLETED;
+        p_tmr->Remain = 0;
+        CPU_CRITICAL_EXIT();
+    }
+    else if (p_tmr->Opt == OS_OPT_TMR_PERIODIC)
+    {
+        CPU_CRITICAL_ENTER();
+        /*重新设定下一次定时器的参数*/
+        p_tmr->Match = rt_tick_get() + p_tmr->Tmr.init_tick;
         p_tmr->Remain = p_tmr->Period;
         CPU_CRITICAL_EXIT();
     }
-
-    CPU_CRITICAL_ENTER();
-    if(p_tmr->Opt == OS_OPT_TMR_ONE_SHOT)
-    {
-        p_tmr->State = OS_TMR_STATE_COMPLETED;
-    }
-    /*重新设定下一次定时器的.Match变量*/
-    p_tmr->Match = rt_tick_get() + p_tmr->Tmr.init_tick;
-    CPU_CRITICAL_EXIT();    
-
+    
     /*调用真正uCOS-III的软件定时器回调函数*/
     OSSchedLock(&err);
     p_tmr->CallbackPtr((void *)p_tmr, p_tmr->CallbackPtrArg);
-    OSSchedUnlock(&err);    
+    OSSchedUnlock(&err);
+    
+    /*-----处理OSTmrSet函数------*/
+    if(p_tmr->_set_dly || p_tmr->_set_period)               /* 检查是否调用OSTmrSet函数                             */
+    {
+        OSTmrStop(p_tmr,OS_OPT_TMR_NONE,0,&err);            /* 删除当前定时器                                       */
+        /*将老定时器的参数保存*/
+        nameptr = p_tmr->NamePtr;
+        callback = p_tmr->CallbackPtr;
+        arg = p_tmr->CallbackPtrArg;
+        opt = p_tmr->Opt;
+        dly = p_tmr->_set_dly;
+        period = p_tmr->_set_period;
+        OSTmrDel(p_tmr,&err);
+        if(err!=OS_ERR_NONE)
+        {
+            return;
+        }
+        
+        if(dly && period)
+        {
+            OSTmrCreate(p_tmr, nameptr, dly, period, opt, callback, arg, &err);
+        }
+        else if(dly)
+        {
+            OSTmrCreate(p_tmr, nameptr, dly, period, opt, callback, arg, &err);
+        }
+        else if(period)
+        {
+            OSTmrCreate(p_tmr, nameptr, dly, period, opt, callback, arg, &err);
+        }
+        OSTmrStart(p_tmr, &err);                            /* 启动装填新参数的定时器                                */
+    }
 }
 
 #endif
