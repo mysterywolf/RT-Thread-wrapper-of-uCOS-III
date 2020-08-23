@@ -1118,7 +1118,15 @@ void OS_TmrCallback(void *p_ara)
     CPU_SR_ALLOC();
     
     p_tmr = (OS_TMR*)p_ara;
-        
+    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                 */
+    {
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("uCOS-III的定时器是在任务中运行的,不可以在RTT的Hard模式下运行\n"));
+        return;
+    }
+#endif
+    
     if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->_dly && p_tmr->Period)
     {
         /*带有延迟的周期延时，延迟延时已经完毕，开始进行正常周期延时*/
@@ -1131,13 +1139,20 @@ void OS_TmrCallback(void *p_ara)
         CPU_CRITICAL_EXIT();
         rt_timer_start(&(p_tmr->Tmr));/*开启定时器*/
     } 
+    else if(p_tmr->Opt==OS_OPT_TMR_PERIODIC)
+    {
+        /*若不是带有延迟的周期模式模式，而仅仅是周期模式*/
+        CPU_CRITICAL_ENTER();
+        p_tmr->Remain = p_tmr->Period;
+        CPU_CRITICAL_EXIT();
+    }
 
     CPU_CRITICAL_ENTER();
     if(p_tmr->Opt == OS_OPT_TMR_ONE_SHOT)
     {
         p_tmr->State = OS_TMR_STATE_COMPLETED;
     }
-    
+    /*重新设定下一次定时器的.Match变量*/
     p_tmr->Match = rt_tick_get() + p_tmr->Tmr.init_tick;
     CPU_CRITICAL_EXIT();    
 

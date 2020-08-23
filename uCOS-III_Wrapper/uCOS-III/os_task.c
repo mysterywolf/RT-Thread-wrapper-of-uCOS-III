@@ -496,7 +496,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                                 */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                 */
     {
         *p_err = OS_ERR_TASK_DEL_ISR;
         return;
@@ -504,19 +504,19 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 #endif
     
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                               */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
     }
 #endif
 
-    if(p_tcb == RT_NULL)                                       /* 若为NULL表示删除当前任务                             */
+    if(p_tcb == RT_NULL)                                    /* 若为NULL表示删除当前任务                             */
     {
         p_tcb = (OS_TCB*)rt_thread_self();
     }
     
 #if (OS_CFG_TASK_IDLE_EN > 0u)
-    if ((rt_thread_t)p_tcb == rt_thread_find("tidle")) {       /* Not allowed to delete the idle task                  */
+    if ((rt_thread_t)p_tcb == rt_thread_find("tidle")) {    /* Not allowed to delete the idle task                  */
        *p_err = OS_ERR_TASK_DEL_IDLE;
         return;
     }
@@ -532,13 +532,13 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     rt_err = rt_thread_detach(&p_tcb->Task);
     *p_err = rt_err_to_ucosiii(rt_err);
     
-    OSSemDel(&p_tcb->Sem,OS_OPT_DEL_ALWAYS,&err);/*删除任务内建信号量*/
-    OSQDel(&p_tcb->MsgQ,OS_OPT_DEL_ALWAYS,&err);/*删除任务内建消息队列*/
-    OSTaskDelHook(p_tcb);/*调用钩子函数*/ 
+    OSSemDel(&p_tcb->Sem,OS_OPT_DEL_ALWAYS,&err);           /* 删除任务内建信号量                                     */
+    OSQDel(&p_tcb->MsgQ,OS_OPT_DEL_ALWAYS,&err);            /* 删除任务内建消息队列                                   */
+    OSTaskDelHook(p_tcb);                                   /* 调用钩子函数                                           */ 
     OS_TaskInitTCB(p_tcb);                                  /* Initialize the TCB to default values                   */
     p_tcb->TaskState = (OS_STATE)OS_TASK_STATE_DEL;         /* Indicate that the task was deleted                     */
 
-    rt_schedule();/*必须要调度一下,否则突然间删除任务,在rtt中可能会引发错误*/
+    rt_schedule();                                          /* 必须要调度一下,否则突然间删除任务,在rtt中可能会引发错误*/
 }
 #endif
 
@@ -587,7 +587,7 @@ OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
 #endif
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                               */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (0u);
     }
@@ -1771,10 +1771,10 @@ void  OS_TaskInit (OS_ERR  *p_err)
 #endif
 
 #if OS_CFG_DBG_EN > 0u
-    OSTaskDbgListPtr = (OS_TCB      *)0;
+    OSTaskDbgListPtr  = (OS_TCB      *)0;
 #endif
 
-    OSTaskQty        = (OS_OBJ_QTY   )0;                    /* Clear the number of tasks                              */
+    OSTaskQty         = (OS_OBJ_QTY   )0;                   /* Clear the number of tasks                              */
     
     *p_err            = OS_ERR_NONE;
 }
