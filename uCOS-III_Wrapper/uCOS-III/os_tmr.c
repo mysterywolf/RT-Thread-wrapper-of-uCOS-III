@@ -914,6 +914,7 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
     
     CPU_CRITICAL_ENTER();
     p_tmr->State = OS_TMR_STATE_STOPPED;/*标记目前定时器状态已经停止*/
+    p_tmr->Remain  = 0u;
     p_fnct = p_tmr->CallbackPtr;                                      /* Execute callback function ...           */
     CPU_CRITICAL_EXIT();
     
