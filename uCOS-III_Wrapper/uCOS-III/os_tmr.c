@@ -273,7 +273,6 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     OS_TmrDbgListAdd(p_tmr);
 #endif
     OSTmrQty++;                                             /* Keep track of the number of timers created             */                  
-    p_tmr->Match = p_tmr->Tmr.timeout_tick;
     CPU_CRITICAL_EXIT();
 }
 
@@ -715,6 +714,12 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
     if(rt_err == RT_EOK)
     {
         CPU_CRITICAL_ENTER();
+        if (p_tmr->Dly == 0u) {
+            p_tmr->Remain = p_tmr->Period;
+        } else {
+            p_tmr->Remain = p_tmr->Dly;
+        }
+        p_tmr->Match = p_tmr->Tmr.timeout_tick;
         p_tmr->State = OS_TMR_STATE_RUNNING;
         CPU_CRITICAL_EXIT();
         return DEF_TRUE;
@@ -1121,6 +1126,7 @@ void OS_TmrCallback(void *p_ara)
         p_tmr->Tmr.init_tick = p_tmr->Period * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
         p_tmr->Tmr.timeout_tick = rt_tick_get() + p_tmr->Tmr.init_tick;
         p_tmr->Tmr.parent.flag |= RT_TIMER_FLAG_PERIODIC;/*定时器设置为周期模式*/
+        p_tmr->Remain = p_tmr->Period;
         CPU_CRITICAL_EXIT();
         rt_timer_start(&(p_tmr->Tmr));/*开启定时器*/
     } 
@@ -1130,6 +1136,7 @@ void OS_TmrCallback(void *p_ara)
     {
         p_tmr->State = OS_TMR_STATE_COMPLETED;
     }
+    
     p_tmr->Match = rt_tick_get() + p_tmr->Tmr.init_tick;
     CPU_CRITICAL_EXIT();    
 

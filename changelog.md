@@ -232,6 +232,10 @@
 - 修复`OSTaskDel`函数在TCB指针为NULL即删除任务自己时，没有及时将内部变量`p_tcb`赋值为当前任务指针的bug
 - 实现`OS_CFG_TASK_IDLE_EN`宏以及相关检查
 
+### 2020-8-23
+
+- 修改`OS_TMR`结构体`.Remain`、`.Match`成员变量赋值的bug
+
 
 
 
@@ -380,6 +384,8 @@
 **[bug fix]** 修复`OSTaskDel`函数在TCB指针为NULL即删除任务自己时，没有及时将内部变量`p_tcb`赋值为当前任务指针的bug
 
 **[add]** 实现`OS_CFG_TASK_IDLE_EN`宏以及相关检查
+
+**[bug fix]** 修改`OS_TMR`结构体`.Remain`、`.Match`成员变量赋值的bug
 
 
 
