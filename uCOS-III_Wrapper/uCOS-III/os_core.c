@@ -168,7 +168,7 @@ void  OSInit (OS_ERR  *p_err)
     OSCfg_Init();
 #endif
     
-    OSInitialized = OS_TRUE;                                    /* Kernel is initialized                                */
+    OSInitialized = OS_TRUE;                                    /* Kernel is initialized                              */
     
     /*这部分内容是在原版OSStart()函数中运行的,但是在本兼容层中,操作系统已经启动,因此直接在此处进行标记*/
     if (OSRunning == OS_STATE_OS_STOPPED) {
@@ -208,6 +208,14 @@ void  OSInit (OS_ERR  *p_err)
 
 void  OSIntEnter (void)
 {
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is OS running?                                       */
+        return;                                                 /* No                                                   */
+    }
+
+    if (OSIntNestingCtr >= 250u) {                              /* Have we nested past 250 levels?                      */
+        return;                                                 /* Yes                                                  */
+    }
+    
     rt_interrupt_enter();
 }
 
@@ -233,6 +241,10 @@ void  OSIntEnter (void)
 
 void  OSIntExit (void)
 {
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Has the OS started?                                  */
+        return;                                                 /* No                                                   */
+    }
+
     rt_interrupt_leave();
 }
 
@@ -384,7 +396,7 @@ void  OSSchedUnlock (OS_ERR  *p_err)
     }
 #endif  
     
-    if(OSSchedLockNestingCtr == (OS_NESTING_CTR)0)/*检查调度器是否已经完全解锁*/
+    if(OSSchedLockNestingCtr == (OS_NESTING_CTR)0)          /* 检查调度器是否已经完全解锁                             */
     {
         *p_err = OS_ERR_SCHED_NOT_LOCKED;
         return;         
@@ -395,7 +407,7 @@ void  OSSchedUnlock (OS_ERR  *p_err)
         return;
     }  
     
-    *p_err = OS_ERR_NONE;/*rt_exit_critical没有返回错误码*/
+    *p_err = OS_ERR_NONE;                                   /* rt_exit_critical没有返回错误码                         */
     
     rt_exit_critical();
     

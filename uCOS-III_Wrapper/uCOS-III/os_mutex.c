@@ -448,17 +448,17 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     
     CPU_CRITICAL_ENTER();
     p_tcb = OSTCBCurPtr;
-    p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
+    p_tcb->PendStatus = OS_STATUS_PEND_OK;                  /* Clear pend status                                      */
     p_tcb->TaskState = OS_TASK_STATE_PEND;
     p_tcb->PendOn = OS_TASK_PEND_ON_MUTEX;    
-    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;   /*更新互斥量的嵌套值*/
+    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* 更新互斥量的嵌套值                                     */
     if (p_mutex->OwnerNestingCtr == (OS_NESTING_CTR)-1) {
         CPU_CRITICAL_EXIT();
        *p_err = OS_ERR_MUTEX_OVF;
         return;
     }
-    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/*更新互斥量原始优先级*/
-    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;/*更新互斥量所拥有的任务指针*/
+    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/* 更新互斥量原始优先级                             */
+    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;   /* 更新互斥量所拥有的任务指针                             */
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = p_mutex->NamePtr;
     p_mutex->DbgNamePtr = p_tcb->Task.name;
@@ -473,9 +473,9 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     p_tcb->TaskState = OS_TASK_STATE_RDY;
     /*清除当前任务等待状态*/
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
-    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold; /*更新互斥量的嵌套值*/
-    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/*更新互斥量原始优先级*/
-    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;/*更新互斥量所拥有的任务指针*/
+    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* 更新互斥量的嵌套值                                     */
+    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/* 更新互斥量原始优先级                             */
+    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;   /* 更新互斥量所拥有的任务指针                             */
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");     
     if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
@@ -486,10 +486,10 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     }
     else
     {
-        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
+        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");     /* 若为空,则清空当前.DbgNamePtr                           */
     }
 #endif    
-    if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
+    if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)           /* Indicate that we aborted                               */
     {
         CPU_CRITICAL_EXIT(); 
         *p_err = OS_ERR_PEND_ABORT;
@@ -558,14 +558,14 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if (OSIntNestingCtr > (OS_NESTING_CTR)0u) {             /* Not allowed to Pend Abort from an ISR                  */
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0u) {                 /* Not allowed to Pend Abort from an ISR                  */
        *p_err =  OS_ERR_PEND_ABORT_ISR;
         return ((OS_OBJ_QTY)0u);
     }
 #endif
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                                 */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (0u);
     }
