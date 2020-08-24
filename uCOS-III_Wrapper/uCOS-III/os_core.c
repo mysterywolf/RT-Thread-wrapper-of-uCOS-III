@@ -539,6 +539,7 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
 * Argument(s): p_err      is a pointer to a variable that will contain an error code returned by this function.
 *
 *                             OS_ERR_FATAL_RETURN    OS was running and OSStart() returned.
+*                             OS_ERR_OS_NOT_INIT     OS is not initialized, OSStart() has no effect
 *                             OS_ERR_OS_RUNNING      OS is already running, OSStart() has no effect
 *                             OS_ERR_OS_NO_APP_TASK  No application task created, OSStart() has no effect
 *                             OS_ERR_OS_NOT_INIT     OS is not initialized, OSStart() has no effect
@@ -566,7 +567,12 @@ void  OSStart (OS_ERR  *p_err)
         return;
     }
 #endif
-
+    
+    if (OSInitialized != OS_TRUE) {
+       *p_err = OS_ERR_OS_NOT_INIT;
+        return;
+    }
+    
     kernel_task_cnt = 0u;                                       /* Calculate the number of kernel tasks                 */
 #if (OS_CFG_STAT_TASK_EN > 0u)
     kernel_task_cnt++;

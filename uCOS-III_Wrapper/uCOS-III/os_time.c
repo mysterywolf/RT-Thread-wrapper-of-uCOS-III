@@ -113,7 +113,7 @@ void  OSTimeDly (OS_TICK   dly,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                                 */
     {
         *p_err = OS_ERR_TIME_DLY_ISR;
         return; 
@@ -127,14 +127,14 @@ void  OSTimeDly (OS_TICK   dly,
     }
 #endif
     
-    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否被锁*/
+    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)              /* 检查调度器是否被锁                                   */
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;         
     } 
     
 #if OS_CFG_ARG_CHK_EN > 0u      
-    if(dly == 0)/*检查是否为0延时*/
+    if(dly == 0)                                                /* 检查是否为0延时                                      */
     {
         *p_err = OS_ERR_TIME_ZERO_DLY;
         return;         
@@ -143,7 +143,7 @@ void  OSTimeDly (OS_TICK   dly,
         case OS_OPT_TIME_DLY:
         case OS_OPT_TIME_TIMEOUT:
         case OS_OPT_TIME_PERIODIC:
-             if (dly == (OS_TICK)0u) {                      /* 0 means no delay!                                      */
+             if (dly == (OS_TICK)0u) {                          /* 0 means no delay!                                    */
                 *p_err = OS_ERR_TIME_ZERO_DLY;
                  return;
              }
@@ -264,7 +264,7 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                                 */
     {
         *p_err = OS_ERR_TIME_DLY_ISR;
         return; 
@@ -278,7 +278,7 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
     }
 #endif
     
-    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否被锁*/
+    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)              /* 检查调度器是否被锁                                   */
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;         
@@ -323,7 +323,7 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
     dly_ms = hours*3600*1000+minutes*60*1000+seconds*1000+milli;
     
 #if OS_CFG_ARG_CHK_EN > 0u      
-    if(dly_ms == 0)/*检查是否为0延时*/
+    if(dly_ms == 0)                                             /* 检查是否为0延时                                      */
     {
         *p_err = OS_ERR_TIME_ZERO_DLY;
         return;         
@@ -392,7 +392,7 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
 #endif 
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                               */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                                 */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
     }
@@ -441,7 +441,7 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
 
 OS_TICK  OSTimeGet (OS_ERR  *p_err)
 {
-    *p_err = OS_ERR_NONE;/*rt_tick_get没有返回错误码*/
+    *p_err = OS_ERR_NONE;
     return rt_tick_get();
 }
 
@@ -464,7 +464,7 @@ OS_TICK  OSTimeGet (OS_ERR  *p_err)
 void  OSTimeSet (OS_TICK   ticks,
                  OS_ERR   *p_err)
 {
-    *p_err = OS_ERR_NONE;/*rt_tick_set没有返回错误码*/   
+    *p_err = OS_ERR_NONE;  
     rt_tick_set(ticks);
 }
 
