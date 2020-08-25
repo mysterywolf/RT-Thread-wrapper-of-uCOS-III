@@ -99,7 +99,7 @@ void  OSInit (OS_ERR  *p_err)
 #endif  
     
 #if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
-    OSSchedRoundRobinEn             = DEF_TRUE;/*RTT的时间片轮转是必选项*/
+    OSSchedRoundRobinEn             = DEF_TRUE;             /* RTT的时间片轮转是必选项                                */
     OSSchedRoundRobinDfltTimeQuanta = OS_CFG_TICK_RATE_HZ / 10u;
 #endif
 
@@ -168,7 +168,7 @@ void  OSInit (OS_ERR  *p_err)
     OSCfg_Init();
 #endif
     
-    OSInitialized = OS_TRUE;                                    /* Kernel is initialized                              */
+    OSInitialized = OS_TRUE;                                /* Kernel is initialized                                  */
     
     /*这部分内容是在原版OSStart()函数中运行的,但是在本兼容层中,操作系统已经启动,因此直接在此处进行标记*/
     if (OSRunning == OS_STATE_OS_STOPPED) {
@@ -337,24 +337,24 @@ void  OSSchedLock (OS_ERR  *p_err)
 #endif    
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0) /*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                                 */
     {
         *p_err = OS_ERR_SCHED_LOCK_ISR;
         return; 
     }  
 #endif
     
-    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Make sure multitasking is running                      */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Make sure multitasking is running                    */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
     }
 
-    if (OSSchedLockNestingCtr >= (OS_NESTING_CTR)250u) {    /* Prevent OSSchedLockNestingCtr overflowing              */
+    if (OSSchedLockNestingCtr >= (OS_NESTING_CTR)250u) {        /* Prevent OSSchedLockNestingCtr overflowing            */
        *p_err = OS_ERR_LOCK_NESTING_OVF;
         return;
     }
     
-    *p_err = OS_ERR_NONE;/*rt_enter_critical没有返回错误码*/    
+    *p_err = OS_ERR_NONE;                                       /* rt_enter_critical没有返回错误码                      */    
     rt_enter_critical();
 }
 
@@ -389,29 +389,29 @@ void  OSSchedUnlock (OS_ERR  *p_err)
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u   
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0) /*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                                 */
     {
         *p_err = OS_ERR_SCHED_LOCK_ISR;
         return; 
     }
 #endif  
     
-    if(OSSchedLockNestingCtr == (OS_NESTING_CTR)0)          /* 检查调度器是否已经完全解锁                             */
+    if(OSSchedLockNestingCtr == (OS_NESTING_CTR)0)              /* 检查调度器是否已经完全解锁                           */
     {
         *p_err = OS_ERR_SCHED_NOT_LOCKED;
         return;         
     }
     
-    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Make sure multitasking is running                      */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Make sure multitasking is running                    */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
     }  
     
-    *p_err = OS_ERR_NONE;                                   /* rt_exit_critical没有返回错误码                         */
+    *p_err = OS_ERR_NONE;                                       /* rt_exit_critical没有返回错误码                       */
     
     rt_exit_critical();
     
-    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否还有锁定嵌套*/
+    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)              /* 检查调度器是否还有锁定嵌套                           */
     {
         *p_err = OS_ERR_SCHED_LOCKED;      
     }
@@ -505,7 +505,7 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                                 /*检查是否在中断中运行*/
     {
         *p_err = OS_ERR_YIELD_ISR;
         return; 
@@ -675,7 +675,6 @@ void  OS_IdleTask (void)
     CPU_CRITICAL_EXIT();
 
     OSIdleTaskHook();                                   /* Call user definable HOOK                               */
-
 }
 
 /*
@@ -701,10 +700,6 @@ void  OS_IdleTaskInit (OS_ERR  *p_err)
         return;
     }
 #endif
-
     OSIdleTaskCtr = (OS_IDLE_CTR)0;
-    
-    /*向RTT注册μCOS-III兼容层空闲任务(实则为回调函数)*/      
-    rt_thread_idle_sethook(OS_IdleTask);
-    
+    rt_thread_idle_sethook(OS_IdleTask);                    /*向RTT注册μCOS-III兼容层空闲任务(实则为回调函数)*/ 
 }

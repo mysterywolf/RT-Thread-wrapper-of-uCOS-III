@@ -815,9 +815,9 @@ INIT_COMPONENT_EXPORT(rt_ucosiii_autoinit);
 
 ## 7.3 其他RT-Thread针对第三方RTOS的兼容层
 
-1. RTX5兼容层暨CMSIS-RTOSv2接口规范：
+1. RTX5操作系统兼容层暨CMSIS-RTOSv2接口规范：
 
-    > https://github.com/RT-Thread-packages/CMSIS/tree/master/RTOS2
+    > https://github.com/mysterywolf/RT-Thread-wrapper-of-RTX5
 
 
 
