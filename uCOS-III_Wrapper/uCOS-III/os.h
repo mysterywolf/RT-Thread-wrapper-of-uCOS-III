@@ -512,7 +512,7 @@ typedef  enum  os_err {
     OS_ERR_STK_OVF                   = 28210u,
     
     OS_ERR_T                         = 29000u,
-//  OS_ERR_TASK_CHANGE_PRIO_ISR      = 29001u,
+    OS_ERR_TASK_CHANGE_PRIO_ISR      = 29001u,
     OS_ERR_TASK_CREATE_ISR           = 29002u,
     OS_ERR_TASK_DEL                  = 29003u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_TASK_DEL_IDLE             = 29004u,

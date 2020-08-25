@@ -260,12 +260,11 @@ int main(void) /*RT-Thread main线程*/
 
 
 # 3 接口
-## 3.1 没有实现兼容的API（仅2个）
+## 3.1 没有实现兼容的API（仅1个）
 
 虽然RT-Thread没有任务内建消息队列、任务内建信号量、任务内建寄存器机制，但是本兼容层均已实现，可以正常兼容。但由于RT-Thread没有提供相关接口，**以下μCOS-III API无法兼容**：
 
  ```c
-void  OSTaskChangePrio (OS_TCB *p_tcb, OS_PRIO prio_new, OS_ERR *p_err);
 void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
  ```
 
@@ -817,7 +816,7 @@ INIT_COMPONENT_EXPORT(rt_ucosiii_autoinit);
 
 1. RTX5操作系统兼容层暨CMSIS-RTOSv2接口规范：
 
-    > https://github.com/mysterywolf/RT-Thread-wrapper-of-RTX5
+    > https://github.com/RT-Thread-packages/CMSIS/tree/master/RTOS2/RT-Thread/src
 
 
 

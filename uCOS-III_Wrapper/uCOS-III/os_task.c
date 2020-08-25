@@ -90,6 +90,37 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
                         OS_PRIO   prio_new,
                         OS_ERR   *p_err)
 {
+    rt_uint8_t rt_priority;
+    rt_priority = prio_new;
+    
+#ifdef OS_SAFETY_CRITICAL
+    if (p_err == (OS_ERR *)0) {
+        OS_SAFETY_CRITICAL_EXCEPTION();
+        return;
+    }
+#endif
+
+#if (OS_CFG_ARG_CHK_EN > 0u)
+    if ((p_tcb != (OS_TCB *)0) && (p_tcb->TaskState == OS_TASK_STATE_DEL)) {
+       *p_err = OS_ERR_STATE_INVALID;
+        return;
+    }
+#endif
+
+#if (OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u)
+    if (OSIntNestingCtr > 0u) {                                 /* Not allowed to call from an ISR                      */
+       *p_err = OS_ERR_TASK_CHANGE_PRIO_ISR;
+        return;
+    }
+#endif
+
+    if (prio_new >= (OS_CFG_PRIO_MAX - 1u)) {                   /* Cannot set to Idle Task priority                     */
+       *p_err = OS_ERR_PRIO_INVALID;
+        return;
+    }
+    
+    rt_thread_control(&(p_tcb->Task), RT_THREAD_CTRL_CHANGE_PRIORITY, &rt_priority);
+    *p_err = OS_ERR_NONE;
 }
 #endif
 

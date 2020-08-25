@@ -139,7 +139,7 @@
 #define  OS_CFG_STAT_TASK_EN             1u                 /* Enable (1) or Disable(0) the statistics task                          */
 #define  OS_CFG_STAT_TASK_STK_CHK_EN     1u                 /* Check task stacks from statistic task                                 */
 
-#define  OS_CFG_TASK_CHANGE_PRIO_EN      0u                 /* 只读,该功能无法兼容 Include code for OSTaskChangePrio()               */
+#define  OS_CFG_TASK_CHANGE_PRIO_EN      1u                 /* Include code for OSTaskChangePrio()                                   */
 #define  OS_CFG_TASK_DEL_EN              1u                 /* Include code for OSTaskDel()                                          */
 #define  OS_CFG_TASK_Q_EN                1u                 /* Include code for OSTaskQXXXX()                                        */
 #define  OS_CFG_TASK_Q_PEND_ABORT_EN     1u                 /* Include code for OSTaskQPendAbort()                                   */

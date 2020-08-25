@@ -237,6 +237,10 @@
 - 修改`OS_TMR`结构体`.Remain`、`.Match`成员变量赋值的bug
 - 实现3.06版本中新增的`OSTmrSet`函数
 
+### 2020-8-25
+
+-  实现`OSTaskChangePrio`函数，目前兼容层仅1个API没有实现
+
 
 
 
@@ -389,6 +393,14 @@
 **[bug fix]** 修改`OS_TMR`结构体`.Remain`、`.Match`成员变量赋值的bug
 
 **[add 3.08]** 实现3.06版本中新增的`OSTmrSet`函数
+
+
+
+## v0.8.0
+
+**[add]** 实现`OSTaskChangePrio`函数，目前兼容层仅1个API没有实现
+
+
 
 
 
