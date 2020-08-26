@@ -431,7 +431,72 @@ void  App_OS_TimeTickHook (void);
 
 
 
-## 3.5 全局变量
+## 3.5 任务控制块、内核对象控制块（结构体）
+
+​	本兼容层尽可能的兼容任务、内核对象控制块（结构体）的每个成员变量，确保迁移过来的老程序如果直接访问这些结构体的成员变量也是可以直接运行，无需做修改的（尽管直接访问结构体的成员变量μCOS-III官方并不建议甚至十分反对）。
+
+​	例如，`OS_TCB`结构体的各个成员变量如下，可以看到，其包含了原版绝大多数成员变量。如果用户用不用兼容原版成员变量，可以将宏`OS_CFG_TASK_PROFILE_EN`设置为0。
+
+```c
+struct os_tcb
+{
+    struct rt_thread Task;          /* 任务,要确保该成员位于结构体第一个*/
+    OS_SEM           Sem;           /* 任务内建信号量*/
+    CPU_BOOLEAN      SemCreateSuc;  /* 标记任务内建信号量是否创建成功*/
+#if OS_CFG_TASK_Q_EN > 0u      
+    OS_Q             MsgQ;          /* 任务内建消息队列*/
+    void            *MsgPtr;        /* 任务内建消息队列消息指针*/
+    OS_MSG_SIZE      MsgSize;       /* 任务内建消息队列消息大小*/
+    CPU_BOOLEAN      MsgCreateSuc;  /* 标记任务内建消息队列是否创建成功*/
+#endif    
+    void            *ExtPtr;        /* 指向用户附加区指针*/
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u       
+    OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];/* 任务寄存器*/
+#endif
+    OS_STATUS        PendStatus;    /* Pend status：OS_STATUS_PEND_ABORT OS_STATUS_PEND_OK可用*/ 
+#if OS_CFG_TASK_SUSPEND_EN > 0u
+    OS_NESTING_CTR   SuspendCtr;    /* Nesting counter for OSTaskSuspend() */
+#endif
+#if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
+    CPU_STK_SIZE     StkUsed;       /* Number of stack elements used from the stack */
+    CPU_STK_SIZE     StkFree;       /* Number of stack elements free on   the stack */
+#endif
+#if OS_CFG_DBG_EN > 0u
+    OS_TCB          *DbgPrevPtr;
+    OS_TCB          *DbgNextPtr;  
+    CPU_CHAR        *DbgNamePtr;    /* 正在等待内核对象的名称*/
+#endif
+    OS_STATE         TaskState;     /* See OS_TASK_STATE_xxx */
+    OS_STATE         PendOn;        /* Indicates what task is pending on */
+#if OS_CFG_TASK_PROFILE_EN > 0u
+#if OS_CFG_DBG_EN > 0u
+    CPU_STK         *StkPtr;        /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
+#endif
+    OS_TICK          TimeQuanta;
+    OS_TICK          TimeQuantaCtr;
+    OS_SEM_CTR       SemCtr;        /* Task specific semaphore counter,*/  
+    OS_OPT           Opt;           /* Task options as passed by OSTaskCreate() */    
+    CPU_STK          StkSize;       /* 任务堆栈大小*/    
+    CPU_STK         *StkLimitPtr;   /* Pointer used to set stack 'watermark' limit */
+    CPU_STK         *StkBasePtr;    /* Pointer to base address of stack */
+#if (OS_CFG_DBG_EN > 0u)
+    CPU_CHAR        *NamePtr;       /* Pointer to task name */    
+#endif
+    OS_TASK_PTR      TaskEntryAddr; /* Pointer to task entry point address */
+    void            *TaskEntryArg;  /* Argument passed to task when it was created */
+    OS_PRIO          Prio;          /* Task priority (0 == highest) */          
+#if OS_CFG_FLAG_EN > 0u
+    OS_FLAGS         FlagsPend;     /* Event flag(s) to wait on */
+    OS_FLAGS         FlagsRdy;      /* Event flags that made task ready to run */
+    OS_OPT           FlagsOpt;      /* Options (See OS_OPT_FLAG_xxx) */
+#endif
+#endif
+};
+```
+
+
+
+## 3.6 全局变量
 
 目前，本兼容层可以使用以下μCOS-III原版全局变量（位于`os.h`）。这些全局变量的具体含义请参见**2.2节**中所列举出的参考资料。
 
