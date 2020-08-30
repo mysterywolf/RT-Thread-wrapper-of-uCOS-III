@@ -466,7 +466,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     CPU_CRITICAL_ENTER();
     p_tcb = OSTCBCurPtr;
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
-    p_tcb->TaskState = OS_TASK_STATE_PEND;            /* 更改当前任务状态为等待*/
+    p_tcb->TaskState |= OS_TASK_STATE_PEND;           /* 更改当前任务状态为等待*/
     if(p_tcb->PendOn != OS_TASK_PEND_ON_TASK_SEM)     /*检查该函数是否被任务内建信号量调用*/
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_SEM;
@@ -483,7 +483,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     
     CPU_CRITICAL_ENTER();
     /*更新任务状态*/
-    p_tcb->TaskState = OS_TASK_STATE_RDY;
+    p_tcb->TaskState &= ~OS_TASK_STATE_PEND;
     /*清除当前任务等待状态*/   
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;   
     p_sem->Ctr = p_sem->Sem.value;/*更新信号量的value*/

@@ -541,7 +541,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     CPU_CRITICAL_ENTER();
     p_tcb = OSTCBCurPtr;
     p_tcb->PendStatus = OS_STATUS_PEND_OK;                      /* Clear pend status                                      */
-    p_tcb->TaskState = OS_TASK_STATE_PEND;
+    p_tcb->TaskState |= OS_TASK_STATE_PEND;
     p_tcb->PendOn = OS_TASK_PEND_ON_FLAG;
     
 #if OS_CFG_DBG_EN > 0u
@@ -559,7 +559,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     
     CPU_CRITICAL_ENTER();
     /*更新任务状态*/
-    p_tcb->TaskState = OS_TASK_STATE_RDY;
+    p_tcb->TaskState &= ~OS_TASK_STATE_PEND;
     /*清除当前任务等待状态*/
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
     

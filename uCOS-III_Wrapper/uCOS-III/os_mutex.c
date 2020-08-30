@@ -449,7 +449,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     CPU_CRITICAL_ENTER();
     p_tcb = OSTCBCurPtr;
     p_tcb->PendStatus = OS_STATUS_PEND_OK;                  /* Clear pend status                                      */
-    p_tcb->TaskState = OS_TASK_STATE_PEND;
+    p_tcb->TaskState |= OS_TASK_STATE_PEND;
     p_tcb->PendOn = OS_TASK_PEND_ON_MUTEX;    
     p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* 更新互斥量的嵌套值                                     */
     if (p_mutex->OwnerNestingCtr == (OS_NESTING_CTR)-1) {
@@ -470,7 +470,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     
     CPU_CRITICAL_ENTER();
     /*更新任务状态*/
-    p_tcb->TaskState = OS_TASK_STATE_RDY;
+    p_tcb->TaskState &= ~OS_TASK_STATE_PEND;
     /*清除当前任务等待状态*/
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
     p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* 更新互斥量的嵌套值                                     */

@@ -618,7 +618,7 @@ void  *OSQPend (OS_Q         *p_q,
     CPU_CRITICAL_ENTER();
     p_tcb = OSTCBCurPtr;
     p_tcb->PendStatus = OS_STATUS_PEND_OK;            /* Clear pend status                                      */
-    p_tcb->TaskState = OS_TASK_STATE_PEND;
+    p_tcb->TaskState |= OS_TASK_STATE_PEND;
     if(p_tcb->PendOn != OS_TASK_PEND_ON_TASK_Q)
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_Q;
@@ -641,7 +641,7 @@ void  *OSQPend (OS_Q         *p_q,
     CPU_CRITICAL_ENTER();
                          
     /*更新任务状态*/
-    p_tcb->TaskState = OS_TASK_STATE_RDY;
+    p_tcb->TaskState &= ~OS_TASK_STATE_PEND;
     /*清除当前任务等待状态*/
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
                          

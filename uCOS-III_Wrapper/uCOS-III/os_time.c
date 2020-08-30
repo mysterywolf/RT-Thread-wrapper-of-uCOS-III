@@ -139,6 +139,8 @@ void  OSTimeDly (OS_TICK   dly,
         *p_err = OS_ERR_TIME_ZERO_DLY;
         return;         
     }
+    
+    opt &= OS_OPT_TIME_MASK;
     switch (opt) {
         case OS_OPT_TIME_DLY:
         case OS_OPT_TIME_TIMEOUT:
@@ -159,9 +161,9 @@ void  OSTimeDly (OS_TICK   dly,
 #endif
     
     CPU_CRITICAL_ENTER();
-    OSTCBCurPtr->TaskState = OS_TASK_STATE_DLY;
+    OSTCBCurPtr->TaskState |= OS_TASK_STATE_DLY;
     CPU_CRITICAL_EXIT();
-    
+        
     if(opt == OS_OPT_TIME_MATCH)
     {
         rt_err = rt_thread_delay(dly - rt_tick_get());
@@ -174,7 +176,7 @@ void  OSTimeDly (OS_TICK   dly,
     *p_err = rt_err_to_ucosiii(rt_err); 
     
     CPU_CRITICAL_ENTER();
-    OSTCBCurPtr->TaskState = OS_TASK_STATE_RDY;
+    OSTCBCurPtr->TaskState &= ~OS_TASK_STATE_DLY;
     CPU_CRITICAL_EXIT();    
 }
 
@@ -247,15 +249,12 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
                      OS_OPT       opt,
                      OS_ERR      *p_err)
 {
-    rt_err_t rt_err;
     rt_int32_t dly_ms;
 #if OS_CFG_ARG_CHK_EN > 0u     
     CPU_BOOLEAN  opt_invalid;
     CPU_BOOLEAN  opt_non_strict;
 #endif
-    
-    CPU_SR_ALLOC();
-    
+        
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -330,16 +329,8 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
     }
 #endif
     
-    CPU_CRITICAL_ENTER();
-    OSTCBCurPtr->TaskState = OS_TASK_STATE_DLY;
-    CPU_CRITICAL_EXIT();  
-    
-    rt_err = rt_thread_mdelay(dly_ms);  
-    *p_err = rt_err_to_ucosiii(rt_err);
-    
-    CPU_CRITICAL_ENTER();
-    OSTCBCurPtr->TaskState = OS_TASK_STATE_RDY;
-    CPU_CRITICAL_EXIT();      
+    /*TODO:Ôö¼Ódly_ms×ªticks*/
+    OSTimeDly(dly_ms, opt, p_err); 
 }
 #endif
 
