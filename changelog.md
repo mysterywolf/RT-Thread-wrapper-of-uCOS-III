@@ -415,6 +415,10 @@
 
 **[add]** 实现`OSTaskChangePrio`函数，目前兼容层仅1个API没有实现
 
+
+
+## v0.9.0
+
 **[bug fix]**  修复`p_tcb->TaskState`变量，增加以下功能：
 
 ```c
@@ -425,6 +429,8 @@
 ```
 
 **[add]** 增加`suspend_example.c`例程
+
+
 
 
 
