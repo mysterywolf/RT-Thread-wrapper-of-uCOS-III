@@ -198,8 +198,8 @@ void  OSTimeDly (OS_TICK   dly,
 *
 *              opt       specifies time delay bit-field options logically OR'd; default options marked with *** :
 *
-*                          - OS_OPT_TIME_DLY        specifies a relative time from the current value of OSTickCtr.
-*                          - OS_OPT_TIME_TIMEOUT    same as OS_OPT_TIME_DLY.
+*                            OS_OPT_TIME_DLY        specifies a relative time from the current value of OSTickCtr.
+*                            OS_OPT_TIME_TIMEOUT    same as OS_OPT_TIME_DLY.
 *                            OS_OPT_TIME_MATCH      indicates that the delay specifies the absolute value that OSTickCtr
 *                                                   must reach before the task will be resumed.
 *                            OS_OPT_TIME_PERIODIC   indicates that the delay specifies the periodic value that OSTickCtr
@@ -328,9 +328,8 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
         return;         
     }
 #endif
-    
-    /*TODO:Ôö¼Ódly_ms×ªticks*/
-    OSTimeDly(dly_ms, opt, p_err); 
+
+    OSTimeDly(rt_tick_from_millisecond(dly_ms), opt, p_err); 
 }
 #endif
 

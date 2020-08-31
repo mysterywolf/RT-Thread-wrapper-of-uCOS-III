@@ -95,14 +95,16 @@ void mutex_example (void);
 void sem_example   (void);
 void q_example     (void);
 void task_sem_example (void);
+void suspend_example (void);
 
 static void AppTaskCreate(void)
 {
     /*可以打开注释,运行测试例程*/
     
-    timer_example();
+//    timer_example();
 //    mutex_example();
 //    sem_example();
 //    q_example();
 //    task_sem_example();
+    suspend_example();
 }

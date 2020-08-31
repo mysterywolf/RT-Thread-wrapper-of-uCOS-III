@@ -241,6 +241,21 @@
 
 -  实现`OSTaskChangePrio`函数，目前兼容层仅1个API没有实现
 
+### 2020-8-31
+
+- 增加`suspend_example.c`例程
+
+- 修复`p_tcb->TaskState`变量，增加以下功能：
+
+    ```c
+    #define  OS_TASK_STATE_PEND_TIMEOUT           (OS_STATE)(  3u)  /*   0 1 1     Pend + Timeout                         */
+    #define  OS_TASK_STATE_DLY_SUSPENDED          (OS_STATE)(  5u)  /*   1 0 1     Suspended + Delayed or Timeout         */
+    #define  OS_TASK_STATE_PEND_SUSPENDED         (OS_STATE)(  6u)  /*   1 1 0     Suspended + Pend                       */
+    #define  OS_TASK_STATE_PEND_TIMEOUT_SUSPENDED (OS_STATE)(  7u)  /*   1 1 1     Suspended + Pend + Timeout             */
+    ```
+
+    
+
 
 
 
@@ -400,7 +415,16 @@
 
 **[add]** 实现`OSTaskChangePrio`函数，目前兼容层仅1个API没有实现
 
+**[bug fix]**  修复`p_tcb->TaskState`变量，增加以下功能：
 
+```c
+#define  OS_TASK_STATE_PEND_TIMEOUT           (OS_STATE)(  3u)  /*   0 1 1     Pend + Timeout                         */
+#define  OS_TASK_STATE_DLY_SUSPENDED          (OS_STATE)(  5u)  /*   1 0 1     Suspended + Delayed or Timeout         */
+#define  OS_TASK_STATE_PEND_SUSPENDED         (OS_STATE)(  6u)  /*   1 1 0     Suspended + Pend                       */
+#define  OS_TASK_STATE_PEND_TIMEOUT_SUSPENDED (OS_STATE)(  7u)  /*   1 1 1     Suspended + Pend + Timeout             */
+```
+
+**[add]** 增加`suspend_example.c`例程
 
 
 

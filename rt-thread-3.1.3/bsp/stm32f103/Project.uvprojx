@@ -746,6 +746,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\examples\timer_example.c</FilePath>
             </File>
+            <File>
+              <FileName>suspend_example.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\suspend_example.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1496,6 +1501,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\examples\timer_example.c</FilePath>
             </File>
+            <File>
+              <FileName>suspend_example.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\suspend_example.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2245,6 +2255,11 @@
               <FileName>timer_example.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\uCOS-III_Wrapper\examples\timer_example.c</FilePath>
+            </File>
+            <File>
+              <FileName>suspend_example.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\uCOS-III_Wrapper\examples\suspend_example.c</FilePath>
             </File>
           </Files>
         </Group>

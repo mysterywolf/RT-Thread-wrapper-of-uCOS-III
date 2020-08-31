@@ -1674,7 +1674,6 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
     }
     else if((p_tcb->Task.stat & RT_THREAD_STAT_MASK) == RT_THREAD_READY)
     {
-        /*任务处于运行态才能被挂起*/
         p_tcb->TaskState |= OS_TASK_STATE_SUSPENDED;
         rt_err = rt_thread_suspend(&p_tcb->Task);
         if(rt_thread_self() == &p_tcb->Task)/*是否要将自己挂起*/
