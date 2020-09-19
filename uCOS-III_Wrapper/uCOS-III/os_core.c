@@ -163,6 +163,14 @@ void  OSInit (OS_ERR  *p_err)
     }
 #endif  
     
+#if OS_CFG_MEM_EN > 0u
+    OS_MemInit(p_err);                                      /* Initialize the Memory Manager module                   */
+    if (*p_err != OS_ERR_NONE) {
+        CPU_CRITICAL_EXIT();
+        return;
+    }    
+#endif
+    
 #if OS_CFG_DBG_EN > 0u
     OS_Dbg_Init();
     OSCfg_Init();
