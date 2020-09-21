@@ -57,6 +57,9 @@
 #include <os.h>
 
 #if OS_CFG_TMR_EN > 0u
+
+static void OS_TmrCallback(void *p_ara);
+
 /*
 ************************************************************************************************************************
 *                                                   CREATE A TIMER
@@ -1110,7 +1113,7 @@ void  OS_TmrInit (OS_ERR  *p_err)
 *              先由RTT调用内部回调函数，再由内部回调函数调用uCOS-III的回调函数，以此完成参数的转换。
 ************************************************************************************************************************
 */
-void OS_TmrCallback(void *p_ara)
+static void OS_TmrCallback(void *p_ara)
 {
     OS_TMR *p_tmr;
     OS_ERR err;

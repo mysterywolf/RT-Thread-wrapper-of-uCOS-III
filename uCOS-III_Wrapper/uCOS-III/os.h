@@ -1473,7 +1473,6 @@ void          OS_TmrDbgListRemove       (OS_TMR                *p_tmr);
 
 void          OS_TmrInit                (OS_ERR                *p_err);
 
-void          OS_TmrCallback            (void *p_ara);
 #endif
   
 /* ================================================================================================================== */
