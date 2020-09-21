@@ -585,12 +585,6 @@ void  OSStart (OS_ERR  *p_err)
 #if (OS_CFG_STAT_TASK_EN > 0u)
     kernel_task_cnt++;
 #endif
-#if (OS_CFG_TMR_EN > 0u)
-    kernel_task_cnt++;
-#endif
-#if (OS_CFG_TASK_IDLE_EN > 0u)
-    kernel_task_cnt++;
-#endif  
     
     CPU_CRITICAL_ENTER();
 

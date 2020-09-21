@@ -38,7 +38,11 @@ int main(void)/*RT-Thread main线程*/
     OS_ERR err;
     
     OSInit(&err);                                   /*uCOS-III操作系统初始化*/
-        
+    if(err != OS_ERR_NONE){
+        rt_kprintf("uCOS-III init error!\r\n");
+        return 0;
+    }
+    
     /*创建开始任务*/
 	OSTaskCreate((OS_TCB 	* )&AppTaskStartTCB,		
 				 (CPU_CHAR	* )"App Task Start", 		
