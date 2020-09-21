@@ -13,7 +13,7 @@
 
 **如果你喜欢本项目，请点击右上角的Star予以支持，开源项目的成就感就靠star了，谢谢！**
 
-如急需RT-Thread操作系统的μCOS-II兼容层，请在issue中留言，我看看大家有没有这个需求。
+RT-Thread操作系统的μCOS-II兼容层：https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-II
 
 
 
@@ -883,7 +883,9 @@ INIT_COMPONENT_EXPORT(rt_ucosiii_autoinit);
 
     > https://github.com/RT-Thread-packages/CMSIS/tree/master/RTOS2/RT-Thread/src
 
+2. RT-Thread操作系统的μCOS-II兼容层：
 
+   >  https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-II
 
 
 
