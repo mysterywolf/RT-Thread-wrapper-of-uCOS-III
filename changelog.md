@@ -268,6 +268,10 @@
 - 将`OS_TmrCallback`函数设为static文件私有函数 
 - 清理删除`OSTmrCreate`函数多余参数检查代码
 
+### 2020-9-22
+
+- 整理`os_tmr.c`注释
+
 
 
 
@@ -458,6 +462,8 @@
 **[fix]** 将`OS_TmrCallback`函数设为static文件私有函数 
 
 **[del]** 清理删除`OSTmrCreate`函数多余参数检查代码
+
+整理`os_tmr.c`注释
 
 
 
