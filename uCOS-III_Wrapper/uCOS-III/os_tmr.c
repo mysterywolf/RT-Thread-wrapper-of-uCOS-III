@@ -202,23 +202,11 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     if(opt == OS_OPT_TMR_ONE_SHOT)
     {
         rt_flag = RT_TIMER_FLAG_ONE_SHOT|RT_TIMER_FLAG_SOFT_TIMER;
-        if(dly == 0)/*检查dly参数是否合法*/
-        {
-            *p_err = OS_ERR_TMR_INVALID_DLY;
-            return;
-        }
-        /*RTT和uCOS-III在定时器时钟源的设计不同,需要进行转换*/
-        time = dly * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
+        time = dly * (1000 / OS_CFG_TMR_TASK_RATE_HZ); /*RTT和uCOS-III在定时器时钟源的设计不同,需要进行转换*/  
     }
     else if(opt == OS_OPT_TMR_PERIODIC)
     {
         rt_flag = RT_TIMER_FLAG_PERIODIC|RT_TIMER_FLAG_SOFT_TIMER;
-        if(period == 0)/*检查period参数是否合法*/
-        {
-            *p_err = OS_ERR_TMR_INVALID_PERIOD;
-            return;
-        }   
-        /*RTT和uCOS-III在定时器时钟源的设计不同,需要进行转换*/        
         time = period * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
     }
     else
