@@ -273,6 +273,10 @@
 - 整理`os_tmr.c`注释
 - 将`OSSemPost `/ `OSMutexPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
 
+### 2020-9-23
+
+- 将代码中μCOS改为uCOS防止在终端输出时由于μ不是ASCII码而出现乱码
+
 
 
 
@@ -467,6 +471,8 @@
 整理`os_tmr.c`注释
 
 将`OSSemPost `和 `OSMutexPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
+
+**[fix]** 将代码中μCOS改为uCOS防止在终端输出时由于μ不是ASCII码而出现乱码
 
 
 

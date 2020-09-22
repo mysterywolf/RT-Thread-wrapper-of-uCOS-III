@@ -278,7 +278,7 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
         CPU_CRITICAL_ENTER();
         p_tmr = OSTmrDbgListPtr;
         CPU_CRITICAL_EXIT();
-        rt_kprintf("-----------------¦ÌCOS-III Timer--------------------\n");
+        rt_kprintf("-----------------uCOS-III Timer--------------------\n");
         while(p_tmr)
         {
             rt_kprintf("name:%s\n",p_tmr->Tmr.parent.name);
@@ -292,7 +292,7 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
         CPU_CRITICAL_ENTER();
         p_tcb = OSTaskDbgListPtr;
         CPU_CRITICAL_EXIT();
-        rt_kprintf("-----------------¦ÌCOS-III Task---------------------\n");
+        rt_kprintf("-----------------uCOS-III Task---------------------\n");
         while(p_tcb)
         {
             rt_kprintf("name:%s\n",p_tcb->Task.name);
@@ -306,7 +306,7 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
         CPU_CRITICAL_ENTER();
         p_sem = OSSemDbgListPtr;
         CPU_CRITICAL_EXIT();
-        rt_kprintf("-----------------¦ÌCOS-III Sem----------------------\n");
+        rt_kprintf("-----------------uCOS-III Sem----------------------\n");
         while(p_sem)
         {
             rt_kprintf("name:%s\n",p_sem->Sem.parent.parent.name);
@@ -321,7 +321,7 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
         CPU_CRITICAL_ENTER();
         p_mutex = OSMutexDbgListPtr;
         CPU_CRITICAL_EXIT();
-        rt_kprintf("-----------------¦ÌCOS-III Mutex--------------------\n");
+        rt_kprintf("-----------------uCOS-III Mutex--------------------\n");
         while(p_mutex)
         {
             rt_kprintf("name:%s\n",p_mutex->Mutex.parent.parent.name);
@@ -336,7 +336,7 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
         CPU_CRITICAL_ENTER();
         p_q = OSQDbgListPtr;
         CPU_CRITICAL_EXIT();
-        rt_kprintf("-----------------¦ÌCOS-III MsgQ---------------------\n");
+        rt_kprintf("-----------------uCOS-III MsgQ---------------------\n");
         while(p_q)
         {
             rt_kprintf("name:%s\n",p_q->Msg.parent.parent.name);
@@ -351,7 +351,7 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
         CPU_CRITICAL_ENTER();
         p_flag = OSFlagDbgListPtr;
         CPU_CRITICAL_EXIT();
-        rt_kprintf("-----------------¦ÌCOS-III Flag---------------------\n");
+        rt_kprintf("-----------------uCOS-III Flag---------------------\n");
         while(p_flag)
         {
             rt_kprintf("name:%s\n",p_flag->FlagGrp.parent.parent.name);
