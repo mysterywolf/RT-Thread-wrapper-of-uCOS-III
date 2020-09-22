@@ -271,6 +271,7 @@
 ### 2020-9-22
 
 - 整理`os_tmr.c`注释
+- 将`OSSemPost `/ `OSMutexPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
 
 
 
@@ -465,9 +466,13 @@
 
 整理`os_tmr.c`注释
 
+将`OSSemPost `和 `OSMutexPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
+
 
 
 # TODO
+
+## v1.1.0
 
 1. OS_TCB
 
@@ -479,3 +484,4 @@
 
 2. 实现广播消息队列
 3. 实现事件标志组清零表示事件发生
+4. `OSQPost`和`OSFlagPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略

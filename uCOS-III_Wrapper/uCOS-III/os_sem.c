@@ -737,22 +737,16 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
         return 0;       
     }
 #endif
-    
-    switch (opt) 
+        
+    if(opt & OS_OPT_POST_ALL)
     {
-        case OS_OPT_POST_1:
-            rt_err = rt_sem_release(&p_sem->Sem);
-            break;
-        
-        case OS_OPT_POST_ALL:
-            /*在rt_sem_release_all内部已经更新TaskStatus*/
-            rt_err = rt_sem_release_all(&p_sem->Sem);
-            break;
-        
-        default:
-            *p_err = OS_ERR_OPT_INVALID;
-            return 0;
+        rt_err = rt_sem_release_all(&p_sem->Sem);
     }
+    else
+    {
+        rt_err = rt_sem_release(&p_sem->Sem);
+    }
+    
     CPU_CRITICAL_ENTER();
     p_sem->Ctr = p_sem->Sem.value; /*更新信号量value值*/
     
