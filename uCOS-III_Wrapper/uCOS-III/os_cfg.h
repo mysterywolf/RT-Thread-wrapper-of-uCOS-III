@@ -90,7 +90,7 @@
 
                                                             /* ----------------------------- EVENT FLAGS --------------------------- */
 #ifdef RT_USING_EVENT                                       /* 是否开启由RT-Thread接管                                               */
-#define  OS_CFG_FLAG_EN                  1u                 /* 只读 Enable (1) or Disable (0) code generation for EVENT FLAGS        */
+#define  OS_CFG_FLAG_EN                  1u                 /* 读写 Enable (1) or Disable (0) code generation for EVENT FLAGS        */
 #else
 #define  OS_CFG_FLAG_EN                  0u                 /* 只读 Enable (1) or Disable (0) code generation for EVENT FLAGS        */
 #endif
@@ -105,7 +105,7 @@
 
                                                             /* --------------------- MUTUAL EXCLUSION SEMAPHORES ------------------- */
 #ifdef RT_USING_MUTEX                                       /* 是否开启由RT-Thread接管                                               */
-#define  OS_CFG_MUTEX_EN                 1u                 /* 只读 Enable (1) or Disable (0) code generation for MUTE               */
+#define  OS_CFG_MUTEX_EN                 1u                 /* 读写 Enable (1) or Disable (0) code generation for MUTE               */
 #else
 #define  OS_CFG_MUTEX_EN                 0u                 /* 只读 Enable (1) or Disable (0) code generation for MUTE               */
 #endif
@@ -115,7 +115,7 @@
 
                                                             /* --------------------------- MESSAGE QUEUES -------------------------- */
 #ifdef RT_USING_MESSAGEQUEUE                                /* 是否开启由RT-Thread接管                                               */
-#define  OS_CFG_Q_EN                     1u                 /* 只读 Enable (1) or Disable (0) code generation for QUEUES             */
+#define  OS_CFG_Q_EN                     1u                 /* 读写 Enable (1) or Disable (0) code generation for QUEUES             */
 #else
 #define  OS_CFG_Q_EN                     0u                 /* 只读 Enable (1) or Disable (0) code generation for QUEUES             */
 #endif
@@ -126,7 +126,7 @@
 
                                                             /* ----------------------------- SEMAPHORES ---------------------------- */
 #ifdef RT_USING_SEMAPHORE                                   /* 是否开启由RT-Thread接管                                               */
-#define  OS_CFG_SEM_EN                   1u                 /* 只读 Enable (1) or Disable (0) code generation for SEMAPHORES         */
+#define  OS_CFG_SEM_EN                   1u                 /* 读写 Enable (1) or Disable (0) code generation for SEMAPHORES         */
 #else
 #define  OS_CFG_SEM_EN                   0u                 /* 只读 Enable (1) or Disable (0) code generation for SEMAPHORES         */
 #endif
@@ -159,8 +159,8 @@
 
 
                                                             /* ------------------------- TIMER MANAGEMENT -------------------------- */
-#if defined RT_USING_TIMER_SOFT
-#define  OS_CFG_TMR_EN                   1u                 /* 只读 Enable (1) or Disable (0) code generation for TIMERS             */
+#ifdef RT_USING_TIMER_SOFT
+#define  OS_CFG_TMR_EN                   1u                 /* 读写 Enable (1) or Disable (0) code generation for TIMERS             */
 #else
 #define  OS_CFG_TMR_EN                   0u                 /* 只读 Enable (1) or Disable (0) code generation for TIMERS             */
 #endif
