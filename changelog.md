@@ -277,6 +277,10 @@
 
 - 将代码中μCOS改为uCOS防止在终端输出时由于μ不是ASCII码而出现乱码
 
+### 2020-9-27
+
+- 修复`OS_TmrCallback`函数中，在有延迟的周期延时没有对`.Match` `.Remain`成员变量重新赋值的问题
+
 
 
 
@@ -472,7 +476,11 @@
 
 将`OSSemPost `和 `OSMutexPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
 
-**[fix]** 将代码中μCOS改为uCOS防止在终端输出时由于μ不是ASCII码而出现乱码
+**[bug fix]** 将代码中μCOS改为uCOS防止在终端输出时由于μ不是ASCII码而出现乱码
+
+**[bug fix]** 修复`OS_TmrCallback`函数中，在有延迟的周期延时没有对`.Match` `.Remain`成员变量重新赋值的问题
+
+
 
 
 
@@ -483,7 +491,7 @@
 1. OS_TCB
 
 ```c
-	OS_FLAGS         FlagsPend;     /* Event flag(s) to wait on */
+    OS_FLAGS         FlagsPend;     /* Event flag(s) to wait on */
     OS_FLAGS         FlagsRdy;      /* Event flags that made task ready to run */
     OS_OPT           FlagsOpt;      /* Options (See OS_OPT_FLAG_xxx) */
 ```

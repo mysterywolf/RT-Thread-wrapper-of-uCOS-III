@@ -1134,6 +1134,8 @@ static void OS_TmrCallback(void *p_ara)
         p_tmr->Tmr.init_tick = p_tmr->Period * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
         p_tmr->Tmr.timeout_tick = rt_tick_get() + p_tmr->Tmr.init_tick;
         p_tmr->Tmr.parent.flag |= RT_TIMER_FLAG_PERIODIC;   /* 定时器设置为周期模式                                 */
+        p_tmr->Match = rt_tick_get() + p_tmr->Tmr.init_tick;
+        p_tmr->Remain = p_tmr->Period;
         CPU_CRITICAL_EXIT();
         rt_timer_start(&(p_tmr->Tmr));                      /* 开启定时器                                           */
     } 
