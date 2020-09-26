@@ -1139,18 +1139,16 @@ static void OS_TmrCallback(void *p_ara)
         CPU_CRITICAL_EXIT();
         rt_timer_start(&(p_tmr->Tmr));                      /* 开启定时器                                           */
     } 
-
-    if(p_tmr->Opt == OS_OPT_TMR_ONE_SHOT)
+    else if(p_tmr->Opt == OS_OPT_TMR_ONE_SHOT)
     {
         CPU_CRITICAL_ENTER();
         p_tmr->State = OS_TMR_STATE_COMPLETED;
         p_tmr->Remain = 0;
         CPU_CRITICAL_EXIT();
     }
-    else if (p_tmr->Opt == OS_OPT_TMR_PERIODIC)
+    else if(p_tmr->Opt == OS_OPT_TMR_PERIODIC)
     {
         CPU_CRITICAL_ENTER();
-        /*重新设定下一次定时器的参数*/
         p_tmr->Match = rt_tick_get() + p_tmr->Tmr.init_tick;
         p_tmr->Remain = p_tmr->Period;
         CPU_CRITICAL_EXIT();
