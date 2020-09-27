@@ -74,7 +74,7 @@ void mutex_example (void)
                AppTask1, 			            /*任务函数*/
                0,					            /*传递给任务函数的参数*/
                TASK_PRIORITY,                   /*任务优先级*/
-               AppTask1_Stack,	                /*任务堆栈基地址*/
+               &AppTask1_Stack[0],              /*任务堆栈基地址*/
                TASK_STACK_SIZE/10,	            /*任务堆栈深度限位*/
                TASK_STACK_SIZE,		            /*任务堆栈大小*/
                0,					            /*任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息*/
@@ -92,7 +92,7 @@ void mutex_example (void)
                AppTask2, 			            /*任务函数*/
                0,					            /*传递给任务函数的参数*/
                TASK_PRIORITY,                   /*任务优先级*/
-               AppTask2_Stack,	                /*任务堆栈基地址*/
+               &AppTask2_Stack[0],              /*任务堆栈基地址*/
                TASK_STACK_SIZE/10,	            /*任务堆栈深度限位*/
                TASK_STACK_SIZE,		            /*任务堆栈大小*/
                0,					            /*任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息*/

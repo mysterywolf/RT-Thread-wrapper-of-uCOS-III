@@ -281,6 +281,10 @@
 
 - 修复`OS_TmrCallback`函数中，在有延迟的周期延时没有对`.Match` `.Remain`成员变量重新赋值的问题
 
+### 2020-9-28
+
+- 创建任务时，将任务堆栈的首地址由`AppTask1_Stack`改为`&AppTask1_Stack[0]`以突出堆栈的首地址
+
 
 
 
@@ -479,6 +483,8 @@
 **[bug fix]** 将代码中μCOS改为uCOS防止在终端输出时由于μ不是ASCII码而出现乱码
 
 **[bug fix]** 修复`OS_TmrCallback`函数中，在有延迟的周期延时没有对`.Match` `.Remain`成员变量重新赋值的问题
+
+创建任务时，将任务堆栈的首地址由`AppTask1_Stack`改为`&AppTask1_Stack[0]`以突出堆栈的首地址
 
 
 

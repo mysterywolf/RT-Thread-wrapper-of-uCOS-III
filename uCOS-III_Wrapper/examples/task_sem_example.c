@@ -71,7 +71,7 @@ void task_sem_example (void)
                thread2_entry, 			    //任务函数
                0,					        //传递给任务函数的参数
                THREAD_PRIORITY-1,           //任务优先级
-               thread2_stack,	            //任务堆栈基地址
+               &thread2_stack[0],           //任务堆栈基地址
                THREAD_STACK_SIZE/10,	    //任务堆栈深度限位
                THREAD_STACK_SIZE,		    //任务堆栈大小
                0,					        //任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息
@@ -89,8 +89,8 @@ void task_sem_example (void)
 			   (CPU_CHAR*)"thread1", 		//任务名字
                thread1_entry, 			    //任务函数
                0,					        //传递给任务函数的参数
-               THREAD_PRIORITY,           //任务优先级
-               thread1_stack,	            //任务堆栈基地址
+               THREAD_PRIORITY,             //任务优先级
+               &thread1_stack[0],           //任务堆栈基地址
                THREAD_STACK_SIZE/10,	    //任务堆栈深度限位
                THREAD_STACK_SIZE,		    //任务堆栈大小
                0,					        //任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息
