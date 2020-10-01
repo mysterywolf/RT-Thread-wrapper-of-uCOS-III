@@ -661,11 +661,11 @@ typedef  void                      (*OS_APP_HOOK_TCB)      (OS_TCB *p_tcb);
 */
 
 #if OS_CFG_Q_EN > 0u
-typedef  struct 
+typedef  struct                                            /* uCOS消息段                                              */
 {
-    rt_uint8_t *data_ptr;/*uCOS-III消息数据指针*/
-    rt_uint32_t data_size;/*uCOS-III消息数据长度*/
-}ucos_msg_t;/*uCOS消息段*/
+    rt_uint8_t *data_ptr;                                  /* uCOS-III消息数据指针                                    */
+    rt_uint32_t data_size;                                 /* uCOS-III消息数据长度                                    */
+}ucos_msg_t;
 
 struct os_q
 {
@@ -679,7 +679,7 @@ struct os_q
 #if OS_CFG_DBG_EN > 0u
     OS_Q                *DbgPrevPtr;
     OS_Q                *DbgNextPtr;
-    CPU_CHAR            *DbgNamePtr;                        /* 等待该内核对象挂起表中第一个任务的名字*/
+    CPU_CHAR            *DbgNamePtr;                        /* 等待该内核对象挂起表中第一个任务的名字                 */
 #endif
 };
 #endif
@@ -697,7 +697,7 @@ struct  os_sem {
     CPU_CHAR             *NamePtr;                          /* Pointer to Semaphore Name (NUL terminated ASCII)       */
     OS_SEM               *DbgPrevPtr;
     OS_SEM               *DbgNextPtr;
-    CPU_CHAR             *DbgNamePtr;                       /*等待该内核对象挂起表中第一个任务的名字*/
+    CPU_CHAR             *DbgNamePtr;                       /* 等待该内核对象挂起表中第一个任务的名字                 */
 #endif
     OS_SEM_CTR            Ctr;    
 };
@@ -717,7 +717,7 @@ struct  os_flag_grp {
 #if OS_CFG_DBG_EN > 0u
     OS_FLAG_GRP         *DbgPrevPtr;
     OS_FLAG_GRP         *DbgNextPtr;
-    CPU_CHAR            *DbgNamePtr;                        /* 等待该内核对象挂起表中第一个任务的名字*/
+    CPU_CHAR            *DbgNamePtr;                        /* 等待该内核对象挂起表中第一个任务的名字                 */
 #endif
 };
 
@@ -728,55 +728,55 @@ struct  os_flag_grp {
 */
 struct os_tcb
 {
-    struct rt_thread Task;          /* 任务,要确保该成员位于结构体第一个*/
-    OS_SEM           Sem;           /* 任务内建信号量*/
-    CPU_BOOLEAN      SemCreateSuc;  /* 标记任务内建信号量是否创建成功*/
+    struct rt_thread Task;                                  /* 任务,要确保该成员位于结构体第一个                      */
+    OS_SEM           Sem;                                   /* 任务内建信号量                                         */
+    CPU_BOOLEAN      SemCreateSuc;                          /* 标记任务内建信号量是否创建成功                         */
 #if OS_CFG_TASK_Q_EN > 0u      
-    OS_Q             MsgQ;          /* 任务内建消息队列*/
-    void            *MsgPtr;        /* 任务内建消息队列消息指针*/
-    OS_MSG_SIZE      MsgSize;       /* 任务内建消息队列消息大小*/
-    CPU_BOOLEAN      MsgCreateSuc;  /* 标记任务内建消息队列是否创建成功*/
+    OS_Q             MsgQ;                                  /* 任务内建消息队列                                       */
+    void            *MsgPtr;                                /* 任务内建消息队列消息指针                               */
+    OS_MSG_SIZE      MsgSize;                               /* 任务内建消息队列消息大小                               */
+    CPU_BOOLEAN      MsgCreateSuc;                          /* 标记任务内建消息队列是否创建成功                       */
 #endif    
-    void            *ExtPtr;        /* 指向用户附加区指针*/
+    void            *ExtPtr;                                /* 指向用户附加区指针                                     */
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u       
-    OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];/* 任务寄存器*/
+    OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];      /* 任务寄存器                                             */
 #endif
-    OS_STATUS        PendStatus;    /* Pend status：OS_STATUS_PEND_ABORT OS_STATUS_PEND_OK可用*/ 
+    OS_STATUS        PendStatus;                            /* Pend status：OS_STATUS_PEND_ABORT OS_STATUS_PEND_OK可用*/ 
 #if OS_CFG_TASK_SUSPEND_EN > 0u
-    OS_NESTING_CTR   SuspendCtr;    /* Nesting counter for OSTaskSuspend() */
+    OS_NESTING_CTR   SuspendCtr;                            /* Nesting counter for OSTaskSuspend()                    */
 #endif
 #if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
-    CPU_STK_SIZE     StkUsed;       /* Number of stack elements used from the stack */
-    CPU_STK_SIZE     StkFree;       /* Number of stack elements free on   the stack */
+    CPU_STK_SIZE     StkUsed;                               /* Number of stack elements used from the stack           */
+    CPU_STK_SIZE     StkFree;                               /* Number of stack elements free on   the stack           */
 #endif
 #if OS_CFG_DBG_EN > 0u
     OS_TCB          *DbgPrevPtr;
     OS_TCB          *DbgNextPtr;  
-    CPU_CHAR        *DbgNamePtr;    /* 正在等待内核对象的名称*/
+    CPU_CHAR        *DbgNamePtr;                            /* 正在等待内核对象的名称                                 */
 #endif
-    OS_STATE         TaskState;     /* See OS_TASK_STATE_xxx */
-    OS_STATE         PendOn;        /* Indicates what task is pending on */
+    OS_STATE         TaskState;                             /* See OS_TASK_STATE_xxx                                  */
+    OS_STATE         PendOn;                                /* Indicates what task is pending on                      */
 #if OS_CFG_TASK_PROFILE_EN > 0u
 #if OS_CFG_DBG_EN > 0u
-    CPU_STK         *StkPtr;        /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
+    CPU_STK         *StkPtr;                                /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
 #endif
     OS_TICK          TimeQuanta;
     OS_TICK          TimeQuantaCtr;
-    OS_SEM_CTR       SemCtr;        /* Task specific semaphore counter,*/  
-    OS_OPT           Opt;           /* Task options as passed by OSTaskCreate() */    
-    CPU_STK          StkSize;       /* 任务堆栈大小*/    
-    CPU_STK         *StkLimitPtr;   /* Pointer used to set stack 'watermark' limit */
-    CPU_STK         *StkBasePtr;    /* Pointer to base address of stack */
+    OS_SEM_CTR       SemCtr;                                /* Task specific semaphore counter                        */  
+    OS_OPT           Opt;                                   /* Task options as passed by OSTaskCreate()               */    
+    CPU_STK          StkSize;                               /* 任务堆栈大小*/    
+    CPU_STK         *StkLimitPtr;                           /* Pointer used to set stack 'watermark' limit            */
+    CPU_STK         *StkBasePtr;                            /* Pointer to base address of stack                       */
 #if (OS_CFG_DBG_EN > 0u)
-    CPU_CHAR        *NamePtr;       /* Pointer to task name */    
+    CPU_CHAR        *NamePtr;                               /* Pointer to task name                                   */    
 #endif
-    OS_TASK_PTR      TaskEntryAddr; /* Pointer to task entry point address */
-    void            *TaskEntryArg;  /* Argument passed to task when it was created */
-    OS_PRIO          Prio;          /* Task priority (0 == highest) */          
+    OS_TASK_PTR      TaskEntryAddr;                         /* Pointer to task entry point address                    */
+    void            *TaskEntryArg;                          /* Argument passed to task when it was created            */
+    OS_PRIO          Prio;                                  /* Task priority (0 == highest)                           */          
 #if OS_CFG_FLAG_EN > 0u
-    OS_FLAGS         FlagsPend;     /* Event flag(s) to wait on */
-    OS_FLAGS         FlagsRdy;      /* Event flags that made task ready to run */
-    OS_OPT           FlagsOpt;      /* Options (See OS_OPT_FLAG_xxx) */
+    OS_FLAGS         FlagsPend;                             /* Event flag(s) to wait on */
+    OS_FLAGS         FlagsRdy;                              /* Event flags that made task ready to run                */
+    OS_OPT           FlagsOpt;                              /* Options (See OS_OPT_FLAG_xxx)                          */
 #endif
 #endif
 };
@@ -821,7 +821,7 @@ struct  os_mutex {
 #if OS_CFG_DBG_EN > 0u
     OS_MUTEX           *DbgPrevPtr;
     OS_MUTEX           *DbgNextPtr;
-    CPU_CHAR           *DbgNamePtr;                         /* 等待该内核对象挂起表中第一个任务的名字*/
+    CPU_CHAR           *DbgNamePtr;                         /* 等待该内核对象挂起表中第一个任务的名字                 */
 #endif  
 };
 
