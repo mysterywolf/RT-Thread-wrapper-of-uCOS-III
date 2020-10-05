@@ -86,6 +86,7 @@ void  OSInitHook (void)
 
 }
 
+#if OS_CFG_STAT_TASK_EN > 0u
 /*
 *********************************************************************************************************
 *                                           IDLE TASK HOOK
@@ -130,6 +131,8 @@ void  OSStatTaskHook (void)
 #endif
 }
 
+#endif
+
 /*
 *********************************************************************************************************
 *                                          TASK CREATION HOOK
@@ -173,78 +176,5 @@ void  OSTaskDelHook (OS_TCB  *p_tcb)
     }
 #else
     CPU_VAL_UNUSED(p_tcb);                                            /* Prevent compiler warning                               */
-#endif
-}
-
-
-
-/*--------------------------以下uCOS钩子函数由RT-Thread钩子函数接管,不再使用------------------------------------------*/
-
-/*
-*********************************************************************************************************
-*                                            TASK RETURN HOOK
-*
-* Description: This function is called if a task accidentally returns.  In other words, a task should
-*              either be an infinite loop or delete itself when done.
-*
-* Arguments  : p_tcb        Pointer to the task control block of the task that is returning.
-*
-* Note(s)    : None.
-*********************************************************************************************************
-*/
-void  OSTaskReturnHook (OS_TCB  *p_tcb)
-{
-#if OS_CFG_APP_HOOKS_EN > 0u
-    if (OS_AppTaskReturnHookPtr != (OS_APP_HOOK_TCB)0) {
-        (*OS_AppTaskReturnHookPtr)(p_tcb);
-    }
-#else
-    (void)p_tcb;                                            /* Prevent compiler warning                               */
-#endif
-}
-
-/*
-*********************************************************************************************************
-*                                           TASK SWITCH HOOK
-*
-* Description: This function is called when a task switch is performed.  This allows you to perform other
-*              operations during a context switch.
-*
-* Arguments  : None.
-*
-* Note(s)    : 1) Interrupts are disabled during this call.
-*              2) It is assumed that the global pointer 'OSTCBHighRdyPtr' points to the TCB of the task
-*                 that will be 'switched in' (i.e. the highest priority task) and, 'OSTCBCurPtr' points
-*                 to the task being switched out (i.e. the preempted task).
-*********************************************************************************************************
-*/
-
-void  OSTaskSwHook (void)
-{
-#if OS_CFG_APP_HOOKS_EN > 0u
-    if (OS_AppTaskSwHookPtr != (OS_APP_HOOK_VOID)0) {
-        (*OS_AppTaskSwHookPtr)();
-    }
-#endif    
-}
-
-/*
-*********************************************************************************************************
-*                                              TICK HOOK
-*
-* Description: This function is called every tick.
-*
-* Arguments  : None.
-*
-* Note(s)    : 1) This function is assumed to be called from the Tick ISR.
-*********************************************************************************************************
-*/
-
-void  OSTimeTickHook (void)
-{
-#if OS_CFG_APP_HOOKS_EN > 0u
-    if (OS_AppTimeTickHookPtr != (OS_APP_HOOK_VOID)0) {
-        (*OS_AppTimeTickHookPtr)();
-    }
 #endif
 }

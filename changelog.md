@@ -289,6 +289,8 @@
 
 - 对齐并整理注释
 - 删除无用的钩子函数（已被RT-Thread钩子函数接管）
+- 修复`OSTimeDlyResume`函数中`p_tcb->TaskState`状态处理的问题
+- 将空闲任务纳入到`OS_CFG_STAT_TASK_EN`控制范围内
 
 
 
@@ -498,6 +500,8 @@
 删除无用的钩子函数（已被RT-Thread钩子函数接管）
 
 **[bug fix]** 修复`OSTimeDlyResume`函数中`p_tcb->TaskState`状态处理的问题
+
+将空闲任务纳入到`OS_CFG_STAT_TASK_EN`控制范围内
 
 
 

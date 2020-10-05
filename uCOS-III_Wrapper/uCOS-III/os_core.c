@@ -140,15 +140,15 @@ void  OSInit (OS_ERR  *p_err)
         CPU_CRITICAL_EXIT();
         return;
     }
-    
+
+#if OS_CFG_STAT_TASK_EN > 0u     
     OS_IdleTaskInit(p_err);                                 /* Initialize the Idle Task                               */
     if (*p_err != OS_ERR_NONE) {
         CPU_CRITICAL_EXIT();
         return;
     }
-
-#if OS_CFG_STAT_TASK_EN > 0u                                /* Initialize the Statistic Task                          */
-    OS_StatTaskInit(p_err);
+                 
+    OS_StatTaskInit(p_err);                                 /* Initialize the Statistic Task                          */
     if (*p_err != OS_ERR_NONE) {
         CPU_CRITICAL_EXIT();
         return;
@@ -640,6 +640,8 @@ CPU_INT16U  OSVersion (OS_ERR  *p_err)
     return OS_VERSION;
 }
 
+
+#if OS_CFG_STAT_TASK_EN > 0u
 /*
 ************************************************************************************************************************
 *                                                      IDLE TASK
@@ -705,3 +707,5 @@ void  OS_IdleTaskInit (OS_ERR  *p_err)
     OSIdleTaskCtr = (OS_IDLE_CTR)0;
     rt_thread_idle_sethook(OS_IdleTask);                    /*向RTT注册μCOS-III兼容层空闲任务(实则为回调函数)         */ 
 }
+
+#endif

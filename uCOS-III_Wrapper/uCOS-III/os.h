@@ -1355,11 +1355,9 @@ void          OSStatTaskCPUUsageInit    (OS_ERR                *p_err);
 CPU_INT16U    OSVersion                 (OS_ERR                *p_err);
 
 /* ------------------------------------------------ INTERNAL FUNCTIONS ---------------------------------------------- */
-
+#if OS_CFG_STAT_TASK_EN > 0u
 void          OS_IdleTask               (void);
 void          OS_IdleTaskInit           (OS_ERR                *p_err);
-
-#if OS_CFG_STAT_TASK_EN > 0u
 void          OS_StatTask               (void                  *p_arg);
 void          OS_StatTaskInit           (OS_ERR                *p_err);
 #endif
