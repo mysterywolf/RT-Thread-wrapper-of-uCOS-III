@@ -877,10 +877,6 @@ OS_EXT            OS_APP_HOOK_TCB           OS_AppTaskCreateHookPtr;    /* Appli
 OS_EXT            OS_APP_HOOK_TCB           OS_AppTaskDelHookPtr;
 OS_EXT            OS_APP_HOOK_VOID          OS_AppIdleTaskHookPtr;
 OS_EXT            OS_APP_HOOK_VOID          OS_AppStatTaskHookPtr;
-
-OS_EXT            OS_APP_HOOK_TCB           OS_AppTaskReturnHookPtr;
-OS_EXT            OS_APP_HOOK_VOID          OS_AppTaskSwHookPtr;
-OS_EXT            OS_APP_HOOK_VOID          OS_AppTimeTickHookPtr;
 #endif
 
 OS_EXT            OS_STATE                  OSRunning;                  /* Flag indicating that kernel is running     */
@@ -942,10 +938,12 @@ OS_EXT            OS_REG_ID                 OSTaskRegNextAvailID;       /* Next 
 OS_EXT            OS_TICK                   OSSchedRoundRobinDfltTimeQuanta;
 OS_EXT            CPU_BOOLEAN               OSSchedRoundRobinEn;        /* Enable/Disable round-robin scheduling      */
 #endif
+
+#if OS_CFG_STAT_TASK_EN > 0u
                                                                         /* IDLE TASK -------------------------------- */
 OS_EXT            OS_IDLE_CTR               OSIdleTaskCtr;              
 
-#if OS_CFG_STAT_TASK_EN > 0u                                            /* STATISTICS ------------------------------- */
+                                                                        /* STATISTICS ------------------------------- */
 OS_EXT            CPU_BOOLEAN               OSStatResetFlag;            /* Force the reset of the computed statistics */
 OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsage;         /* CPU Usage in %                             */
 OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsageMax;      /* CPU Usage in % (Peak)                      */

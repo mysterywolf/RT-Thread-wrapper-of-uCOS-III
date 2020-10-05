@@ -108,10 +108,6 @@ CPU_INT16U  const  OSDbg_MemSize               = 0u;
 
 CPU_INT08U  const  OSDbg_MsgEn                 = OS_MSG_EN;
 #if (OS_MSG_EN) > 0u
-//CPU_INT16U  const  OSDbg_MsgSize               = sizeof(OS_MSG);               /* OS_MSG size                         */
-//CPU_INT16U  const  OSDbg_MsgPoolSize           = sizeof(OS_MSG_POOL);
-//CPU_INT16U  const  OSDbg_MsgQSize              = sizeof(OS_MSG_Q);
-#else
 CPU_INT16U  const  OSDbg_MsgSize               = 0u;
 CPU_INT16U  const  OSDbg_MsgPoolSize           = 0u;
 CPU_INT16U  const  OSDbg_MsgQSize              = 0u;
@@ -237,16 +233,13 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
 #if OS_CFG_APP_HOOKS_EN > 0u
                                   + sizeof(OS_AppTaskCreateHookPtr)
                                   + sizeof(OS_AppTaskDelHookPtr)
-                                  + sizeof(OS_AppTaskReturnHookPtr)
-
                                   + sizeof(OS_AppIdleTaskHookPtr)
                                   + sizeof(OS_AppStatTaskHookPtr)
-                                  + sizeof(OS_AppTaskSwHookPtr)
-                                  + sizeof(OS_AppTimeTickHookPtr)
 #endif
-
+                                  
+#if OS_CFG_STAT_TASK_EN > 0u
                                   + sizeof(OSIdleTaskCtr)
-//                                  + sizeof(OSIdleTaskTCB)
+#endif
 
 #ifdef CPU_CFG_INT_DIS_MEAS_EN
                                   + sizeof(OSIntDisTimeMax)
@@ -281,10 +274,6 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
                                   + sizeof(OSMemQty)
 #endif
 
-#if OS_MSG_EN > 0u
-//                                  + sizeof(OSMsgPool)
-#endif
-
 #if OS_CFG_MUTEX_EN > 0u
 #if OS_CFG_DBG_EN > 0u
                                   + sizeof(OSMutexDbgListPtr)
@@ -293,8 +282,6 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
 #endif
 
                                   + sizeof(OSPrioCur)
-//                                  + sizeof(OSPrioHighRdy)
-//                                  + sizeof(OSPrioSaved)
                                   + sizeof(OSPrioTbl)
 
 #if OS_CFG_Q_EN > 0u
@@ -426,12 +413,6 @@ void  OS_Dbg_Init (void)
 #endif
 
     p_temp = (void const *)&OSDbg_MsgEn;
-#if (OS_MSG_EN) > 0u
-//    p_temp = (void const *)&OSDbg_MsgSize;
-//    p_temp = (void const *)&OSDbg_MsgPoolSize;
-//    p_temp = (void const *)&OSDbg_MsgQSize;
-#endif
-
     p_temp = (void const *)&OSDbg_Mutex;
     p_temp = (void const *)&OSDbg_MutexEn;
 #if (OS_CFG_MUTEX_EN) > 0u
