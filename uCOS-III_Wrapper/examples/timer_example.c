@@ -26,7 +26,9 @@ static OS_TMR  CPUUsageTimer;/*CPU使用率测量定时器*/
 void tmr1_callback(void *p_tmr, void *p_arg)
 {
     rt_kprintf("FROM '%s'-->",((OS_TMR*)p_tmr)->Tmr.parent.name);
+#if OS_CFG_STAT_TASK_EN > 0u
     rt_kprintf("CPU usage:%d.%d%%\n",OSStatTaskCPUUsage/100,OSStatTaskCPUUsage%100);
+#endif
 }
 
 /*任务函数*/
