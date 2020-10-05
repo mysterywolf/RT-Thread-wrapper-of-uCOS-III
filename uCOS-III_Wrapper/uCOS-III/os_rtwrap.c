@@ -211,6 +211,7 @@ rt_err_t rt_sem_release_all(rt_sem_t sem)
     return RT_EOK;
 }
 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 /**
  * msh命令：uCOS-III兼容层信息获取
  */
@@ -367,7 +368,7 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
 }
 MSH_CMD_EXPORT_ALIAS(rt_ucosiii_wrapper_info, ucos, get ucos-iii wrapper info);
 #endif
-
+#endif
 
 /**
  * 自动初始化

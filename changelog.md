@@ -514,3 +514,10 @@
 2. 实现广播消息队列
 3. 实现事件标志组清零表示事件发生
 4. `OSQPost`和`OSFlagPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
+
+
+
+## v1.2.0
+
+1. 实现`PKG_USING_UCOSIII_WRAPPER_TINY`以精简兼容层
+
