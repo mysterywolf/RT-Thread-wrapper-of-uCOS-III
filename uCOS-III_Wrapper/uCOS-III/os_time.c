@@ -360,6 +360,8 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
 void  OSTimeDlyResume (OS_TCB  *p_tcb,
                        OS_ERR  *p_err)
 {
+    CPU_SR_ALLOC();
+    
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -400,17 +402,43 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
         return;
     }
     
-    if(p_tcb->TaskState != OS_TASK_STATE_DLY)
-    {
-        *p_err = OS_ERR_TASK_SUSPENDED;
-        return;
+    CPU_CRITICAL_ENTER();
+    switch (p_tcb->TaskState) {
+        case OS_TASK_STATE_RDY:                                 /* Cannot Abort delay if task is ready                  */
+        case OS_TASK_STATE_PEND:
+        case OS_TASK_STATE_PEND_TIMEOUT:
+        case OS_TASK_STATE_SUSPENDED:
+        case OS_TASK_STATE_PEND_SUSPENDED:
+        case OS_TASK_STATE_PEND_TIMEOUT_SUSPENDED:
+             CPU_CRITICAL_EXIT();
+            *p_err = OS_ERR_TASK_NOT_DLY;
+             break;
+
+        case OS_TASK_STATE_DLY:
+             p_tcb->TaskState = OS_TASK_STATE_RDY;
+             CPU_CRITICAL_EXIT();
+            *p_err = OS_ERR_NONE;
+             break;
+
+        case OS_TASK_STATE_DLY_SUSPENDED:
+             /*在uCOS-III中可以将延时取消,依然保持挂起；但是在RTT中挂起和延时是绑定的*/
+//             p_tcb->TaskState = OS_TASK_STATE_SUSPENDED;
+             CPU_CRITICAL_EXIT();
+            *p_err            = OS_ERR_TASK_SUSPENDED;
+             break;
+
+        default:
+             CPU_CRITICAL_EXIT();
+            *p_err = OS_ERR_STATE_INVALID;
+             break;
     }
     
-    *p_err = OS_ERR_NONE;
-    
-    p_tcb->Task.error = RT_ETIMEOUT;
-    rt_thread_resume(&p_tcb->Task);
-    rt_schedule();
+    if(*p_err == OS_ERR_NONE)
+    {
+        p_tcb->Task.error = RT_ETIMEOUT;
+        rt_thread_resume(&p_tcb->Task);
+        rt_schedule();        
+    }  
 }
 #endif
 

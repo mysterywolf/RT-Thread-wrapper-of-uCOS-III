@@ -497,6 +497,8 @@
 
 删除无用的钩子函数（已被RT-Thread钩子函数接管）
 
+**[bug fix]** 修复`OSTimeDlyResume`函数中`p_tcb->TaskState`状态处理的问题
+
 
 
 # TODO
