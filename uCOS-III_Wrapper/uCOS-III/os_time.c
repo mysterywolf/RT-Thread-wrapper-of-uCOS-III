@@ -435,7 +435,7 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
     
     if(*p_err == OS_ERR_NONE)
     {
-        p_tcb->Task.error = RT_ETIMEOUT;
+        p_tcb->Task.error = -RT_ETIMEOUT;
         rt_thread_resume(&p_tcb->Task);
         rt_schedule();        
     }  
