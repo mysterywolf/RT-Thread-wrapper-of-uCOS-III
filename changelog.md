@@ -1,28 +1,28 @@
 # 维护日志
 
-### 2020-6-29 
+### 2020-06-29 
 
 - 初步搭建框架
 - 完成信号量兼容
 - 完成`os_time.c`系统延时有关兼容
 
 
-### 2020-6-30 
+### 2020-06-30 
 
 - 完成软件定时器兼容
 
 
-### 2020-7-1  
+### 2020-07-01  
 
 - 实现互斥量兼容
 
 
-### 2020-7-2  
+### 2020-07-02  
 
 - 实现消息队列兼容
 
 
-### 2020-7-3  
+### 2020-07-03  
 
 - 实现信号标志组兼容
 
@@ -30,7 +30,7 @@
 
 - 实现任务内建消息队列兼容
 
-### 2020-7-4  
+### 2020-07-04  
 
 - 实现任务内建信号量兼容
 - 实现uCOS-III安全认证检查相关兼容
@@ -38,24 +38,24 @@
 - 增加`os_cfg_app.h`并与之对接
 - 完成`os_sem.c` `os_q.c`文件宏定义检查以及流程的确认
 
-### 2020-7-5  
+### 2020-07-05  
 
 - 完成`os_flag.c` `os_mutex.c` `os_tmr.c` `os_task.c` `os_time.c` `os_core.c`文件宏定义检查以及流程的确认
 - 优化`os_cfg_app.h`、`os_cfg.h`
 
-### 2020-7-6  
+### 2020-07-06  
 
 - 充实`readme.md`
 - 实现`OSSemSet`、`OSTaskSemSet`函数
 - 优化`OSTaskSuspend`、`OSTaskResume`函数，使其具备嵌套挂起/解挂能力
 - 实现钩子函数
 
-### 2020-7-7  
+### 2020-07-07  
 
 - 移植`os_mem.c`文件
 - 优化了内核对象的结构体
 
-### 2020-7-8  
+### 2020-07-08  
 
 - 实现`OSTmrStateGet`函数
 - 构建统计任务框架
@@ -65,11 +65,11 @@
 - 实现Idle任务（实则为RTT Idle任务的回调函数）
 - 实现Idle任务钩子函数`OSIdleTaskHook()`
 
-### 2020-7-9
+### 2020-07-09
 
 - 实现uCOS-III内部任务——统计任务，可以正确计算CPU使用率、每个任务的使用堆栈
 
-### 2020-7-10
+### 2020-07-10
 
 - 实现`OSTimeDlyResume`函数
 - 修复`OSSemDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题
@@ -77,13 +77,13 @@
 - 修复`OSQDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题
 - 修复`OSFlagDel`函数无法返回当前等待信号量数量、无法使用`OS_OPT_DEL_NO_PEND`选项的问题
 
-### 2020-7-11
+### 2020-07-11
 
 
 - 增加兼容原版`OS_TCB`结构体成员变量
 - 实现`OSSemPendAbort`函数，`OSSemPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能
 
-### 2020-7-12
+### 2020-07-12
 
 - 新增`os_rtwrap.c`文件，负责对RT-Thread和μCOS-III的转换提供支持。并在`os.h`文件末尾增加`os_rtwrap.c`内函数的声明
 - 实现`OSTaskSemPendAbort`函数
@@ -93,7 +93,7 @@
 - 实现`OSSFlagPendAbort`函数，`OSFlagPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能
 - 实现`OSQPendAbort`函数，`OSQPend`函数增加了处理`OS_ERR_PEND_ABORT`的功能
 
-### 2020-7-14
+### 2020-07-14
 
 - 实现`OSSchedRoundRobinCfg`函数
 - 实现`OSFlagPendGetFlagsRdy`函数
@@ -101,13 +101,13 @@
 - 实现`OSTaskQFlush`函数
 - 补充`timer_sample.c`例程
 
-### 2020-7-15
+### 2020-07-15
 
 - 移植`cpu_core.c`文件增加`CPU_Init`函数，老项目如果用到该函数在迁移时不会报错，函数内部没有实际动作
 - 优化了`timer_sample.c`例程
 - 补充`mutex_sample.c`例程
 
-### 2020-7-16
+### 2020-07-16
 
 - 任务内建消息队列、任务内建信号量直接沿用任务的name，不再strcat字符串
 - 实现`OSTmrDel`函数回调函数功能
@@ -116,11 +116,11 @@
 - 完整实现了`p_tmr->State`的所有选项，重新实现了`OSTmrStateGet`函数
 - 实现μCOS-III软件定时器带有延迟的周期延时功能(`os_tmr.c`受限项全部解决)
 
-### 2020-7-18
+### 2020-07-18
 
 - 开始对接FinSH，实现msh命令
 
-### 2020-7-19
+### 2020-07-19
 
 - `OSInit`函数内加入临界区保护
 - 实现`OSSemDbgListPtr`链表
@@ -132,84 +132,84 @@
 - 实现`OSFlagDbgListPtr`链表
 - 实现`OSFlagQty`全局变量
 
-### 2020-7-20
+### 2020-07-20
 
 - 在os_rtwrap.c文件中增加`rt_ipc_post_all`和`rt_sem_release_all`函数，并实现了`OSSemPost`函数`OS_OPT_POST_ALL`选项
 
-### 2020-7-22
+### 2020-07-22
 
 - 增加`sem_sample.c`例程
 
-### 2020-7-23
+### 2020-07-23
 
 - 增加`q_sample.c`例程
 - 修改`main.c`，严格按照μCOS-III官方给出的初始化流程进行初始化
 
-### 2020-7-24
+### 2020-07-24
 
 - 增加μC/LIB全部文件（V1.39.00）
 - 更改工程结构，将工程文件提到一级目录
 - 实现μC/CPU中`CPU_NameClr`、`CPU_NameGet`、`CPU_NameSet`函数
 
-### 2020-7-25
+### 2020-07-25
 
 - 增加`os_dbg.c`、`os_cfg_app.c`文件，开始与μC/Probe软件进行对接
 - 实现`OS_TCB`成员变量`.TaskState`
 - `OS_TCB`成员变量`.StkPtr`改为在统计任务中定时更新
 
-### 2020-7-26
+### 2020-07-26
 
 - 实现`OS_TCB`成员变量`.PendOn`、`.DbgName`
 - 信号量、互斥量、消息队列、事件标志组结构体增加成员变量`.DbgName`
 
-### 2020-7-27
+### 2020-07-27
 
 - 修复`OSMutexPendAbort`、`OSSemPendAbort`、`OSQPendAbort`、`OSFlagPendAbort`函数返回值由当前还有多少任务在等待该内核对象 改为 放弃了多少个任务
 - 增加`task_sem_sample.c`例程
 - 实现`OS_MUTEX`结构体`.OwnerNestingCtr`、`.OwnerTCBPtr`、`.OwnerOriginalPrio`成员变量
 - 修复了CPU使用率突然飙升至100%的问题，该问题为μCOS-III原版（3.03版本）内部bug，即便是最新版的3.08版本该问题依然没有得到彻底解决（仅仅是将飙升至100%改成了骤降至0%）
 
-### 2020-7-28
+### 2020-07-28
 
 - 增加`OS_CFG_TASK_PROFILE_EN`宏定义，用以降低资源占用
 - 在`os_cfg_zpp.c`文件中增加`OS_CFG_DBG_EN`宏定义，用以降低资源占用
 
-### 2020-7-29
+### 2020-07-29
 
 - 完善readme
 
-### 2020-8-3
+### 2020-08-03
 
 - 增加`OS_TASK_STATE_SUSPENDED`任务状态
 
-### 2020-8-7
+### 2020-08-07
 
 - 将例程由sample字眼改成example
 - 增加`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏
 
-### 2020-8-8
+### 2020-08-08
 
 - 增加SConscript脚本，以支持env工具进行自动化添加软件包
 
-### 2020-8-12
+### 2020-08-12
 
 - 完善readme文档
 
-### 2020-8-13
+### 2020-08-13
 
 -  修复`OSTmrRemainGet`函数计算剩余时间的错误
 -  实现`OS_TMR`结构体`.Match`和`.Remain`成员变量
 
-### 2020-8-16
+### 2020-08-16
 
 - 实现错误代码`OS_ERR_TASK_SUSPENDED`  、`OS_ERR_TASK_OPT`、`OS_ERR_LOCK_NESTING_OVF`、`OS_ERR_MUTEX_NESTING`、`OS_ERR_MUTEX_OWNER`、`OS_ERR_ROUND_ROBIN_DISABLED`、`OS_ERR_STK_LIMIT_INVALID` 、`OS_ERR_FLAG_PEND_OPT`
 - 对`OSTaskStkChk`函数当传入`OS_TCB*`参数为空时，转换为当前`OS_TCB*`的逻辑做了调整
 
-### 2020-8-17
+### 2020-08-17
 
 - 对函数`OSTmrRemainGet`、`OSTmrStop`、`OSTmrStateGet`、`OSTmrStart`、`OSTmrDel`仿照原版增加定时器状态检查功能
 
-### 2020-8-18
+### 2020-08-18
 
 - 修复`OSInit`函数return分支没有调用`CPU_CRITICAL_EXIT()`打开中断的bug
 - 增加视频介绍&教程链接
@@ -220,11 +220,11 @@
 - 增加错误代码`OS_ERR_TASK_SUSPEND_CTR_OVF`，同时补充该错误代码的相关实现
 - 增加错误代码`OS_ERR_TMR_INVALID_CALLBACK`，同时补充该错误代码的相关实现
 
-### 2020-8-19
+### 2020-08-19
 
 - 将各个内核对象的名字指针归为到`OS_CFG_DBG_EN`宏定义管理范围（3.08版本如此）
 
-### 2020-8-22
+### 2020-08-22
 
 - 完成对`CPU_CRITICAL_ENTER`/`CPU_CRITICAL_EXIT`匹配检查
 - 增加3.08版本的向下兼容宏定义（os.h）
@@ -232,16 +232,16 @@
 - 修复`OSTaskDel`函数在TCB指针为NULL即删除任务自己时，没有及时将内部变量`p_tcb`赋值为当前任务指针的bug
 - 实现`OS_CFG_TASK_IDLE_EN`宏以及相关检查
 
-### 2020-8-23
+### 2020-08-23
 
 - 修改`OS_TMR`结构体`.Remain`、`.Match`成员变量赋值的bug
 - 实现3.06版本中新增的`OSTmrSet`函数
 
-### 2020-8-25
+### 2020-08-25
 
 -  实现`OSTaskChangePrio`函数，目前兼容层仅1个API没有实现
 
-### 2020-8-31
+### 2020-08-31
 
 - 增加`suspend_example.c`例程
 
@@ -256,11 +256,11 @@
 
     
 
-### 2020-9-20
+### 2020-09-20
 
 - 修复没有调用`OS_MemInit`函数初始化内存池的bug
 
-### 2020-9-21
+### 2020-09-21
 
 - 修复`OS_TmrCallback`定时器内部回调函数在处理`OSTmrSet`更新参数时定时器参数可能无法重新设置的bug
 - 增加对`OSInit`函数的错误码检查代码
@@ -268,24 +268,27 @@
 - 将`OS_TmrCallback`函数设为static文件私有函数 
 - 清理删除`OSTmrCreate`函数多余参数检查代码
 
-### 2020-9-22
+### 2020-09-22
 
 - 整理`os_tmr.c`注释
 - 将`OSSemPost `/ `OSMutexPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
 
-### 2020-9-23
+### 2020-09-23
 
 - 将代码中μCOS改为uCOS防止在终端输出时由于μ不是ASCII码而出现乱码
 
-### 2020-9-27
+### 2020-09-27
 
 - 修复`OS_TmrCallback`函数中，在有延迟的周期延时没有对`.Match` `.Remain`成员变量重新赋值的问题
 
-### 2020-9-28
+### 2020-09-28
 
 - 创建任务时，将任务堆栈的首地址由`AppTask1_Stack`改为`&AppTask1_Stack[0]`以突出堆栈的首地址
 
+### 2020-10-05
 
+- 对齐并整理注释
+- 删除无用的钩子函数（已被RT-Thread钩子函数接管）
 
 
 
@@ -487,6 +490,12 @@
 创建任务时，将任务堆栈的首地址由`AppTask1_Stack`改为`&AppTask1_Stack[0]`以突出堆栈的首地址
 
 
+
+## v0.11.0
+
+对齐并整理注释
+
+删除无用的钩子函数（已被RT-Thread钩子函数接管）
 
 
 
