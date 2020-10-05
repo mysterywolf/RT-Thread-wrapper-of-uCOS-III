@@ -246,7 +246,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 #endif    
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                             */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (0u);
     }
@@ -286,7 +286,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
     {
         case OS_OPT_DEL_NO_PEND:
             CPU_CRITICAL_ENTER();
-            if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))/*若没有线程等待信号量*/
+            if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))/*若没有线程等待信号量                        */
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_event_detach(&p_grp->FlagGrp);
@@ -427,7 +427,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                             */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (0u);
     }
@@ -540,7 +540,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 
     CPU_CRITICAL_ENTER();
     p_tcb = OSTCBCurPtr;
-    p_tcb->PendStatus = OS_STATUS_PEND_OK;                      /* Clear pend status                                      */
+    p_tcb->PendStatus = OS_STATUS_PEND_OK;                      /* Clear pend status                                  */
     p_tcb->TaskState |= OS_TASK_STATE_PEND;
     p_tcb->PendOn = OS_TASK_PEND_ON_FLAG;
     
@@ -573,11 +573,11 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     }
     else
     {
-        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* 若为空,则清空当前.DbgNamePtr                           */
+        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* 若为空,则清空当前.DbgNamePtr                       */
     }
 #endif   
     
-    if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)               /* Indicate that we aborted                               */
+    if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)               /* Indicate that we aborted                           */
     {
         CPU_CRITICAL_EXIT(); 
         *p_err = OS_ERR_PEND_ABORT;
@@ -642,25 +642,25 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if (OSIntNestingCtr > (OS_NESTING_CTR)0u) {                 /* Not allowed to Pend Abort from an ISR                  */
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0u) {                 /* Not allowed to Pend Abort from an ISR              */
        *p_err =  OS_ERR_PEND_ABORT_ISR;
         return ((OS_OBJ_QTY)0u);
     }
 #endif
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                             */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (0u);
     }
 #endif
     
 #if OS_CFG_ARG_CHK_EN > 0u
-    if (p_grp == (OS_FLAG_GRP *)0) {                            /* Validate 'p_sem'                                       */
+    if (p_grp == (OS_FLAG_GRP *)0) {                            /* Validate 'p_sem'                                   */
        *p_err =  OS_ERR_OBJ_PTR_NULL;
         return ((OS_OBJ_QTY)0u);
     }
-    switch (opt) {                                              /* Validate 'opt'                                         */
+    switch (opt) {                                              /* Validate 'opt'                                     */
         case OS_OPT_PEND_ABORT_1:
         case OS_OPT_PEND_ABORT_ALL:
         case OS_OPT_PEND_ABORT_1   | OS_OPT_POST_NO_SCHED:
