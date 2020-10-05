@@ -159,7 +159,7 @@
 
 
                                                             /* ------------------------- TIMER MANAGEMENT -------------------------- */
-#ifdef RT_USING_TIMER_SOFT
+#ifdef RT_USING_TIMER_SOFT                                  /* 是否开启由RT-Thread接管                                               */
 #define  OS_CFG_TMR_EN                   1u                 /* 读写 Enable (1) or Disable (0) code generation for TIMERS             */
 #else
 #define  OS_CFG_TMR_EN                   0u                 /* 只读 Enable (1) or Disable (0) code generation for TIMERS             */
