@@ -184,9 +184,17 @@ int main(void) /*RT-Thread main线程*/
 
 ### 2.5.3 自动初始化流程
 
-​	如果您在应用层中不想手动初始化本兼容层，请参见本文以下章节（**如无特殊要求，建议采用该种方式**）：
+​	如果您在应用层中不想手动初始化本兼容层，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏定义。请参见本文以下章节（**如无特殊要求，建议采用该种方式**）：
 
 > 6.2.1 Enable uCOS-III wrapper automatically init 
+
+
+
+### 2.5.4 精简版兼容层
+
+​	如果你在使用过程中不需要兼容任务/内核对象结构体的成员变量，或者不需要使用uC/Probe软件监控兼容层状态，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_TINY`宏定义。请参考本文以下章节：
+
+> 6.2.1 Enable uCOS-III wrapper tiny mode 
 
 
 
@@ -834,6 +842,30 @@ static int rt_ucosiii_autoinit(void)
 INIT_COMPONENT_EXPORT(rt_ucosiii_autoinit);
 #endif
 ```
+
+
+
+### 6.2.1 Enable uCOS-III wrapper tiny mode 
+
+​	如果你在使用过程中不需要兼容任务/内核对象结构体的成员变量，或者不需要使用uC/Probe软件监控兼容层状态，可使能该选项。ENV将自动在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_TINY`宏定义。以`OS_SEM`结构体为例：
+
+```c
+struct  os_sem { 
+    struct  rt_semaphore  Sem;
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+    OS_OBJ_TYPE           Type;
+#if (OS_CFG_DBG_EN > 0u)
+    CPU_CHAR             *NamePtr;                          /* Pointer to Semaphore Name (NUL terminated ASCII)       */
+    OS_SEM               *DbgPrevPtr;
+    OS_SEM               *DbgNextPtr;
+    CPU_CHAR             *DbgNamePtr;                       /* 等待该内核对象挂起表中第一个任务的名字                 */
+#endif
+    OS_SEM_CTR            Ctr;    
+#endif
+};
+```
+
+​	可以看到，在定义`PKG_USING_UCOSIII_WRAPPER_TINY`后，`OS_SEM`结构体得到了大幅度精简。该模式可满足所有API的基本兼容需求，一般无特殊要求建议勾选该选型。
 
 
 
