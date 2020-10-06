@@ -138,14 +138,6 @@ Keil工程路径：*<u>rt-thread-3.1.3/bsp/stm32f103/Project.uvprojx</u>*
 
 
 
-```c
-#define  OS_CFG_TASK_PROFILE_EN  1u /* Include variables in OS_TCB for profiling*/
-```
-
-​	若置1，OS_TCB结构体将尽全力兼容原版结构体的所有成员变量；若为0，OS_TCB结构体将保留兼容层必须成员变量，用以节省空间。如果您需要使用μC/Probe软件进行调试或者调用受该宏定义控制的OS_TCB成员变量，则需要将其置1.
-
-
-
 ## 2.4 os_cfg_app.h配置文件
 
 该文件仅保留了OS Tick频率的配置、定时器任务以及统计任务的配置。其他配置项本兼容层用不到（例如中断任务），予以删除。

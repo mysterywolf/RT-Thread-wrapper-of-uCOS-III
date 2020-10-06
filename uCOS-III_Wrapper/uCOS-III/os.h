@@ -658,16 +658,18 @@ typedef  struct                                            /* uCOS消息段        
 struct os_q
 {
     struct  rt_messagequeue Msg;
+    void                *p_pool;
+    ucos_msg_t           ucos_msg;
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     OS_OBJ_TYPE          Type;
 #if (OS_CFG_DBG_EN > 0u)
     CPU_CHAR            *NamePtr;                           /* Pointer to Message Queue Name (NUL terminated ASCII)   */
 #endif
-    void                *p_pool;
-    ucos_msg_t ucos_msg;
 #if OS_CFG_DBG_EN > 0u
     OS_Q                *DbgPrevPtr;
     OS_Q                *DbgNextPtr;
     CPU_CHAR            *DbgNamePtr;                        /* 等待该内核对象挂起表中第一个任务的名字                 */
+#endif
 #endif
 };
 #endif
@@ -680,6 +682,7 @@ struct os_q
 
 struct  os_sem { 
     struct  rt_semaphore  Sem;
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     OS_OBJ_TYPE           Type;
 #if (OS_CFG_DBG_EN > 0u)
     CPU_CHAR             *NamePtr;                          /* Pointer to Semaphore Name (NUL terminated ASCII)       */
@@ -688,6 +691,7 @@ struct  os_sem {
     CPU_CHAR             *DbgNamePtr;                       /* 等待该内核对象挂起表中第一个任务的名字                 */
 #endif
     OS_SEM_CTR            Ctr;    
+#endif
 };
 /*
 ------------------------------------------------------------------------------------------------------------------------
@@ -697,15 +701,15 @@ struct  os_sem {
 
 struct  os_flag_grp {
     struct  rt_event     FlagGrp;
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     OS_OBJ_TYPE          Type;
-#if (OS_CFG_DBG_EN > 0u)
-    CPU_CHAR            *NamePtr;                           /* Pointer to Event Flag Name (NUL terminated ASCII)      */
-#endif
     OS_FLAGS             Flags;                             /* 8, 16 or 32 bit flags                                  */
 #if OS_CFG_DBG_EN > 0u
+    CPU_CHAR            *NamePtr;                           /* Pointer to Event Flag Name (NUL terminated ASCII)      */
     OS_FLAG_GRP         *DbgPrevPtr;
     OS_FLAG_GRP         *DbgNextPtr;
     CPU_CHAR            *DbgNamePtr;                        /* 等待该内核对象挂起表中第一个任务的名字                 */
+#endif
 #endif
 };
 
@@ -737,15 +741,14 @@ struct os_tcb
     CPU_STK_SIZE     StkUsed;                               /* Number of stack elements used from the stack           */
     CPU_STK_SIZE     StkFree;                               /* Number of stack elements free on   the stack           */
 #endif
+    OS_STATE         TaskState;                             /* See OS_TASK_STATE_xxx                                  */
+    OS_STATE         PendOn;                                /* Indicates what task is pending on                      */
+
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if OS_CFG_DBG_EN > 0u
     OS_TCB          *DbgPrevPtr;
     OS_TCB          *DbgNextPtr;  
     CPU_CHAR        *DbgNamePtr;                            /* 正在等待内核对象的名称                                 */
-#endif
-    OS_STATE         TaskState;                             /* See OS_TASK_STATE_xxx                                  */
-    OS_STATE         PendOn;                                /* Indicates what task is pending on                      */
-#if OS_CFG_TASK_PROFILE_EN > 0u
-#if OS_CFG_DBG_EN > 0u
     CPU_STK         *StkPtr;                                /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
 #endif
     OS_TICK          TimeQuanta;
@@ -799,18 +802,18 @@ struct os_mem {                                             /* MEMORY CONTROL BL
 
 struct  os_mutex {
     struct rt_mutex     Mutex;
-#if (OS_CFG_DBG_EN > 0u)
-    CPU_CHAR           *NamePtr;
-#endif
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     OS_OBJ_TYPE         Type;
     OS_NESTING_CTR      OwnerNestingCtr;                    /* Mutex is available when the counter is 0               */
     OS_TCB             *OwnerTCBPtr;
     OS_PRIO             OwnerOriginalPrio;
 #if OS_CFG_DBG_EN > 0u
+    CPU_CHAR           *NamePtr;
     OS_MUTEX           *DbgPrevPtr;
     OS_MUTEX           *DbgNextPtr;
     CPU_CHAR           *DbgNamePtr;                         /* 等待该内核对象挂起表中第一个任务的名字                 */
-#endif  
+#endif
+#endif    
 };
 
 /*
@@ -821,24 +824,24 @@ struct  os_mutex {
 
 struct  os_tmr {
     struct  rt_timer     Tmr;
-    OS_OBJ_TYPE          Type;
-#if (OS_CFG_DBG_EN > 0u)
-    CPU_CHAR            *NamePtr;                           /* Pointer to Semaphore Name (NUL terminated ASCII)       */
-#endif
     OS_TMR_CALLBACK_PTR  CallbackPtr;                       /* Function to call when timer expires                    */
     void                *CallbackPtrArg;                    /* Argument to pass to function when timer expires        */
     OS_STATE             State;
     OS_OPT               Opt;                               /* Options (see OS_OPT_TMR_xxx)                           */
-    OS_TICK              Match;                             /* Timer expires when OSTmrTickCtr matches this value     */
-    OS_TICK              Remain;                            /* Amount of time remaining before timer expires          */
     OS_TICK              Dly;                               /* Delay before start of repeat                           */
     OS_TICK              Period;                            /* Period to repeat timer                                 */
     OS_TICK              _set_dly;                          /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数  */
     OS_TICK              _set_period;                       /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数  */
     OS_TICK              _dly;                              /* 该变量为兼容层内部使用,用于带有延迟的周期延时          */
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+    OS_TICK              Match;                             /* Timer expires when OSTmrTickCtr matches this value     */
+    OS_TICK              Remain;                            /* Amount of time remaining before timer expires          */
+    OS_OBJ_TYPE          Type;
 #if OS_CFG_DBG_EN > 0u
+    CPU_CHAR            *NamePtr;                           /* Pointer to Semaphore Name (NUL terminated ASCII)       */
     OS_TMR              *DbgPrevPtr;
     OS_TMR              *DbgNextPtr;
+#endif
 #endif
 };
 
@@ -876,7 +879,7 @@ OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag 
 
                                                                         /* SEMAPHORES ------------------------------- */
 #if OS_CFG_SEM_EN > 0u
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 OS_EXT            OS_SEM                   *OSSemDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSSemQty;                   /* Number of semaphores created               */
@@ -884,7 +887,7 @@ OS_EXT            OS_OBJ_QTY                OSSemQty;                   /* Numbe
 
                                                                         /* QUEUES ----------------------------------- */
 #if OS_CFG_Q_EN   > 0u
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 OS_EXT            OS_Q                     *OSQDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSQQty;                     /* Number of message queues created           */
@@ -892,7 +895,7 @@ OS_EXT            OS_OBJ_QTY                OSQQty;                     /* Numbe
 
                                                                         /* MUTEX MANAGEMENT ------------------------- */
 #if OS_CFG_MUTEX_EN > 0u
-#if OS_CFG_DBG_EN   > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 OS_EXT            OS_MUTEX                 *OSMutexDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSMutexQty;                 /* Number of mutexes created                  */
@@ -900,7 +903,7 @@ OS_EXT            OS_OBJ_QTY                OSMutexQty;                 /* Numbe
 
                                                                         /* FLAGS ------------------------------------ */
 #if OS_CFG_FLAG_EN > 0u
-#if OS_CFG_DBG_EN  > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 OS_EXT            OS_FLAG_GRP              *OSFlagDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSFlagQty;
@@ -915,7 +918,7 @@ OS_EXT            OS_OBJ_QTY                OSMemQty;                   /* Numbe
 #endif
 
                                                                         /* TASKS ------------------------------------ */
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 OS_EXT            OS_TCB                   *OSTaskDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSTaskQty;                  /* Number of tasks created                    */
@@ -943,7 +946,7 @@ OS_EXT            OS_TCB                    OSStatTaskTCB;
 #endif
 
 #if OS_CFG_TMR_EN > 0u                                                  /* TIMERS ----------------------------------- */
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 OS_EXT            OS_TMR                   *OSTmrDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Number of timers created                   */
@@ -1024,7 +1027,7 @@ OS_FLAGS      OSFlagPost                (OS_FLAG_GRP           *p_grp,
 
 void          OS_FlagClr                (OS_FLAG_GRP           *p_grp);
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 void          OS_FlagDbgListAdd         (OS_FLAG_GRP           *p_grp);
 
 void          OS_FlagDbgListRemove      (OS_FLAG_GRP           *p_grp);
@@ -1140,7 +1143,7 @@ void          OSTaskTimeQuantaSet       (OS_TCB                *p_tcb,
 
 /* ------------------------------------------------ INTERNAL FUNCTIONS ---------------------------------------------- */
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 void          OS_TaskDbgListAdd         (OS_TCB                *p_tcb);
 
 void          OS_TaskDbgListRemove      (OS_TCB                *p_tcb);
@@ -1187,7 +1190,7 @@ void          OSMutexPost               (OS_MUTEX              *p_mutex,
 
 void          OS_MutexClr               (OS_MUTEX              *p_mutex);
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 void          OS_MutexDbgListAdd        (OS_MUTEX              *p_mutex);
 
 void          OS_MutexDbgListRemove     (OS_MUTEX              *p_mutex);
@@ -1242,7 +1245,7 @@ void          OSQPost                   (OS_Q                  *p_q,
 
 void          OS_QClr                   (OS_Q                  *p_q);
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 void          OS_QDbgListAdd            (OS_Q                  *p_q);
 
 void          OS_QDbgListRemove         (OS_Q                  *p_q);
@@ -1293,7 +1296,7 @@ void          OSSemSet                  (OS_SEM                *p_sem,
 
 void          OS_SemClr                 (OS_SEM                *p_sem);
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 void          OS_SemDbgListAdd          (OS_SEM                *p_sem);
 
 void          OS_SemDbgListRemove       (OS_SEM                *p_sem);
@@ -1449,7 +1452,7 @@ CPU_BOOLEAN   OSTmrStop                 (OS_TMR                *p_tmr,
 
 void          OS_TmrClr                 (OS_TMR                *p_tmr);
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 void          OS_TmrDbgListAdd          (OS_TMR                *p_tmr);
 
 void          OS_TmrDbgListRemove       (OS_TMR                *p_tmr);

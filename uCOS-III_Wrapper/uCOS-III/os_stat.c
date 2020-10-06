@@ -73,7 +73,7 @@
 
 void  OSStatReset (OS_ERR  *p_err)
 {
-#if (OS_CFG_DBG_EN > 0u)
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     OS_TCB      *p_tcb;
 #endif
 
@@ -92,18 +92,18 @@ void  OSStatReset (OS_ERR  *p_err)
     OSStatTaskCPUUsage    = 0u;
 #endif
     CPU_CRITICAL_EXIT();
-  
-#if OS_CFG_DBG_EN > 0u
+    
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_CRITICAL_ENTER();
     p_tcb = OSTaskDbgListPtr;
     CPU_CRITICAL_EXIT();
     while (p_tcb != (OS_TCB *)0) {                          /* Reset per-Task statistics                              */
         CPU_CRITICAL_ENTER();
-//#if OS_CFG_TASK_PROFILE_EN > 0u        
-//        p_tcb->CPUUsage         = (OS_CPU_USAGE)0;
-//        p_tcb->CPUUsageMax      = (OS_CPU_USAGE)0;    
-//#endif
-        
+#if OS_CFG_TASK_PROFILE_EN > 0u        
+        p_tcb->CPUUsage         = (OS_CPU_USAGE)0;
+        p_tcb->CPUUsageMax      = (OS_CPU_USAGE)0;    
+#endif
+
         p_tcb                   = p_tcb->DbgNextPtr;
         CPU_CRITICAL_EXIT();    
     }
@@ -211,7 +211,7 @@ void  OSStatTaskCPUUsageInit (OS_ERR  *p_err)
 
 void  OS_StatTask (void  *p_arg)
 {
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     OS_TCB      *p_tcb;
 #if OS_CFG_TMR_EN > 0u
     OS_TMR      *p_tmr;
@@ -274,7 +274,7 @@ void  OS_StatTask (void  *p_arg)
         
         OSStatTaskHook();                                   /* Invoke user definable hook                             */
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
         /*--------------任务TCB------------------*/
         CPU_CRITICAL_ENTER();
         p_tcb = OSTaskDbgListPtr;
@@ -287,9 +287,7 @@ void  OS_StatTask (void  *p_arg)
                          &err);
 #endif
             CPU_CRITICAL_ENTER();
-#if OS_CFG_TASK_PROFILE_EN > 0u
-            p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp; /* 更新SP指针*/
-#endif            
+            p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp; /* 更新SP指针*/   
             
             p_tcb = p_tcb->DbgNextPtr;                      /* 指向下一个TCB结构体                                    */
             CPU_CRITICAL_EXIT();

@@ -75,7 +75,7 @@
 #define  OS_CFG_CALLED_FROM_ISR_CHK_EN   1u                 /* Enable (1) or Disable (0) check for called from ISR                   */
 #define  OS_CFG_DBG_EN                   1u                 /* Enable (1) debug code/variables                                       */
 #define  OS_CFG_ISR_POST_DEFERRED_EN     0u                 /* 只读,该功能不予实现 Enable (1) or Disable (0) Deferred ISR posts      */
-#define OS_CFG_INVALID_OS_CALLS_CHK_EN   1u                 /* Enable (1) or Disable (0) checks for invalid kernel calls             */
+#define  OS_CFG_INVALID_OS_CALLS_CHK_EN  1u                 /* Enable (1) or Disable (0) checks for invalid kernel calls             */
 #define  OS_CFG_OBJ_TYPE_CHK_EN          1u                 /* Enable (1) or Disable (0) object type checking                        */
 #define  OS_CFG_TS_EN                    0u                 /* 只读,该功能不予实现 Enable (1) or Disable (0) time stamping           */
 
@@ -143,7 +143,7 @@
 #define  OS_CFG_TASK_DEL_EN              1u                 /* Include code for OSTaskDel()                                          */
 #define  OS_CFG_TASK_Q_EN                1u                 /* Include code for OSTaskQXXXX()                                        */
 #define  OS_CFG_TASK_Q_PEND_ABORT_EN     1u                 /* Include code for OSTaskQPendAbort()                                   */
-#define  OS_CFG_TASK_PROFILE_EN          1u                 /* Include variables in OS_TCB for profiling                             */
+#define  OS_CFG_TASK_PROFILE_EN          0u                 /* 只读 Include variables in OS_TCB for profiling                        */
 #define  OS_CFG_TASK_REG_TBL_SIZE        1u                 /* Number of task specific registers                                     */
 #define  OS_CFG_TASK_SEM_PEND_ABORT_EN   1u                 /* Include code for OSTaskSemPendAbort()                                 */
 #define  OS_CFG_TASK_SUSPEND_EN          1u                 /* Include code for OSTaskSuspend() and OSTaskResume()                   */

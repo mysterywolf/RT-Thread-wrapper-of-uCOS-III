@@ -130,10 +130,6 @@ CPU_INT08U  const  OSDbg_ObjTypeChkEn          = OS_CFG_OBJ_TYPE_CHK_EN;
 
 
 CPU_INT08U  const  OSDbg_PendMultiEn           = OS_CFG_PEND_MULTI_EN;
-//CPU_INT16U  const  OSDbg_PendDataSize          = sizeof(OS_PEND_DATA);
-//CPU_INT16U  const  OSDbg_PendListSize          = sizeof(OS_PEND_LIST);
-//CPU_INT16U  const  OSDbg_PendObjSize           = sizeof(OS_PEND_OBJ);
-
 
 CPU_INT16U  const  OSDbg_PrioMax               = OS_CFG_PRIO_MAX;              /* Maximum number of priorities        */
 CPU_INT16U  const  OSDbg_PrioTblSize           = sizeof(OSPrioTbl);
@@ -173,10 +169,6 @@ CPU_INT08U  const  OSDbg_SemSetEn              = 0u;
 CPU_INT16U  const  OSDbg_SemSize               = 0u;
 #endif
 
-
-//CPU_INT16U  const  OSDbg_RdyList               = sizeof(OS_RDY_LIST);
-//CPU_INT32U  const  OSDbg_RdyListSize           = sizeof(OSRdyList);            /* Number of bytes in the ready table  */
-
 CPU_INT08U  const  OSDbg_StkWidth              = sizeof(CPU_STK);
 
 CPU_INT08U  const  OSDbg_StatTaskEn            = OS_CFG_STAT_TASK_EN;
@@ -194,8 +186,6 @@ CPU_INT08U  const  OSDbg_TaskSuspendEn         = OS_CFG_TASK_SUSPEND_EN;
 
 CPU_INT16U  const  OSDbg_TCBSize               = sizeof(OS_TCB);               /* Size in Bytes of OS_TCB             */
 
-//CPU_INT16U  const  OSDbg_TickSpokeSize         = sizeof(OS_TICK_SPOKE);
-
 CPU_INT08U  const  OSDbg_TimeDlyHMSMEn         = OS_CFG_TIME_DLY_HMSM_EN;
 CPU_INT08U  const  OSDbg_TimeDlyResumeEn       = OS_CFG_TIME_DLY_RESUME_EN;
 
@@ -211,7 +201,6 @@ CPU_INT08U  const  OSDbg_TmrEn                 = OS_CFG_TMR_EN;
 #if OS_CFG_TMR_EN > 0u
 CPU_INT08U  const  OSDbg_TmrDelEn              = OS_CFG_TMR_DEL_EN;
 CPU_INT16U  const  OSDbg_TmrSize               = sizeof(OS_TMR);
-//CPU_INT16U  const  OSDbg_TmrSpokeSize          = sizeof(OS_TMR_SPOKE);
 #else
 CPU_INT08U  const  OSDbg_TmrDelEn              = 0u;
 CPU_INT16U  const  OSDbg_TmrSize               = 0u;
@@ -262,7 +251,7 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
                                   + sizeof(OSSafetyCriticalStartFlag)
 #endif
 
-#if OS_CFG_FLAG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
                                   + sizeof(OSFlagDbgListPtr)
                                   + sizeof(OSFlagQty)
 #endif
@@ -275,7 +264,7 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
 #endif
 
 #if OS_CFG_MUTEX_EN > 0u
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
                                   + sizeof(OSMutexDbgListPtr)
 #endif
                                   + sizeof(OSMutexQty)
@@ -285,13 +274,11 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
                                   + sizeof(OSPrioTbl)
 
 #if OS_CFG_Q_EN > 0u
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
                                   + sizeof(OSQDbgListPtr)
 #endif
                                   + sizeof(OSQQty)
 #endif
-
-//                                  + sizeof(OSRdyList)
 
                                   + sizeof(OSSchedLockNestingCtr)
 
@@ -307,13 +294,13 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
 #endif
 
 #if OS_CFG_SEM_EN > 0u
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
                                   + sizeof(OSSemDbgListPtr)
 #endif
                                   + sizeof(OSSemQty)
 #endif
-//                                  + sizeof(OSTaskCtxSwCtr)
-#if OS_CFG_DBG_EN > 0u
+
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
                                   + sizeof(OSTaskDbgListPtr)
 #endif
                                   + sizeof(OSTaskQty)
@@ -327,23 +314,13 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
                                   + sizeof(OSStatTaskCtrRun)
                                   + sizeof(OSStatTaskRdy)
                                   + sizeof(OSStatTaskTCB)
-//                                  + sizeof(OSStatTaskTimeMax)
 #endif
 
-//                                  + sizeof(OSTickCtr)
-//                                  + sizeof(OSTickTaskTCB)
-//                                  + sizeof(OSTickTaskTimeMax)
-
 #if OS_CFG_TMR_EN > 0u
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
                                   + sizeof(OSTmrDbgListPtr)
 #endif
                                   + sizeof(OSTmrQty)
-//                                  + sizeof(OSTmrTaskTCB)
-//                                  + sizeof(OSTmrTaskTimeMax)
-//                                  + sizeof(OSTmrTickCtr)
-//                                  + sizeof(OSTmrUpdateCnt)
-//                                  + sizeof(OSTmrUpdateCtr)
 #endif
 
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
@@ -351,10 +328,9 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
 #endif
 
                                   + sizeof(OSTCBCurPtr)
-//                                  + sizeof(OSTCBHighRdyPtr)
                                   ;
 
-/*$PAGE*/
+
 /*
 ************************************************************************************************************************
 *                                               OS DEBUG INITIALIZATION
@@ -424,9 +400,6 @@ void  OS_Dbg_Init (void)
     p_temp = (void const *)&OSDbg_ObjTypeChkEn;
 
     p_temp = (void const *)&OSDbg_PendMultiEn;
-//    p_temp = (void const *)&OSDbg_PendDataSize;
-//    p_temp = (void const *)&OSDbg_PendListSize;
-//    p_temp = (void const *)&OSDbg_PendObjSize;
 
     p_temp = (void const *)&OSDbg_PrioMax;
     p_temp = (void const *)&OSDbg_PrioTblSize;
@@ -453,9 +426,6 @@ void  OS_Dbg_Init (void)
     p_temp = (void const *)&OSDbg_SemSize;
 #endif
 
-//    p_temp = (void const *)&OSDbg_RdyList;
-//    p_temp = (void const *)&OSDbg_RdyListSize;
-
     p_temp = (void const *)&OSDbg_StkWidth;
 
     p_temp = (void const *)&OSDbg_StatTaskEn;
@@ -472,8 +442,6 @@ void  OS_Dbg_Init (void)
 
     p_temp = (void const *)&OSDbg_TCBSize;
 
-//    p_temp = (void const *)&OSDbg_TickSpokeSize;
-
     p_temp = (void const *)&OSDbg_TimeDlyHMSMEn;
     p_temp = (void const *)&OSDbg_TimeDlyResumeEn;
 
@@ -483,7 +451,6 @@ void  OS_Dbg_Init (void)
 #if (OS_CFG_TMR_EN) > 0u
     p_temp = (void const *)&OSDbg_TmrDelEn;
     p_temp = (void const *)&OSDbg_TmrSize;
-//    p_temp = (void const *)&OSDbg_TmrSpokeSize;
 #endif
 
     p_temp = (void const *)&OSDbg_VersionNbr;

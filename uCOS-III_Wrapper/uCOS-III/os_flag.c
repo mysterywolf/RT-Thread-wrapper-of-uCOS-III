@@ -167,6 +167,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
     }
     
     CPU_CRITICAL_ENTER();
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_grp->Type    = OS_OBJ_TYPE_FLAG;                      /* Set to event flag group type                           */
 #if (OS_CFG_DBG_EN > 0u)
     p_grp->NamePtr = p_name;
@@ -174,6 +175,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
     p_grp->Flags   = flags;                                 /* Set to desired initial value                           */
 #if OS_CFG_DBG_EN > 0u
     OS_FlagDbgListAdd(p_grp);
+#endif
 #endif
     OSFlagQty++;
     CPU_CRITICAL_EXIT();
@@ -308,7 +310,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
     if(*p_err == OS_ERR_NONE)
     {
         CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
         OS_FlagDbgListRemove(p_grp);
 #endif
         OSFlagQty--;
@@ -403,7 +405,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     rt_uint8_t      rt_option;
     rt_uint32_t     recved;
     OS_TCB         *p_tcb;
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
 #endif   
     
@@ -543,8 +545,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_tcb->PendStatus = OS_STATUS_PEND_OK;                      /* Clear pend status                                  */
     p_tcb->TaskState |= OS_TASK_STATE_PEND;
     p_tcb->PendOn = OS_TASK_PEND_ON_FLAG;
-    
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     p_tcb->DbgNamePtr = p_grp->NamePtr;
     p_grp->DbgNamePtr = p_tcb->Task.name;
 #endif
@@ -562,8 +563,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_tcb->TaskState &= ~OS_TASK_STATE_PEND;
     /*清除当前任务等待状态*/
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
-    
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
     {
@@ -574,9 +574,8 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     else
     {
         p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* 若为空,则清空当前.DbgNamePtr                       */
-    }
-#endif   
-    
+    } 
+#endif  
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)               /* Indicate that we aborted                           */
     {
         CPU_CRITICAL_EXIT(); 
@@ -628,7 +627,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
                              OS_ERR       *p_err)
 {
     OS_OBJ_QTY abort_tasks = 0;
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
 #endif   
     
@@ -700,7 +699,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
     }
     
     CPU_CRITICAL_ENTER(); 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
     {
         /*若等待表不为空，则将当前等待信号量的线程赋值给.DbgNamePtr*/
@@ -826,7 +825,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
                       OS_ERR       *p_err)
 {
     rt_err_t rt_err;
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
 #endif   
     
@@ -884,7 +883,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     *p_err = rt_err_to_ucosiii(rt_err);
     
     CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
     {
         /*若等待表不为空，则将当前等待信号量的线程赋值给.DbgNamePtr*/
@@ -919,11 +918,13 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
 
 void  OS_FlagClr (OS_FLAG_GRP  *p_grp)
 {
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_grp->Type             = OS_OBJ_TYPE_NONE;
 #if (OS_CFG_DBG_EN > 0u)
     p_grp->NamePtr          = (CPU_CHAR *)((void *)"?FLAG");    /* Unknown name                                       */
 #endif
     p_grp->Flags            = (OS_FLAGS )0;
+#endif
 }
 
 /*
@@ -952,7 +953,7 @@ void  OS_FlagInit (OS_ERR  *p_err)
     }
 #endif
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     OSFlagDbgListPtr = (OS_FLAG_GRP *)0;
 #endif
 
@@ -975,7 +976,7 @@ void  OS_FlagInit (OS_ERR  *p_err)
 ************************************************************************************************************************
 */
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 void  OS_FlagDbgListAdd (OS_FLAG_GRP  *p_grp)
 {
     p_grp->DbgNamePtr                = (CPU_CHAR    *)((void *)" ");

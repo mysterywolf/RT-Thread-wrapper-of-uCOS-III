@@ -240,7 +240,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     OS_REG_ID      reg_nbr;
 #endif
-#if OS_CFG_TASK_PROFILE_EN > 0u
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_STK       *p_stk_limit;
 #endif
     CPU_STK       *p_sp;
@@ -345,7 +345,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_tcb->ExtPtr = p_ext;/*用户附加区指针*/
     p_tcb->SuspendCtr = 0;/*嵌套挂起为0层*/
     
-#if OS_CFG_TASK_PROFILE_EN > 0u
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_tcb->TimeQuanta    = time_quanta;                     /* Save the #ticks for time slice (0 means not sliced)    */
 #if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
     if (time_quanta == (OS_TICK)0) {
@@ -418,7 +418,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
                             p_stk_base,
                             stk_size*sizeof(CPU_STK),/*uCOS-III的任务堆栈时以CPU_STK为单位，而RTT是以字节为单位，因此需要进行转换*/
                             prio,
-#if OS_CFG_TASK_PROFILE_EN > 0u
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
                             p_tcb->TimeQuantaCtr
 #else
                             time_quanta
@@ -435,12 +435,12 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     
     CPU_CRITICAL_ENTER();
     
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     OS_TaskDbgListAdd(p_tcb);/*将任务加入到Debug链表中*/
 #endif    
     OSTaskQty++; /* Increment the #tasks counter */
 
-#if OS_CFG_TASK_PROFILE_EN > 0u  
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if (CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO)
     p_stk_limit = p_stk_base + stk_limit;
 #else
@@ -554,7 +554,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 #endif
     
     CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     OS_TaskDbgListRemove(p_tcb);
 #endif
     OSTaskQty--;                                            /* One less task being managed                            */
@@ -1203,7 +1203,7 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
     {
         CPU_CRITICAL_ENTER();
         p_tcb->PendOn = OS_TASK_PEND_ON_TASK_SEM;/*设置任务等待状态*/
-#if OS_CFG_TASK_PROFILE_EN > 0u
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
         p_tcb->SemCtr = p_tcb->Sem.Sem.value;/*更新value*/
 #endif
         CPU_CRITICAL_EXIT();
@@ -1211,7 +1211,7 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
         ctr = OSSemPend(&p_tcb->Sem,timeout,opt,p_ts,p_err); 
         
         CPU_CRITICAL_ENTER();
-#if OS_CFG_TASK_PROFILE_EN > 0u
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
         p_tcb->SemCtr = p_tcb->Sem.Sem.value;/*更新value*/
 #endif
         CPU_CRITICAL_EXIT();
@@ -1308,7 +1308,7 @@ CPU_BOOLEAN  OSTaskSemPendAbort (OS_TCB  *p_tcb,
     OSSemPendAbort(&p_tcb->Sem,_opt,p_err);
     
     CPU_CRITICAL_ENTER();
-#if OS_CFG_TASK_PROFILE_EN > 0u    
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY  
     p_tcb->SemCtr = p_tcb->Sem.Sem.value;
 #endif
     CPU_CRITICAL_EXIT();
@@ -1377,7 +1377,7 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
     {
         ctr = OSSemPost(&p_tcb->Sem,opt,p_err);
         CPU_CRITICAL_ENTER();
-#if OS_CFG_TASK_PROFILE_EN > 0u
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
         p_tcb->SemCtr = p_tcb->Sem.Sem.value;
 #endif
         CPU_CRITICAL_EXIT();
@@ -1440,7 +1440,7 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
     CPU_CRITICAL_ENTER();
     ctr = p_tcb->Sem.Sem.value;
     p_tcb->Sem.Sem.value = (OS_SEM_CTR)cnt;/*设置RTT信号量value*/
-#if OS_CFG_TASK_PROFILE_EN > 0u
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_tcb->SemCtr = p_tcb->Sem.Sem.value;/*更新.SemCtr*/
 #endif
     CPU_CRITICAL_EXIT();
@@ -1535,7 +1535,7 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     thread = (rt_thread_t)p_tcb;
     
     CPU_CRITICAL_ENTER();
-#if OS_CFG_TASK_PROFILE_EN > 0u 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if OS_CFG_DBG_EN > 0u    
     if (p_tcb->StkPtr == (CPU_STK*)0) {                     /* Make sure task exist                                   */
         CPU_CRITICAL_EXIT();
@@ -1730,7 +1730,7 @@ void  OSTaskTimeQuantaSet (OS_TCB   *p_tcb,
 ************************************************************************************************************************
 */
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 void  OS_TaskDbgListAdd (OS_TCB  *p_tcb)
 {
     p_tcb->DbgPrevPtr                = (OS_TCB *)0;
@@ -1800,7 +1800,7 @@ void  OS_TaskInit (OS_ERR  *p_err)
     }
 #endif
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     OSTaskDbgListPtr  = (OS_TCB      *)0;
 #endif
 
@@ -1852,17 +1852,16 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->StkFree            = (CPU_STK_SIZE   )0u;
     p_tcb->StkUsed            = (CPU_STK_SIZE   )0u;
 #endif
-#if OS_CFG_DBG_EN > 0u
-    p_tcb->DbgPrevPtr         = (OS_TCB        *)0;
-    p_tcb->DbgNextPtr         = (OS_TCB        *)0;
-    p_tcb->DbgNamePtr         = (CPU_CHAR      *)((void *)" ");
-#endif
     p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;    
     p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
     
-#if OS_CFG_TASK_PROFILE_EN > 0u 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if OS_CFG_DBG_EN > 0u 
+    p_tcb->DbgPrevPtr         = (OS_TCB        *)0;
+    p_tcb->DbgNextPtr         = (OS_TCB        *)0;
+    p_tcb->DbgNamePtr         = (CPU_CHAR      *)((void *)" ");
     p_tcb->StkPtr             = (CPU_STK       *)0;
+    p_tcb->NamePtr            = (CPU_CHAR      *)((void *)"?Task");
 #endif
     p_tcb->TimeQuanta         = (OS_TICK        )0u;
     p_tcb->TimeQuantaCtr      = (OS_TICK        )0u;
@@ -1871,9 +1870,6 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->StkSize            = (CPU_STK        )0u;
     p_tcb->StkLimitPtr        = (CPU_STK       *)0;    
     p_tcb->StkBasePtr         = (CPU_STK       *)0;     
-#if (OS_CFG_DBG_EN > 0u)
-    p_tcb->NamePtr            = (CPU_CHAR      *)((void *)"?Task");
-#endif
     p_tcb->TaskEntryAddr      = (OS_TASK_PTR    )0;
     p_tcb->TaskEntryArg       = (void          *)0;
     p_tcb->Prio               = (OS_PRIO        )OS_PRIO_INIT;

@@ -160,6 +160,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
     }
     
     CPU_CRITICAL_ENTER();
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_sem->Type    = OS_OBJ_TYPE_SEM;                       /* Mark the data structure as a semaphore                 */    
 #if (OS_CFG_DBG_EN > 0u)
     p_sem->NamePtr = p_name;
@@ -167,6 +168,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
     p_sem->Ctr = p_sem->Sem.value;                          /* Set semaphore value                                    */
 #if OS_CFG_DBG_EN > 0u
     OS_SemDbgListAdd(p_sem);
+#endif
 #endif
     OSSemQty++;    
     CPU_CRITICAL_EXIT();
@@ -305,7 +307,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
     if(*p_err == OS_ERR_NONE)
     {
         CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
         OS_SemDbgListRemove(p_sem);
 #endif
         OSSemQty--; 
@@ -382,7 +384,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     rt_err_t rt_err;
     rt_int32_t time;
     OS_TCB *p_tcb;
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
 #endif   
     
@@ -471,11 +473,13 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_SEM;
     }
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = p_sem->NamePtr;               /* 更新等待任务被哪个信号量所阻塞*/
     p_sem->DbgNamePtr = p_tcb->Task.name;
-#endif    
-    p_sem->Ctr = p_sem->Sem.value;/*更新信号量的value*/
+#endif 
+    p_sem->Ctr = p_sem->Sem.value;                    /* 更新信号量的value*/
+#endif
     CPU_CRITICAL_EXIT(); 
     
     rt_err = rt_sem_take(&p_sem->Sem,time);
@@ -485,7 +489,8 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     /*更新任务状态*/
     p_tcb->TaskState &= ~OS_TASK_STATE_PEND;
     /*清除当前任务等待状态*/   
-    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;   
+    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_sem->Ctr = p_sem->Sem.value;/*更新信号量的value*/
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");  
@@ -500,7 +505,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
         p_sem->DbgNamePtr =(CPU_CHAR *)((void *)" ");
     }
 #endif
-    
+#endif
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
     {
         CPU_CRITICAL_EXIT(); 
@@ -551,7 +556,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
                             OS_ERR  *p_err)
 {
     OS_OBJ_QTY abort_tasks = 0;
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
 #endif   
     
@@ -623,6 +628,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
     }
    
     CPU_CRITICAL_ENTER();
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_sem->Ctr =p_sem->Sem.value; /*更新信号量value值*/
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
@@ -635,6 +641,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
     {
         p_sem->DbgNamePtr =(CPU_CHAR *)((void *)" ");
     }
+#endif
 #endif
     CPU_CRITICAL_EXIT();
     
@@ -689,7 +696,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
                        OS_ERR  *p_err)
 {
     rt_err_t rt_err;
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
 #endif   
     
@@ -748,11 +755,12 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
     }
     
     CPU_CRITICAL_ENTER();
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_sem->Ctr = p_sem->Sem.value; /*更新信号量value值*/
-    
+#endif
     switch (sizeof(p_sem->Sem.value)) {  /*检查信号量value值是否超出rt-thread信号量数据类型数值范围*/
         case 1u:
-             if (p_sem->Ctr == DEF_INT_08U_MAX_VAL) {
+             if (p_sem->Sem.value == DEF_INT_08U_MAX_VAL) {
                  CPU_CRITICAL_EXIT();
                 *p_err = OS_ERR_SEM_OVF;
                  return ((OS_SEM_CTR)0);
@@ -760,7 +768,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
              break;
 
         case 2u:
-             if (p_sem->Ctr == DEF_INT_16U_MAX_VAL) {
+             if (p_sem->Sem.value == DEF_INT_16U_MAX_VAL) {
                  CPU_CRITICAL_EXIT();
                 *p_err = OS_ERR_SEM_OVF;
                  return ((OS_SEM_CTR)0);
@@ -768,7 +776,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
              break;
 
         case 4u:
-             if (p_sem->Ctr == DEF_INT_32U_MAX_VAL) {
+             if (p_sem->Sem.value == DEF_INT_32U_MAX_VAL) {
                  CPU_CRITICAL_EXIT();
                 *p_err = OS_ERR_SEM_OVF;
                  return ((OS_SEM_CTR)0);
@@ -778,8 +786,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
         default:
              break;
     }
-    
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
     {
         /*若等待表不为空，则将当前等待信号量的线程赋值给p_sem->DbgNamePtr*/
@@ -827,7 +834,7 @@ void  OSSemSet (OS_SEM      *p_sem,
                 OS_SEM_CTR   cnt,
                 OS_ERR      *p_err)
 {
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
 #endif   
 
@@ -881,7 +888,7 @@ void  OSSemSet (OS_SEM      *p_sem,
              *p_err = OS_ERR_TASK_WAITING;/*有任务正在等待该信号量,不可以设置value*/
         }
     }
-    
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_sem->Ctr = p_sem->Sem.value; /*更新信号量value值*/
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
@@ -894,6 +901,7 @@ void  OSSemSet (OS_SEM      *p_sem,
     {
         p_sem->DbgNamePtr =(CPU_CHAR *)((void *)" ");
     }
+#endif
 #endif
     CPU_CRITICAL_EXIT();
 }
@@ -917,11 +925,13 @@ void  OSSemSet (OS_SEM      *p_sem,
 
 void  OS_SemClr (OS_SEM  *p_sem)
 {
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_sem->Type    = OS_OBJ_TYPE_NONE;                      /* Mark the data structure as a NONE                      */
 #if (OS_CFG_DBG_EN > 0u)
     p_sem->NamePtr = (CPU_CHAR *)((void *)"?SEM");
 #endif
     p_sem->Ctr     = (OS_SEM_CTR)0;                         /* Set semaphore value                                    */
+#endif
 }
 
 /*
@@ -938,7 +948,7 @@ void  OS_SemClr (OS_SEM  *p_sem)
 ************************************************************************************************************************
 */
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 void  OS_SemDbgListAdd (OS_SEM  *p_sem)
 {
     p_sem->DbgNamePtr               = (CPU_CHAR *)((void *)" ");
@@ -1010,7 +1020,7 @@ void  OS_SemInit (OS_ERR  *p_err)
     }
 #endif
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     OSSemDbgListPtr = (OS_SEM *)0;
 #endif
 

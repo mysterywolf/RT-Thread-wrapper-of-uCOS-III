@@ -221,22 +221,23 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     
     CPU_CRITICAL_ENTER();
     p_tmr->State          = (OS_STATE           )OS_TMR_STATE_STOPPED;     /* Initialize the timer fields             */
-    p_tmr->Type           = (OS_OBJ_TYPE        )OS_OBJ_TYPE_TMR; 
-#if (OS_CFG_DBG_EN > 0u)
-    p_tmr->NamePtr        = (CPU_CHAR          *)p_name;    
-#endif
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)p_callback;
     p_tmr->CallbackPtrArg = (void              *)p_callback_arg;
     p_tmr->Opt            = (OS_OPT             )opt;
-    p_tmr->Remain         = (OS_TICK            )0;
     p_tmr->Period         = (OS_TICK            )period;
     p_tmr->Dly            = (OS_TICK            )dly;
     p_tmr->_dly           = (OS_TICK            )dly;      /* 该变量为兼容层内部使用,用于带有延迟的周期延时           */
     p_tmr->_set_dly       = (OS_TICK            )0;        /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数   */
     p_tmr->_set_period    = (OS_TICK            )0;        /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数   */
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+    p_tmr->Match          = (OS_TICK            )0;
+    p_tmr->Remain         = (OS_TICK            )0;
+    p_tmr->Type           = (OS_OBJ_TYPE        )OS_OBJ_TYPE_TMR; 
 #if OS_CFG_DBG_EN > 0u
+    p_tmr->NamePtr        = (CPU_CHAR          *)p_name;    
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
+#endif
 #endif
     CPU_CRITICAL_EXIT();
     
@@ -264,7 +265,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     *p_err = OS_ERR_NONE;                                   /* rt_timer_init没有返回错误码                            */
 
     CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     OS_TmrDbgListAdd(p_tmr);
 #endif
     OSTmrQty++;                                             /* Keep track of the number of timers created             */                  
@@ -370,7 +371,7 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
     if(rt_err == RT_EOK)
     {
         CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
         OS_TmrDbgListRemove(p_tmr);
 #endif
         OSTmrQty--;
@@ -413,8 +414,9 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
                          OS_ERR  *p_err)
 {
     OS_TICK  remain;
-    
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
     CPU_SR_ALLOC();
+#endif
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -458,10 +460,11 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
         case OS_TMR_STATE_RUNNING:
             *p_err = OS_ERR_NONE;
             remain = p_tmr->Tmr.timeout_tick - rt_tick_get();
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
             CPU_CRITICAL_ENTER();
             p_tmr->Remain = remain;
             CPU_CRITICAL_EXIT();
-        
+#endif      
         case OS_TMR_STATE_STOPPED:
              if (p_tmr->Opt == OS_OPT_TMR_PERIODIC) {
                  if (p_tmr->Dly == 0u) {
@@ -472,9 +475,11 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
              } else {
                  remain = p_tmr->Dly;
              }
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
              CPU_CRITICAL_ENTER();
              p_tmr->Remain = remain;
              CPU_CRITICAL_EXIT();
+#endif
              *p_err = OS_ERR_NONE;
              
         case OS_TMR_STATE_COMPLETED: 
@@ -708,12 +713,14 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
     if(rt_err == RT_EOK)
     {
         CPU_CRITICAL_ENTER();
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
         if (p_tmr->Dly == 0u) {
             p_tmr->Remain = p_tmr->Period;
         } else {
             p_tmr->Remain = p_tmr->Dly;
         }
         p_tmr->Match = p_tmr->Tmr.timeout_tick;
+#endif
         p_tmr->State = OS_TMR_STATE_RUNNING;
         CPU_CRITICAL_EXIT();
         return DEF_TRUE;
@@ -907,7 +914,9 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
     
     CPU_CRITICAL_ENTER();
     p_tmr->State = OS_TMR_STATE_STOPPED;                        /* 标记目前定时器状态已经停止                           */
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_tmr->Remain  = 0u;
+#endif
     p_fnct = p_tmr->CallbackPtr;                                /* Execute callback function ...                        */
     CPU_CRITICAL_EXIT();
     
@@ -988,21 +997,25 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
 void  OS_TmrClr (OS_TMR  *p_tmr)
 {
     p_tmr->State          = OS_TMR_STATE_UNUSED;            /* Clear timer fields                                     */
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_tmr->Type           = OS_OBJ_TYPE_NONE;
 #if (OS_CFG_DBG_EN > 0u)
     p_tmr->NamePtr        = (CPU_CHAR          *)((void *)"?TMR");
 #endif
+#endif
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)0;
     p_tmr->CallbackPtrArg = (void              *)0;
     p_tmr->Opt            = (OS_OPT             )0;
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_tmr->Match          = (OS_TICK            )0;
     p_tmr->Remain         = (OS_TICK            )0;
+#endif
     p_tmr->Period         = (OS_TICK            )0;
     p_tmr->Dly            = (OS_TICK            )0;
     p_tmr->_set_dly       = (OS_TICK            )0;         /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数  */
     p_tmr->_set_period    = (OS_TICK            )0;         /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数  */
     p_tmr->_dly           = (OS_TICK            )0;         /* 该变量为兼容层内部使用,用于带有延迟的周期延时          */
-#if OS_CFG_DBG_EN > 0u    
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY  
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgNextPtr     = (OS_TMR            *)0;
 #endif
@@ -1022,7 +1035,7 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
 ************************************************************************************************************************
 */
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 void  OS_TmrDbgListAdd (OS_TMR  *p_tmr)
 { 
     p_tmr->DbgPrevPtr               = (OS_TMR *)0;
@@ -1089,7 +1102,7 @@ void  OS_TmrDbgListRemove (OS_TMR  *p_tmr)
 void  OS_TmrInit (OS_ERR  *p_err)
 {
     OSTmrQty        = (OS_OBJ_QTY)0;
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     OSTmrDbgListPtr = (OS_TMR   *)0;
 #endif
 }
@@ -1107,7 +1120,6 @@ static void OS_TmrCallback(void *p_ara)
 {
     OS_TMR *p_tmr;
     OS_ERR err;
-    char* nameptr;
     OS_TMR_CALLBACK_PTR callback;
     void * arg;
     OS_OPT opt;
@@ -1134,8 +1146,10 @@ static void OS_TmrCallback(void *p_ara)
         p_tmr->Tmr.init_tick = p_tmr->Period * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
         p_tmr->Tmr.timeout_tick = rt_tick_get() + p_tmr->Tmr.init_tick;
         p_tmr->Tmr.parent.flag |= RT_TIMER_FLAG_PERIODIC;   /* 定时器设置为周期模式                                 */
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
         p_tmr->Match = rt_tick_get() + p_tmr->Tmr.init_tick;
         p_tmr->Remain = p_tmr->Period;
+#endif
         CPU_CRITICAL_EXIT();
         rt_timer_start(&(p_tmr->Tmr));                      /* 开启定时器                                           */
     } 
@@ -1143,15 +1157,19 @@ static void OS_TmrCallback(void *p_ara)
     {
         CPU_CRITICAL_ENTER();
         p_tmr->State = OS_TMR_STATE_COMPLETED;
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
         p_tmr->Remain = 0;
+#endif
         CPU_CRITICAL_EXIT();
     }
     else if(p_tmr->Opt == OS_OPT_TMR_PERIODIC)
     {
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
         CPU_CRITICAL_ENTER();
         p_tmr->Match = rt_tick_get() + p_tmr->Tmr.init_tick;
         p_tmr->Remain = p_tmr->Period;
         CPU_CRITICAL_EXIT();
+#endif
     }
     
     /*调用真正uCOS-III的软件定时器回调函数*/
@@ -1163,18 +1181,16 @@ static void OS_TmrCallback(void *p_ara)
     if(p_tmr->_set_dly || p_tmr->_set_period)               /* 检查是否调用OSTmrSet函数                             */
     {
         OSTmrStop(p_tmr,OS_OPT_TMR_NONE,0,&err);            /* 停止当前定时器                                       */
-       
-        nameptr = p_tmr->NamePtr;                           /* 将老定时器的参数保存                                 */
         callback = p_tmr->CallbackPtr;
         arg = p_tmr->CallbackPtrArg;
         opt = p_tmr->Opt;
         dly = p_tmr->_set_dly;
         period = p_tmr->_set_period;
-        
+ 
         CPU_CRITICAL_ENTER();
         OSTmrDel(p_tmr,&err);                               /* 删除老定时器,_set_dly/_set_period会在此函数中清零    */
-        OSTmrCreate(p_tmr, nameptr, dly, period,            /* 创建新定时器,并装填新的参数                          */
-                    opt, callback, arg, &err);
+        OSTmrCreate(p_tmr, p_tmr->Tmr.parent.name,          /* 创建新定时器,并装填新的参数                          */ 
+            dly, period, opt, callback, arg, &err);
         OSTmrStart(p_tmr, &err);                            /* 启动装填新参数的定时器                               */
         CPU_CRITICAL_EXIT();
     }

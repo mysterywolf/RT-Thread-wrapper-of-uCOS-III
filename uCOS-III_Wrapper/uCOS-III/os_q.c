@@ -208,10 +208,12 @@ void  OSQCreate (OS_Q        *p_q,
     }
     
     CPU_CRITICAL_ENTER();
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_q->Type    = OS_OBJ_TYPE_Q;                           /* Mark the data structure as a message queue             */
 #if (OS_CFG_DBG_EN > 0u)
     p_q->NamePtr = p_name;
     OS_QDbgListAdd(p_q);
+#endif
 #endif
     OSQQty++;                                               /* One more queue created                                 */      
     CPU_CRITICAL_EXIT();    
@@ -351,7 +353,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
     if(*p_err == OS_ERR_NONE)
     {
         CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
         OS_QDbgListRemove(p_q);
 #endif
         OSQQty--;
@@ -454,7 +456,7 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
         entries ++;
     }
     
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*Clear*/
 #endif
 
@@ -530,7 +532,7 @@ void  *OSQPend (OS_Q         *p_q,
     rt_int32_t  time;
     ucos_msg_t  ucos_msg;
     OS_TCB     *p_tcb;
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
 #endif   
     
@@ -623,8 +625,7 @@ void  *OSQPend (OS_Q         *p_q,
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_Q;
     }  
-    
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     p_tcb->DbgNamePtr = p_q->NamePtr;
     p_q->DbgNamePtr = p_tcb->Task.name;
 #endif
@@ -644,8 +645,7 @@ void  *OSQPend (OS_Q         *p_q,
     p_tcb->TaskState &= ~OS_TASK_STATE_PEND;
     /*清除当前任务等待状态*/
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
-                         
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
     if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
     {
@@ -657,8 +657,7 @@ void  *OSQPend (OS_Q         *p_q,
     {
         p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
     }
-#endif  
-    
+#endif 
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)     /* Indicate that we aborted                               */
     {
         CPU_CRITICAL_EXIT();
@@ -719,7 +718,7 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
                           OS_ERR  *p_err)
 {
     OS_OBJ_QTY abort_tasks = 0;
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
 #endif   
     
@@ -791,7 +790,7 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
     }
     
     CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
     {
         /*若等待表不为空，则将当前等待消息队列的线程赋值给.DbgNamePtr*/
@@ -881,7 +880,7 @@ void  OSQPost (OS_Q         *p_q,
 {
     rt_err_t rt_err;
     ucos_msg_t  ucos_msg;
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
 #endif   
     
@@ -954,7 +953,7 @@ void  OSQPost (OS_Q         *p_q,
     *p_err = rt_err_to_ucosiii(rt_err); 
     
     CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
     {
         /*若等待表不为空，则将当前等待消息队列的线程赋值给.DbgNamePtr*/
@@ -984,11 +983,12 @@ void  OSQPost (OS_Q         *p_q,
 * Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
 ************************************************************************************************************************
 */
-
 void  OS_QClr (OS_Q  *p_q)
 {
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_q->Type    =  OS_OBJ_TYPE_NONE;                       /* Mark the data structure as a NONE                      */
-#if (OS_CFG_DBG_EN > 0u)
+#endif
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     p_q->NamePtr = (CPU_CHAR *)((void *)"?Q");
 #endif
 }
@@ -1008,7 +1008,7 @@ void  OS_QClr (OS_Q  *p_q)
 ************************************************************************************************************************
 */
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 void  OS_QDbgListAdd (OS_Q  *p_q)
 {
     p_q->DbgNamePtr               = (CPU_CHAR *)((void *)" ");
@@ -1079,7 +1079,7 @@ void  OS_QInit (OS_ERR  *p_err)
     }
 #endif
 
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     OSQDbgListPtr = (OS_Q *)0;
 #endif
 
