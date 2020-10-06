@@ -167,14 +167,14 @@
 #define  OS_CFG_TMR_DEL_EN               1u                 /* Enable (1) or Disable (0) code generation for OSTmrDel()              */
 
 
-/*----------------------uCOS-III安全认证相关,已实现---------------------*/
-//#define  OS_SAFETY_CRITICAL_IEC61508
 
-//#define  OS_SAFETY_CRITICAL 
+/*----------------------uCOS-III安全认证相关,已实现---------------------*/
+
+//#define  OS_SAFETY_CRITICAL_IEC61508
+//#define  OS_SAFETY_CRITICAL
+
 #ifdef   OS_SAFETY_CRITICAL
 #define  OS_SAFETY_CRITICAL_EXCEPTION()   {}while(0)
-
-
 #endif 
 
 #endif
