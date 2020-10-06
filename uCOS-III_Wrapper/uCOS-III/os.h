@@ -355,19 +355,7 @@
                                                                     /* Dflt prio to init task TCB                     */
 #define  OS_PRIO_INIT                       (OS_PRIO)(OS_CFG_PRIO_MAX)
 
-/*
-------------------------------------------------------------------------------------------------------------------------
-*                                                 TIMER TICK THRESHOLDS
-------------------------------------------------------------------------------------------------------------------------
-*/
-                                                                    /* Threshold to init previous tick time           */
-#define  OS_TICK_TH_INIT                    (OS_TICK)(DEF_BIT       ((sizeof(OS_TICK) * DEF_OCTET_NBR_BITS) - 1u))
-
-                                                                    /* Threshold to check if tick time already ready  */
-#define  OS_TICK_TH_RDY                     (OS_TICK)(DEF_BIT_FIELD(((sizeof(OS_TICK) * DEF_OCTET_NBR_BITS) / 2u), \
-                                                                    ((sizeof(OS_TICK) * DEF_OCTET_NBR_BITS) / 2u)))
-
-                                                                    
+                                                           
 /*
 ************************************************************************************************************************
 ************************************************************************************************************************
@@ -1516,10 +1504,6 @@ void          OSTaskCreateHook          (OS_TCB                *p_tcb);
 void          OSTaskDelHook             (OS_TCB                *p_tcb);
 void          OSIdleTaskHook            (void);
 void          OSStatTaskHook            (void);
-
-void          OSTaskReturnHook          (OS_TCB                *p_tcb);
-void          OSTaskSwHook              (void);
-void          OSTimeTickHook            (void);
 
 /*
 ************************************************************************************************************************
