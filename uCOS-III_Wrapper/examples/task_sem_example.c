@@ -12,6 +12,8 @@
 
 #include <os.h>
 
+#if OS_CFG_TASK_SEM_EN > 0u
+
 #define THREAD_PRIORITY         6
 #define THREAD_STACK_SIZE       80
 #define THREAD_TIMESLICE        5
@@ -103,3 +105,5 @@ void task_sem_example (void)
         rt_kprintf("task create err:%d\r\n",err);
     }
 }
+
+#endif

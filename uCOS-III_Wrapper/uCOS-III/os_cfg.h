@@ -141,6 +141,7 @@
 
 #define  OS_CFG_TASK_CHANGE_PRIO_EN      1u                 /* Include code for OSTaskChangePrio()                                   */
 #define  OS_CFG_TASK_DEL_EN              1u                 /* Include code for OSTaskDel()                                          */
+#define  OS_CFG_TASK_SEM_EN              1u                 /* Include code for OSTaskSemXXXX()                                      */
 #define  OS_CFG_TASK_Q_EN                1u                 /* Include code for OSTaskQXXXX()                                        */
 #define  OS_CFG_TASK_Q_PEND_ABORT_EN     1u                 /* Include code for OSTaskQPendAbort()                                   */
 #define  OS_CFG_TASK_PROFILE_EN          0u                 /* Ö»¶Á Include variables in OS_TCB for profiling                        */

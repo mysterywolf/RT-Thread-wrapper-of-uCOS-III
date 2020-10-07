@@ -301,6 +301,7 @@
 
 - 实现`PKG_USING_UCOSIII_WRAPPER_TINY`以精简兼容层
 - 删除`os_task.c`无用注释
+- 增加`OS_CFG_TASK_SEM_EN`宏定义用于裁剪任务内建信号量
 
 
 
@@ -517,9 +518,15 @@
 
 **[del]** 删除`os.h`无用代码
 
-实现`PKG_USING_UCOSIII_WRAPPER_TINY`以精简兼容层
+**[add]** 实现`PKG_USING_UCOSIII_WRAPPER_TINY`以精简兼容层
 
 **[del]** 删除`os_task.c`无用注释
+
+
+
+## v0.12.0
+
+**[add]** 增加`OS_CFG_TASK_SEM_EN`宏定义用于裁剪任务内建信号量
 
 
 

@@ -722,8 +722,10 @@ struct  os_flag_grp {
 struct os_tcb
 {
     struct rt_thread Task;                                  /* 任务,要确保该成员位于结构体第一个                      */
+#if OS_CFG_TASK_SEM_EN > 0u
     OS_SEM           Sem;                                   /* 任务内建信号量                                         */
     CPU_BOOLEAN      SemCreateSuc;                          /* 标记任务内建信号量是否创建成功                         */
+#endif
 #if OS_CFG_TASK_Q_EN > 0u      
     OS_Q             MsgQ;                                  /* 任务内建消息队列                                       */
     void            *MsgPtr;                                /* 任务内建消息队列消息指针                               */
@@ -1110,11 +1112,14 @@ void          OSTaskSuspend             (OS_TCB                *p_tcb,
                                          OS_ERR                *p_err);
 #endif
 
+#if OS_CFG_TASK_SEM_EN > 0u
 OS_SEM_CTR    OSTaskSemPend             (OS_TICK                timeout,
                                          OS_OPT                 opt,
                                          CPU_TS                *p_ts,
                                          OS_ERR                *p_err);
+#endif
 
+#if OS_CFG_TASK_SEM_EN > 0u
 #if (OS_CFG_TASK_SEM_PEND_ABORT_EN > 0u)
 CPU_BOOLEAN   OSTaskSemPendAbort        (OS_TCB                *p_tcb,
                                          OS_OPT                 opt,
@@ -1128,6 +1133,7 @@ OS_SEM_CTR    OSTaskSemPost             (OS_TCB                *p_tcb,
 OS_SEM_CTR    OSTaskSemSet              (OS_TCB                *p_tcb,
                                          OS_SEM_CTR             cnt,
                                          OS_ERR                *p_err);
+#endif
 
 #if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
 void          OSTaskStkChk              (OS_TCB                *p_tcb,

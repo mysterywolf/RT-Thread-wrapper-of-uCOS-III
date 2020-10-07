@@ -232,7 +232,9 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
                     OS_ERR        *p_err)
 { 
     rt_err_t rt_err;
+#if OS_CFG_TASK_SEM_EN > 0u || OS_CFG_TASK_Q_EN > 0u
     OS_ERR err;
+#endif
 #if defined(OS_CFG_TLS_TBL_SIZE) && (OS_CFG_TLS_TBL_SIZE > 0u)
     OS_TLS_ID      id;
 #endif
@@ -338,9 +340,13 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     }
 #endif
     
-    CPU_CRITICAL_ENTER();        
+    CPU_CRITICAL_ENTER(); 
+#if OS_CFG_TASK_Q_EN > 0u    
     p_tcb->MsgCreateSuc = RT_FALSE;
+#endif
+#if OS_CFG_TASK_SEM_EN > 0u
     p_tcb->SemCreateSuc = RT_FALSE;
+#endif
     p_tcb->ExtPtr = p_ext;/*用户附加区指针*/
     p_tcb->SuspendCtr = 0;/*嵌套挂起为0层*/
     
@@ -383,7 +389,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #else
     CPU_VAL_UNUSED(q_size);
 #endif
-    
+#if OS_CFG_TASK_SEM_EN > 0u    
     /*创建任务内建信号量*/
     OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)p_name,0,&err);/*任务内建信号量value初始化为0*/
     if(err != OS_ERR_NONE)/*任务内建信号量创建失败*/
@@ -399,7 +405,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         p_tcb->SemCreateSuc = RT_TRUE;
         CPU_CRITICAL_EXIT();
     }
-    
+#endif    
     CPU_CRITICAL_ENTER();
 #if defined(OS_CFG_TLS_TBL_SIZE) && (OS_CFG_TLS_TBL_SIZE > 0u)/*线程私有变量暂时没有实现*/
     for (id = 0u; id < OS_CFG_TLS_TBL_SIZE; id++) {
@@ -458,7 +464,9 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_tcb->TaskEntryAddr = (OS_TASK_PTR)p_tcb->Task.entry;
     p_tcb->TaskEntryArg = p_tcb->Task.parameter;
     p_tcb->Prio = p_tcb->Task.init_priority;
+#if OS_CFG_TASK_SEM_EN > 0u
     p_tcb->SemCtr = p_tcb->Sem.Sem.value;
+#endif
 #endif    
     CPU_CRITICAL_EXIT();   
     
@@ -507,8 +515,9 @@ void  OSTaskDel (OS_TCB  *p_tcb,
                  OS_ERR  *p_err)
 {
     rt_err_t rt_err;
+#if OS_CFG_TASK_SEM_EN > 0u || OS_CFG_TASK_Q_EN > 0u
     OS_ERR err;
-    
+#endif
     CPU_SR_ALLOC();
     
 #ifdef OS_SAFETY_CRITICAL
@@ -561,9 +570,12 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     
     rt_err = rt_thread_detach(&p_tcb->Task);
     *p_err = rt_err_to_ucosiii(rt_err);
-    
+#if OS_CFG_TASK_SEM_EN > 0u    
     OSSemDel(&p_tcb->Sem,OS_OPT_DEL_ALWAYS,&err);           /* 删除任务内建信号量                                     */
+#endif
+#if OS_CFG_TASK_Q_EN > 0u 
     OSQDel(&p_tcb->MsgQ,OS_OPT_DEL_ALWAYS,&err);            /* 删除任务内建消息队列                                   */
+#endif
     OSTaskDelHook(p_tcb);                                   /* 调用钩子函数                                           */ 
     OS_TaskInitTCB(p_tcb);                                  /* Initialize the TCB to default values                   */
     p_tcb->TaskState = (OS_STATE)OS_TASK_STATE_DEL;         /* Indicate that the task was deleted                     */
@@ -1180,6 +1192,7 @@ void  OSTaskResume (OS_TCB  *p_tcb,
 ************************************************************************************************************************
 */
 
+#if OS_CFG_TASK_SEM_EN > 0u
 OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
                            OS_OPT    opt,
                            CPU_TS   *p_ts,
@@ -1222,6 +1235,7 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
         return 0;
     }
 }
+#endif
 
 /*
 ************************************************************************************************************************
@@ -1252,7 +1266,7 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
 ************************************************************************************************************************
 */
 
-#if OS_CFG_TASK_SEM_PEND_ABORT_EN > 0u
+#if OS_CFG_TASK_SEM_PEND_ABORT_EN > 0u && OS_CFG_TASK_SEM_EN > 0u
 CPU_BOOLEAN  OSTaskSemPendAbort (OS_TCB  *p_tcb,
                                  OS_OPT   opt,
                                  OS_ERR  *p_err)
@@ -1353,6 +1367,7 @@ CPU_BOOLEAN  OSTaskSemPendAbort (OS_TCB  *p_tcb,
 ************************************************************************************************************************
 */
 
+#if OS_CFG_TASK_SEM_EN > 0u
 OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
                            OS_OPT   opt,
                            OS_ERR  *p_err)
@@ -1388,6 +1403,7 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
         return 0;
     }
 }
+#endif
 
 /*
 ************************************************************************************************************************
@@ -1409,6 +1425,7 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
 ************************************************************************************************************************
 */
 
+#if OS_CFG_TASK_SEM_EN > 0u
 OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
                           OS_SEM_CTR   cnt,
                           OS_ERR      *p_err)
@@ -1446,6 +1463,7 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
     *p_err = OS_ERR_NONE;
     return ctr;
 }
+#endif
 
 /*
 ************************************************************************************************************************
@@ -1830,12 +1848,14 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     
     CPU_SR_ALLOC();    
     
-    CPU_CRITICAL_ENTER();        
-    p_tcb->SemCreateSuc   = (CPU_BOOLEAN    )RT_FALSE;
+    CPU_CRITICAL_ENTER();
+#if OS_CFG_TASK_SEM_EN > 0u    
+    p_tcb->SemCreateSuc       = (CPU_BOOLEAN    )RT_FALSE;
+#endif
 #if OS_CFG_TASK_Q_EN > 0u      
-    p_tcb->MsgPtr         = (void          *)0u;
-    p_tcb->MsgSize        = (OS_MSG_SIZE    )0u;
-    p_tcb->MsgCreateSuc   = (CPU_BOOLEAN    )RT_FALSE;
+    p_tcb->MsgPtr             = (void          *)0u;
+    p_tcb->MsgSize            = (OS_MSG_SIZE    )0u;
+    p_tcb->MsgCreateSuc       = (CPU_BOOLEAN    )RT_FALSE;
 #endif
     p_tcb->ExtPtr             = (void          *)0u;  
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
