@@ -80,6 +80,11 @@
 #include <os_cfg_app.h>
 #include <lib_def.h>
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
 ************************************************************************************************************************
 *                                              COMPATIBILITY CONFIGURATIONS
@@ -1559,7 +1564,7 @@ rt_err_t      rt_sem_release_all        (rt_sem_t sem);
 
 /*
 ************************************************************************************************************************
-*                                                     MISCELLANEOUS
+*                                                  uC/OS-III Wrapper
 ************************************************************************************************************************
 */
 
@@ -1583,5 +1588,233 @@ rt_err_t      rt_sem_release_all        (rt_sem_t sem);
 #error "Çë½«OS_CFG_SEM_PEND_ABORT_ENÖÃ1"
 #endif
 
+/*
+************************************************************************************************************************
+*                                                     MISCELLANEOUS
+************************************************************************************************************************
+*/
 
+#ifndef OS_CFG_APP_HOOKS_EN
+#error  "OS_CFG.H, Missing OS_CFG_APP_HOOKS_EN: Enable (1) or Disable (0) application specific hook functions"
+#endif
+
+
+#ifndef OS_CFG_ARG_CHK_EN
+#error  "OS_CFG.H, Missing OS_CFG_ARG_CHK_EN: Enable (1) or Disable (0) argument checking"
+#endif
+
+
+#ifndef OS_CFG_DBG_EN
+#error  "OS_CFG.H, Missing OS_CFG_DBG_EN: Allows you to include variables for debugging or not"
+#endif
+
+
+#ifndef OS_CFG_OBJ_TYPE_CHK_EN
+#error  "OS_CFG.H, Missing OS_CFG_OBJ_TYPE_CHK_EN: Enable (1) or Disable (0) checking for proper object types in kernel services"
+#endif
+
+
+#ifndef OS_CFG_SCHED_ROUND_ROBIN_EN
+#error  "OS_CFG.H, Missing OS_CFG_SCHED_ROUND_ROBIN_EN: Include code for Round Robin Scheduling"
+#endif
+
+
+#ifndef OS_CFG_STK_SIZE_MIN
+#error  "OS_CFG.H, Missing OS_CFG_STK_SIZE_MIN: Determines the minimum size for a task stack"
+#endif
+
+
+/*
+************************************************************************************************************************
+*                                                     EVENT FLAGS
+************************************************************************************************************************
+*/
+
+#ifndef OS_CFG_FLAG_EN
+#error  "OS_CFG.H, Missing OS_CFG_FLAG_EN: Enable (1) or Disable (0) code generation for Event Flags"
+#else
+    #ifndef OS_CFG_FLAG_DEL_EN
+    #error  "OS_CFG.H, Missing OS_CFG_FLAG_DEL_EN: Include code for OSFlagDel()"
+    #endif
+
+    #ifndef OS_CFG_FLAG_MODE_CLR_EN
+    #error  "OS_CFG.H, Missing OS_CFG_FLAG_MODE_CLR_EN: Include code for Wait on Clear EVENT FLAGS"
+    #endif
+
+    #ifndef OS_CFG_FLAG_PEND_ABORT_EN
+    #error  "OS_CFG.H, Missing OS_CFG_FLAG_PEND_ABORT_EN: Include code for aborting pends from another task"
+    #endif
+#endif
+
+/*
+************************************************************************************************************************
+*                                                  MEMORY MANAGEMENT
+************************************************************************************************************************
+*/
+
+#ifndef OS_CFG_MEM_EN
+#error  "OS_CFG.H, Missing OS_CFG_MEM_EN: Enable (1) or Disable (0) code generation for MEMORY MANAGER"
+#endif
+
+/*
+************************************************************************************************************************
+*                                              MUTUAL EXCLUSION SEMAPHORES
+************************************************************************************************************************
+*/
+
+#ifndef OS_CFG_MUTEX_EN
+#error  "OS_CFG.H, Missing OS_CFG_MUTEX_EN: Enable (1) or Disable (0) code generation for MUTEX"
+#else
+    #ifndef OS_CFG_MUTEX_DEL_EN
+    #error  "OS_CFG.H, Missing OS_CFG_MUTEX_DEL_EN: Include code for OSMutexDel()"
+    #endif
+
+    #ifndef OS_CFG_MUTEX_PEND_ABORT_EN
+    #error  "OS_CFG.H, Missing OS_CFG_MUTEX_PEND_ABORT_EN: Include code for OSMutexPendAbort()"
+    #endif
+#endif
+
+/*
+************************************************************************************************************************
+*                                                    MESSAGE QUEUES
+************************************************************************************************************************
+*/
+
+#ifndef OS_CFG_Q_EN
+#error  "OS_CFG.H, Missing OS_CFG_Q_EN: Enable (1) or Disable (0) code generation for QUEUES"
+#else
+    #ifndef OS_CFG_Q_DEL_EN
+    #error  "OS_CFG.H, Missing OS_CFG_Q_DEL_EN: Include code for OSQDel()"
+    #endif
+
+    #ifndef OS_CFG_Q_FLUSH_EN
+    #error  "OS_CFG.H, Missing OS_CFG_Q_FLUSH_EN: Include code for OSQFlush()"
+    #endif
+
+    #ifndef OS_CFG_Q_PEND_ABORT_EN
+    #error  "OS_CFG.H, Missing OS_CFG_Q_PEND_ABORT_EN: Include code for OSQPendAbort()"
+    #endif
+#endif
+
+/*
+************************************************************************************************************************
+*                                                      SEMAPHORES
+************************************************************************************************************************
+*/
+
+#ifndef OS_CFG_SEM_EN
+#error  "OS_CFG.H, Missing OS_CFG_SEM_EN: Enable (1) or Disable (0) code generation for SEMAPHORES"
+#else
+    #ifndef OS_CFG_SEM_DEL_EN
+    #error  "OS_CFG.H, Missing OS_CFG_SEM_DEL_EN: Include code for OSSemDel()"
+    #endif
+
+    #ifndef OS_CFG_SEM_PEND_ABORT_EN
+    #error  "OS_CFG.H, Missing OS_CFG_SEM_PEND_ABORT_EN: Include code for OSSemPendAbort()"
+    #endif
+
+    #ifndef OS_CFG_SEM_SET_EN
+    #error  "OS_CFG.H, Missing OS_CFG_SEM_SET_EN: Include code for OSSemSet()"
+    #endif
+#endif
+
+/*
+************************************************************************************************************************
+*                                                   TASK MANAGEMENT
+************************************************************************************************************************
+*/
+
+#ifndef OS_CFG_STAT_TASK_EN
+#error  "OS_CFG.H, Missing OS_CFG_STAT_TASK_EN: Enable (1) or Disable(0) the statistics task"
+#endif
+
+#ifndef OS_CFG_STAT_TASK_STK_CHK_EN
+#error  "OS_CFG.H, Missing OS_CFG_STAT_TASK_STK_CHK_EN: Check task stacks from statistics task"
+#endif
+
+#ifndef OS_CFG_TASK_CHANGE_PRIO_EN
+#error  "OS_CFG.H, Missing OS_CFG_TASK_CHANGE_PRIO_EN: Include code for OSTaskChangePrio()"
+#endif
+
+#ifndef OS_CFG_TASK_DEL_EN
+#error  "OS_CFG.H, Missing OS_CFG_TASK_DEL_EN: Include code for OSTaskDel()"
+#endif
+
+#ifndef OS_CFG_TASK_Q_EN
+#error  "OS_CFG.H, Missing OS_CFG_TASK_Q_EN: Include code for OSTaskQxxx()"
+#endif
+
+#ifndef OS_CFG_TASK_SEM_EN
+#error  "OS_CFG.H, Missing OS_CFG_TASK_SEM_EN: Include code for OSTaskSemxxx()"
+#endif
+
+#ifndef OS_CFG_TASK_Q_PEND_ABORT_EN
+#error  "OS_CFG.H, Missing OS_CFG_TASK_Q_PEND_ABORT_EN: Include code for OSTaskQPendAbort()"
+#endif
+
+#ifndef OS_CFG_TASK_PROFILE_EN
+#error  "OS_CFG.H, Missing OS_CFG_TASK_PROFILE_EN: Include code for task profiling"
+#endif
+
+#ifndef OS_CFG_TASK_REG_TBL_SIZE
+#error  "OS_CFG.H, Missing OS_CFG_TASK_REG_TBL_SIZE: Include support for task specific registers"
+#endif
+
+#ifndef OS_CFG_TASK_SEM_PEND_ABORT_EN
+#error  "OS_CFG.H, Missing OS_CFG_TASK_SEM_PEND_ABORT_EN: Include code for OSTaskSemPendAbort()"
+#endif
+
+#ifndef OS_CFG_TASK_SUSPEND_EN
+#error  "OS_CFG.H, Missing OS_CFG_TASK_SUSPEND_EN: Include code for OSTaskSuspend() and OSTaskResume()"
+#endif
+
+/*
+************************************************************************************************************************
+*                                                  TIME MANAGEMENT
+************************************************************************************************************************
+*/
+
+#ifndef OS_CFG_TIME_DLY_HMSM_EN
+#error  "OS_CFG.H, Missing OS_CFG_TIME_DLY_HMSM_EN: Include code for OSTimeDlyHMSM()"
+#endif
+
+#ifndef OS_CFG_TIME_DLY_RESUME_EN
+#error  "OS_CFG.H, Missing OS_CFG_TIME_DLY_RESUME_EN: Include code for OSTimeDlyResume()"
+#endif
+
+/*
+************************************************************************************************************************
+*                                                  TIMER MANAGEMENT
+************************************************************************************************************************
+*/
+
+#ifndef OS_CFG_TMR_EN
+#error  "OS_CFG.H, Missing OS_CFG_TMR_EN: When (1) enables code generation for Timer Management"
+#else
+#if (OS_CFG_TMR_EN > 0u)
+
+    #if (OS_CFG_TMR_TASK_RATE_HZ == 0u)
+    #error "OS_CFG_APP.h, OS_CFG_TMR_TASK_RATE_HZ must be > 0"
+    #endif
+
+    #if (OS_CFG_TICK_RATE_HZ < OS_CFG_TMR_TASK_RATE_HZ)
+    #error "OS_CFG_APP.h, OS_CFG_TICK_RATE_HZ must be >= OS_CFG_TMR_TASK_RATE_HZ"
+    #endif
+
+    #ifndef OS_CFG_TMR_DEL_EN
+    #error  "OS_CFG.H, Missing OS_CFG_TMR_DEL_EN: Enables (1) or Disables (0) code for OSTmrDel()"
+    #endif
+#endif
+#endif
+
+
+/*
+************************************************************************************************************************
+*                                                 uC/OS-III MODULE END
+************************************************************************************************************************
+*/
+
+#ifdef __cplusplus
+}
+#endif
 #endif
