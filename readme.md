@@ -194,7 +194,7 @@ int main(void) /*RT-Thread main线程*/
 
 ​	如果你在使用过程中不需要兼容任务/内核对象结构体的成员变量，或者不需要使用uC/Probe软件监控兼容层状态，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_TINY`宏定义。请参考本文以下章节：
 
-> 6.2.1 Enable uCOS-III wrapper tiny mode 
+> 6.2.2 Enable uCOS-III wrapper tiny mode 
 
 
 
@@ -513,10 +513,6 @@ OS_EXT            OS_APP_HOOK_TCB           OS_AppTaskCreateHookPtr;    /* Appli
 OS_EXT            OS_APP_HOOK_TCB           OS_AppTaskDelHookPtr;
 OS_EXT            OS_APP_HOOK_VOID          OS_AppIdleTaskHookPtr;
 OS_EXT            OS_APP_HOOK_VOID          OS_AppStatTaskHookPtr;
-
-OS_EXT            OS_APP_HOOK_TCB           OS_AppTaskReturnHookPtr;
-OS_EXT            OS_APP_HOOK_VOID          OS_AppTaskSwHookPtr;
-OS_EXT            OS_APP_HOOK_VOID          OS_AppTimeTickHookPtr;
 #endif
 
 OS_EXT            OS_STATE                  OSRunning;                  /* Flag indicating that kernel is running     */
@@ -528,7 +524,7 @@ OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag 
 
                                                                         /* SEMAPHORES ------------------------------- */
 #if OS_CFG_SEM_EN > 0u
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 OS_EXT            OS_SEM                   *OSSemDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSSemQty;                   /* Number of semaphores created               */
@@ -536,7 +532,7 @@ OS_EXT            OS_OBJ_QTY                OSSemQty;                   /* Numbe
 
                                                                         /* QUEUES ----------------------------------- */
 #if OS_CFG_Q_EN   > 0u
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 OS_EXT            OS_Q                     *OSQDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSQQty;                     /* Number of message queues created           */
@@ -544,7 +540,7 @@ OS_EXT            OS_OBJ_QTY                OSQQty;                     /* Numbe
 
                                                                         /* MUTEX MANAGEMENT ------------------------- */
 #if OS_CFG_MUTEX_EN > 0u
-#if OS_CFG_DBG_EN   > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 OS_EXT            OS_MUTEX                 *OSMutexDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSMutexQty;                 /* Number of mutexes created                  */
@@ -552,7 +548,7 @@ OS_EXT            OS_OBJ_QTY                OSMutexQty;                 /* Numbe
 
                                                                         /* FLAGS ------------------------------------ */
 #if OS_CFG_FLAG_EN > 0u
-#if OS_CFG_DBG_EN  > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 OS_EXT            OS_FLAG_GRP              *OSFlagDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSFlagQty;
@@ -567,7 +563,7 @@ OS_EXT            OS_OBJ_QTY                OSMemQty;                   /* Numbe
 #endif
 
                                                                         /* TASKS ------------------------------------ */
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 OS_EXT            OS_TCB                   *OSTaskDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSTaskQty;                  /* Number of tasks created                    */
@@ -578,10 +574,12 @@ OS_EXT            OS_REG_ID                 OSTaskRegNextAvailID;       /* Next 
 OS_EXT            OS_TICK                   OSSchedRoundRobinDfltTimeQuanta;
 OS_EXT            CPU_BOOLEAN               OSSchedRoundRobinEn;        /* Enable/Disable round-robin scheduling      */
 #endif
+
+#if OS_CFG_STAT_TASK_EN > 0u
                                                                         /* IDLE TASK -------------------------------- */
 OS_EXT            OS_IDLE_CTR               OSIdleTaskCtr;              
 
-#if OS_CFG_STAT_TASK_EN > 0u                                            /* STATISTICS ------------------------------- */
+                                                                        /* STATISTICS ------------------------------- */
 OS_EXT            CPU_BOOLEAN               OSStatResetFlag;            /* Force the reset of the computed statistics */
 OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsage;         /* CPU Usage in %                             */
 OS_EXT            OS_CPU_USAGE              OSStatTaskCPUUsageMax;      /* CPU Usage in % (Peak)                      */
@@ -593,7 +591,7 @@ OS_EXT            OS_TCB                    OSStatTaskTCB;
 #endif
 
 #if OS_CFG_TMR_EN > 0u                                                  /* TIMERS ----------------------------------- */
-#if OS_CFG_DBG_EN > 0u
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 OS_EXT            OS_TMR                   *OSTmrDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Number of timers created                   */
@@ -791,6 +789,7 @@ RT-Thread online packages
     system packages --->
         [*] uCOS-III Wrapper: uCOS-III APIs wrapper --->
             [*]   Enable uCOS-III wrapper automatically init
+            [*]   Enable uCOS-III wrapper tiny mode
             Version (latest)  --->
 ```
 
@@ -845,7 +844,7 @@ INIT_COMPONENT_EXPORT(rt_ucosiii_autoinit);
 
 
 
-### 6.2.1 Enable uCOS-III wrapper tiny mode 
+### 6.2.2 Enable uCOS-III wrapper tiny mode 
 
 ​	如果你在使用过程中不需要兼容任务/内核对象结构体的成员变量，或者不需要使用uC/Probe软件监控兼容层状态，可使能该选项。ENV将自动在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_TINY`宏定义。以`OS_SEM`结构体为例：
 
