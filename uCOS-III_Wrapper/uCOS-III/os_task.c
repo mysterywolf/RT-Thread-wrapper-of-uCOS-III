@@ -58,8 +58,7 @@
 
 /*
 ************************************************************************************************************************
-* Note(s)    : 1)由于RTT没有相关接口，因此以下函数没有实现
-*                   OSTaskChangePrio
+* Note(s)    : 1)由于RT-Thread没有相关接口，因此以下函数没有实现
 *                   OSTaskTimeQuantaSet
 ************************************************************************************************************************
 */
@@ -1709,11 +1708,11 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
 */
 
 #if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
-void  OSTaskTimeQuantaSet (OS_TCB   *p_tcb,
-                           OS_TICK   time_quanta,
-                           OS_ERR   *p_err)
-{
-}
+//void  OSTaskTimeQuantaSet (OS_TCB   *p_tcb,
+//                           OS_TICK   time_quanta,
+//                           OS_ERR   *p_err)
+//{
+//}
 #endif
 
 /*

@@ -300,6 +300,7 @@
 ### 2020-10-07
 
 - 实现`PKG_USING_UCOSIII_WRAPPER_TINY`以精简兼容层
+- 删除`os_task.c`无用注释
 
 
 
@@ -517,6 +518,10 @@
 **[del]** 删除`os.h`无用代码
 
 实现`PKG_USING_UCOSIII_WRAPPER_TINY`以精简兼容层
+
+**[del]** 删除`os_task.c`无用注释
+
+
 
 
 
