@@ -254,7 +254,6 @@
     #define  OS_TASK_STATE_PEND_TIMEOUT_SUSPENDED (OS_STATE)(  7u)  /*   1 1 1     Suspended + Pend + Timeout             */
     ```
 
-    
 
 ### 2020-09-20
 
