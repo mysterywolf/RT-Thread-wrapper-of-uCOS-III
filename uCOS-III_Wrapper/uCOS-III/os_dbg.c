@@ -95,8 +95,6 @@ CPU_INT16U  const  OSDbg_IntQ                  = sizeof(OS_INT_Q);
 CPU_INT16U  const  OSDbg_IntQ                  = 0u;
 #endif
 
-CPU_INT08U  const  OSDbg_ISRPostDeferredEn     = OS_CFG_ISR_POST_DEFERRED_EN;
-
 OS_MEM      const  OSDbg_Mem                   = { 0u };
 CPU_INT08U  const  OSDbg_MemEn                 = OS_CFG_MEM_EN;
 #if OS_CFG_MEM_EN > 0u
@@ -127,9 +125,6 @@ CPU_INT16U  const  OSDbg_MutexSize             = 0u;
 #endif
 
 CPU_INT08U  const  OSDbg_ObjTypeChkEn          = OS_CFG_OBJ_TYPE_CHK_EN;
-
-
-CPU_INT08U  const  OSDbg_PendMultiEn           = OS_CFG_PEND_MULTI_EN;
 
 CPU_INT16U  const  OSDbg_PrioMax               = OS_CFG_PRIO_MAX;              /* Maximum number of priorities        */
 CPU_INT16U  const  OSDbg_PrioTblSize           = sizeof(OSPrioTbl);
@@ -380,8 +375,6 @@ void  OS_Dbg_Init (void)
     p_temp = (void const *)&OSDbg_IntQ;
 #endif
 
-    p_temp = (void const *)&OSDbg_ISRPostDeferredEn;
-
     p_temp = (void const *)&OSDbg_Mem;
     p_temp = (void const *)&OSDbg_MemEn;
 #if OS_CFG_MEM_EN > 0u
@@ -398,8 +391,6 @@ void  OS_Dbg_Init (void)
 #endif
 
     p_temp = (void const *)&OSDbg_ObjTypeChkEn;
-
-    p_temp = (void const *)&OSDbg_PendMultiEn;
 
     p_temp = (void const *)&OSDbg_PrioMax;
     p_temp = (void const *)&OSDbg_PrioTblSize;

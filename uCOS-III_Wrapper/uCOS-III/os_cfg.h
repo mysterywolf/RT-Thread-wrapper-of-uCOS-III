@@ -74,16 +74,11 @@
 #define  OS_CFG_ARG_CHK_EN               1u                 /* Enable (1) or Disable (0) argument checking                           */
 #define  OS_CFG_CALLED_FROM_ISR_CHK_EN   1u                 /* Enable (1) or Disable (0) check for called from ISR                   */
 #define  OS_CFG_DBG_EN                   1u                 /* Enable (1) debug code/variables                                       */
-#define  OS_CFG_ISR_POST_DEFERRED_EN     0u                 /* 只读,该功能不予实现 Enable (1) or Disable (0) Deferred ISR posts      */
 #define  OS_CFG_INVALID_OS_CALLS_CHK_EN  1u                 /* Enable (1) or Disable (0) checks for invalid kernel calls             */
 #define  OS_CFG_OBJ_TYPE_CHK_EN          1u                 /* Enable (1) or Disable (0) object type checking                        */
-#define  OS_CFG_TS_EN                    0u                 /* 只读,该功能不予实现 Enable (1) or Disable (0) time stamping           */
-
-#define  OS_CFG_PEND_MULTI_EN            0u                 /* 只读,该功能不予实现 在后续版本中uCOS-III也取消了该功能                */
 
 #define  OS_CFG_PRIO_MAX        RT_THREAD_PRIORITY_MAX      /* 只读 Defines the maximum number of task priorities                    */
 
-#define  OS_CFG_SCHED_LOCK_TIME_MEAS_EN  0u                 /* 只读,该功能不予实现 Include code to measure scheduler lock time       */
 #define  OS_CFG_SCHED_ROUND_ROBIN_EN     1u                 /* 只读,RTT时间片轮转为必选项 Include code for Round-Robin scheduling    */
 #define  OS_CFG_STK_SIZE_MIN            64u                 /* Minimum allowable task stack size                                     */
 
@@ -167,12 +162,6 @@
 #endif
 #define  OS_CFG_TMR_DEL_EN               1u                 /* Enable (1) or Disable (0) code generation for OSTmrDel()              */
 
-
-
-/*----------------------uCOS-III安全认证相关,已实现---------------------*/
-
-//#define  OS_SAFETY_CRITICAL_IEC61508
-//#define  OS_SAFETY_CRITICAL
 
 #ifdef   OS_SAFETY_CRITICAL
 #define  OS_SAFETY_CRITICAL_EXCEPTION()   {}while(0)
