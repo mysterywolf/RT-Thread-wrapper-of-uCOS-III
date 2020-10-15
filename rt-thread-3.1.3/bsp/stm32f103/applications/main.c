@@ -110,5 +110,5 @@ static void AppTaskCreate(void)
 //    sem_example();
 //    q_example();
 //    task_sem_example();
-    suspend_example();
+//    suspend_example();
 }

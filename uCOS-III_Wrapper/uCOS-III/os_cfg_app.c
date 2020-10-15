@@ -60,6 +60,7 @@
 #include <os.h>
 #include <rtconfig.h>
 
+
 /*
 ************************************************************************************************************************
 *                                                    DATA STORAGE
@@ -69,6 +70,7 @@
 CPU_STK        OSCfg_StatTaskStk   [OS_CFG_STAT_TASK_STK_SIZE];
 #endif
 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if OS_CFG_DBG_EN > 0u
 /*
 ************************************************************************************************************************
@@ -165,3 +167,5 @@ void  OSCfg_Init (void)
 }
 
 #endif
+
+#endif /*PKG_USING_UCOSIII_WRAPPER_TINY*/

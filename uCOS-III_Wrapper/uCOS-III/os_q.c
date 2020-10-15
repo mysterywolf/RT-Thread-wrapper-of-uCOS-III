@@ -207,16 +207,17 @@ void  OSQCreate (OS_Q        *p_q,
         return;
     }
     
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
     CPU_CRITICAL_ENTER();
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_q->Type    = OS_OBJ_TYPE_Q;                           /* Mark the data structure as a message queue             */
 #if (OS_CFG_DBG_EN > 0u)
     p_q->NamePtr = p_name;
     OS_QDbgListAdd(p_q);
 #endif
-#endif
+
     OSQQty++;                                               /* One more queue created                                 */      
     CPU_CRITICAL_EXIT();    
+#endif
 }
 
 /*
@@ -353,10 +354,12 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
     if(*p_err == OS_ERR_NONE)
     {
         CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
         OS_QDbgListRemove(p_q);
 #endif
         OSQQty--;
+#endif
         OS_QClr(p_q);
         CPU_CRITICAL_EXIT();
     }
@@ -1079,11 +1082,12 @@ void  OS_QInit (OS_ERR  *p_err)
     }
 #endif
 
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
     OSQDbgListPtr = (OS_Q *)0;
 #endif
-
     OSQQty        = (OS_OBJ_QTY)0;
+#endif
    *p_err         = OS_ERR_NONE;
 }
 

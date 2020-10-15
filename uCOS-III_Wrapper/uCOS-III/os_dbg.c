@@ -56,6 +56,8 @@
 
 #include <os.h>
 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+
 CPU_INT16U  const  OSDbg_DbgEn                 = OS_CFG_DBG_EN;                /* Debug constants are defined below   */
 
 #if OS_CFG_DBG_EN > 0u
@@ -246,8 +248,10 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
                                   + sizeof(OSSafetyCriticalStartFlag)
 #endif
 
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_FLAG_EN > 0u
+#if OS_CFG_DBG_EN > 0u
                                   + sizeof(OSFlagDbgListPtr)
+#endif
                                   + sizeof(OSFlagQty)
 #endif
 
@@ -259,7 +263,7 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
 #endif
 
 #if OS_CFG_MUTEX_EN > 0u
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
                                   + sizeof(OSMutexDbgListPtr)
 #endif
                                   + sizeof(OSMutexQty)
@@ -269,7 +273,7 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
                                   + sizeof(OSPrioTbl)
 
 #if OS_CFG_Q_EN > 0u
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
                                   + sizeof(OSQDbgListPtr)
 #endif
                                   + sizeof(OSQQty)
@@ -289,13 +293,13 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
 #endif
 
 #if OS_CFG_SEM_EN > 0u
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
                                   + sizeof(OSSemDbgListPtr)
 #endif
                                   + sizeof(OSSemQty)
 #endif
 
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
                                   + sizeof(OSTaskDbgListPtr)
 #endif
                                   + sizeof(OSTaskQty)
@@ -312,7 +316,7 @@ CPU_INT32U  const  OSDbg_DataSize = sizeof(OSIntNestingCtr)
 #endif
 
 #if OS_CFG_TMR_EN > 0u
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
                                   + sizeof(OSTmrDbgListPtr)
 #endif
                                   + sizeof(OSTmrQty)
@@ -449,3 +453,5 @@ void  OS_Dbg_Init (void)
     p_temp = p_temp;                                        /* Prevent compiler warning for not using 'p_temp'        */
 }
 #endif
+
+#endif /*PKG_USING_UCOSIII_WRAPPER_TINY*/

@@ -306,6 +306,10 @@
 
 - 删除无用配置宏定义
 
+### 2020-10-16
+
+- 优化`PKG_USING_UCOSIII_WRAPPER_TINY`
+
 
 
 # Release
@@ -534,6 +538,8 @@
 **[add]** 在`os.h`中增加宏定义检查代码
 
 **[del]** 删除无用配置宏定义
+
+优化`PKG_USING_UCOSIII_WRAPPER_TINY`
 
 
 

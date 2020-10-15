@@ -437,15 +437,14 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
      
     /*调用钩子函数*/
     OSTaskCreateHook(p_tcb);
-    
+
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
     CPU_CRITICAL_ENTER();
-    
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
     OS_TaskDbgListAdd(p_tcb);/*将任务加入到Debug链表中*/
 #endif    
     OSTaskQty++; /* Increment the #tasks counter */
 
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if (CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO)
     p_stk_limit = p_stk_base + stk_limit;
 #else
@@ -466,10 +465,10 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_tcb->Prio = p_tcb->Task.init_priority;
 #if OS_CFG_TASK_SEM_EN > 0u
     p_tcb->SemCtr = p_tcb->Sem.Sem.value;
-#endif
-#endif    
+#endif 
     CPU_CRITICAL_EXIT();   
-    
+#endif
+
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
     rt_err = rt_thread_startup(&p_tcb->Task);                 
     *p_err = rt_err_to_ucosiii(rt_err);
@@ -518,8 +517,10 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 #if OS_CFG_TASK_SEM_EN > 0u || OS_CFG_TASK_Q_EN > 0u
     OS_ERR err;
 #endif
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
     CPU_SR_ALLOC();
-    
+#endif
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -560,13 +561,15 @@ void  OSTaskDel (OS_TCB  *p_tcb,
         return;
     }
 #endif
-    
+
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
     CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
     OS_TaskDbgListRemove(p_tcb);
 #endif
     OSTaskQty--;                                            /* One less task being managed                            */
     CPU_CRITICAL_EXIT();
+#endif
     
     rt_err = rt_thread_detach(&p_tcb->Task);
     *p_err = rt_err_to_ucosiii(rt_err);
@@ -1817,11 +1820,12 @@ void  OS_TaskInit (OS_ERR  *p_err)
     }
 #endif
 
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
+#if OS_CFG_DBG_EN > 0u
     OSTaskDbgListPtr  = (OS_TCB      *)0;
 #endif
-
     OSTaskQty         = (OS_OBJ_QTY   )0;                   /* Clear the number of tasks                              */
+#endif
     
     *p_err            = OS_ERR_NONE;
 }

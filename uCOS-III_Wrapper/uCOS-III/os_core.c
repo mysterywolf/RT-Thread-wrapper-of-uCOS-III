@@ -170,8 +170,8 @@ void  OSInit (OS_ERR  *p_err)
         return;
     }    
 #endif
-    
-#if OS_CFG_DBG_EN > 0u
+
+#if OS_CFG_DBG_EN > 0u  && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     OS_Dbg_Init();
     OSCfg_Init();
 #endif
@@ -601,12 +601,14 @@ void  OSStart (OS_ERR  *p_err)
         *p_err           = OS_ERR_OS_RUNNING;                   /* OS is already running                              */
     }
     
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
     /*检查OSStart调用之前是否创建了用户应用级任务，该检查在兼容层中意义不大，因此放在最后*/
     if (OSTaskQty <= kernel_task_cnt) {                         /* No application task created                        */
         *p_err = OS_ERR_OS_NO_APP_TASK;
         CPU_CRITICAL_EXIT(); 
         return;
     }   
+#endif
     
     CPU_CRITICAL_EXIT();
 }

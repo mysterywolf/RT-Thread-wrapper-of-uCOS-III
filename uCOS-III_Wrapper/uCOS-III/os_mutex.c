@@ -87,8 +87,9 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
                      OS_ERR    *p_err)
 {
     rt_err_t rt_err;
-
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
     CPU_SR_ALLOC();
+#endif
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -140,9 +141,9 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
     {
         return;
     }
-    
+
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
     CPU_CRITICAL_ENTER();
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if (OS_CFG_DBG_EN > 0u)
     p_mutex->NamePtr           =  p_name;
 #endif
@@ -153,9 +154,9 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 #if OS_CFG_DBG_EN > 0u
     OS_MutexDbgListAdd(p_mutex);
 #endif
-#endif
     OSMutexQty++;    
     CPU_CRITICAL_EXIT();
+#endif
 }
 
 /*
@@ -292,10 +293,12 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
     if(*p_err == OS_ERR_NONE)
     {
         CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
         OS_MutexDbgListRemove(p_mutex);
 #endif
         OSMutexQty--;
+#endif
         OS_MutexClr(p_mutex);
         CPU_CRITICAL_EXIT();
     }
@@ -898,11 +901,12 @@ void  OS_MutexInit (OS_ERR  *p_err)
     }
 #endif
 
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
     OSMutexDbgListPtr = (OS_MUTEX *)0;
 #endif
-
     OSMutexQty        = (OS_OBJ_QTY)0;
+#endif
    *p_err             =  OS_ERR_NONE;
 }
 

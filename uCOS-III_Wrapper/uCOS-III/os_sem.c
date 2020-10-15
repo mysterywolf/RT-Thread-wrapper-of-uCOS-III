@@ -105,8 +105,9 @@ void  OSSemCreate (OS_SEM      *p_sem,
                    OS_ERR      *p_err)
 {
     rt_err_t rt_err;
-    
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_SR_ALLOC();
+#endif
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -158,9 +159,9 @@ void  OSSemCreate (OS_SEM      *p_sem,
     {
         return;
     }
-    
-    CPU_CRITICAL_ENTER();
+
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+    CPU_CRITICAL_ENTER();
     p_sem->Type    = OS_OBJ_TYPE_SEM;                       /* Mark the data structure as a semaphore                 */    
 #if (OS_CFG_DBG_EN > 0u)
     p_sem->NamePtr = p_name;
@@ -169,9 +170,9 @@ void  OSSemCreate (OS_SEM      *p_sem,
 #if OS_CFG_DBG_EN > 0u
     OS_SemDbgListAdd(p_sem);
 #endif
-#endif
     OSSemQty++;    
     CPU_CRITICAL_EXIT();
+#endif
 }
 
 /*
@@ -307,10 +308,12 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
     if(*p_err == OS_ERR_NONE)
     {
         CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
         OS_SemDbgListRemove(p_sem);
 #endif
         OSSemQty--; 
+#endif
         OS_SemClr(p_sem);
         CPU_CRITICAL_EXIT();
     } 
@@ -1020,11 +1023,12 @@ void  OS_SemInit (OS_ERR  *p_err)
     }
 #endif
 
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u 
     OSSemDbgListPtr = (OS_SEM *)0;
 #endif
-
     OSSemQty        = (OS_OBJ_QTY)0;
+#endif
    *p_err           = OS_ERR_NONE;
 }
 

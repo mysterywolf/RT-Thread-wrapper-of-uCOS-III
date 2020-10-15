@@ -105,8 +105,9 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
                     OS_ERR       *p_err)
 {
     rt_err_t rt_err;
-        
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY           
     CPU_SR_ALLOC();
+#endif
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
@@ -166,8 +167,8 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
         return;
     }
     
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
     CPU_CRITICAL_ENTER();
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_grp->Type    = OS_OBJ_TYPE_FLAG;                      /* Set to event flag group type                           */
 #if (OS_CFG_DBG_EN > 0u)
     p_grp->NamePtr = p_name;
@@ -176,9 +177,9 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 #if OS_CFG_DBG_EN > 0u
     OS_FlagDbgListAdd(p_grp);
 #endif
-#endif
     OSFlagQty++;
     CPU_CRITICAL_EXIT();
+#endif
 }
 
 /*
@@ -310,10 +311,12 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
     if(*p_err == OS_ERR_NONE)
     {
         CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
         OS_FlagDbgListRemove(p_grp);
 #endif
         OSFlagQty--;
+#endif
         OS_FlagClr(p_grp);
         CPU_CRITICAL_EXIT();
     }
@@ -517,8 +520,10 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         rt_option |= RT_EVENT_FLAG_CLEAR;
     }
     
-    /*在RTT中timeout为0表示不阻塞,为RT_WAITING_FOREVER表示永久阻塞,
-    这与uCOS-III有所不同,因此需要转换*/
+    /*
+        在RTT中timeout为0表示不阻塞,为RT_WAITING_FOREVER表示永久阻塞,
+        这与uCOS-III有所不同,因此需要转换
+    */
     if((opt & OS_OPT_PEND_NON_BLOCKING) == (OS_OPT)0)
     {
         if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否被锁*/
@@ -526,7 +531,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
             *p_err = OS_ERR_SCHED_LOCKED;
             return ((OS_OBJ_QTY)0);         
         }
-        if(timeout == 0)/*在uCOS-III中timeout=0表示永久阻塞*/
+        if(timeout == 0)                                        /* 在uCOS-III中timeout=0表示永久阻塞                  */
         {
             time = RT_WAITING_FOREVER;
         }
@@ -537,7 +542,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     }
     else
     {
-        time = 0;/*在RTT中timeout为0表示非阻塞*/
+        time = 0;                                               /* 在RTT中timeout为0表示非阻塞                        */
     }
 
     CPU_CRITICAL_ENTER();
@@ -559,10 +564,8 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     *p_err = rt_err_to_ucosiii(rt_err);  
     
     CPU_CRITICAL_ENTER();
-    /*更新任务状态*/
-    p_tcb->TaskState &= ~OS_TASK_STATE_PEND;
-    /*清除当前任务等待状态*/
-    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
+    p_tcb->TaskState &= ~OS_TASK_STATE_PEND;                    /* 更新任务状态                                       */
+    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                    /* 清除当前任务等待状态                               */
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
@@ -953,11 +956,13 @@ void  OS_FlagInit (OS_ERR  *p_err)
     }
 #endif
 
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
     OSFlagDbgListPtr = (OS_FLAG_GRP *)0;
 #endif
-
     OSFlagQty        = (OS_OBJ_QTY   )0;
+#endif
+
    *p_err            = OS_ERR_NONE;
 }
 

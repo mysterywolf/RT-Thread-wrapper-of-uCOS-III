@@ -264,12 +264,14 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
  
     *p_err = OS_ERR_NONE;                                   /* rt_timer_initÃ»ÓÐ·µ»Ø´íÎóÂë                            */
 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
     CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
     OS_TmrDbgListAdd(p_tmr);
 #endif
     OSTmrQty++;                                             /* Keep track of the number of timers created             */                  
     CPU_CRITICAL_EXIT();
+#endif
 }
 
 /*
@@ -371,10 +373,12 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
     if(rt_err == RT_EOK)
     {
         CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
+#if OS_CFG_DBG_EN > 0u
         OS_TmrDbgListRemove(p_tmr);
 #endif
         OSTmrQty--;
+#endif
         OS_TmrClr(p_tmr);    
         CPU_CRITICAL_EXIT(); 
         return DEF_TRUE;
@@ -1101,9 +1105,11 @@ void  OS_TmrDbgListRemove (OS_TMR  *p_tmr)
 
 void  OS_TmrInit (OS_ERR  *p_err)
 {
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
     OSTmrQty        = (OS_OBJ_QTY)0;
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
     OSTmrDbgListPtr = (OS_TMR   *)0;
+#endif
 #endif
 }
 
