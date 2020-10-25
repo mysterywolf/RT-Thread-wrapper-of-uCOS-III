@@ -310,6 +310,10 @@
 
 - 优化`PKG_USING_UCOSIII_WRAPPER_TINY`
 
+### 2020-10-26
+
+- 删除`OSTaskSuspend()`函数无用的选择分支
+
 
 
 # Release
@@ -540,6 +544,8 @@
 **[del]** 删除无用配置宏定义
 
 优化`PKG_USING_UCOSIII_WRAPPER_TINY`
+
+**[del]** 删除`OSTaskSuspend()`函数无用的选择分支
 
 
 

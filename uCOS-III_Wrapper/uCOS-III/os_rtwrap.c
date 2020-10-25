@@ -24,13 +24,13 @@ OS_ERR rt_err_to_ucosiii(rt_err_t rt_err)
     switch(-rt_err)/*RTT返回的错误码都是带负号的*/
     {
         /*以下RTT错误码可以用原版uCOS-III错误码进行兼容*/
-        case RT_EOK: /* 无错误       */
+        case RT_EOK: /* 无错误 */
             return OS_ERR_NONE;
         case RT_ETIMEOUT:/* 超时错误 */
             return OS_ERR_TIMEOUT;
-        case RT_EINVAL:/* 非法参数   */
+        case RT_EINVAL:/* 非法参数 */
             return OS_ERR_OPT_INVALID;        
-        case RT_EFULL:/* 资源已满,该参数仅在IPC中使用*/
+        case RT_EFULL:/* 资源已满,该参数仅在IPC中使用 */
             return OS_ERR_Q_MAX;        
         /*
             由于uCOS-III的错误码分类较细，而RTT的错误码分类较为笼统，

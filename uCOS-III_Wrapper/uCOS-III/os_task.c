@@ -1692,7 +1692,7 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
         CPU_CRITICAL_EXIT();
         *p_err = OS_ERR_NONE;
     }
-    else if((p_tcb->Task.stat & RT_THREAD_STAT_MASK) == RT_THREAD_READY)
+    else
     {
         p_tcb->TaskState |= OS_TASK_STATE_SUSPENDED;
         rt_err = rt_thread_suspend(&p_tcb->Task);
@@ -1701,10 +1701,6 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
             rt_schedule();/* 根据RTT的要求,若挂起自己需要立即调用rt_shedule进行调度*/
         }    
         *p_err = rt_err_to_ucosiii(rt_err);        
-    }
-    else
-    {
-        *p_err = OS_ERR_STATE_INVALID;
     }
 }
 
