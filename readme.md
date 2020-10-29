@@ -933,10 +933,9 @@ struct  os_sem {
 
 ## 8.3 致谢
 
-- 感谢RT-Thread工程师Willian Chan的技术支持：https://github.com/willianchanlovegithub
-
-
-- 感谢RT-Thread工程师yangjie的技术支持：https://github.com/yangjie11
+> 感谢RT-Thread工程师Willian Chan的技术支持：https://github.com/willianchanlovegithub
+>
+> 感谢RT-Thread工程师yangjie的技术支持：https://github.com/yangjie11
 
 
 
