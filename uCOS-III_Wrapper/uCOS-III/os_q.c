@@ -336,7 +336,8 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_mq_detach(&p_q->Msg);
-                *p_err = rt_err_to_ucosiii(rt_err);                 
+                *p_err = rt_err_to_ucosiii(rt_err);
+                RT_KERNEL_FREE(p_q->p_pool);
             }
             else
             {
@@ -348,6 +349,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
         case OS_OPT_DEL_ALWAYS:
             rt_err = rt_mq_detach(&p_q->Msg);
             *p_err = rt_err_to_ucosiii(rt_err);
+            RT_KERNEL_FREE(p_q->p_pool);
             break;
     }
     

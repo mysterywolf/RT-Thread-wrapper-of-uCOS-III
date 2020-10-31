@@ -177,7 +177,6 @@ int main(void) /*RT-Thread main线程*/
 #endif	  
 
 }
-
 ```
 
 
@@ -262,7 +261,7 @@ int main(void) /*RT-Thread main线程*/
 # 3 接口
 ## 3.1 没有实现兼容的API（仅1个）
 
-虽然RT-Thread没有任务内建消息队列、任务内建信号量、任务内建寄存器机制，但是本兼容层均已实现，可以正常兼容。但由于RT-Thread没有提供相关接口，**以下μCOS-III API无法兼容**：
+虽然RT-Thread没有任务内建消息队列、任务内建信号量、任务内建寄存器机制，但是**本兼容层均已实现，可以正常兼容**。但由于RT-Thread没有提供相关接口，**以下μCOS-III API无法兼容**：
 
  ```c
 void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
@@ -467,11 +466,12 @@ struct os_tcb
     OS_STATE         PendOn;                                /* Indicates what task is pending on                      */
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-#if OS_CFG_DBG_EN > 0u
+#if (OS_CFG_DBG_EN > 0u)
     OS_TCB          *DbgPrevPtr;
     OS_TCB          *DbgNextPtr;  
     CPU_CHAR        *DbgNamePtr;                            /* 正在等待内核对象的名称                                 */
     CPU_STK         *StkPtr;                                /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
+    CPU_CHAR        *NamePtr;                               /* Pointer to task name                                   */    
 #endif
     OS_TICK          TimeQuanta;
     OS_TICK          TimeQuantaCtr;
@@ -480,9 +480,6 @@ struct os_tcb
     CPU_STK          StkSize;                               /* 任务堆栈大小*/    
     CPU_STK         *StkLimitPtr;                           /* Pointer used to set stack 'watermark' limit            */
     CPU_STK         *StkBasePtr;                            /* Pointer to base address of stack                       */
-#if (OS_CFG_DBG_EN > 0u)
-    CPU_CHAR        *NamePtr;                               /* Pointer to task name                                   */    
-#endif
     OS_TASK_PTR      TaskEntryAddr;                         /* Pointer to task entry point address                    */
     void            *TaskEntryArg;                          /* Argument passed to task when it was created            */
     OS_PRIO          Prio;                                  /* Task priority (0 == highest)                           */          
@@ -525,34 +522,42 @@ OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag 
 
                                                                         /* SEMAPHORES ------------------------------- */
 #if OS_CFG_SEM_EN > 0u
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u 
 OS_EXT            OS_SEM                   *OSSemDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSSemQty;                   /* Number of semaphores created               */
 #endif
+#endif
 
                                                                         /* QUEUES ----------------------------------- */
 #if OS_CFG_Q_EN   > 0u
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
 OS_EXT            OS_Q                     *OSQDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSQQty;                     /* Number of message queues created           */
 #endif
+#endif
 
                                                                         /* MUTEX MANAGEMENT ------------------------- */
 #if OS_CFG_MUTEX_EN > 0u
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
 OS_EXT            OS_MUTEX                 *OSMutexDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSMutexQty;                 /* Number of mutexes created                  */
 #endif
+#endif
 
                                                                         /* FLAGS ------------------------------------ */
 #if OS_CFG_FLAG_EN > 0u
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
 OS_EXT            OS_FLAG_GRP              *OSFlagDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSFlagQty;
+#endif
 #endif
 
                                                                         /* MEMORY MANAGEMENT ------------------------ */
@@ -564,10 +569,12 @@ OS_EXT            OS_OBJ_QTY                OSMemQty;                   /* Numbe
 #endif
 
                                                                         /* TASKS ------------------------------------ */
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
 OS_EXT            OS_TCB                   *OSTaskDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSTaskQty;                  /* Number of tasks created                    */
+#endif
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
 OS_EXT            OS_REG_ID                 OSTaskRegNextAvailID;       /* Next available Task Register ID            */
 #endif
@@ -592,10 +599,12 @@ OS_EXT            OS_TCB                    OSStatTaskTCB;
 #endif
 
 #if OS_CFG_TMR_EN > 0u                                                  /* TIMERS ----------------------------------- */
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
+#if OS_CFG_DBG_EN > 0u
 OS_EXT            OS_TMR                   *OSTmrDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Number of timers created                   */
+#endif
 #endif
  ```
 
@@ -917,7 +926,7 @@ struct  os_sem {
 
 ## 8.1 联系方式
 
-维护：Meco Man
+维护：Meco Man https://github.com/mysterywolf/
 
 联系方式：jiantingman@foxmail.com
 

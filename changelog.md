@@ -314,6 +314,10 @@
 
 - 删除`OSTaskSuspend()`函数无用的选择分支
 
+### 2020-11-01
+
+- 修复`OSQDel()`函数忘记回收消息内存池导致内存泄漏的问题
+
 
 
 # Release
@@ -546,6 +550,8 @@
 优化`PKG_USING_UCOSIII_WRAPPER_TINY`
 
 **[del]** 删除`OSTaskSuspend()`函数无用的选择分支
+
+**[bug fix]** 修复`OSQDel()`函数忘记回收消息内存池导致内存泄漏的问题
 
 
 
