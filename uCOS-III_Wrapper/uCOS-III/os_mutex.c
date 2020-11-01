@@ -106,7 +106,7 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_CREATE_ISR;
         return; 
@@ -114,12 +114,12 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 #endif
     
 #if OS_CFG_ARG_CHK_EN > 0u    
-    if(p_mutex == RT_NULL)/*检查互斥量指针是否为NULL*/
+    if(p_mutex == RT_NULL)                                  /* 检查互斥量指针是否为NULL                               */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
     }
-    if(p_name == RT_NULL)/*检查互斥量名称指针是否为NULL*/
+    if(p_name == RT_NULL)                                   /* 检查互斥量名称指针是否为NULL                           */
     {
         *p_err = OS_ERR_NAME;
         return;
@@ -135,7 +135,7 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
     }    
 #endif
     
-    rt_err = rt_mutex_init(&p_mutex->Mutex,(const char *)p_name,RT_IPC_FLAG_PRIO);/*uCOS-III仅支持以优先级进行排列*/
+    rt_err = rt_mutex_init(&p_mutex->Mutex,(const char *)p_name,RT_IPC_FLAG_PRIO); /* uCOS-III仅支持以优先级进行排列  */
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err != RT_EOK)
     {
@@ -223,7 +223,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0;
@@ -231,14 +231,14 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 #endif    
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                                 */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (0u);
     }
 #endif
     
 #if OS_CFG_ARG_CHK_EN > 0u    
-    if(p_mutex == RT_NULL)/*检查指针是否为空*/
+    if(p_mutex == RT_NULL)                                  /* 检查指针是否为空                                       */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
@@ -271,7 +271,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
     {
         case OS_OPT_DEL_NO_PEND:
             CPU_CRITICAL_ENTER();
-            if(rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))/*若没有线程等待信号量*/
+            if(rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread))) /* 若没有线程等待信号量                      */
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_mutex_detach(&p_mutex->Mutex);
@@ -388,7 +388,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_PEND_ISR;
         return;
@@ -396,14 +396,14 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
 #endif  
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                                 */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
     }
 #endif
     
 #if OS_CFG_ARG_CHK_EN > 0u    
-    if(p_mutex == RT_NULL)/*检查互斥量指针是否为空*/
+    if(p_mutex == RT_NULL)                                  /* 检查互斥量指针是否为空                                 */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
@@ -428,16 +428,18 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     }    
 #endif
     
-    /*在RTT中timeout为0表示不阻塞,为RT_WAITING_FOREVER表示永久阻塞,
-    这与uCOS-III有所不同,因此需要转换*/
+    /*
+        在RTT中timeout为0表示不阻塞,为RT_WAITING_FOREVER表示永久阻塞,
+        这与uCOS-III有所不同,因此需要转换
+    */
     if((opt & OS_OPT_PEND_NON_BLOCKING) == (OS_OPT)0)
     {
-        if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否被锁*/
+        if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)      /* 检查调度器是否被锁                                     */
         {
             *p_err = OS_ERR_SCHED_LOCKED;
             return;         
         }        
-        if(timeout == 0)/*在uCOS-III中timeout=0表示永久阻塞*/
+        if(timeout == 0)                                    /* 在uCOS-III中timeout=0表示永久阻塞                      */
         {
             time = RT_WAITING_FOREVER;
         }
@@ -569,25 +571,25 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if (OSIntNestingCtr > (OS_NESTING_CTR)0u) {                 /* Not allowed to Pend Abort from an ISR                  */
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0u) {             /* Not allowed to Pend Abort from an ISR                  */
        *p_err =  OS_ERR_PEND_ABORT_ISR;
         return ((OS_OBJ_QTY)0u);
     }
 #endif
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                                 */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                                 */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (0u);
     }
 #endif
     
 #if OS_CFG_ARG_CHK_EN > 0u
-    if (p_mutex == (OS_MUTEX *)0) {                             /* Validate 'p_sem'                                       */
+    if (p_mutex == (OS_MUTEX *)0) {                         /* Validate 'p_sem'                                       */
        *p_err =  OS_ERR_OBJ_PTR_NULL;
         return ((OS_OBJ_QTY)0u);
     }
-    switch (opt) {                                              /* Validate 'opt'                                         */
+    switch (opt) {                                          /* Validate 'opt'                                         */
         case OS_OPT_PEND_ABORT_1:
         case OS_OPT_PEND_ABORT_ALL:
         case OS_OPT_PEND_ABORT_1   | OS_OPT_POST_NO_SCHED:
@@ -608,7 +610,7 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
 #endif  
     
     CPU_CRITICAL_ENTER();
-    if(rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))/*若没有线程等待信号量*/ 
+    if(rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))/* 若没有线程等待信号量                               */ 
     {
         CPU_CRITICAL_EXIT(); 
        *p_err =  OS_ERR_PEND_ABORT_NONE;
@@ -629,9 +631,9 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
     
     CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold; /*更新互斥量的嵌套值*/
-    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/*更新互斥量原始优先级*/
-    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;/*更新互斥量所拥有的任务指针*/
+    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* 更新互斥量的嵌套值                                     */
+    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/* 更新互斥量原始优先级                             */
+    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;   /* 更新互斥量所拥有的任务指针                             */
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
     {
@@ -641,7 +643,7 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
     }
     else
     {
-        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
+        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");     /* 若为空,则清空当前.DbgNamePtr                           */
     }
 #endif
 #endif
@@ -712,7 +714,7 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_POST_ISR;
         return;
@@ -720,14 +722,14 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
 #endif 
     
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                                 */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
     }
 #endif
     
 #if OS_CFG_ARG_CHK_EN > 0u    
-    if(p_mutex == RT_NULL)/*检查指针是否为空*/
+    if(p_mutex == RT_NULL)                                  /* 检查指针是否为空                                       */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
@@ -755,16 +757,16 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
     rt_err = rt_mutex_release(&p_mutex->Mutex);
     *p_err = rt_err_to_ucosiii(rt_err);
     /*只有已经拥有互斥量控制权的线程才能释放*/
-    if(rt_err == -RT_ERROR)/*rt_mutex_release返回-RT_ERROR表示该线程非掌握互斥量的线程*/
+    if(rt_err == -RT_ERROR)                                 /* rt_mutex_release返回-RT_ERROR表示该线程非掌握互斥量的线程*/
     {
         *p_err = OS_ERR_MUTEX_NOT_OWNER;
     }
     
     CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold; /*更新互斥量的嵌套值*/
-    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/*更新互斥量原始优先级*/
-    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;/*更新互斥量所拥有的任务指针*/
+    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* 更新互斥量的嵌套值                                     */
+    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority; /* 更新互斥量原始优先级                            */
+    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;   /* 更新互斥量所拥有的任务指针                             */
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
     {
