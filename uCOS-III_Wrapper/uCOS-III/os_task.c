@@ -266,7 +266,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_TASK_CREATE_ISR;
         return;
@@ -347,8 +347,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #if OS_CFG_TASK_SEM_EN > 0u
     p_tcb->SemCreateSuc = RT_FALSE;
 #endif
-    p_tcb->ExtPtr = p_ext;/*用户附加区指针*/
-    p_tcb->SuspendCtr = 0;/*嵌套挂起为0层*/
+    p_tcb->ExtPtr = p_ext;                                  /* 用户附加区指针                                         */
+    p_tcb->SuspendCtr = 0;                                  /* 嵌套挂起为0层                                          */
     
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_tcb->TimeQuanta    = time_quanta;                     /* Save the #ticks for time slice (0 means not sliced)    */
@@ -369,10 +369,10 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     CPU_CRITICAL_EXIT();
     
 #if OS_CFG_TASK_Q_EN > 0u   
-    if(q_size>0)/*开启任务内建消息队列*/
+    if(q_size>0)                                            /* 开启任务内建消息队列                                   */
     {
         OSQCreate(&p_tcb->MsgQ, (CPU_CHAR*)p_name, q_size, &err);
-        if(err != OS_ERR_NONE)/*任务内建消息队列创建失败*/
+        if(err != OS_ERR_NONE)                              /* 任务内建消息队列创建失败                               */
         {
             CPU_CRITICAL_ENTER();
             p_tcb->MsgCreateSuc = RT_FALSE;
@@ -391,8 +391,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #endif
 #if OS_CFG_TASK_SEM_EN > 0u    
     /*创建任务内建信号量*/
-    OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)p_name,0,&err);/*任务内建信号量value初始化为0*/
-    if(err != OS_ERR_NONE)/*任务内建信号量创建失败*/
+    OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)p_name,0,&err);      /* 任务内建信号量value初始化为0                           */
+    if(err != OS_ERR_NONE)                                  /* 任务内建信号量创建失败                                 */
     {
         CPU_CRITICAL_ENTER(); 
         p_tcb->SemCreateSuc = RT_FALSE;
@@ -407,7 +407,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     }
 #endif    
     CPU_CRITICAL_ENTER();
-#if defined(OS_CFG_TLS_TBL_SIZE) && (OS_CFG_TLS_TBL_SIZE > 0u)/*线程私有变量暂时没有实现*/
+#if defined(OS_CFG_TLS_TBL_SIZE) && (OS_CFG_TLS_TBL_SIZE > 0u)/* 线程私有变量暂时没有实现                             */
     for (id = 0u; id < OS_CFG_TLS_TBL_SIZE; id++) {
         p_tcb->TLS_Tbl[id] = (OS_TLS)0;
     }
@@ -434,16 +434,15 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     {
         return;
     }
-     
-    /*调用钩子函数*/
-    OSTaskCreateHook(p_tcb);
+
+    OSTaskCreateHook(p_tcb);                                /* 调用钩子函数                                           */
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
     CPU_CRITICAL_ENTER();
 #if OS_CFG_DBG_EN > 0u
-    OS_TaskDbgListAdd(p_tcb);/*将任务加入到Debug链表中*/
+    OS_TaskDbgListAdd(p_tcb);                               /* 将任务加入到Debug链表中                                */
 #endif    
-    OSTaskQty++; /* Increment the #tasks counter */
+    OSTaskQty++;                                            /* Increment the #tasks counter                           */
 
 #if (CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO)
     p_stk_limit = p_stk_base + stk_limit;
@@ -451,7 +450,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_stk_limit = p_stk_base + (stk_size - 1u) - stk_limit;
 #endif 
 #if OS_CFG_DBG_EN > 0u    
-    p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp;/* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
+    p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp;         /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新 */
 #endif
     p_tcb->Opt = opt;
     p_tcb->StkSize = stk_size;
@@ -714,7 +713,7 @@ void  *OSTaskQPend (OS_TICK       timeout,
       
     p_tcb = OSTCBCurPtr;
     
-    if(p_tcb->MsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
+    if(p_tcb->MsgCreateSuc == RT_TRUE)                      /* 检查任务内建消息队列是否创建成功                       */
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_TASK_Q;
         return OSQPend(&p_tcb->MsgQ,timeout,opt,p_msg_size,p_ts,p_err);
@@ -880,7 +879,7 @@ void  OSTaskQPost (OS_TCB       *p_tcb,
         p_tcb = OSTCBCurPtr;
     }
     
-    if(p_tcb->MsgCreateSuc == RT_TRUE)/*检查任务内建消息队列是否创建成功*/
+    if(p_tcb->MsgCreateSuc == RT_TRUE)                      /* 检查任务内建消息队列是否创建成功                       */
     {
         OSQPost(&p_tcb->MsgQ,p_void,msg_size,opt,p_err);
     }
@@ -1104,7 +1103,7 @@ void  OSTaskResume (OS_TCB  *p_tcb,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u       
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                       /* 检查是否在中断中运行                             */
     {
         *p_err = OS_ERR_TASK_RESUME_ISR;
         return;
@@ -1113,19 +1112,19 @@ void  OSTaskResume (OS_TCB  *p_tcb,
     
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                       /* Is the kernel running?                           */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
     }
 #endif
     
-    if(p_tcb == RT_NULL)/*检查TCB指针是否为空*/
+    if(p_tcb == RT_NULL)                                          /* 检查TCB指针是否为空                              */
     {
         p_tcb = OSTCBCurPtr;
     }
     
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(rt_thread_self() == &p_tcb->Task)/*检查任务是否企图自己恢复自己*/
+    if(rt_thread_self() == &p_tcb->Task)                          /* 检查任务是否企图自己恢复自己                     */
     {
         *p_err = OS_ERR_TASK_RESUME_SELF;
         return;
@@ -1214,12 +1213,12 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
 #endif
     
     p_tcb = OSTCBCurPtr;   
-    if(p_tcb->SemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
+    if(p_tcb->SemCreateSuc == RT_TRUE)                            /* 检查任务内建信号量是否创建成功                   */
     {
         CPU_CRITICAL_ENTER();
-        p_tcb->PendOn = OS_TASK_PEND_ON_TASK_SEM;/*设置任务等待状态*/
+        p_tcb->PendOn = OS_TASK_PEND_ON_TASK_SEM;                 /* 设置任务等待状态                                 */
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-        p_tcb->SemCtr = p_tcb->Sem.Sem.value;/*更新value*/
+        p_tcb->SemCtr = p_tcb->Sem.Sem.value;                     /* 更新value                                        */
 #endif
         CPU_CRITICAL_EXIT();
         
@@ -1227,7 +1226,7 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
         
         CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-        p_tcb->SemCtr = p_tcb->Sem.Sem.value;/*更新value*/
+        p_tcb->SemCtr = p_tcb->Sem.Sem.value;                     /* 更新value                                        */
 #endif
         CPU_CRITICAL_EXIT();
         return ctr;
@@ -1390,7 +1389,7 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
     {
         p_tcb = OSTCBCurPtr;
     }
-    if(p_tcb->SemCreateSuc == RT_TRUE)/*检查任务内建信号量是否创建成功*/
+    if(p_tcb->SemCreateSuc == RT_TRUE)                      /* 检查任务内建信号量是否创建成功                         */
     {
         ctr = OSSemPost(&p_tcb->Sem,opt,p_err);
         CPU_CRITICAL_ENTER();
@@ -1444,7 +1443,7 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u      
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_SET_ISR;
         return ((OS_SEM_CTR)0);
@@ -1458,9 +1457,9 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
     
     CPU_CRITICAL_ENTER();
     ctr = p_tcb->Sem.Sem.value;
-    p_tcb->Sem.Sem.value = (OS_SEM_CTR)cnt;/*设置RTT信号量value*/
+    p_tcb->Sem.Sem.value = (OS_SEM_CTR)cnt;                 /* 设置RTT信号量value                                     */
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_tcb->SemCtr = p_tcb->Sem.Sem.value;/*更新.SemCtr*/
+    p_tcb->SemCtr = p_tcb->Sem.Sem.value;                   /* 更新.SemCtr                                            */
 #endif
     CPU_CRITICAL_EXIT();
     *p_err = OS_ERR_NONE;
@@ -1527,7 +1526,7 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_TASK_STK_CHK_ISR;
         return;
