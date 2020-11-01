@@ -563,7 +563,7 @@
 
 **[bug fix]** 修复`OSQDel()`函数忘记回收消息内存池导致内存泄漏的问题
 
-**[adjust] ** 整理`os_q.c`、`os_mem.c`、`os_core.c`、`os_core.c`、`os_flag.c`、`os_stat.c`、`os_task.c`、`os_time.c`、`os_tmr.c`、`os_sem.c`文件注释格式
+**[adjust]** 整理`os_q.c`、`os_mem.c`、`os_core.c`、`os_core.c`、`os_flag.c`、`os_stat.c`、`os_task.c`、`os_time.c`、`os_tmr.c`、`os_sem.c`文件注释格式
 
 
 

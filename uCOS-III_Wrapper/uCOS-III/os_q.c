@@ -337,7 +337,6 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_mq_detach(&p_q->Msg);
                 *p_err = rt_err_to_ucosiii(rt_err);
-                RT_KERNEL_FREE(p_q->p_pool);
             }
             else
             {
@@ -349,12 +348,12 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
         case OS_OPT_DEL_ALWAYS:
             rt_err = rt_mq_detach(&p_q->Msg);
             *p_err = rt_err_to_ucosiii(rt_err);
-            RT_KERNEL_FREE(p_q->p_pool);
             break;
     }
     
     if(*p_err == OS_ERR_NONE)
     {
+        RT_KERNEL_FREE(p_q->p_pool);
         CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if OS_CFG_DBG_EN > 0u
@@ -443,6 +442,7 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
     CPU_CRITICAL_ENTER();
     while(p_q->Msg.entry>0)
     {
+        /* 实现参见了rt_mq_recv函数 */
         msg = (struct _rt_mq_message *)(p_q->Msg.msg_queue_head);/* get message from queue                            */
         p_q->Msg.msg_queue_head = msg->next;                /* move message queue head                                */
         if (p_q->Msg.msg_queue_tail == msg)                 /* reach queue tail, set to NULL                          */
