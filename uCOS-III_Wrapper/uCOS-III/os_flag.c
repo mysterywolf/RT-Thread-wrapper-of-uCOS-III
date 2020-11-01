@@ -124,7 +124,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 #endif    
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_CREATE_ISR;
         return;
@@ -132,12 +132,12 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 #endif    
     
 #if OS_CFG_ARG_CHK_EN > 0u    
-    if(p_grp == RT_NULL)/*检查事件标志组指针是否为空*/
+    if(p_grp == RT_NULL)                                    /* 检查事件标志组指针是否为空                             */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
     }
-    if(p_name == RT_NULL)/*检查事件标志组名指针是否为空*/
+    if(p_name == RT_NULL)                                   /* 检查事件标志组名指针是否为空                           */
     {
         *p_err = OS_ERR_NAME;
         return;
@@ -158,7 +158,6 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
         return;       
     }   
 #endif
- 
     /*在uCOS中事件是直接被插入到链表,不按照优先级排列*/
     rt_err = rt_event_init(&p_grp->FlagGrp,(const char*)p_name,RT_IPC_FLAG_FIFO);
     *p_err = rt_err_to_ucosiii(rt_err);
@@ -166,7 +165,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
     {
         return;
     }
-    
+
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
     CPU_CRITICAL_ENTER();
     p_grp->Type    = OS_OBJ_TYPE_FLAG;                      /* Set to event flag group type                           */
@@ -241,7 +240,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                               */
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0;
@@ -256,7 +255,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 #endif
     
 #if OS_CFG_ARG_CHK_EN > 0u    
-    if(p_grp == RT_NULL)/*检查指针是否为空*/
+    if(p_grp == RT_NULL)                                        /* 检查指针是否为空                                   */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
@@ -289,7 +288,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
     {
         case OS_OPT_DEL_NO_PEND:
             CPU_CRITICAL_ENTER();
-            if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))/*若没有线程等待信号量                        */
+            if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread))) /* 若没有线程等待信号量                      */
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_event_detach(&p_grp->FlagGrp);
@@ -424,7 +423,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(OSIntNestingCtr> (OS_NESTING_CTR)0)/*检查是否在中断中运行*/
+    if(OSIntNestingCtr> (OS_NESTING_CTR)0)                      /* 检查是否在中断中运行                               */
     {
         *p_err = OS_ERR_PEND_ISR;
         return ((OS_OBJ_QTY)0);
@@ -439,7 +438,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 #endif
     
 #if OS_CFG_ARG_CHK_EN > 0u    
-    if(p_grp == RT_NULL)/*检查指针是否为空*/
+    if(p_grp == RT_NULL)                                        /* 检查指针是否为空                                   */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return ((OS_OBJ_QTY)0);
@@ -478,8 +477,8 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     }  
 #endif    
    
-    /*提取opt*/
-    if ((opt & OS_OPT_PEND_FLAG_CONSUME) != (OS_OPT)0) {    /* See if we need to consume the flags                    */
+    /* 提取opt */
+    if ((opt & OS_OPT_PEND_FLAG_CONSUME) != (OS_OPT)0) {        /* See if we need to consume the flags                */
         consume = DEF_TRUE;
     } else {
         consume = DEF_FALSE;
@@ -526,7 +525,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     */
     if((opt & OS_OPT_PEND_NON_BLOCKING) == (OS_OPT)0)
     {
-        if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)/*检查调度器是否被锁*/
+        if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)          /* 检查调度器是否被锁                                 */
         {
             *p_err = OS_ERR_SCHED_LOCKED;
             return ((OS_OBJ_QTY)0);         
@@ -683,7 +682,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
 #endif  
     
     CPU_CRITICAL_ENTER();
-    if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))/*若没有线程等待信号量*/ 
+    if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))/* 若没有线程等待信号量                               */ 
     {
         CPU_CRITICAL_EXIT(); 
        *p_err =  OS_ERR_PEND_ABORT_NONE;
@@ -711,7 +710,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
     }
     else
     {
-        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
+        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* 若为空,则清空当前.DbgNamePtr                       */
     }
 #endif 
     CPU_CRITICAL_EXIT();  
@@ -757,15 +756,15 @@ OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err)
 #endif
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                             */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (0u);
     }
 #endif
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if (OSIntNestingCtr > (OS_NESTING_CTR)0) {              /* See if called from ISR ...                             */
-       *p_err = OS_ERR_PEND_ISR;                            /* ... can't get from an ISR                              */
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0) {                  /* See if called from ISR ...                         */
+       *p_err = OS_ERR_PEND_ISR;                                /* ... can't get from an ISR                          */
         return ((OS_FLAGS)0);
     }
 #endif
@@ -842,14 +841,14 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
 #endif    
     
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                             */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (0u);
     }
 #endif
     
 #if OS_CFG_ARG_CHK_EN > 0u   
-    if(p_grp == RT_NULL) /*检查指针是否为空*/
+    if(p_grp == RT_NULL)                                        /* 检查指针是否为空                                   */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
@@ -895,12 +894,12 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     }
     else
     {
-        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");/*若为空,则清空当前.DbgNamePtr*/
+        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* 若为空,则清空当前.DbgNamePtr                       */
     }
 #endif   
     CPU_CRITICAL_EXIT();
     
-    return p_grp->FlagGrp.set;/*返回执行后事件标志组的值*/
+    return p_grp->FlagGrp.set;                                  /* 返回执行后事件标志组的值                           */
 }
 
 /*

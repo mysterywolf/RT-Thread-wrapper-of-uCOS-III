@@ -320,6 +320,7 @@
 - 整理`os_q.c`注释格式
 - 整理`os_mem.c`注释格式
 - 整理`os_core.c`注释格式
+- 整理`os_flag.c`注释格式
 
 
 
@@ -556,11 +557,7 @@
 
 **[bug fix]** 修复`OSQDel()`函数忘记回收消息内存池导致内存泄漏的问题
 
-**[adjust] ** 整理`os_q.c`注释格式
-
-**[adjust]**  整理`os_mem.c`注释格式
-
-**[adjust]**  整理`os_core.c`注释格式
+**[adjust] ** 整理`os_q.c`、`os_mem.c`、`os_core.c`、`os_core.c`、`os_flag.c`文件注释格式
 
 
 
