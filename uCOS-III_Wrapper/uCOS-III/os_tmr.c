@@ -154,7 +154,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 #endif   
     
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                      /* 检查是否在中断中运行                                */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                      /* 检查是否在中断中运行                              */
     {
         *p_err = OS_ERR_TMR_ISR;
         return;
@@ -162,7 +162,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 #endif 
     
 #if OS_CFG_ARG_CHK_EN > 0u    
-    if(p_tmr == RT_NULL)                                         /* 检查指针是否为空                                    */
+    if(p_tmr == RT_NULL)                                         /* 检查指针是否为空                                  */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
@@ -174,7 +174,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
                  return;
              }
              
-             if (p_callback == (OS_TMR_CALLBACK_PTR)0) {        /* No point in a periodic timer without a callback      */
+             if (p_callback == (OS_TMR_CALLBACK_PTR)0) {         /* No point in a periodic timer without a callback   */
                 *p_err = OS_ERR_TMR_INVALID_CALLBACK;
                  return;
              }
@@ -194,19 +194,21 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    if(rt_object_get_type(&p_tmr->Tmr.parent) == RT_Object_Class_Timer) /*判断内核对象是否已经是定时器，即是否已经创建过*/
+    if(rt_object_get_type(&p_tmr->Tmr.parent) == RT_Object_Class_Timer) /* 判断内核对象是否已经是定时器，即是否已经创建过 */
     {
         *p_err = OS_ERR_OBJ_CREATED;
         return;       
     }
 #endif
     
-    /*uCOS-III原版定时器回调函数就是在定时器线程中调用的,而非在中断中调用,
-    因此要使用RTT的RT_TIMER_FLAG_SOFT_TIMER选项,在此之前应将宏定义RT_USING_TIMER_SOFT置1*/
+    /*
+        uCOS-III原版定时器回调函数就是在定时器线程中调用的,而非在中断中调用,
+        因此要使用RTT的RT_TIMER_FLAG_SOFT_TIMER选项,在此之前应将宏定义RT_USING_TIMER_SOFT置1
+    */
     if(opt == OS_OPT_TMR_ONE_SHOT)
     {
         rt_flag = RT_TIMER_FLAG_ONE_SHOT|RT_TIMER_FLAG_SOFT_TIMER;
-        time = dly * (1000 / OS_CFG_TMR_TASK_RATE_HZ);     /*RTT和uCOS-III在定时器时钟源的设计不同,需要进行转换       */  
+        time = dly * (1000 / OS_CFG_TMR_TASK_RATE_HZ);           /* RTT和uCOS-III在定时器时钟源的设计不同,需要进行转换*/  
     }
     else if(opt == OS_OPT_TMR_PERIODIC)
     {
@@ -355,11 +357,11 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
 
     switch (p_tmr->State) {
         case OS_TMR_STATE_RUNNING:
-        case OS_TMR_STATE_STOPPED:                              /* Timer has not started or ...                           */
-        case OS_TMR_STATE_COMPLETED:                            /* ... timer has completed the ONE-SHOT time              */
+        case OS_TMR_STATE_STOPPED:                              /* Timer has not started or ...                          */
+        case OS_TMR_STATE_COMPLETED:                            /* ... timer has completed the ONE-SHOT time             */
             break;
         
-        case OS_TMR_STATE_UNUSED:                               /* Already deleted                                        */
+        case OS_TMR_STATE_UNUSED:                               /* Already deleted                                       */
             *p_err = OS_ERR_TMR_INACTIVE;
             return (DEF_FALSE);
         
@@ -777,14 +779,14 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if (OSIntNestingCtr > (OS_NESTING_CTR)0) {                  /* See if trying to call from an ISR                              */
+    if (OSIntNestingCtr > (OS_NESTING_CTR)0) {                  /* See if trying to call from an ISR                     */
        *p_err = OS_ERR_TMR_ISR;
         return (OS_TMR_STATE_UNUSED);
     }
 #endif
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
-    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                                         */
+    if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                                */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (OS_TMR_STATE_UNUSED);
     }
@@ -798,7 +800,7 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer){/* Make sure timer was created                            */
+    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer){/* Make sure timer was created                   */
        *p_err = OS_ERR_OBJ_TYPE;
         return (OS_TMR_STATE_UNUSED);
     }

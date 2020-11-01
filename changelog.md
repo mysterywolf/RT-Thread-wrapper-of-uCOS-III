@@ -325,6 +325,7 @@
 - 整理`os_stat.c`注释格式
 - 整理`os_task.c`注释格式
 - 整理`os_time.c`注释格式
+- 整理`os_tmr.c`注释格式
 
 
 
