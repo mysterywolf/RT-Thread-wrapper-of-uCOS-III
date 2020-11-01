@@ -318,6 +318,7 @@
 
 - 修复`OSQDel()`函数忘记回收消息内存池导致内存泄漏的问题
 - 整理`os_q.c`注释格式
+- 整理`os_mem.c`注释格式
 
 
 
@@ -548,15 +549,15 @@
 
 **[del]** 删除无用配置宏定义
 
-优化`PKG_USING_UCOSIII_WRAPPER_TINY`
+**[adjust]** 优化`PKG_USING_UCOSIII_WRAPPER_TINY`
 
 **[del]** 删除`OSTaskSuspend()`函数无用的选择分支
 
 **[bug fix]** 修复`OSQDel()`函数忘记回收消息内存池导致内存泄漏的问题
 
-整理`os_q.c`注释格式
+**[adjust] ** 整理`os_q.c`注释格式
 
-
+**[adjust]**  整理`os_mem.c`注释格式
 
 
 
