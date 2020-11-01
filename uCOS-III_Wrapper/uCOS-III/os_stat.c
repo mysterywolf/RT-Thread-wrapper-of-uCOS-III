@@ -249,19 +249,19 @@ void  OS_StatTask (void  *p_arg)
         CPU_CRITICAL_EXIT();
 
         if (OSStatTaskCtrMax > OSStatTaskCtrRun) {          /* Compute CPU Usage with best resolution                 */
-            if (OSStatTaskCtrMax < 400000u) {                                        /*            1 to       400,000 */
+            if (OSStatTaskCtrMax < 400000u) {               /*            1 to       400,000                          */
                 ctr_mult = 10000u;
                 ctr_div  =     1u;
-            } else if (OSStatTaskCtrMax <   4000000u) {                              /*      400,000 to     4,000,000 */
+            } else if (OSStatTaskCtrMax <   4000000u) {     /*      400,000 to     4,000,000                          */
                 ctr_mult =  1000u;
                 ctr_div  =    10u;
-            } else if (OSStatTaskCtrMax <  40000000u) {                              /*    4,000,000 to    40,000,000 */
+            } else if (OSStatTaskCtrMax <  40000000u) {     /*    4,000,000 to    40,000,000                          */
                 ctr_mult =   100u;
                 ctr_div  =   100u;
-            } else if (OSStatTaskCtrMax < 400000000u) {                              /*   40,000,000 to   400,000,000 */
+            } else if (OSStatTaskCtrMax < 400000000u) {     /*   40,000,000 to   400,000,000                          */
                 ctr_mult =    10u;
                 ctr_div  =  1000u;
-            } else {                                                                 /*  400,000,000 and up           */
+            } else {                                        /*  400,000,000 and up                                    */
                 ctr_mult =     1u;
                 ctr_div  = 10000u;
             }
