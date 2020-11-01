@@ -680,7 +680,7 @@ void  OS_IdleTask (void)
 #endif
     CPU_CRITICAL_EXIT();
 
-    OSIdleTaskHook();                                   /* Call user definable HOOK                                   */
+    OSIdleTaskHook();                                           /* Call user definable HOOK                           */
 }
 
 /*
@@ -707,7 +707,7 @@ void  OS_IdleTaskInit (OS_ERR  *p_err)
     }
 #endif
     OSIdleTaskCtr = (OS_IDLE_CTR)0;
-    rt_thread_idle_sethook(OS_IdleTask);                    /*向RTT注册μCOS-III兼容层空闲任务(实则为回调函数)         */ 
+    rt_thread_idle_sethook(OS_IdleTask);                        /* 向RTT注册μCOS-III兼容层空闲任务(实则为回调函数)    */ 
 }
 
 #endif
