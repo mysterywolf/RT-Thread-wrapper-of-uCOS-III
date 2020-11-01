@@ -324,6 +324,7 @@
 - 整理`os_mutex.c`注释格式
 - 整理`os_stat.c`注释格式
 - 整理`os_task.c`注释格式
+- 整理`os_time.c`注释格式
 
 
 
@@ -560,7 +561,7 @@
 
 **[bug fix]** 修复`OSQDel()`函数忘记回收消息内存池导致内存泄漏的问题
 
-**[adjust] ** 整理`os_q.c`、`os_mem.c`、`os_core.c`、`os_core.c`、`os_flag.c`文件注释格式
+**[adjust] ** 整理`os_q.c`、`os_mem.c`、`os_core.c`、`os_core.c`、`os_flag.c`、`os_stat.c`、`os_task.c`文件注释格式
 
 
 

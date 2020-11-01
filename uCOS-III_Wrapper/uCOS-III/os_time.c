@@ -404,7 +404,7 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
     
     CPU_CRITICAL_ENTER();
     switch (p_tcb->TaskState) {
-        case OS_TASK_STATE_RDY:                                 /* Cannot Abort delay if task is ready                  */
+        case OS_TASK_STATE_RDY:                             /* Cannot Abort delay if task is ready                    */
         case OS_TASK_STATE_PEND:
         case OS_TASK_STATE_PEND_TIMEOUT:
         case OS_TASK_STATE_SUSPENDED:
