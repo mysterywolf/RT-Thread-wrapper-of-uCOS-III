@@ -874,7 +874,7 @@ struct  os_sem {
 };
 ```
 
-​	可以看到，在定义`PKG_USING_UCOSIII_WRAPPER_TINY`后，`OS_SEM`结构体得到了大幅度精简。该模式可满足所有API的基本兼容需求，一般无特殊要求建议勾选该选型。
+​	可以看到，在定义`PKG_USING_UCOSIII_WRAPPER_TINY`后，`OS_SEM`结构体得到了大幅度精简。该模式可满足所有API的基本兼容需求，**建议勾选该选项**。
 
 
 
