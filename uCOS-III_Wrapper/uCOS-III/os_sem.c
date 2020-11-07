@@ -619,7 +619,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
     }
     CPU_CRITICAL_EXIT();
     
-    if(opt&OS_OPT_PEND_ABORT_ALL)
+    if(opt & OS_OPT_PEND_ABORT_ALL)
     {
         abort_tasks = rt_ipc_pend_abort_all(&(p_sem->Sem.parent.suspend_thread));
     }
@@ -647,7 +647,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
 #endif
     CPU_CRITICAL_EXIT();
     
-    if(!(opt&OS_OPT_POST_NO_SCHED))
+    if(!(opt & OS_OPT_POST_NO_SCHED))
     {
         rt_schedule();
     }

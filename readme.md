@@ -269,6 +269,18 @@ void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
 
 
 
+在最新版的uCOS-III中，多内核对象等待功能已经被uCOS官方删除，因此本兼容层也没有予以支持：
+
+```c
+OS_OBJ_QTY  OSPendMulti (OS_PEND_DATA  *p_pend_data_tbl,
+                         OS_OBJ_QTY     tbl_size,
+                         OS_TICK        timeout,
+                         OS_OPT         opt,
+                         OS_ERR        *p_err);
+```
+
+
+
 ## 3.2 功能受限API（仅8个，全部为轻度受限，对正常使用没有影响）
 
 功能受限函数是指该函数虽然在兼容层中实现，但是实现不完全。即无法完全实现该函数在原版μCOS-III中的所有功能，每一个API函数的注释上如果opt字段可选项之前出现了减号'-'，即表示该功能在本兼容层中无法实现。

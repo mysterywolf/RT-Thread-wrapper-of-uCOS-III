@@ -690,7 +690,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
     }
     CPU_CRITICAL_EXIT();
     
-    if(opt&OS_OPT_PEND_ABORT_ALL)
+    if(opt & OS_OPT_PEND_ABORT_ALL)
     {
         abort_tasks = rt_ipc_pend_abort_all(&(p_grp->FlagGrp.parent.suspend_thread));
     }
@@ -715,7 +715,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
 #endif 
     CPU_CRITICAL_EXIT();  
     
-    if(!(opt&OS_OPT_POST_NO_SCHED))
+    if(!(opt & OS_OPT_POST_NO_SCHED))
     {
         rt_schedule();
     }

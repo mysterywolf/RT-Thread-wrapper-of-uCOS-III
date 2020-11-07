@@ -773,7 +773,7 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
     }
     CPU_CRITICAL_EXIT();
     
-    if(opt&OS_OPT_PEND_ABORT_ALL)
+    if(opt & OS_OPT_PEND_ABORT_ALL)
     {
         abort_tasks = rt_ipc_pend_abort_all(&(p_q->Msg.parent.suspend_thread));
     }
@@ -797,7 +797,7 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
     }
     CPU_CRITICAL_EXIT(); 
 #endif
-    if(!(opt&OS_OPT_POST_NO_SCHED))
+    if(!(opt & OS_OPT_POST_NO_SCHED))
     {
         rt_schedule();
     }
