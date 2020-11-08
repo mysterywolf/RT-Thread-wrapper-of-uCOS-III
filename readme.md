@@ -259,15 +259,13 @@ int main(void) /*RT-Thread main线程*/
 
 
 # 3 接口
-## 3.1 没有实现兼容的API（仅1个）
+## 3.1 没有实现兼容的API（仅2个）
 
 虽然RT-Thread没有任务内建消息队列、任务内建信号量、任务内建寄存器机制，但是**本兼容层均已实现，可以正常兼容**。但由于RT-Thread没有提供相关接口，**以下μCOS-III API无法兼容**：
 
  ```c
 void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
  ```
-
-
 
 在最新版的uCOS-III中，多内核对象等待功能已经被uCOS官方删除，因此本兼容层也没有予以支持：
 
