@@ -61,7 +61,7 @@ RT-Thread操作系统的μCOS-II兼容层：https://github.com/mysterywolf/RT-Th
 | RT-Thread nano |  3.1.3  |                                           |
 |   μC/OS-III    | 3.03.00 | 兼容层兼容3.00.00-3.08.00全部μCOS-III版本 |
 |     μC/CPU     | 1.30.00 |                                           |
-|     μC/LIB     | 1.39.00 |           兼容层完整兼容μC/LIB            |
+|     μC/LIB     | 1.39.00 |                                           |
 
 
 
