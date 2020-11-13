@@ -8,7 +8,7 @@
  * 2020-07-12     Meco Man     the first verion
  */
  
-#include <os.h>
+#include "os.h"
 #include <string.h>
 #include <rthw.h>
 

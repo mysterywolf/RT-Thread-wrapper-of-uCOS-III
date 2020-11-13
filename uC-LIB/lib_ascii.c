@@ -71,7 +71,7 @@
 
 #define    MICRIUM_SOURCE
 #define    LIB_ASCII_MODULE
-#include  <lib_ascii.h>
+#include  "lib_ascii.h"
 
 
 /*

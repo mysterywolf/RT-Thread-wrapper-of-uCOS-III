@@ -58,7 +58,7 @@
 
 #define    MICRIUM_SOURCE
 #define    LIB_MATH_MODULE
-#include  <lib_math.h>
+#include  "lib_math.h"
 
 
 /*

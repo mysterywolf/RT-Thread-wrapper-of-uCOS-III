@@ -93,9 +93,9 @@
 *********************************************************************************************************
 */
 
-#include  <cpu.h>
+#include  "cpu.h"
 #include  <lib_def.h>
-#include  <cpu_cfg.h>
+#include  "cpu_cfg.h"
 
 #if (CPU_CFG_NAME_EN == DEF_ENABLED)
 #include  <lib_mem.h>

@@ -58,7 +58,7 @@
 
 #define    MICRIUM_SOURCE
 #define    LIB_STR_MODULE
-#include  <lib_str.h>
+#include  "lib_str.h"
 
 
 /*

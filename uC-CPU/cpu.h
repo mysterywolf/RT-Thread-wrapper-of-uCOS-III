@@ -81,7 +81,7 @@ extern  "C" {
 #endif
 
 #include <rtdef.h>
-#include <cpu_def.h>
+#include "cpu_def.h"
 #include <rtconfig.h>
 
 /*

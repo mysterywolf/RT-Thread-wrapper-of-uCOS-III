@@ -75,9 +75,9 @@
 #include <rtthread.h>
 #include <cpu.h>
 #include <cpu_core.h>
-#include <os_type.h>
-#include <os_cfg.h>
-#include <os_cfg_app.h>
+#include "os_type.h"
+#include "os_cfg.h"
+#include "os_cfg_app.h"
 #include <lib_def.h>
 
 
