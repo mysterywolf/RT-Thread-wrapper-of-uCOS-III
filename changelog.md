@@ -333,6 +333,10 @@
 - 细微调整代码格式
 - 增加对老版本`os_pend_multi.c`文件的readme说明
 
+### 2020-11-13
+
+- 对`OSFlagPend()`函数`rt_option`变量赋初值
+
 
 
 # Release
@@ -571,6 +575,8 @@
 **[adjust]** 整理`os_q.c`、`os_mem.c`、`os_core.c`、`os_core.c`、`os_flag.c`、`os_stat.c`、`os_task.c`、`os_time.c`、`os_tmr.c`、`os_sem.c`文件注释格式
 
 **[doc]** 增加对老版本`os_pend_multi.c`文件的readme说明
+
+**[bug fixed]** 对`OSFlagPend()`函数`rt_option`变量赋初值
 
 
 
