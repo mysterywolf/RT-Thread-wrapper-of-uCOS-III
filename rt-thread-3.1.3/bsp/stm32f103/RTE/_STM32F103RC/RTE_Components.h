@@ -1,6 +1,6 @@
 
 /*
- * Auto generated Run-Time-Environment Configuration File
+ * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
  * Project: 'Project' 
@@ -16,8 +16,6 @@
  */
 #define CMSIS_device_header "stm32f10x.h"
 
-/*  RealThread.RT-Thread::RTOS:shell:3.1.3 */
 #define RTE_USING_FINSH
-
 
 #endif /* RTE_COMPONENTS_H */
