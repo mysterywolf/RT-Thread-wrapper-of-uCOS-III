@@ -337,6 +337,10 @@
 
 - 对`OSFlagPend()`函数`rt_option`变量赋初值
 
+### 2020-11-14
+
+- 优化工程文件结构
+
 
 
 # Release
@@ -577,6 +581,8 @@
 **[doc]** 增加对老版本`os_pend_multi.c`文件的readme说明
 
 **[bug fixed]** 对`OSFlagPend()`函数`rt_option`变量赋初值
+
+**[adjust]** 优化工程文件结构
 
 
 

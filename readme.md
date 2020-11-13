@@ -92,18 +92,6 @@ Keil工程路径：*<u>rt-thread-3.1.3/bsp/stm32f103/Project.uvprojx</u>*
 
 
 
-目前仿真工程支持以下型号：
-
-- STM32F103C8
-- STM32F103RB
-- STM32F103RC
-
-上述型号可以通过如图所示方式进行切换。
-
-<img src="docs/pic/stm32f1xx.png" alt="stm32f1xx" style="zoom: 80%;" />
-
-
-
 
 
 ## 2.2 迁移步骤
