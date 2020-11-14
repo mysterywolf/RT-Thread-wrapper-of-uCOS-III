@@ -100,6 +100,7 @@ void sem_example   (void);
 void q_example     (void);
 void task_sem_example (void);
 void suspend_example (void);
+void flag_example(void);
 
 static void AppTaskCreate(void)
 {
@@ -110,4 +111,5 @@ static void AppTaskCreate(void)
 //    q_example();
 //    task_sem_example();
 //    suspend_example();
+    flag_example();
 }

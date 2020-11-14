@@ -406,7 +406,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     rt_uint32_t     recved;
     OS_TCB         *p_tcb;
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
-    rt_thread_t thread;
+    rt_thread_t     thread;
 #endif   
     
     CPU_SR_ALLOC();

@@ -721,6 +721,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\examples\timer_example.c</FilePath>
             </File>
+            <File>
+              <FileName>flag_example.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\examples\flag_example.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

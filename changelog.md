@@ -345,6 +345,10 @@
 - `cpu.h`文件增加`CPU_CFG_STK_ALIGN_BYTES`宏定义
 - 实现对`OS_ERR_PEND_WOULD_BLOCK`错误代码的支持
 
+### 2020-11-15
+
+- 增加`flag_example.c`例程
+
 
 
 # Release
@@ -596,7 +600,7 @@
 
 **[add]** 实现对`OS_ERR_PEND_WOULD_BLOCK`错误代码的支持
 
-
+**[add]** 增加`flag_example.c`例程
 
 
 

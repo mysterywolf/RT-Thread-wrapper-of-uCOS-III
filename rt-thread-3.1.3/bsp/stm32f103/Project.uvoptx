@@ -170,7 +170,7 @@
         <periodic>0</periodic>
         <aLwin>1</aLwin>
         <aCover>0</aCover>
-        <aSer1>0</aSer1>
+        <aSer1>1</aSer1>
         <aSer2>1</aSer2>
         <aPa>0</aPa>
         <viewmode>1</viewmode>
@@ -1012,6 +1012,18 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\examples\timer_example.c</PathWithFileName>
       <FilenameWithoutPath>timer_example.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>6</GroupNumber>
+      <FileNumber>64</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\..\examples\flag_example.c</PathWithFileName>
+      <FilenameWithoutPath>flag_example.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
