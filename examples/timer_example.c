@@ -12,6 +12,8 @@
 
 #include <os.h>
 
+#if OS_CFG_TMR_EN > 0u
+
 #define TASK_PRIORITY         6		/*任务优先级*/
 #define TASK_STACK_SIZE       80	/*任务堆栈大小*/
 #define TASK_TIMESLICE        5		/*任务时间片*/
@@ -79,3 +81,5 @@ void timer_example (void)
             rt_kprintf("task create err:%d\n",err);
         }               
 }
+
+#endif

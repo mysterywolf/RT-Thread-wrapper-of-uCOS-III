@@ -218,16 +218,26 @@ rt_err_t rt_sem_release_all(rt_sem_t sem)
 #if defined RT_USING_FINSH && OS_CFG_DBG_EN > 0u
 static void rt_ucosiii_wrapper_info (int argc, char *argv[])
 {
-#if OS_CFG_STAT_TASK_EN >0u
+#if OS_CFG_STAT_TASK_EN > 0u
     OS_CPU_USAGE cpu_usage;
 #endif
     OS_TCB *p_tcb;
+#if OS_CFG_TMR_EN > 0u
     OS_TMR *p_tmr;
+#endif
+#if OS_CFG_SEM_EN > 0u
     OS_SEM *p_sem;
+#endif
+#if OS_CFG_MUTEX_EN > 0u
     OS_MUTEX *p_mutex;
+#endif
+#if OS_CFG_Q_EN > 0u
     OS_Q *p_q;
+#endif
+#if OS_CFG_FLAG_EN > 0u
     OS_FLAG_GRP *p_flag;
-    
+#endif
+
     CPU_SR_ALLOC();
     
     if(argc == 1)

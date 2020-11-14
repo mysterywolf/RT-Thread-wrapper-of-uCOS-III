@@ -134,9 +134,9 @@ CPU_INT16U  const  OSDbg_PrioTblSize           = sizeof(OSPrioTbl);
 CPU_INT16U  const  OSDbg_PtrSize               = sizeof(void *);               /* Size in Bytes of a pointer          */
 
 
-OS_Q        const  OSDbg_Q                     = { 0u };
 CPU_INT08U  const  OSDbg_QEn                   = OS_CFG_Q_EN;
 #if OS_CFG_Q_EN > 0u
+OS_Q        const  OSDbg_Q                     = { 0u };
 CPU_INT08U  const  OSDbg_QDelEn                = OS_CFG_Q_DEL_EN;
 CPU_INT08U  const  OSDbg_QFlushEn              = OS_CFG_Q_FLUSH_EN;
 CPU_INT08U  const  OSDbg_QPendAbortEn          = OS_CFG_Q_PEND_ABORT_EN;
@@ -400,8 +400,9 @@ void  OS_Dbg_Init (void)
     p_temp = (void const *)&OSDbg_PrioTblSize;
 
     p_temp = (void const *)&OSDbg_PtrSize;
-
+#if OS_CFG_Q_EN > 0u
     p_temp = (void const *)&OSDbg_Q;
+#endif
     p_temp = (void const *)&OSDbg_QEn;
 #if (OS_CFG_Q_EN) > 0u
     p_temp = (void const *)&OSDbg_QDelEn;

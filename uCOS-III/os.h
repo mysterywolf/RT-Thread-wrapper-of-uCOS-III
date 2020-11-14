@@ -442,7 +442,7 @@ typedef  enum  os_err {
 
     OS_ERR_O                         = 24000u,
     OS_ERR_OBJ_CREATED               = 24001u,
-//    OS_ERR_OBJ_DEL                   = 24002u,
+//  OS_ERR_OBJ_DEL                   = 24002u,
     OS_ERR_OBJ_PTR_NULL              = 24003u,
     OS_ERR_OBJ_TYPE                  = 24004u,
 
@@ -1585,6 +1585,10 @@ rt_err_t      rt_sem_release_all        (rt_sem_t sem);
 
 #if OS_CFG_TASK_Q_EN && !OS_CFG_Q_EN
 #error "任务内建消息队列需要消息队列的支持，需要将OS_CFG_Q_EN置1方可使用"
+#endif
+
+#if OS_CFG_TASK_SEM_EN && !OS_CFG_SEM_EN
+#error "任务内建信号量需要信号量的支持，需要将OS_CFG_SEM_EN置1方可使用"
 #endif
 
 #if OS_CFG_TASK_Q_PEND_ABORT_EN && !OS_CFG_Q_PEND_ABORT_EN
