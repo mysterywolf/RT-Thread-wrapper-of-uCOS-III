@@ -175,6 +175,11 @@ typedef  CPU_ADDR    CPU_SIZE_T;                                /* Defines CPU s
 *                                                   memory address after data is pushed onto the stack
 *               (b) CPU_STK_GROWTH_HI_TO_LO     CPU stack pointer decrements to the next lower   stack
 *                                                   memory address after data is pushed onto the stack
+*
+*           (2) Configure CPU_CFG_STK_ALIGN_BYTES with the highest minimum alignement required for
+*               cpu stacks.
+*
+*               (a) ARM Procedure Calls Standard requires an 8 bytes stack alignment.
 *********************************************************************************************************
 */
 
@@ -187,6 +192,7 @@ typedef  CPU_ADDR    CPU_SIZE_T;                                /* Defines CPU s
 typedef  rt_ubase_t             CPU_STK;                        /* Defines CPU stack word size (in octets).             */
 typedef  CPU_ADDR               CPU_STK_SIZE;                   /* Defines CPU stack      size (in number of CPU_STKs). */
 
+#define  CPU_CFG_STK_ALIGN_BYTES  (8u)                          /* Defines CPU stack alignment in bytes. (see Note #2). */
 
 /*
 *********************************************************************************************************
