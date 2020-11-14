@@ -461,7 +461,7 @@ typedef  enum  os_err {
     OS_ERR_PEND_DEL                  = 25005u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_PEND_ISR                  = 25006u,
     OS_ERR_PEND_LOCKED               = 25007u, /*原版3.03/3.08中仅定义未使用*/
-//  OS_ERR_PEND_WOULD_BLOCK          = 25008u,
+    OS_ERR_PEND_WOULD_BLOCK          = 25008u,
 
     OS_ERR_POST_NULL_PTR             = 25101u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_POST_ISR                  = 25102u,

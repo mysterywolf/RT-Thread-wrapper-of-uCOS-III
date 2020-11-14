@@ -345,7 +345,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 *                                OS_ERR_PEND_ABORT         If the pend was aborted by another task
 *                                OS_ERR_PEND_ISR           If you called this function from an ISR and the result
 *                                                          would lead to a suspension.
-*                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but the mutex was not
+*                                OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but the mutex was not
 *                                                          available.
 *                                OS_ERR_SCHED_LOCKED       If you called this function when the scheduler is locked
 *                              - OS_ERR_STATE_INVALID      If the task is in an invalid state
@@ -358,8 +358,6 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 *                              应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : none
-*
-* Note(s)    : 1) RTT在非阻塞模式下不区分OS_ERR_PEND_WOULD_BLOCK还是OS_ERR_TIMEOUT，都按照OS_ERR_TIMEOUT处理
 ************************************************************************************************************************
 */
 
@@ -450,7 +448,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     }
     else
     {
-        time = 0;                                           /* 在RTT中timeout为0表示非阻塞                            */
+        time = RT_WAITING_NO;                               /* 在RTT中timeout为0表示非阻塞                            */
     } 
     
     CPU_CRITICAL_ENTER();
@@ -478,7 +476,11 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     
     rt_err = rt_mutex_take(&p_mutex->Mutex,time);
     *p_err = rt_err_to_ucosiii(rt_err);
-    
+    if(*p_err == OS_ERR_TIMEOUT && time == RT_WAITING_NO)
+    {
+        *p_err = OS_ERR_PEND_WOULD_BLOCK;
+    }
+
     CPU_CRITICAL_ENTER();
     /*更新任务状态*/
     p_tcb->TaskState &= ~OS_TASK_STATE_PEND;

@@ -497,7 +497,7 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
 *                                OS_ERR_OS_NOT_RUNNING     If uC/OS-III is not running yet
 *                                OS_ERR_PEND_ABORT         the pend was aborted
 *                                OS_ERR_PEND_ISR           if you called this function from an ISR
-*                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but the queue was not empty
+*                                OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but the queue was not empty
 *                                OS_ERR_SCHED_LOCKED       the scheduler is locked
 *                                OS_ERR_TIMEOUT            A message was not received within the specified timeout
 *                                                          would lead to a suspension.
@@ -512,8 +512,6 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
 *                            if no message was received or,
 *                            if 'p_q' is a NULL pointer or,
 *                            if you didn't pass a pointer to a queue.
-*
-* Note(s)    : 1) RTT在非阻塞模式下不区分OS_ERR_PEND_WOULD_BLOCK还是OS_ERR_TIMEOUT，都按照OS_ERR_TIMEOUT处理
 ************************************************************************************************************************
 */
 
@@ -611,7 +609,7 @@ void  *OSQPend (OS_Q         *p_q,
     }
     else
     {
-        time = 0;                                           /* 在RTT中timeout为0表示非阻塞                            */
+        time = RT_WAITING_NO;                               /* 在RTT中timeout为0表示非阻塞                            */
     }
     
     CPU_CRITICAL_ENTER();
@@ -635,7 +633,11 @@ void  *OSQPend (OS_Q         *p_q,
                          time);
 
     *p_err = rt_err_to_ucosiii(rt_err);
-                         
+    if(*p_err == OS_ERR_TIMEOUT && time == RT_WAITING_NO)
+    {
+        *p_err = OS_ERR_PEND_WOULD_BLOCK;
+    }
+
     CPU_CRITICAL_ENTER();                
     p_tcb->TaskState &= ~OS_TASK_STATE_PEND;                /* 更新任务状态                                           */
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                /* 清除当前任务等待状态                                   */

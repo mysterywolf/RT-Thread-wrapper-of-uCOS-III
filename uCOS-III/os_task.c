@@ -676,7 +676,7 @@ OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
 *                                OS_ERR_OS_NOT_RUNNING     If uC/OS-III is not running yet
 *                                OS_ERR_PEND_ABORT
 *                                OS_ERR_PEND_ISR           If you called this function from an ISR and the result
-*                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but the queue was not empty
+*                                OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but the queue was not empty
 *                              - OS_ERR_Q_EMPTY
 *                                OS_ERR_SCHED_LOCKED       If the scheduler is locked
 *                                OS_ERR_TIMEOUT            A message was not received within the specified timeout
@@ -691,7 +691,6 @@ OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
 * Returns    : A pointer to the message received or a NULL pointer upon error.
 *
 * Note(s)    : 1) It is possible to receive NULL pointers when there are no errors.
-*              2) RTT在非阻塞模式下不区分OS_ERR_PEND_WOULD_BLOCK还是OS_ERR_TIMEOUT，都按照OS_ERR_TIMEOUT处理
 ************************************************************************************************************************
 */
 
@@ -1178,7 +1177,7 @@ void  OSTaskResume (OS_TCB  *p_tcb,
 *                                OS_ERR_OS_NOT_RUNNING     If uC/OS-III is not running yet
 *                                OS_ERR_PEND_ABORT
 *                                OS_ERR_PEND_ISR           If you called this function from an ISR and the result
-*                              - OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but no signal was received
+*                                OS_ERR_PEND_WOULD_BLOCK   If you specified non-blocking but no signal was received
 *                                OS_ERR_SCHED_LOCKED       If the scheduler is locked
 *                              - OS_ERR_STATUS_INVALID     If the pend status is invalid
 *                                OS_ERR_TIMEOUT            A message was not received within the specified timeout

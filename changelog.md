@@ -343,6 +343,7 @@
 - 头文件部分包含由<>改为""
 - 修复关闭某些宏定义，工程报错的问题
 - `cpu.h`文件增加`CPU_CFG_STK_ALIGN_BYTES`宏定义
+- 实现对`OS_ERR_PEND_WOULD_BLOCK`错误代码的支持
 
 
 
@@ -593,9 +594,11 @@
 
 **[add]** `cpu.h`文件增加`CPU_CFG_STK_ALIGN_BYTES`宏定义
 
-
+**[add]** 实现对`OS_ERR_PEND_WOULD_BLOCK`错误代码的支持
 
 # TODO
+
+OS_ERR_PEND_WOULD_BLOCK
 
 ## v1.1.0
 
