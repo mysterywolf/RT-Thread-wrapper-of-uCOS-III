@@ -111,5 +111,5 @@ static void AppTaskCreate(void)
 //    q_example();
 //    task_sem_example();
 //    suspend_example();
-    flag_example();
+//    flag_example();
 }

@@ -239,7 +239,7 @@ int main(void) /*RT-Thread main线程*/
 4. 兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能  
     该功能在原版3.05.00版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06.00版本开始删除了该功能，因此本兼容层不再予以实现。
 
-5. 本封装层文件内含有中文，编码格式ANSI - GB2312，并非UTF-8编码。
+5. 本封装层文件内含有中文注释，编码格式ANSI - GB2312，并非UTF-8编码。
 
 
 
@@ -267,7 +267,7 @@ OS_OBJ_QTY  OSPendMulti (OS_PEND_DATA  *p_pend_data_tbl,
 
 
 
-## 3.2 功能受限API（仅8个，全部为轻度受限，对正常使用没有影响）
+## 3.2 功能受限API（仅6个，全部为轻度受限，对正常使用没有影响）
 
 功能受限函数是指该函数虽然在兼容层中实现，但是实现不完全。即无法完全实现该函数在原版μCOS-III中的所有功能，每一个API函数的注释上如果opt字段可选项之前出现了减号'-'，即表示该功能在本兼容层中无法实现。
 
@@ -279,18 +279,7 @@ OS_OBJ_QTY  OSPendMulti (OS_PEND_DATA  *p_pend_data_tbl,
 
 ### 3.2.1 os_flag.c
 
-#### 3.2.1.1 OSFlagCreate()
-
-```c
-void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
-                    CPU_CHAR     *p_name,
-                    OS_FLAGS      flags,
-                    OS_ERR       *p_err);
-```
-
-​	flags字段必须填`0`，在μCOS-III中可以让用户选择是位置1为事件发生还是位清0为事件发生，但是在RT-Thread中直接定死，必须bit置1为事件发生，因此该参数必须填`0`（即32位全部为0）。
-
-#### 3.2.1.2 OSFlagPost()
+#### 3.2.1.1 OSFlagPost()
 
 ```c
 OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
@@ -299,21 +288,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
                       OS_ERR       *p_err);
 ```
 
-​	flags字段，必须填`OS_OPT_POST_FLAG_SET`。
 ​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
-
-#### 3.2.1.3 OSFlagPend()
-
-```c
-OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
-                      OS_FLAGS      flags,
-                      OS_TICK       timeout,
-                      OS_OPT        opt,
-                      CPU_TS       *p_ts,
-                      OS_ERR       *p_err);
-```
-
-​	opt字段，由于上述相同原因，`OS_OPT_PEND_FLAG_CLR_ALL`、`OS_OPT_PEND_FLAG_CLR_ANY`无效。
 ​	
 
 ### 3.2.2  os_mutex.c

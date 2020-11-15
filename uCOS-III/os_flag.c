@@ -76,9 +76,6 @@
 *              p_name         is the name of the event flag group
 *
 *              flags          contains the initial value to store in the event flag group (typically 0).
-*                             -------------说明-------------
-*                             在uCOS-III中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死
-*                             置1为事件发生,因此该位必须为0。
 *
 *              p_err          is a pointer to an error code which will be returned to your application:
 *
@@ -141,13 +138,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
     {
         *p_err = OS_ERR_NAME;
         return;
-    } 
-    if(flags)
-    {
-        *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagCreate: wrapper can't accept this option\n"));
-        return;        
-    }  
+    }
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u     
@@ -344,8 +335,8 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 *              opt           specifies whether you want ALL bits to be set or ANY of the bits to be set.
 *                            You can specify the 'ONE' of the following arguments:
 *
-*                              - OS_OPT_PEND_FLAG_CLR_ALL   You will wait for ALL bits in 'flags' to be clear (0)
-*                              - OS_OPT_PEND_FLAG_CLR_ANY   You will wait for ANY bit  in 'flags' to be clear (0)
+*                                OS_OPT_PEND_FLAG_CLR_ALL   You will wait for ALL bits in 'flags' to be clear (0)
+*                                OS_OPT_PEND_FLAG_CLR_ANY   You will wait for ANY bit  in 'flags' to be clear (0)
 *                                OS_OPT_PEND_FLAG_SET_ALL   You will wait for ALL bits in 'flags' to be set   (1)
 *                                OS_OPT_PEND_FLAG_SET_ANY   You will wait for ANY bit  in 'flags' to be set   (1)
 *
@@ -473,8 +464,8 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         *p_err = OS_ERR_OBJ_TYPE;
         return ((OS_OBJ_QTY)0);       
     }  
-#endif    
-   
+#endif
+
     /* 提取opt */
     if ((opt & OS_OPT_PEND_FLAG_CONSUME) != (OS_OPT)0) {        /* See if we need to consume the flags                */
         consume = DEF_TRUE;
@@ -482,16 +473,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         consume = DEF_FALSE;
     }
 
-    mode = opt & OS_OPT_PEND_FLAG_MASK;
-#if OS_CFG_FLAG_MODE_CLR_EN == 0u
-    if(mode == OS_OPT_PEND_FLAG_CLR_ALL||
-       mode == OS_OPT_PEND_FLAG_CLR_ANY)
-    {
-        *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagPend: wrapper can't accept this option\n"));  
-        return ((OS_FLAGS)0);
-    }
-#endif    
+    mode = opt & OS_OPT_PEND_FLAG_MASK;  
     switch (mode) {
         case OS_OPT_PEND_FLAG_SET_ALL:
             rt_option = RT_EVENT_FLAG_AND;
@@ -500,13 +482,15 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         case OS_OPT_PEND_FLAG_SET_ANY:
             rt_option = RT_EVENT_FLAG_OR;
             break;
-        
+
+        case OS_OPT_PEND_FLAG_CLR_ALL:
+            rt_option = RT_EVENT_FLAG_AND;
+            break;
+
         case OS_OPT_PEND_FLAG_CLR_ANY:
-            /*TODO*/
-        
-        case OS_OPT_PEND_FLAG_CLR_ALL:  
-            /*TODO*/
-        
+            rt_option = RT_EVENT_FLAG_OR;
+            break;
+
         default:
             *p_err = OS_ERR_FLAG_PEND_OPT;
     }
@@ -552,7 +536,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_grp->DbgNamePtr = p_tcb->Task.name;
 #endif
     CPU_CRITICAL_EXIT(); 
-    
+
     rt_err = rt_event_recv(&p_grp->FlagGrp,
                            flags,
                            rt_option,
@@ -586,8 +570,8 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         *p_err = OS_ERR_PEND_ABORT;
         return 0;
     }    
-    CPU_CRITICAL_EXIT();        
-    
+    CPU_CRITICAL_EXIT();
+
     return recved;
 }
 
@@ -802,12 +786,9 @@ OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err)
 *              opt           indicates whether the flags will be:
 *
 *                                OS_OPT_POST_FLAG_SET       set
-*                              - OS_OPT_POST_FLAG_CLR       cleared
+*                                OS_OPT_POST_FLAG_CLR       cleared
 *
 *                            you can also 'add' OS_OPT_POST_NO_SCHED to prevent the scheduler from being called.
-*                             -------------说明-------------
-*                             在uCOS-III中可以让用户选择是置1为事件发生还是清0为事件发生，但是在RTT中直接定死
-*                             置1为事件发生,因此该位必须填OS_OPT_POST_FLAG_SET
 *
 *              p_err         is a pointer to an error code and can be:
 *
@@ -865,13 +846,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
         default:
             *p_err = OS_ERR_OPT_INVALID;
              return ((OS_FLAGS)0);
-    }
-    if(opt != OS_OPT_POST_FLAG_SET)
-    {
-        *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSFlagPost: wrapper can't accept this option\n"));
-        return ((OS_FLAGS)0);  
-    }      
+    }   
 #endif
     
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
