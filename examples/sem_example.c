@@ -59,6 +59,7 @@ static void AppTask2 (void *param)
 {
     OS_ERR err;
     rt_uint8_t cnt =0;
+
     CPU_SR_ALLOC();
     
     while(1)
@@ -85,6 +86,7 @@ static void AppTask3 (void *param)
 {
     OS_ERR err;
     rt_uint8_t cnt =0;
+
     CPU_SR_ALLOC();
     
     while(1)

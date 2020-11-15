@@ -12,6 +12,8 @@
 #include <string.h>
 #include <rthw.h>
 
+extern void (*rt_object_put_hook)(struct rt_object *object);
+
 /**
  * ½«RT-Thread´íÎóÂë×ª»»ÎªuCOS-III´íÎóÂë
  *
@@ -184,6 +186,8 @@ rt_err_t rt_sem_release_all(rt_sem_t sem)
     RT_ASSERT(sem != RT_NULL);
     RT_ASSERT(rt_object_get_type(&sem->parent.parent) == RT_Object_Class_Semaphore);
 
+    RT_OBJECT_HOOK_CALL(rt_object_put_hook, (&(sem->parent.parent)));
+    
     need_schedule = RT_FALSE;
 
     /* disable interrupt */
@@ -222,21 +226,87 @@ rt_err_t rt_sem_release_all(rt_sem_t sem)
  */
 rt_err_t rt_mq_send_all(rt_mq_t mq, void *buffer, rt_size_t size)
 {
-    return -RT_ERROR;
-}
+    register rt_ubase_t temp;
+    struct _rt_mq_message *msg;
+    rt_uint16_t suspend_len;
 
-/**
- * This function will wake ALL threads which are WAITTING for message queue (LIFO)
- *
- * @param mq the message queue object
- * @param buffer the message
- * @param size the size of buffer
- *
- * @return the error code
- */
-rt_err_t rt_mq_urgent_all(rt_mq_t mq, void *buffer, rt_size_t size)
-{
-    return -RT_ERROR;
+    /* parameter check */
+    RT_ASSERT(mq != RT_NULL);
+    RT_ASSERT(rt_object_get_type(&mq->parent.parent) == RT_Object_Class_MessageQueue);
+    RT_ASSERT(buffer != RT_NULL);
+    RT_ASSERT(size != 0);
+
+    /* greater than one message size */
+    if (size > mq->msg_size)
+        return -RT_ERROR;
+
+    RT_OBJECT_HOOK_CALL(rt_object_put_hook, (&(mq->parent.parent)));
+
+    /* disable interrupt */
+    temp = rt_hw_interrupt_disable();
+
+    suspend_len = rt_list_len(&mq->parent.suspend_thread);
+    while(suspend_len)
+    {
+        /* get a free list, there must be an empty item */
+        msg = (struct _rt_mq_message *)mq->msg_queue_free;
+        /* message queue is full */
+        if (msg == RT_NULL)
+        {
+            /* enable interrupt */
+            rt_hw_interrupt_enable(temp);
+
+            return -RT_EFULL;
+        }
+        /* move free list pointer */
+        mq->msg_queue_free = msg->next;
+
+        /* enable interrupt */
+        rt_hw_interrupt_enable(temp);
+
+        /* the msg is the new tailer of list, the next shall be NULL */
+        msg->next = RT_NULL;
+        /* copy buffer */
+        rt_memcpy(msg + 1, buffer, size);
+
+        /* disable interrupt */
+        temp = rt_hw_interrupt_disable();
+        /* link msg to message queue */
+        if (mq->msg_queue_tail != RT_NULL)
+        {
+            /* if the tail exists, */
+            ((struct _rt_mq_message *)mq->msg_queue_tail)->next = msg;
+        }
+
+        /* set new tail */
+        mq->msg_queue_tail = msg;
+        /* if the head is empty, set head */
+        if (mq->msg_queue_head == RT_NULL)
+            mq->msg_queue_head = msg;
+
+        /* increase message entry */
+        mq->entry ++;
+
+        suspend_len --;
+    }
+
+    /* resume suspended thread */
+    if (!rt_list_isempty(&mq->parent.suspend_thread))
+    {
+        rt_ipc_post_all(&(mq->parent.suspend_thread));
+
+        /* enable interrupt */
+        rt_hw_interrupt_enable(temp);
+
+        rt_schedule();
+
+        return RT_EOK;
+    }
+
+    /* enable interrupt */
+    rt_hw_interrupt_enable(temp);
+
+    return RT_EOK;
 }
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY

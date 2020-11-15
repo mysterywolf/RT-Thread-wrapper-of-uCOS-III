@@ -352,9 +352,10 @@
 - `OSQPost`和`OSFlagPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
 - 实现`OS_TCB`结构体中`.FlagsPend`、`.FlagsRdy`、`.FlagsOpt`成员变量
 
-### 2016-11-16
+### 2020-11-16
 
 - 实现广播消息队列函数框架
+- 实现广播消息队列
 
 
 
@@ -619,15 +620,13 @@
 
 ## v0.13.0
 
-
+**[add]** 实现广播消息队列
 
 
 
 # TODO
 
 ## v1.1.0
-
-1. 实现广播消息队列
 
 2. 尽力实现`os_pend_multi.c`
 

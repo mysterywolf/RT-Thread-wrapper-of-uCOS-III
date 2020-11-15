@@ -847,7 +847,7 @@ CPU_BOOLEAN  OSTaskQPendAbort (OS_TCB  *p_tcb,
 *                             OS_ERR_NONE            The call was successful and the message was sent
 *                             OS_ERR_Q_MAX           If the queue is full
 *                             OS_ERR_OS_NOT_RUNNING  If uC/OS-III is not running yet
-*                           - OS_ERR_MSG_POOL_EMPTY  If there are no more OS_MSGs available from the pool
+*                             OS_ERR_MSG_POOL_EMPTY  If there are no more OS_MSGs available from the pool
 *                           + OS_ERR_TASK_Q_CREATE_FALSE 任务内建消息队列创建失败
 *                         -------------说明-------------
 *                             OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码

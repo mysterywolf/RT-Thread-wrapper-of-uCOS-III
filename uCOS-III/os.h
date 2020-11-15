@@ -428,7 +428,7 @@ typedef  enum  os_err {
     OS_ERR_MEM_INVALID_SIZE          = 22209u,
     OS_ERR_MEM_NO_FREE_BLKS          = 22210u,
 
-//  OS_ERR_MSG_POOL_EMPTY            = 22301u,
+    OS_ERR_MSG_POOL_EMPTY            = 22301u,
 //  OS_ERR_MSG_POOL_NULL_PTR         = 22302u,
 
     OS_ERR_MUTEX_NOT_OWNER           = 22401u,
@@ -654,6 +654,13 @@ typedef  void                      (*OS_APP_HOOK_TCB)      (OS_TCB *p_tcb);
 */
 
 #if OS_CFG_Q_EN > 0u
+
+/*由于在ipc.c文件中的struct rt_mq_message没有暴露出来,因此需要复制一份,为避免重复改名为struct _rt_mq_message*/
+struct _rt_mq_message
+{
+    struct _rt_mq_message *next;
+};
+
 typedef  struct                                            /* uCOS消息段                                              */
 {
     rt_uint8_t *data_ptr;                                  /* uCOS-III消息数据指针                                    */
@@ -1554,7 +1561,6 @@ rt_err_t      rt_ipc_pend_abort_1       (rt_list_t *list);
 rt_uint16_t   rt_ipc_pend_abort_all     (rt_list_t *list);
 rt_err_t      rt_sem_release_all        (rt_sem_t sem);
 rt_err_t      rt_mq_send_all            (rt_mq_t mq, void *buffer, rt_size_t size);
-rt_err_t      rt_mq_urgent_all          (rt_mq_t mq, void *buffer, rt_size_t size);
 
 
 

@@ -78,12 +78,6 @@
 
 #if OS_CFG_Q_EN > 0u
 
-/*由于在ipc.c文件中的struct rt_mq_message没有暴露出来,因此需要复制一份,为避免重复改名为struct _rt_mq_message*/
-struct _rt_mq_message
-{
-    struct _rt_mq_message *next;
-};
-
 /*
 ************************************************************************************************************************
 *                                               CREATE A MESSAGE QUEUE
@@ -839,17 +833,17 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
 *
 *                                        OS_OPT_POST_FIFO
 *                                        OS_OPT_POST_LIFO
-*                                      - OS_OPT_POST_FIFO + OS_OPT_POST_ALL
-*                                      - OS_OPT_POST_LIFO + OS_OPT_POST_ALL
-*                                      - OS_OPT_POST_FIFO + OS_OPT_POST_NO_SCHED
-*                                      - OS_OPT_POST_LIFO + OS_OPT_POST_NO_SCHED
-*                                      - OS_OPT_POST_FIFO + OS_OPT_POST_ALL + OS_OPT_POST_NO_SCHED
-*                                      - OS_OPT_POST_LIFO + OS_OPT_POST_ALL + OS_OPT_POST_NO_SCHED
+*                                        OS_OPT_POST_FIFO + OS_OPT_POST_ALL
+*                                        OS_OPT_POST_LIFO + OS_OPT_POST_ALL
+*                                        OS_OPT_POST_FIFO + OS_OPT_POST_NO_SCHED
+*                                        OS_OPT_POST_LIFO + OS_OPT_POST_NO_SCHED
+*                                        OS_OPT_POST_FIFO + OS_OPT_POST_ALL + OS_OPT_POST_NO_SCHED
+*                                        OS_OPT_POST_LIFO + OS_OPT_POST_ALL + OS_OPT_POST_NO_SCHED
 *
 *              p_err         is a pointer to a variable that will contain an error code returned by this function.
 *
 *                                OS_ERR_NONE            The call was successful and the message was sent
-*                              - OS_ERR_MSG_POOL_EMPTY  If there are no more OS_MSGs to use to place the message into
+*                                OS_ERR_MSG_POOL_EMPTY  If there are no more OS_MSGs to use to place the message into
 *                                OS_ERR_OBJ_PTR_NULL    If 'p_q' is a NULL pointer
 *                                OS_ERR_OBJ_TYPE        If the message queue was not initialized
 *                                OS_ERR_OS_NOT_RUNNING  If uC/OS-III is not running yet
@@ -948,10 +942,18 @@ void  OSQPost (OS_Q         *p_q,
         }
         else
         {
-            rt_err = rt_mq_urgent_all(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
+            /* POST ALL不需要区分FIFO还是LIFO */
+            rt_err = rt_mq_send_all(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
         }
     }
-    *p_err = rt_err_to_ucosiii(rt_err); 
+    if(rt_err == -RT_EFULL)
+    {
+        *p_err = OS_ERR_MSG_POOL_EMPTY;
+    }
+    else
+    {
+        *p_err = rt_err_to_ucosiii(rt_err);
+    }
 
     CPU_CRITICAL_ENTER();
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
