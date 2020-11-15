@@ -531,9 +531,14 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_tcb->PendStatus = OS_STATUS_PEND_OK;                      /* Clear pend status                                  */
     p_tcb->TaskState |= OS_TASK_STATE_PEND;
     p_tcb->PendOn = OS_TASK_PEND_ON_FLAG;
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = p_grp->NamePtr;
     p_grp->DbgNamePtr = p_tcb->Task.name;
+#endif
+    p_tcb->FlagsPend = flags;                                   /* Save the flags that we need to wait for            */
+    p_tcb->FlagsOpt = opt;                                      /* Save the type of wait we are doing                 */
+    p_tcb->FlagsRdy  = 0u;
 #endif
     CPU_CRITICAL_EXIT(); 
 
@@ -551,7 +556,10 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     CPU_CRITICAL_ENTER();
     p_tcb->TaskState &= ~OS_TASK_STATE_PEND;                    /* 更新任务状态                                       */
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                    /* 清除当前任务等待状态                               */
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+    p_tcb->FlagsRdy = p_grp->FlagGrp.set;                       /* Save flags that were ready                         */
+#if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
     {
@@ -563,7 +571,9 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     {
         p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* 若为空,则清空当前.DbgNamePtr                       */
     } 
-#endif  
+#endif
+#endif
+
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)               /* Indicate that we aborted                           */
     {
         CPU_CRITICAL_EXIT(); 

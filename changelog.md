@@ -350,6 +350,7 @@
 - 增加`flag_example.c`例程
 - 实现`OS_CFG_FLAG_MODE_CLR_EN`功能
 - `OSQPost`和`OSFlagPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
+- 实现`OS_TCB`结构体中`.FlagsPend`、`.FlagsRdy`、`.FlagsOpt`成员变量
 
 
 
@@ -554,7 +555,7 @@
 
 ## v0.11.0
 
-对齐并整理注释
+对齐并整理注释 
 
 **[del]** 删除无用的钩子函数（已被RT-Thread钩子函数接管）
 
@@ -608,20 +609,15 @@
 
 **[adjust]** `OSQPost`和`OSFlagPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
 
+**[add]** 实现`OS_TCB`结构体中`.FlagsPend`、`.FlagsRdy`、`.FlagsOpt`成员变量
+
 
 
 # TODO
 
 ## v1.1.0
 
-1. OS_TCB
+1. 实现广播消息队列
 
-```c
-    OS_FLAGS         FlagsPend;     /* Event flag(s) to wait on */
-    OS_FLAGS         FlagsRdy;      /* Event flags that made task ready to run */
-    OS_OPT           FlagsOpt;      /* Options (See OS_OPT_FLAG_xxx) */
-```
-
-2. 实现广播消息队列
-5. 尽力实现`os_pend_multi.c`
+2. 尽力实现`os_pend_multi.c`
 
