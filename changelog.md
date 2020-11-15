@@ -349,6 +349,7 @@
 
 - 增加`flag_example.c`例程
 - 实现`OS_CFG_FLAG_MODE_CLR_EN`功能
+- `OSQPost`和`OSFlagPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
 
 
 
@@ -605,6 +606,8 @@
 
 **[add]** 实现`OS_CFG_FLAG_MODE_CLR_EN`功能
 
+**[adjust]** `OSQPost`和`OSFlagPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
+
 
 
 # TODO
@@ -620,6 +623,5 @@
 ```
 
 2. 实现广播消息队列
-4. `OSQPost`和`OSFlagPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
 5. 尽力实现`os_pend_multi.c`
 

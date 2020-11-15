@@ -930,23 +930,17 @@ void  OSQPost (OS_Q         *p_q,
     /*×°ÌîuCOSÏûÏ¢¶Î*/
     ucos_msg.data_size = msg_size;
     ucos_msg.data_ptr = p_void;
-    
-    if(opt == OS_OPT_POST_FIFO)
+
+    if((opt & OS_OPT_POST_LIFO) == 0u)
     {
         rt_err = rt_mq_send(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
     }
-    else if(opt == OS_OPT_POST_LIFO)
+    else
     {
         rt_err = rt_mq_urgent(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
     }
-    else
-    {
-        *p_err = OS_ERR_OPT_INVALID;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("OSQPost: wrapper can't accept this option\n"));
-        return;
-    }
     *p_err = rt_err_to_ucosiii(rt_err); 
-    
+
     CPU_CRITICAL_ENTER();
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
