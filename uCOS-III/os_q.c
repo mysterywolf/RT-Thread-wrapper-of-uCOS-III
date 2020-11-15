@@ -845,8 +845,6 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
 *                                      - OS_OPT_POST_LIFO + OS_OPT_POST_NO_SCHED
 *                                      - OS_OPT_POST_FIFO + OS_OPT_POST_ALL + OS_OPT_POST_NO_SCHED
 *                                      - OS_OPT_POST_LIFO + OS_OPT_POST_ALL + OS_OPT_POST_NO_SCHED
-*                       -------------说明-------------
-*                        由于RTT没有实现上述所有功能,因此opt选项只能为OS_OPT_POST_FIFO或OS_OPT_POST_LIFO
 *
 *              p_err         is a pointer to a variable that will contain an error code returned by this function.
 *
@@ -933,11 +931,25 @@ void  OSQPost (OS_Q         *p_q,
 
     if((opt & OS_OPT_POST_LIFO) == 0u)
     {
-        rt_err = rt_mq_send(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
+        if((opt & OS_OPT_POST_ALL) == 0u)
+        {
+            rt_err = rt_mq_send(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
+        }
+        else
+        {
+            rt_err = rt_mq_send_all(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
+        }
     }
     else
     {
-        rt_err = rt_mq_urgent(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
+        if((opt & OS_OPT_POST_ALL) == 0u)
+        {
+            rt_err = rt_mq_urgent(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
+        }
+        else
+        {
+            rt_err = rt_mq_urgent_all(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
+        }
     }
     *p_err = rt_err_to_ucosiii(rt_err); 
 

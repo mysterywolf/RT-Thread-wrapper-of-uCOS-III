@@ -211,6 +211,34 @@ rt_err_t rt_sem_release_all(rt_sem_t sem)
     return RT_EOK;
 }
 
+/**
+ * This function will wake ALL threads which are WAITTING for message queue (FIFO)
+ *
+ * @param mq the message queue object
+ * @param buffer the message
+ * @param size the size of buffer
+ *
+ * @return the error code
+ */
+rt_err_t rt_mq_send_all(rt_mq_t mq, void *buffer, rt_size_t size)
+{
+    return -RT_ERROR;
+}
+
+/**
+ * This function will wake ALL threads which are WAITTING for message queue (LIFO)
+ *
+ * @param mq the message queue object
+ * @param buffer the message
+ * @param size the size of buffer
+ *
+ * @return the error code
+ */
+rt_err_t rt_mq_urgent_all(rt_mq_t mq, void *buffer, rt_size_t size)
+{
+    return -RT_ERROR;
+}
+
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 /**
  * msh命令：uCOS-III兼容层信息获取

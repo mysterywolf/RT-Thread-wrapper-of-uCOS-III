@@ -352,6 +352,10 @@
 - `OSQPost`和`OSFlagPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
 - 实现`OS_TCB`结构体中`.FlagsPend`、`.FlagsRdy`、`.FlagsOpt`成员变量
 
+### 2016-11-16
+
+- 实现广播消息队列函数框架
+
 
 
 # Release
@@ -610,6 +614,12 @@
 **[adjust]** `OSQPost`和`OSFlagPost`函数改为对`OS_OPT_POST_NO_SCHED`选项忽略
 
 **[add]** 实现`OS_TCB`结构体中`.FlagsPend`、`.FlagsRdy`、`.FlagsOpt`成员变量
+
+
+
+## v0.13.0
+
+
 
 
 
