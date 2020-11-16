@@ -236,9 +236,6 @@ int main(void) /*RT-Thread main线程*/
 3. 兼容层取消了原版μCOS-III中的时间戳功能  
     在μCOS-III中，时间戳主要用于测量中断关闭时间，以及任务单次执行时间以及最大时间等涉及到精度较高的时长测量。该特性在μCOS-II以及RT-Thread中均没有，因此本兼容层不予实现。
 
-4. 兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能  
-    该功能在原版3.05.00版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06.00版本开始删除了该功能，因此本兼容层不再予以实现。
-
 5. 本封装层文件内含有中文注释，编码格式ANSI - GB2312，并非UTF-8编码。
 
 
@@ -255,7 +252,9 @@ int main(void) /*RT-Thread main线程*/
 void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
  ```
 
-在最新版的uCOS-III中，多内核对象等待功能已经被uCOS官方删除，因此本兼容层也没有予以支持：
+
+
+兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能，该功能在原版3.05.00版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06.00版本开始删除了该功能，因此本兼容层暂时没有实现该函数的兼容。
 
 ```c
 OS_OBJ_QTY  OSPendMulti (OS_PEND_DATA  *p_pend_data_tbl,
