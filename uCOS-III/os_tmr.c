@@ -56,8 +56,16 @@
 
 #include "os.h"
 
-#if OS_CFG_TMR_EN > 0u
+/*
+************************************************************************************************************************
+* Note(s)    : 1)RTT和uCOS-III在定时器时钟源的设计不同：
+*                 ·RTT的定时器时钟频率与操作系统ostick频率相同
+*                 ·uCOS-III的定时器时钟由ostick分频得到，分频系数为OS_CFG_TMR_TASK_RATE_HZ
+*                函数内部已经对上述两个操作系统定义的做出了转换
+************************************************************************************************************************
+*/
 
+#if OS_CFG_TMR_EN > 0u
 /*
 ************************************************************************************************************************
 *                                          LOCAL PROTOTYPES
@@ -84,11 +92,6 @@ static void OS_TmrCallback(void *p_ara);
 *              period          The 'period' being repeated for the timer.
 *                              If you specified 'OS_OPT_TMR_PERIODIC' as an option, when the timer expires, it will
 *                              automatically restart with the same period.
-*                              -------------说明-------------
-*                              RTT和uCOS-III在定时器时钟源的设计不同：
-*                              ·RTT的定时器时钟频率与操作系统ostick频率相同
-*                              ·uCOS-III的定时器时钟由ostick分频得到，分频系数为OS_CFG_TMR_TASK_RATE_HZ
-*                              函数内部已经对上述两个操作系统定义的做出了转换
 *
 *              opt             Specifies either:
 *
