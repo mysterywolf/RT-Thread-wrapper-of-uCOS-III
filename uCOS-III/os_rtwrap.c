@@ -172,6 +172,7 @@ static rt_err_t rt_ipc_post_all (rt_list_t *list)
 
 /**
  * This function will wake ALL threads which are WAITTING for semaphores
+ * 改编自rt_sem_release函数
  *
  * @param sem the semaphore object
  *
@@ -217,6 +218,7 @@ rt_err_t rt_sem_release_all(rt_sem_t sem)
 
 /**
  * This function will wake ALL threads which are WAITTING for message queue (FIFO)
+ * 改编自rt_mq_send函数
  *
  * @param mq the message queue object
  * @param buffer the message
@@ -245,7 +247,10 @@ rt_err_t rt_mq_send_all(rt_mq_t mq, void *buffer, rt_size_t size)
     /* disable interrupt */
     temp = rt_hw_interrupt_disable();
 
+    /* 获取当前n个线程被当前消息队列挂起 */
     suspend_len = rt_list_len(&mq->parent.suspend_thread);
+    
+    /* 将相同的消息复制n次,一会一起发出去 */
     while(suspend_len)
     {
         /* get a free list, there must be an empty item */
@@ -293,6 +298,7 @@ rt_err_t rt_mq_send_all(rt_mq_t mq, void *buffer, rt_size_t size)
     /* resume suspended thread */
     if (!rt_list_isempty(&mq->parent.suspend_thread))
     {
+        /* 将等待本消息队列的所有线程全部解挂,此时他们将同时获得相同的消息 */
         rt_ipc_post_all(&(mq->parent.suspend_thread));
 
         /* enable interrupt */
