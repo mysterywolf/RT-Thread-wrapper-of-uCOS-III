@@ -769,10 +769,11 @@ uCOS-III兼容层在RT-Thread Nano版中需要手动添加到工程中，但如�
 ```
 RT-Thread online packages
     system packages --->
-        [*] uCOS-III Wrapper: uCOS-III APIs wrapper --->
-            [*]   Enable uCOS-III wrapper automatically init
-            [*]   Enable uCOS-III wrapper tiny mode
-            Version (latest)  --->
+        [*] Micrium: Micrium software products porting for RT-Thread --->
+            [*] uCOS-III Wrapper: uCOS-III APIs wrapper --->
+                [*]   Enable uCOS-III wrapper automatically init
+                [*]   Enable uCOS-III wrapper tiny mode
+                Version (latest)  --->
 ```
 
 
