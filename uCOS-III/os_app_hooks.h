@@ -84,7 +84,6 @@ void  App_OS_ClrAllHooks   (void);
                                                                 /* ---------------------- HOOKS --------------------- */
 void  App_OS_TaskCreateHook(OS_TCB  *p_tcb);
 void  App_OS_TaskDelHook   (OS_TCB  *p_tcb);
-void  App_OS_InitHook      (void);
 #if OS_CFG_STAT_TASK_EN > 0u
 void  App_OS_IdleTaskHook  (void);
 void  App_OS_StatTaskHook  (void);
