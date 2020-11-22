@@ -882,16 +882,6 @@ struct  os_sem {
 
 
 
-## 7.3 其他RT-Thread针对第三方RTOS的兼容层
-
-1. RTX5操作系统兼容层暨CMSIS-RTOSv2接口规范：
-
-    > https://github.com/RT-Thread-packages/CMSIS/tree/master/RTOS2/RT-Thread/src
-
-2. RT-Thread操作系统的μCOS-II兼容层：
-
-   >  https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-II
-
 
 
 # 8 其他
