@@ -564,10 +564,12 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
 */
 
 void  OSStart (OS_ERR  *p_err)
-{    
+{
     OS_OBJ_QTY  kernel_task_cnt;
     
     CPU_SR_ALLOC();    
+    
+    (void)kernel_task_cnt;
     
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
