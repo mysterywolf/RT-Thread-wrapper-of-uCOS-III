@@ -357,6 +357,10 @@
 - 实现广播消息队列函数框架
 - 实现广播消息队列
 
+### 2020-11-24
+
+- 将自动初始化由`INIT_DEVICE_EXPORT`提前至`INIT_PREV_EXPORT`
+
 
 
 # Release
@@ -621,6 +625,8 @@
 ## v0.13.0
 
 **[add]** 实现广播消息队列
+
+**[adjust]** 将自动初始化由`INIT_DEVICE_EXPORT`提前至`INIT_PREV_EXPORT`
 
 
 

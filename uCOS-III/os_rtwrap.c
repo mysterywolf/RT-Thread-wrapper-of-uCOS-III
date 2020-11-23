@@ -516,5 +516,5 @@ static int rt_ucosiii_autoinit(void)
     
     return 0;
 }
-INIT_COMPONENT_EXPORT(rt_ucosiii_autoinit);
+INIT_PREV_EXPORT(rt_ucosiii_autoinit);
 #endif
