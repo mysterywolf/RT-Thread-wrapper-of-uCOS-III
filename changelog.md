@@ -636,5 +636,5 @@
 
 ## v1.1.0
 
-2. 尽力实现`os_pend_multi.c`
+尽力实现`os_pend_multi.c`
 
