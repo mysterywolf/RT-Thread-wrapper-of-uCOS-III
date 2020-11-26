@@ -1,14 +1,12 @@
 # uC/CPU
 
+## µC/CPU Specific Source Code
+
 https://github.com/SiliconLabs/uC-CPU
 
+µC/CPU consists of files that encapsulate common CPU-specific functionality as well as CPU- and compiler-specific data types.
+
 Designed with Micriμm’s renowned quality, scalability and reliability, the purpose of μC/ CPU is to provide a clean, organized ANSI C implementation of each processor’s/ compiler’s hardware-dependent.
-
-
-
-## 注意
-
-为了兼容RT-Thread，文件内容做了删减和更改，有些宏定义在兼容过程中没有用掉就移除掉了
 
 
 

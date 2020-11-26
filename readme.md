@@ -288,7 +288,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
 ```
 
 ​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
-​	
+​
 
 ### 3.2.2  os_mutex.c
 

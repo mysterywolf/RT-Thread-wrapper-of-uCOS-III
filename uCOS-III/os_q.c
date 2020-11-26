@@ -923,7 +923,7 @@ void  OSQPost (OS_Q         *p_q,
     ucos_msg.data_size = msg_size;
     ucos_msg.data_ptr = p_void;
 
-    if((opt & OS_OPT_POST_LIFO) == 0u)
+    if((opt & OS_OPT_POST_LIFO) == 0u) /* FIFO */
     {
         if((opt & OS_OPT_POST_ALL) == 0u)
         {
@@ -934,7 +934,7 @@ void  OSQPost (OS_Q         *p_q,
             rt_err = rt_mq_send_all(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
         }
     }
-    else
+    else /* LIFO */
     {
         if((opt & OS_OPT_POST_ALL) == 0u)
         {
@@ -942,7 +942,7 @@ void  OSQPost (OS_Q         *p_q,
         }
         else
         {
-            /* POST ALL不需要区分FIFO还是LIFO */
+            /* 广播不需要区分FIFO还是LIFO */
             rt_err = rt_mq_send_all(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
         }
     }
