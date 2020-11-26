@@ -495,7 +495,6 @@ MSH_CMD_EXPORT_ALIAS(rt_ucosiii_wrapper_info, ucos, get ucos-iii wrapper info);
  * you can choose this option.
  */
 #ifdef PKG_USING_UCOSIII_WRAPPER_AUTOINIT
-#include <os_app_hooks.h>
 static int rt_ucosiii_autoinit(void)
 {
     OS_ERR err;
@@ -506,14 +505,21 @@ static int rt_ucosiii_autoinit(void)
     CPU_Init();
     
 #if OS_CFG_APP_HOOKS_EN > 0u
+#include <os_app_hooks.h>
     App_OS_SetAllHooks();                           /*设置钩子函数*/
-#endif  
+#endif
     
 #if OS_CFG_STAT_TASK_EN > 0u
     OSStatTaskCPUUsageInit(&err);  	                /*统计任务*/    
     OSStatReset(&err);                              /*复位统计数据*/    
 #endif
-    
+
+#ifdef PKG_USING_UC_CLK
+#include <clk.h>
+    CLK_ERR clk_err;
+    Clk_Init(&clk_err);
+#endif
+
     return 0;
 }
 INIT_PREV_EXPORT(rt_ucosiii_autoinit);

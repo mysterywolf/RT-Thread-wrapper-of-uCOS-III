@@ -361,6 +361,10 @@
 
 - 将自动初始化由`INIT_DEVICE_EXPORT`提前至`INIT_PREV_EXPORT`
 
+### 2020-11-26
+
+- 将uC/Clk (若开启该软件包) 初始化纳入到自动兼容层自动初始化函数中
+
 
 
 # Release
@@ -627,6 +631,8 @@
 **[add]** 实现广播消息队列
 
 **[adjust]** 将自动初始化由`INIT_DEVICE_EXPORT`提前至`INIT_PREV_EXPORT`
+
+**[add]** 将uC/Clk (若开启该软件包) 初始化纳入到自动兼容层自动初始化函数中
 
 
 
