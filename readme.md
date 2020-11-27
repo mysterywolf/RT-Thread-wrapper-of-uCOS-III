@@ -60,8 +60,8 @@ RT-Thread操作系统的μCOS-II兼容层：https://github.com/mysterywolf/RT-Th
 | :------------: | :-----: | :----------------------------------------------: | :---------------------------------------: |
 | RT-Thread nano |  3.1.3  |                    rtconfig.h                    |                                           |
 |   μC/OS-III    | 3.03.00 | os_cfg_app.h  <br />os_cfg.h<br />os_app_hooks.c | 兼容层兼容3.00.00-3.08.00全部μCOS-III版本 |
-|     μC/CPU     | 1.30.00 |                     os_cfg.h                     |  部分升级到最新版本, 兼容所有Micriμm软件  |
-|     μC/LIB     | 1.39.00 |                    cpu_cfg.h                     |                 最新版本                  |
+|     μC/CPU     | 1.30.00 |                    cpu_cfg.h                     |  部分升级到最新版本, 兼容所有Micriμm软件  |
+|     μC/LIB     | 1.39.00 |                    lib_cfg.h                     |                 最新版本                  |
 
 
 
