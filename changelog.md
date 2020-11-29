@@ -361,6 +361,9 @@
 
 - 将自动初始化由`INIT_DEVICE_EXPORT`提前至`INIT_PREV_EXPORT`
 
+### 2020-11-30
+
+- 完善`.FlagsRdy`成员变量
 
 
 
@@ -629,6 +632,8 @@
 **[add]** 实现广播消息队列
 
 **[adjust]** 将自动初始化由`INIT_DEVICE_EXPORT`提前至`INIT_PREV_EXPORT`
+
+完善`.FlagsRdy`成员变量
 
 
 

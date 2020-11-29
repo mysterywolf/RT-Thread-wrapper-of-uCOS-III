@@ -537,8 +537,8 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_grp->DbgNamePtr = p_tcb->Task.name;
 #endif
     p_tcb->FlagsPend = flags;                                   /* Save the flags that we need to wait for            */
-    p_tcb->FlagsOpt = opt;                                      /* Save the type of wait we are doing                 */
-    p_tcb->FlagsRdy  = 0u;
+    p_tcb->FlagsOpt  = opt;                                     /* Save the type of wait we are doing                 */
+    p_tcb->FlagsRdy  = (OS_FLAGS)0u;                            /* Save flags that were ready                         */
 #endif
     CPU_CRITICAL_EXIT(); 
 
@@ -558,7 +558,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                    /* 清除当前任务等待状态                               */
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_tcb->FlagsRdy = p_grp->FlagGrp.set;                       /* Save flags that were ready                         */
+    p_tcb->FlagsRdy = p_tcb->Task.event_set;                    /* Save flags that were ready                         */
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
@@ -820,6 +820,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
                       OS_ERR       *p_err)
 {
     rt_err_t rt_err;
+    OS_TCB  *p_tcb;
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
 #endif   
@@ -868,11 +869,20 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     }  
 #endif
 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+    CPU_CRITICAL_ENTER();
+    p_tcb = OSTCBCurPtr;
+    p_tcb->FlagsRdy = p_tcb->Task.event_set;                    /* Save flags that were ready                         */
+    CPU_CRITICAL_EXIT();
+#endif
+    
     rt_err = rt_event_send(&p_grp->FlagGrp,flags);
     *p_err = rt_err_to_ucosiii(rt_err);
     
     CPU_CRITICAL_ENTER();
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+    p_tcb->FlagsRdy = p_tcb->Task.event_set;                    /* Save flags that were ready                         */
+#if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
     {
         /*若等待表不为空，则将当前等待信号量的线程赋值给.DbgNamePtr*/
@@ -883,7 +893,8 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     {
         p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* 若为空,则清空当前.DbgNamePtr                       */
     }
-#endif   
+#endif
+#endif
     CPU_CRITICAL_EXIT();
     
     return p_grp->FlagGrp.set;                                  /* 返回执行后事件标志组的值                           */
