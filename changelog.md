@@ -364,6 +364,7 @@
 ### 2020-11-30
 
 - 完善`.FlagsRdy`成员变量
+- 完善`p_grp->Flags`成员变量
 
 
 
@@ -634,6 +635,8 @@
 **[adjust]** 将自动初始化由`INIT_DEVICE_EXPORT`提前至`INIT_PREV_EXPORT`
 
 完善`.FlagsRdy`成员变量
+
+完善`p_grp->Flags`成员变量
 
 
 
