@@ -532,6 +532,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_tcb->TaskState |= OS_TASK_STATE_PEND;
     p_tcb->PendOn = OS_TASK_PEND_ON_FLAG;
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+    p_grp->Flags      = p_grp->FlagGrp.set;                     /* Set to desired initial value                       */
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = p_grp->NamePtr;
     p_grp->DbgNamePtr = p_tcb->Task.name;
@@ -558,7 +559,8 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                    /* 清除当前任务等待状态                               */
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_tcb->FlagsRdy = p_tcb->Task.event_set;                    /* Save flags that were ready                         */
+    p_grp->Flags      = p_grp->FlagGrp.set;                     /* Set to desired initial value                       */
+    p_tcb->FlagsRdy   = p_tcb->Task.event_set;                  /* Save flags that were ready                         */
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
@@ -873,6 +875,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_CRITICAL_ENTER();
+    p_grp->Flags      = p_grp->FlagGrp.set;                     /* Set to desired initial value                       */
     p_tcb = OSTCBCurPtr;
     p_tcb->FlagsRdy = p_tcb->Task.event_set;                    /* Save flags that were ready                         */
     CPU_CRITICAL_EXIT();
@@ -883,6 +886,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     
     CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
+    p_grp->Flags      = p_grp->FlagGrp.set;                     /* Set to desired initial value                       */
     p_tcb->FlagsRdy = p_tcb->Task.event_set;                    /* Save flags that were ready                         */
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
