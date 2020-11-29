@@ -820,10 +820,12 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
                       OS_ERR       *p_err)
 {
     rt_err_t rt_err;
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     OS_TCB  *p_tcb;
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
+#if OS_CFG_DBG_EN > 0u
     rt_thread_t thread;
-#endif   
+#endif
+#endif
     
     CPU_SR_ALLOC();
     
