@@ -1,6 +1,8 @@
 # RT-Thread操作系统的μC/OS-III兼容层
 ## 让基于μC/OS-III开发的应用层无感地迁移到RT-Thread操作系统
 
+中文 | English
+
 --------------------
 
 [TOC]
@@ -9,11 +11,9 @@
 
 # 0 前排提示
 
-本文含有图片，受限于**中国大陆互联网环境**，访问github时，**readme.md(本文件)的图片一般加载不出来**，因此我导出了.html文件。如果您需要详细阅读，可以将项目下载或clone下来，阅读**docs/中文说明文档.pdf**文件。
+本文含有图片，受限于**中国大陆互联网环境**，访问github时，**readme.md(本文件)的图片一般加载不出来**，因此我导出了.pdf文件。如果您需要详细阅读，可以将项目下载或clone下来，阅读[docs/中文说明文档.pdf](docs/中文说明文档.pdf)文件。
 
 **如果你喜欢本项目，请点击右上角的Star予以支持，开源项目的成就感就靠star了，谢谢！**
-
-RT-Thread操作系统的μCOS-II兼容层：https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-II
 
 
 
@@ -26,6 +26,8 @@ RT-Thread操作系统的μCOS-II兼容层：https://github.com/mysterywolf/RT-Th
 支持版本：μC/OS-III 3.00-3.08全部版本
 
 视频介绍&教程：https://www.bilibili.com/video/BV1b54y1U7AG
+
+RT-Thread操作系统的μCOS-II兼容层：https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-II
 
 
 
@@ -82,9 +84,9 @@ RT-Thread：https://www.rt-thread.org/
 ## 2.1 Keil-MDK仿真工程
 本仿真工程是基于STM32F103平台。
 
-Keil工程路径：*<u>rt-thread-3.1.3/bsp/stm32f103/Project.uvprojx</u>*
+Keil工程路径：[rt-thread-3.1.3/bsp/stm32f103/Project.uvprojx](rt-thread-3.1.3/bsp/stm32f103/Project.uvprojx)
 
-需要提前安装好RT-Thread Nano-3.1.3 Keil支持包：https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.1.3.pack
+需要提前安装好RT-Thread Nano-3.1.3 [Keil支持包](https://www.rt-thread.org/download/mdk/RealThread.RT-Thread.3.1.3.pack).
 
 **注意：调试串口使用的是USART2，不是USART1**
 
@@ -103,7 +105,7 @@ Keil工程路径：*<u>rt-thread-3.1.3/bsp/stm32f103/Project.uvprojx</u>*
    每个选项的配置说明和原版μCOS-III一致，若有不同，我已经在注释中有所解释。  
    **原版μCOS-III配置**说明可参见：  
    a)《嵌入式实时操作系统μC/OS-III》北京航空航天大学出版社 宫辉等译 邵贝贝审校   
-   b) Micriμm公司μCOS-III在线文档: https://doc.micrium.com/display/kernel304/uC-OS-III+Features+os_cfg.h
+   b) Micriμm公司μCOS-III[在线文档](https://doc.micrium.com/display/kernel304/uC-OS-III+Features+os_cfg.h)
 5. μCOS-III原版定时器回调函数是在定时器线程中调用的，而非在中断中调用，因此要使用μCOS-III兼容层的软件定时器，需要将rtconfig.h中的宏定义`RT_USING_TIMER_SOFT`置1。
 
 
@@ -136,7 +138,7 @@ Keil工程路径：*<u>rt-thread-3.1.3/bsp/stm32f103/Project.uvprojx</u>*
 
 ### 2.5.1 官方标准手动初始化流程
 
-​	本兼容层完全兼容官方给出的标准初始化流程，如果您兼容老项目，μCOS-III初始化部分无需做任何修改。具体初始化流程代码参见工程`main.c`文件，参考文献参见 <u>*docs/uCOS-III官方初始化流程.pdf*</u> 
+​	本兼容层完全兼容官方给出的标准初始化流程，如果您兼容老项目，μCOS-III初始化部分无需做任何修改。具体初始化流程代码参见工程`main.c`文件，参考文献参见 [docs/uCOS-III官方初始化流程.pdf](docs/uCOS-III官方初始化流程.pdf) 
 
 
 
@@ -173,7 +175,7 @@ int main(void) /*RT-Thread main线程*/
 
 ​	如果您在应用层中不想手动初始化本兼容层，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏定义。请参见本文以下章节（**如无特殊要求，建议采用该种方式**）：
 
-> 6.2.1 Enable uCOS-III wrapper automatically init 
+> [6.2.1 Enable uCOS-III wrapper automatically init](#6.2.1 Enable uCOS-III wrapper automatically init) 
 
 
 
@@ -181,7 +183,7 @@ int main(void) /*RT-Thread main线程*/
 
 ​	如果你在使用过程中不需要兼容任务/内核对象结构体的成员变量，或者不需要使用uC/Probe软件监控兼容层状态，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_TINY`宏定义。请参考本文以下章节：
 
-> 6.2.2 Enable uCOS-III wrapper tiny mode 
+> [6.2.2 Enable uCOS-III wrapper tiny mode](#6.2.2 Enable uCOS-III wrapper tiny mode ) 
 
 
 
@@ -236,7 +238,7 @@ int main(void) /*RT-Thread main线程*/
 3. 兼容层取消了原版μCOS-III中的时间戳功能  
     在μCOS-III中，时间戳主要用于测量中断关闭时间，以及任务单次执行时间以及最大时间等涉及到精度较高的时长测量。该特性在μCOS-II以及RT-Thread中均没有，因此本兼容层不予实现。
 
-5. 本封装层文件内含有中文注释，编码格式ANSI - GB2312，并非UTF-8编码。
+5. 本封装层文件内含有中文注释，编码格式**ANSI - GB2312**，并非UTF-8编码。
 
 
 
@@ -769,7 +771,7 @@ uCOS-III兼容层在RT-Thread Nano版中需要手动添加到工程中，但如�
 RT-Thread online packages
     system packages --->
         [*] Micrium: Micrium software products porting for RT-Thread --->
-            [*] uCOS-III Wrapper: uCOS-III APIs wrapper --->
+            [*] uCOS-III Wrapper --->
                 [*]   Enable uCOS-III wrapper automatically init
                 [*]   Enable uCOS-III wrapper tiny mode
                 Version (latest)  --->
