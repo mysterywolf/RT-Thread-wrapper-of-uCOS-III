@@ -97,8 +97,10 @@ Keil工程路径：[rt-thread-3.1.3/bsp/stm32f103/Project.uvprojx](rt-thread-3.1
 
 
 ## 2.2 迁移步骤
+
+**（如果使用的是RT-Thread Nano版请参见以下步骤；若使用RT-Thread完整版可以直接跳转至[Env工具自动化配置到工程中](#6 Env工具自动化配置到工程中)章节）**
+
 1. 将uCOS-III、uC-LIB、uC-CPU三个文件夹内的所有文件都加入到你的工程中，最好保持原有文件夹的结构。相较于原版μCOS-III增加了`os_rtwrap.c`文件，负责对RT-Thread和μCOS-III的转换提供支持。
-2. 浏览一下`μC-CPU/cpu.h`文件，看一下头文件中的定义是否符合你的CPU，一般不需要改这个文件
 3. 浏览一下`μCOS-III/os.h`文件，看一下错误代码，这个错误代码和原版μCOS-III是有一定区别的。  
    **注意: 请勿随意打开注释掉的错误码枚举体成员，** 如果用户使用到了这些注释掉的成员,则会在迁移时编译报错,用以提醒用户这些错误代码在兼容层已经不可用。
 4. 配置`os_cfg.h`和`os_cfg_app.h`  
@@ -166,17 +168,13 @@ int main(void) /*RT-Thread main线程*/
 
 ### 2.5.3 自动初始化流程
 
-​	如果您在应用层中不想手动初始化本兼容层，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏定义。请参见本文以下章节（**如无特殊要求，建议采用该种方式**）：
-
-> [6.2.1 Enable uCOS-III wrapper automatically init](#6.2.1 Enable uCOS-III wrapper automatically init) 
+​	如果您在应用层中不想手动初始化本兼容层，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏定义。请参见[6.2.1章节](#6.2.1 Enable uCOS-III wrapper automatically init)（**如无特殊要求，建议采用该种方式**）。
 
 
 
 ### 2.5.4 精简版兼容层
 
-​	如果你在使用过程中不需要兼容任务/内核对象结构体的成员变量，或者不需要使用uC/Probe软件监控兼容层状态，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_TINY`宏定义。请参考本文以下章节：
-
-> [6.2.2 Enable uCOS-III wrapper tiny mode](#6.2.2 Enable uCOS-III wrapper tiny mode ) 
+​	如果你在使用过程中不需要兼容任务/内核对象结构体的成员变量，或者不需要使用uC/Probe软件监控兼容层状态，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_TINY`宏定义。请参见[6.2.2章节](#6.2.2 Enable uCOS-III wrapper tiny mode)。
 
 
 
@@ -261,103 +259,7 @@ OS_OBJ_QTY  OSPendMulti (OS_PEND_DATA  *p_pend_data_tbl,
 
 
 
-## 3.2 功能受限API（仅6个，全部为轻度受限，对正常使用没有影响）
-
-功能受限函数是指该函数虽然在兼容层中实现，但是实现不完全。即无法完全实现该函数在原版μCOS-III中的所有功能，每一个API函数的注释上如果opt字段可选项之前出现了减号'-'，即表示该功能在本兼容层中无法实现。
-
-![opts](docs/pic/opts.png)
-
-下面予以列出：
-
-
-
-### 3.2.1 os_flag.c
-
-#### 3.2.1.1 OSFlagPost()
-
-```c
-OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
-                      OS_FLAGS      flags,
-                      OS_OPT        opt,
-                      OS_ERR       *p_err);
-```
-
-​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
-​
-
-### 3.2.2  os_mutex.c
-
-#### 3.2.2.1 OSMutexPost()
-
-```c
-void  OSMutexPost (OS_MUTEX  *p_mutex,
-                   OS_OPT     opt,
-                   OS_ERR    *p_err);
-```
-
-​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
-
-
-
-### 3.2.3 os_q.c
-
-#### 3.2.3.1 OSQPost()
-
-```c
-void  OSQPost (OS_Q         *p_q,
-               void         *p_void,
-               OS_MSG_SIZE   msg_size,
-               OS_OPT        opt,
-               OS_ERR       *p_err);
-```
-
-​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
-
-
-
-### 3.2.4 os_sem.c
-
-#### 3.2.4.1 OSSemPost()
-
-```c
-OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
-                       OS_OPT   opt,
-                       OS_ERR  *p_err);
-```
-
-​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
-
-
-
-### 3.2.5 os_task.c
-
-#### 3.2.5.1 OSTaskQPost()
-
-```c
-void  OSTaskQPost (OS_TCB       *p_tcb,
-                   void         *p_void,
-                   OS_MSG_SIZE   msg_size,
-                   OS_OPT        opt,
-                   OS_ERR       *p_err);
-```
-
-​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
-
-
-
-#### 3.2.5.2 OSTaskSemPost()
-
-```c
-OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
-                           OS_OPT   opt,
-                           OS_ERR  *p_err);
-```
-
-​	opt字段，`OS_OPT_POST_NO_SCHED`选项无效。
-
-
-
-## 3.3 钩子函数
+## 3.2 钩子函数
 
 ​	**μCOS-III的钩子函数仅对μCOS-III兼容层负责。** 即如果你注册了`OSTaskDelHook`函数，他仅会在调用OSTaskDel函数时被调用，不会在调用`rt_thread_detach`函数时被调用(这个由RTT的钩子函数负责)。这样做是为了层次分明，防止μCOS-III兼容层插手RT-Thread内部事务。
 
@@ -381,7 +283,7 @@ void  App_OS_TimeTickHook (void);
 
 
 
-## 3.4 统计任务（OS_StatTask()、os_stat.c）
+## 3.3 统计任务（OS_StatTask()、os_stat.c）
 
 ​	在μCOS-III中，统计任务是一个系统任务，通过`OS_CFG_STAT_TASK_EN`宏决定是否开启，可以在系统运行时做一些统计工作。例如统计总的CPU使用率（0.00% - 100.00%）、各任务的CPU使用率（0.00% - 100.00%）以及各任务的堆栈使用量。CPU的利用率用一个0-10000之间的整数表示（对应0.00% - 100.00%）。
 
@@ -396,7 +298,7 @@ void  App_OS_TimeTickHook (void);
 
 
 
-## 3.5 任务控制块、内核对象控制块（结构体）
+## 3.4 任务控制块、内核对象控制块（结构体）
 
 ​	本兼容层尽可能的兼容任务、内核对象控制块（结构体）的每个成员变量，确保迁移过来的老程序如果直接访问这些结构体的成员变量也是可以直接运行，无需做修改的（尽管直接访问结构体的成员变量μCOS-III官方并不建议甚至十分反对）。
 
@@ -460,7 +362,7 @@ struct os_tcb
 
 
 
-## 3.6 全局变量
+## 3.5 全局变量
 
 目前，本兼容层可以使用以下μCOS-III原版全局变量（位于`os.h`）。这些全局变量的具体含义请参见**2.2节**中所列举出的参考资料。
 
@@ -730,6 +632,8 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 
 
+
+
 # 5 FinSH命令
 
 ​	本兼容层向RT-Thread FinSH注册了msh命令用以显示兼容层相关信息，用户在调试台中输入`ucos --help`即可显示可查的兼容层信息。
@@ -883,7 +787,7 @@ struct  os_sem {
 
 ## 8.1 联系方式
 
-维护：Meco Man https://github.com/mysterywolf/
+维护：[Meco Man](https://github.com/mysterywolf/)
 
 联系方式：jiantingman@foxmail.com
 
@@ -899,9 +803,9 @@ struct  os_sem {
 
 ## 8.3 致谢
 
-> 感谢RT-Thread工程师Willian Chan的技术支持：https://github.com/willianchanlovegithub
->
-> 感谢RT-Thread工程师yangjie的技术支持：https://github.com/yangjie11
+感谢RT-Thread工程师[Willian Chan](https://github.com/willianchanlovegithub)的技术支持
+
+感谢RT-Thread工程师[yangjie](https://github.com/yangjie11)的技术支持
 
 
 

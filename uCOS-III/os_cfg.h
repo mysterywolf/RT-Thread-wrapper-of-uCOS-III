@@ -76,9 +76,8 @@
 #define  OS_CFG_DBG_EN                   1u                 /* Enable (1) debug code/variables                                       */
 #define  OS_CFG_INVALID_OS_CALLS_CHK_EN  1u                 /* Enable (1) or Disable (0) checks for invalid kernel calls             */
 #define  OS_CFG_OBJ_TYPE_CHK_EN          1u                 /* Enable (1) or Disable (0) object type checking                        */
-
+#define  OS_CFG_PEND_MULTI_EN            0u                 /* 只读,Enable (1) or Disable (0) code generation for multi-pend feature */
 #define  OS_CFG_PRIO_MAX        RT_THREAD_PRIORITY_MAX      /* 只读 Defines the maximum number of task priorities                    */
-
 #define  OS_CFG_SCHED_ROUND_ROBIN_EN     1u                 /* 只读,RTT时间片轮转为必选项 Include code for Round-Robin scheduling    */
 #define  OS_CFG_STK_SIZE_MIN            64u                 /* Minimum allowable task stack size                                     */
 
