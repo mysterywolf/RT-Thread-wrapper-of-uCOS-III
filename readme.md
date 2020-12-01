@@ -7,8 +7,6 @@
 
 [TOC]
 
-
-
 # 0 前排提示
 
 本文含有图片，受限于**中国大陆互联网环境**，访问github时，**readme.md(本文件)的图片一般加载不出来**，因此我导出了.pdf文件。如果您需要详细阅读，可以将项目下载或clone下来，阅读[docs/中文说明文档.pdf](docs/中文说明文档.pdf)文件。
@@ -117,9 +115,9 @@ Keil工程路径：[rt-thread-3.1.3/bsp/stm32f103/Project.uvprojx](rt-thread-3.1
  ```c
 #define  OS_CFG_TMR_TASK_RATE_HZ 100u /* Rate for timers (100 Hz Typ.) */
  ```
-​    在原版μCOS-III中，该宏定义定义了软件定时器的时基信号，这与RT-Thread的软件定时器有本质的不同，在RT-Thread中，软件定时器的时基信号就等于OS Ticks。因此为了能够将μCOS-III软件定时器时间参数转为RT-Thread软件定时器的时间参数，需要用到该宏定义。请使该宏定义与原工程使用μCOS-III时的该宏定义参数一致。
+在原版μCOS-III中，该宏定义定义了软件定时器的时基信号，这与RT-Thread的软件定时器有本质的不同，在RT-Thread中，软件定时器的时基信号就等于OS Ticks。因此为了能够将μCOS-III软件定时器时间参数转为RT-Thread软件定时器的时间参数，需要用到该宏定义。请使该宏定义与原工程使用μCOS-III时的该宏定义参数一致。
 
-​	需要注意的是，虽然在兼容层中定义了软件定时器的时基频率，但是在兼容层内部使用的RT-Thread软件定时器的时基频率等同于OS Ticks，因此`OS_TMR`结构体的`.Match`和`.Remain`成员变量其保存的数值是以OS Ticks频率来计算的。
+需要注意的是，虽然在兼容层中定义了软件定时器的时基频率，但是在兼容层内部使用的RT-Thread软件定时器的时基频率等同于OS Ticks，因此`OS_TMR`结构体的`.Match`和`.Remain`成员变量其保存的数值是以OS Ticks频率来计算的。
 
 
 
@@ -133,13 +131,13 @@ Keil工程路径：[rt-thread-3.1.3/bsp/stm32f103/Project.uvprojx](rt-thread-3.1
 
 ### 2.5.1 官方标准手动初始化流程
 
-​	本兼容层完全兼容官方给出的标准初始化流程，如果您兼容老项目，μCOS-III初始化部分无需做任何修改。具体初始化流程代码参见工程`main.c`文件，参考文献参见 [docs/uCOS-III官方初始化流程.pdf](docs/uCOS-III官方初始化流程.pdf) 
+本兼容层完全兼容官方给出的标准初始化流程，如果您兼容老项目，μCOS-III初始化部分无需做任何修改。具体初始化流程代码参见工程`main.c`文件，参考文献参见 [docs/uCOS-III官方初始化流程.pdf](docs/uCOS-III官方初始化流程.pdf) 
 
 
 
 ### 2.5.2 最简手动初始化流程
 
-​	最简初始化流程是指本兼容层的初始化流程，不必像官方给出的初始化流程一样复杂。如果您不是想要兼容已有老工程，而是新建一个工程的话，可以采用最简手动初始化流程：
+最简初始化流程是指本兼容层的初始化流程，不必像官方给出的初始化流程一样复杂。如果您不是想要兼容已有老工程，而是新建一个工程的话，可以采用最简手动初始化流程：
 
 ```c
 #include <os.h> /*头文件保持和原版μCOS-III相同*/
@@ -168,13 +166,13 @@ int main(void) /*RT-Thread main线程*/
 
 ### 2.5.3 自动初始化流程
 
-​	如果您在应用层中不想手动初始化本兼容层，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏定义。请参见 [6.2.1章节](#6.2.1 Enable uCOS-III wrapper automatically init)（**如无特殊要求，建议采用该种方式**）。
+如果您在应用层中不想手动初始化本兼容层，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏定义。请参见 [6.2.1章节](#6.2.1 Enable uCOS-III wrapper automatically init)（**如无特殊要求，建议采用该种方式**）。
 
 
 
 ### 2.5.4 精简版兼容层
 
-​	如果你在使用过程中不需要兼容任务/内核对象结构体的成员变量，或者不需要使用uC/Probe软件监控兼容层状态，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_TINY`宏定义。请参见 [6.2.2章节](#6.2.2 Enable uCOS-III wrapper tiny mode)。
+如果你在使用过程中不需要兼容任务/内核对象结构体的成员变量，或者不需要使用uC/Probe软件监控兼容层状态，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_TINY`宏定义。请参见 [6.2.2章节](#6.2.2 Enable uCOS-III wrapper tiny mode)。
 
 
 
@@ -239,15 +237,13 @@ int main(void) /*RT-Thread main线程*/
 # 3 接口
 ## 3.1 没有实现兼容的API（仅2个）
 
-虽然RT-Thread没有任务内建消息队列、任务内建信号量、任务内建寄存器机制，但是**本兼容层均已实现，可以正常兼容**。但由于RT-Thread没有提供相关接口，**以下μCOS-III API无法兼容**：
+RT-Thread目前没有动态更改时间片大小的功能：
 
  ```c
 void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
  ```
 
-
-
-兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能，该功能在原版3.05.00版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06.00版本开始删除了该功能，因此本兼容层暂时没有实现该函数的兼容。
+兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能，该功能在原版3.05.00版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06.00版本开始删除了该功能，因此本兼容层暂时没有实现该函数的兼容：
 
 ```c
 OS_OBJ_QTY  OSPendMulti (OS_PEND_DATA  *p_pend_data_tbl,
@@ -261,11 +257,11 @@ OS_OBJ_QTY  OSPendMulti (OS_PEND_DATA  *p_pend_data_tbl,
 
 ## 3.2 钩子函数
 
-​	**μCOS-III的钩子函数仅对μCOS-III兼容层负责。** 即如果你注册了`OSTaskDelHook`函数，他仅会在调用OSTaskDel函数时被调用，不会在调用`rt_thread_detach`函数时被调用(这个由RTT的钩子函数负责)。这样做是为了层次分明，防止μCOS-III兼容层插手RT-Thread内部事务。
+**μCOS-III的钩子函数仅对μCOS-III兼容层负责。** 即如果你注册了`OSTaskDelHook`函数，他仅会在调用OSTaskDel函数时被调用，不会在调用`rt_thread_detach`函数时被调用(这个由RTT的钩子函数负责)。这样做是为了层次分明，防止μCOS-III兼容层插手RT-Thread内部事务。
 
-​	μCOS-III的钩子函数在两个文件中实现：`os_cpu_c.c`和`os_app_hooks.c` 。按照μCOS-III的思想，`os_cpu_c.c`提供原始的钩子函数（即这些钩子函数被相应的函数直接调用），该文件以及其内部的钩子函数是移植工程师编写的内容，应用工程师不应该操作这个文件的内容，`os_cpu_c.c`文件的钩子函数提供相应的函数指针供`os_app_hooks.c`文件内的钩子函数注册和使用，这个文件内的钩子函数应用工程师是可以操作的。换句话说，我们有什么需要在钩子函数中调用的函数，应该放在`os_app_hooks.c`文件中。
+μCOS-III的钩子函数在两个文件中实现：`os_cpu_c.c`和`os_app_hooks.c` 。按照μCOS-III的思想，`os_cpu_c.c`提供原始的钩子函数（即这些钩子函数被相应的函数直接调用），该文件以及其内部的钩子函数是移植工程师编写的内容，应用工程师不应该操作这个文件的内容，`os_cpu_c.c`文件的钩子函数提供相应的函数指针供`os_app_hooks.c`文件内的钩子函数注册和使用，这个文件内的钩子函数应用工程师是可以操作的。换句话说，我们有什么需要在钩子函数中调用的函数，应该放在`os_app_hooks.c`文件中。
 
-​	以下原版μCOS-III钩子函数将予以取消，由RT-Thread接管相关钩子函数接管：
+以下原版μCOS-III钩子函数将予以取消，由RT-Thread接管相关钩子函数接管：
 
 ```c
 void          OSTaskReturnHook          (OS_TCB *p_tcb);
@@ -285,11 +281,11 @@ void  App_OS_TimeTickHook (void);
 
 ## 3.3 统计任务（OS_StatTask()、os_stat.c）
 
-​	在μCOS-III中，统计任务是一个系统任务，通过`OS_CFG_STAT_TASK_EN`宏决定是否开启，可以在系统运行时做一些统计工作。例如统计总的CPU使用率（0.00% - 100.00%）、各任务的CPU使用率（0.00% - 100.00%）以及各任务的堆栈使用量。CPU的利用率用一个0-10000之间的整数表示（对应0.00% - 100.00%）。
+在μCOS-III中，统计任务是一个系统任务，通过`OS_CFG_STAT_TASK_EN`宏决定是否开启，可以在系统运行时做一些统计工作。例如统计总的CPU使用率（0.00% - 100.00%）、各任务的CPU使用率（0.00% - 100.00%）以及各任务的堆栈使用量。CPU的利用率用一个0-10000之间的整数表示（对应0.00% - 100.00%）。
 
-​	但是RT-Thread并没有统计任务，因此需要创建一个任务来兼容原版μCOS-III的统计任务，完成上述功能。该统计任务会在兼容层初始化时自动创建，用户无需干预。**用户仅需调用`OSStatTaskCPUUsage`全局变量即可获取当前的CPU使用率，CPU使用率的计算策略和原版μCOS-III完全一致。**
+但是RT-Thread并没有统计任务，因此需要创建一个任务来兼容原版μCOS-III的统计任务，完成上述功能。该统计任务会在兼容层初始化时自动创建，用户无需干预。**用户仅需调用`OSStatTaskCPUUsage`全局变量即可获取当前的CPU使用率，CPU使用率的计算策略和原版μCOS-III完全一致。**
 
-​	目前统计任务实现的功能：
+目前统计任务实现的功能：
 
 1. 计算全局CPU使用率
 2. 计算每个任务的任务堆栈使用情况（当 `OS_CFG_DBG_EN` 和 `OS_CFG_STAT_TASK_STK_CHK_EN` 为1）
@@ -300,9 +296,9 @@ void  App_OS_TimeTickHook (void);
 
 ## 3.4 任务控制块、内核对象控制块（结构体）
 
-​	本兼容层尽可能的兼容任务、内核对象控制块（结构体）的每个成员变量，确保迁移过来的老程序如果直接访问这些结构体的成员变量也是可以直接运行，无需做修改的（尽管直接访问结构体的成员变量μCOS-III官方并不建议甚至十分反对）。
+本兼容层尽可能的兼容任务、内核对象控制块（结构体）的每个成员变量，确保迁移过来的老程序如果直接访问这些结构体的成员变量也是可以直接运行，无需做修改的（尽管直接访问结构体的成员变量μCOS-III官方并不建议甚至十分反对）。
 
-​	例如，`OS_TCB`结构体的各个成员变量如下，可以看到，其包含了原版绝大多数成员变量。如果不用兼容原版成员变量，可以定义宏`PKG_USING_UCOSIII_WRAPPER_TINY`，可以看到`OS_TCB`结构体大幅度缩减。也可以将`OS_CFG_TASK_SEM_EN` `OS_CFG_TASK_Q_EN` `OS_CFG_TASK_REG_TBL_SIZE` 关闭以进一步裁剪。
+例如，`OS_TCB`结构体的各个成员变量如下，可以看到，其包含了原版绝大多数成员变量。如果不用兼容原版成员变量，可以定义宏`PKG_USING_UCOSIII_WRAPPER_TINY`，可以看到`OS_TCB`结构体大幅度缩减。也可以将`OS_CFG_TASK_SEM_EN` `OS_CFG_TASK_Q_EN` `OS_CFG_TASK_REG_TBL_SIZE` 关闭以进一步裁剪。
 
 ```c
 struct os_tcb
@@ -484,9 +480,9 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 ## 4.1 介绍
 
-​	μC/Probe 是由Micriμm公司研发的一款基于Windows操作系统的、专门针对Micriμm公司旗下产品（μC/OS-II、μC/OS-III、uC/TCP-IP等）的应用程序。该软件以可视化的模式实时查看目标系统的内部变量，并且在不中断系统正常运行的情况下改变系统内部全局变量。全局变量可以通过刻度指针、数字表、柱状图、虚拟LED等可视化对象显示出来，通过滑块、开关或者按钮等来修改变量值。用户不需要编写任何代码就可以实现这些功能。目前μC/Probe也已经支持对FreeRTOS的调试。
+μC/Probe 是由Micriμm公司研发的一款基于Windows操作系统的、专门针对Micriμm公司旗下产品（μC/OS-II、μC/OS-III、uC/TCP-IP等）的应用程序。该软件以可视化的模式实时查看目标系统的内部变量，并且在不中断系统正常运行的情况下改变系统内部全局变量。全局变量可以通过刻度指针、数字表、柱状图、虚拟LED等可视化对象显示出来，通过滑块、开关或者按钮等来修改变量值。用户不需要编写任何代码就可以实现这些功能。目前μC/Probe也已经支持对FreeRTOS的调试。
 
-​	μC/Probe可以通过多种方式与板卡通信，以获取调试信息：
+μC/Probe可以通过多种方式与板卡通信，以获取调试信息：
 
 - J-Link
 - CMSIS-DAP
@@ -518,7 +514,7 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 ## 4.2 下载
 
-​	由于官方服务器部署在美国，在中国大陆访问非常慢，需要注册才能下载，而且软件是放在国外的dropbox云盘上，国内根本上不去，因此我已经帮大家下载整理好，与官网最新版保持一致。
+由于官方服务器部署在美国，在中国大陆访问非常慢，需要注册才能下载，而且软件是放在国外的dropbox云盘上，国内根本上不去，因此我已经帮大家下载整理好，与官网最新版保持一致。
 
 ### 4.2.1 百度云
 
@@ -537,9 +533,9 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 ## 4.3 使用
 
-​	本兼容层已经实现与μC/Probe的对接，虽然不能和原版μCOS-III一样将所有内核信息全部显示，但是绝大多数信息以及所有内核关键信息均已实现与μC/Probe的对接。同时用户可以借助本兼容层，实现通过μC/Probe直接显示、调试RT-Thread内核信息和数据。
+本兼容层已经实现与μC/Probe的对接，虽然不能和原版μCOS-III一样将所有内核信息全部显示，但是绝大多数信息以及所有内核关键信息均已实现与μC/Probe的对接。同时用户可以借助本兼容层，实现通过μC/Probe直接显示、调试RT-Thread内核信息和数据。
 
-​	**目前可以查看的任务以及内核对象信息，如下所示。**
+**目前可以查看的任务以及内核对象信息，如下所示。**
 
 ### 4.3.1 Task(s)选项卡可用项
 
@@ -636,7 +632,7 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 
 # 5 FinSH命令
 
-​	本兼容层向RT-Thread FinSH注册了msh命令用以显示兼容层相关信息，用户在调试台中输入`ucos --help`即可显示可查的兼容层信息。
+本兼容层向RT-Thread FinSH注册了msh命令用以显示兼容层相关信息，用户在调试台中输入`ucos --help`即可显示可查的兼容层信息。
 
 ```shell
  \ | /
@@ -680,11 +676,11 @@ RT-Thread online packages
 
 ### 6.2.1 Enable uCOS-III wrapper automatically init
 
-​	uCOS-III兼容层支持按照uCOS-III原版的初始化步骤进行初始化，但是在有些情况，用户不想手动初始化uCOS-III兼容层，想要直接运行应用层任务或模块，则可以使用该宏定义。在`rtconfig.h`中定义本宏定义后，在RT-Thread初始化完成并进入到main线程之前会自动将uCOS-III兼容层初始化完毕，用户仅需要专注于uCOS-III的应用级任务即可。
+uCOS-III兼容层支持按照uCOS-III原版的初始化步骤进行初始化，但是在有些情况，用户不想手动初始化uCOS-III兼容层，想要直接运行应用层任务或模块，则可以使用该宏定义。在`rtconfig.h`中定义本宏定义后，在RT-Thread初始化完成并进入到main线程之前会自动将uCOS-III兼容层初始化完毕，用户仅需要专注于uCOS-III的应用级任务即可。
 
-​	若将该功能开启，则会在`rtconfig.h`文件中中定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏。在`os_rtwrap.c`文件中的以下函数将被使能并**在RT-Thread初始化时自动执行**。
+若将该功能开启，则会在`rtconfig.h`文件中中定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏。在`os_rtwrap.c`文件中的以下函数将被使能并**在RT-Thread初始化时自动执行**。
 
-​	若没有使用完整版（即nano版）也想使用本功能，可以在`rtconfig.h`中手动添加定义宏定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`。
+若没有使用完整版（即nano版）也想使用本功能，可以在`rtconfig.h`中手动添加定义宏定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`。
 
 ```c
 /**
@@ -727,7 +723,7 @@ INIT_PREV_EXPORT(rt_ucosiii_autoinit);
 
 ### 6.2.2 Enable uCOS-III wrapper tiny mode 
 
-​	如果你在使用过程中不需要兼容任务/内核对象结构体的成员变量，或者不需要使用uC/Probe软件监控兼容层状态，可使能该选项。ENV将自动在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_TINY`宏定义。以`OS_SEM`结构体为例：
+如果你在使用过程中不需要兼容任务/内核对象结构体的成员变量，或者不需要使用uC/Probe软件监控兼容层状态，可使能该选项。ENV将自动在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_TINY`宏定义。以`OS_SEM`结构体为例：
 
 ```c
 struct  os_sem { 
@@ -745,7 +741,7 @@ struct  os_sem {
 };
 ```
 
-​	可以看到，在定义`PKG_USING_UCOSIII_WRAPPER_TINY`后，`OS_SEM`结构体得到了大幅度精简。该模式可满足所有API的基本兼容需求，**建议勾选该选项**。
+可以看到，在定义`PKG_USING_UCOSIII_WRAPPER_TINY`后，`OS_SEM`结构体得到了大幅度精简。该模式可满足所有API的基本兼容需求，**建议勾选该选项**。
 
 
 
