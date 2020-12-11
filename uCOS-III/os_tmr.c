@@ -123,7 +123,6 @@ static void OS_TmrCallback(void *p_ara);
 *
 * Note(s)    : 1) This function only creates the timer.  In other words, the timer is not started when created.  To
 *                 start the timer, call OSTmrStart().
-*              2) 需要开启RT_USING_TIMER_SOFT宏定义
 *
 ************************************************************************************************************************
 */
@@ -1198,12 +1197,10 @@ static void OS_TmrCallback(void *p_ara)
         dly = p_tmr->_set_dly;
         period = p_tmr->_set_period;
  
-        CPU_CRITICAL_ENTER();
         OSTmrDel(p_tmr,&err);                               /* 删除老定时器,_set_dly/_set_period会在此函数中清零    */
         OSTmrCreate(p_tmr, p_tmr->Tmr.parent.name,          /* 创建新定时器,并装填新的参数                          */ 
             dly, period, opt, callback, arg, &err);
         OSTmrStart(p_tmr, &err);                            /* 启动装填新参数的定时器                               */
-        CPU_CRITICAL_EXIT();
     }
 }
 
