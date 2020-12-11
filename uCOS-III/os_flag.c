@@ -483,6 +483,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
             rt_option = RT_EVENT_FLAG_OR;
             break;
 
+#if OS_CFG_FLAG_MODE_CLR_EN > 0u
         case OS_OPT_PEND_FLAG_CLR_ALL:
             rt_option = RT_EVENT_FLAG_AND;
             break;
@@ -490,6 +491,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         case OS_OPT_PEND_FLAG_CLR_ANY:
             rt_option = RT_EVENT_FLAG_OR;
             break;
+#endif
 
         default:
             *p_err = OS_ERR_FLAG_PEND_OPT;
