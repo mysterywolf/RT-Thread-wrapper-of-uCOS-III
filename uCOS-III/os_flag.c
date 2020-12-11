@@ -903,9 +903,10 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     }
 #endif
 #endif
+    flags = p_grp->FlagGrp.set; 
     CPU_CRITICAL_EXIT();
     
-    return p_grp->FlagGrp.set;                                  /* 返回执行后事件标志组的值                           */
+    return flags;                                               /* 返回执行后事件标志组的值                           */
 }
 
 /*
