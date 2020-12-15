@@ -210,12 +210,12 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     if(opt == OS_OPT_TMR_ONE_SHOT)
     {
         rt_flag = RT_TIMER_FLAG_ONE_SHOT|RT_TIMER_FLAG_SOFT_TIMER;
-        time = dly * (1000 / OS_CFG_TMR_TASK_RATE_HZ);           /* RTT和uCOS-III在定时器时钟源的设计不同,需要进行转换*/  
+        time = dly * (OS_CFG_TICK_RATE_HZ / OS_CFG_TMR_TASK_RATE_HZ);           /* RTT和uCOS-III在定时器时钟源的设计不同,需要进行转换*/  
     }
     else if(opt == OS_OPT_TMR_PERIODIC)
     {
         rt_flag = RT_TIMER_FLAG_PERIODIC|RT_TIMER_FLAG_SOFT_TIMER;
-        time = period * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
+        time = period * (OS_CFG_TICK_RATE_HZ / OS_CFG_TMR_TASK_RATE_HZ);
     }
     else
     {
@@ -248,7 +248,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->_dly && p_tmr->Period)
     {
         /*带有延迟的周期延时，先延时一次延迟部分，该部分延时完毕后，周期部分由回调函数重新装填*/
-        time2 = p_tmr->Dly * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
+        time2 = p_tmr->Dly * (OS_CFG_TICK_RATE_HZ / OS_CFG_TMR_TASK_RATE_HZ);
         rt_timer_init(&p_tmr->Tmr,
                       (const char*)p_name,
                       OS_TmrCallback,
@@ -467,7 +467,7 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
     switch (p_tmr->State) {
         case OS_TMR_STATE_RUNNING:
             *p_err = OS_ERR_NONE;
-            remain = p_tmr->Tmr.timeout_tick - rt_tick_get();
+            remain = (p_tmr->Tmr.timeout_tick - rt_tick_get()) / (OS_CFG_TICK_RATE_HZ / OS_CFG_TMR_TASK_RATE_HZ);
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
             CPU_CRITICAL_ENTER();
             p_tmr->Remain = remain;
@@ -1153,7 +1153,7 @@ static void OS_TmrCallback(void *p_ara)
         /*带有延迟的周期延时，延迟延时已经完毕，开始进行正常周期延时*/
         CPU_CRITICAL_ENTER();
         p_tmr->_dly = 0;                                    /* 延迟部分清零，防止再进入本条件分支语句               */
-        p_tmr->Tmr.init_tick = p_tmr->Period * (1000 / OS_CFG_TMR_TASK_RATE_HZ);
+        p_tmr->Tmr.init_tick = p_tmr->Period * (OS_CFG_TICK_RATE_HZ / OS_CFG_TMR_TASK_RATE_HZ);
         p_tmr->Tmr.timeout_tick = rt_tick_get() + p_tmr->Tmr.init_tick;
         p_tmr->Tmr.parent.flag |= RT_TIMER_FLAG_PERIODIC;   /* 定时器设置为周期模式                                 */
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY

@@ -366,6 +366,12 @@
 - 完善`.FlagsRdy`成员变量
 - 完善`p_grp->Flags`成员变量
 
+### 2020-12-16
+
+- 修复`OSTmrRemainGet()`函数返回结果单位不一致的问题
+- 修复`OS_TMR`结构体`.Remain`成员变量数值单位不一致的问题
+- 修复从RT-Thread到uCOS-III定时器换算公式没有考虑到Systick变化的问题
+
 
 
 
@@ -637,6 +643,12 @@
 完善`.FlagsRdy`成员变量
 
 完善`p_grp->Flags`成员变量
+
+**[fix]** 修复`OSTmrRemainGet()`函数返回结果单位不一致的问题
+
+**[fix]** 修复`OS_TMR`结构体`.Remain`成员变量数值单位不一致的问题
+
+**[fix]** 修复从RT-Thread到uCOS-III定时器换算公式没有考虑到Systick变化的问题
 
 
 
