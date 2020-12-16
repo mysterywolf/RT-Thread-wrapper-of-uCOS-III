@@ -372,6 +372,10 @@
 - 修复`OS_TMR`结构体`.Remain`成员变量数值单位不一致的问题
 - 修复从RT-Thread到uCOS-III定时器换算公式没有考虑到Systick变化的问题
 
+### 2020-12-17
+
+- 完善`.FlagsRdy`成员变量
+
 
 
 

@@ -545,7 +545,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 #endif
     p_tcb->FlagsPend = flags;                                   /* Save the flags that we need to wait for            */
     p_tcb->FlagsOpt  = opt;                                     /* Save the type of wait we are doing                 */
-    p_tcb->FlagsRdy  = (OS_FLAGS)0u;                            /* Save flags that were ready                         */
+    p_tcb->FlagsRdy  = p_tcb->Task.event_set;                   /* Save flags that were ready                         */
 #endif
     CPU_CRITICAL_EXIT(); 
 
@@ -775,6 +775,7 @@ OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err)
 
     CPU_CRITICAL_ENTER();
     flags = OSTCBCurPtr->Task.event_set;
+    OSTCBCurPtr->FlagsRdy = flags;
     CPU_CRITICAL_EXIT();
    *p_err = OS_ERR_NONE;
     return (flags);
