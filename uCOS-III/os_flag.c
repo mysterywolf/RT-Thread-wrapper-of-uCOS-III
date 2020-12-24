@@ -775,7 +775,9 @@ OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err)
 
     CPU_CRITICAL_ENTER();
     flags = OSTCBCurPtr->Task.event_set;
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     OSTCBCurPtr->FlagsRdy = flags;
+#endif
     CPU_CRITICAL_EXIT();
    *p_err = OS_ERR_NONE;
     return (flags);

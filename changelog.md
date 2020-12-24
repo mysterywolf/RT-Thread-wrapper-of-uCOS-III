@@ -376,6 +376,10 @@
 
 - 完善`.FlagsRdy`成员变量
 
+### 2020-12-25
+
+- 修复定义`PKG_USING_UCOSIII_WRAPPER_TINY`后，代码报错的问题
+
 
 
 
