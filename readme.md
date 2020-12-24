@@ -300,7 +300,7 @@ void  App_OS_TimeTickHook (void);
 
 本兼容层尽可能的兼容任务、内核对象控制块（结构体）的每个成员变量，确保迁移过来的老程序如果直接访问这些结构体的成员变量也是可以直接运行，无需做修改的（尽管直接访问结构体的成员变量μCOS-III官方并不建议甚至十分反对）。
 
-例如，`OS_TCB`结构体的各个成员变量如下，可以看到，其包含了原版绝大多数成员变量。如果不用兼容原版成员变量，可以定义宏`PKG_USING_UCOSIII_WRAPPER_TINY`，可以看到`OS_TCB`结构体大幅度缩减。也可以将`OS_CFG_TASK_SEM_EN` `OS_CFG_TASK_Q_EN` `OS_CFG_TASK_REG_TBL_SIZE` 关闭以进一步裁剪。
+例如，`OS_TCB`结构体的各个成员变量如下，可以看到，其包含了原版绝大多数成员变量。如果不用兼容原版成员变量，可以定义宏`PKG_USING_UCOSIII_WRAPPER_TINY`，可以看到`OS_TCB`结构体大幅度缩减。也可以将`OS_CFG_TASK_SEM_EN` 、`OS_CFG_TASK_Q_EN` 、`OS_CFG_TASK_REG_TBL_SIZE` 关闭以进一步裁剪。
 
 ```c
 struct os_tcb
@@ -362,7 +362,7 @@ struct os_tcb
 
 ## 3.5 全局变量
 
-目前，本兼容层可以使用以下μCOS-III原版全局变量（位于`os.h`）。这些全局变量的具体含义请参见**2.2节**中所列举出的参考资料。
+目前，本兼容层可以使用以下μCOS-III原版全局变量（位于`os.h`）。这些全局变量的具体含义请参见[2.2节](#2.2 迁移步骤)中所列举出的参考资料。
 
  ```c
 #define           OSSchedLockNestingCtr     rt_critical_level()         /* Lock nesting level                         */
