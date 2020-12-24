@@ -25,11 +25,15 @@
 
 视频介绍&教程：https://www.bilibili.com/video/BV1b54y1U7AG
 
+
+
+## 1.1 RT-Thread的其他RTOS兼容层
+
 RT-Thread操作系统的μCOS-II兼容层：https://github.com/mysterywolf/RT-Thread-wrapper-of-uCOS-II
 
 
 
-## 1.1 本兼容层适合于：
+## 1.2 本兼容层适合于
 
 - 之前学习过μCOS-III操作系统，意图转向学习RT-Thread国产操作系统。本兼容层可以帮您用已有的μCOS-III编程经验和习惯快速将项目跑起来，日后在应用过程中深入熟悉RT-Thread的API函数，逐步向RT-Thread过度，降低您的学习门槛和时间成本。**有了本兼容层，对RT-Thread API以及编程风格的不熟悉再也不是您学习RT-Thread的阻力！**
 
@@ -55,7 +59,7 @@ RT-Thread操作系统的μCOS-II兼容层：https://github.com/mysterywolf/RT-Th
 
 
 
-## 1.2 版本详细信息
+## 1.3 版本详细信息
 |    组件名称    | 版本号  |                     配置文件                     |                   说明                    |
 | :------------: | :-----: | :----------------------------------------------: | :---------------------------------------: |
 | RT-Thread nano |  3.1.3  |                    rtconfig.h                    |                                           |
@@ -65,7 +69,7 @@ RT-Thread操作系统的μCOS-II兼容层：https://github.com/mysterywolf/RT-Th
 
 
 
-## 1.3 官网
+## 1.4 官网
 
 RT-Thread：https://www.rt-thread.org/   
 文档中心：https://www.rt-thread.org/document/site/tutorial/nano/an0038-nano-introduction/
@@ -115,9 +119,7 @@ Keil工程路径：[rt-thread-3.1.3/bsp/stm32f103/Project.uvprojx](rt-thread-3.1
  ```c
 #define  OS_CFG_TMR_TASK_RATE_HZ 100u /* Rate for timers (100 Hz Typ.) */
  ```
-在原版μCOS-III中，该宏定义定义了软件定时器的时基信号，这与RT-Thread的软件定时器有本质的不同，在RT-Thread中，软件定时器的时基信号就等于OS Ticks。因此为了能够将μCOS-III软件定时器时间参数转为RT-Thread软件定时器的时间参数，需要用到该宏定义。请使该宏定义与原工程使用μCOS-III时的该宏定义参数一致。
-
-需要注意的是，虽然在兼容层中定义了软件定时器的时基频率，但是在兼容层内部使用的RT-Thread软件定时器的时基频率等同于OS Ticks，因此`OS_TMR`结构体的`.Match`成员变量其保存的数值是以OS Ticks频率来计算的。
+在原版μCOS-III中，该宏定义定义了软件定时器的时基信号，这与RT-Thread的软件定时器有本质的不同，在RT-Thread中，软件定时器的时基信号就等于OS Ticks。因此为了能够将μCOS-III软件定时器时间参数转为RT-Thread软件定时器的时间参数，需要用到该宏定义。请使该宏定义与原工程使用μCOS-III时的该宏定义参数一致。需要注意的是，虽然在兼容层中定义了软件定时器的时基频率，但是在兼容层内部使用的RT-Thread软件定时器的时基频率等同于OS Ticks，因此`OS_TMR`结构体的`.Match`成员变量其保存的数值是以OS Ticks频率来计算的。
 
 
 
