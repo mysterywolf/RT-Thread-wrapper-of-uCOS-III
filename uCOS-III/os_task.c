@@ -38,11 +38,11 @@
 *
 * LICENSING TERMS:
 * ---------------
-*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or 
+*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or
 *           for peaceful research.  If you plan or intend to use uC/OS-III in a commercial application/
-*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your 
-*           application/product.   We provide ALL the source code for your convenience and to help you 
-*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use 
+*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your
+*           application/product.   We provide ALL the source code for your convenience and to help you
+*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use
 *           it commercially without paying a licensing fee.
 *
 *           Knowledge of the source code may NOT be used to develop a similar product.
@@ -91,7 +91,7 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
 {
     rt_uint8_t rt_priority;
     rt_priority = prio_new;
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -117,7 +117,7 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
        *p_err = OS_ERR_PRIO_INVALID;
         return;
     }
-    
+
     rt_thread_control(&(p_tcb->Task), RT_THREAD_CTRL_CHANGE_PRIORITY, &rt_priority);
     *p_err = OS_ERR_NONE;
 }
@@ -183,7 +183,7 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
 *                                 OS_OPT_TASK_STK_CLR         Clear the stack when the task is created
 *                                 OS_OPT_TASK_SAVE_FP         If the CPU has floating-point registers, save them
 *                                                             during a context switch.
-*                                 OS_OPT_TASK_NO_TLS          If the caller doesn't want or need TLS (Thread Local 
+*                                 OS_OPT_TASK_NO_TLS          If the caller doesn't want or need TLS (Thread Local
 *                                                             Storage) support for the task.  If you do not include this
 *                                                             option, TLS will be supported by default.
 *
@@ -230,7 +230,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
                     void          *p_ext,
                     OS_OPT         opt,
                     OS_ERR        *p_err)
-{ 
+{
     rt_err_t rt_err;
 #if OS_CFG_TASK_SEM_EN > 0u || OS_CFG_TASK_Q_EN > 0u
     OS_ERR err;
@@ -246,9 +246,9 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #endif
     CPU_STK       *p_sp;
     CPU_STK_SIZE   i;
-    
+
     CPU_SR_ALLOC();
-    
+
     CPU_VAL_UNUSED(stk_limit);
 
 #ifdef OS_SAFETY_CRITICAL
@@ -264,7 +264,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         return;
     }
 #endif
-    
+
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
@@ -272,13 +272,13 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         return;
     }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u                                  /* ---------------- VALIDATE ARGUMENTS ------------------ */   
+
+#if OS_CFG_ARG_CHK_EN > 0u                                  /* ---------------- VALIDATE ARGUMENTS ------------------ */
     if(p_tcb == RT_NULL)                                    /* User must supply a valid OS_TCB                        */
     {
         *p_err = OS_ERR_TCB_INVALID;
         return;
-    }     
+    }
     if(p_task == RT_NULL)                                   /* User must supply a valid task                          */
     {
         *p_err = OS_ERR_TASK_INVALID;
@@ -292,13 +292,13 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     if(prio >= RT_THREAD_PRIORITY_MAX-1)                    /* 检查任务优先级,不可占用空闲任务优先级*/
     {
         *p_err = OS_ERR_PRIO_INVALID;
-        return;        
+        return;
     }
     if(p_stk_base == RT_NULL)                               /* User must supply a valid stack base address            */
     {
         *p_err = OS_ERR_STK_INVALID;
         return;
-    }  
+    }
     if(stk_size < OS_CFG_STK_SIZE_MIN)                      /* User must supply a valid minimum stack size            */
     {
         *p_err = OS_ERR_STK_SIZE_INVALID;
@@ -307,13 +307,13 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     if (stk_limit >= stk_size) {                            /* User must supply a valid stack limit                   */
        *p_err = OS_ERR_STK_LIMIT_INVALID;
         return;
-    }    
+    }
     if (prio == (OS_CFG_PRIO_MAX - 1u)) {
        *p_err = OS_ERR_PRIO_INVALID;                        /* Not allowed to use same priority as idle task          */
         return;
-    } 
+    }
 #endif
-    
+
     OS_TaskInitTCB(p_tcb);                                  /* Initialize the TCB to default values                   */
     *p_err = OS_ERR_NONE;
                                                             /* --------------- CLEAR THE TASK'S STACK --------------- */
@@ -339,9 +339,9 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         return;
     }
 #endif
-    
-    CPU_CRITICAL_ENTER(); 
-#if OS_CFG_TASK_Q_EN > 0u    
+
+    CPU_CRITICAL_ENTER();
+#if OS_CFG_TASK_Q_EN > 0u
     p_tcb->MsgCreateSuc = RT_FALSE;
 #endif
 #if OS_CFG_TASK_SEM_EN > 0u
@@ -349,7 +349,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #endif
     p_tcb->ExtPtr = p_ext;                                  /* 用户附加区指针                                         */
     p_tcb->SuspendCtr = 0;                                  /* 嵌套挂起为0层                                          */
-    
+
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_tcb->TimeQuanta    = time_quanta;                     /* Save the #ticks for time slice (0 means not sliced)    */
 #if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
@@ -358,17 +358,17 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     } else {
         p_tcb->TimeQuantaCtr = time_quanta;
     }
-#endif    
 #endif
-    
+#endif
+
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     for (reg_nbr = 0u; reg_nbr < OS_CFG_TASK_REG_TBL_SIZE; reg_nbr++) {
         p_tcb->RegTbl[reg_nbr] = (OS_REG)0;
     }
-#endif 
+#endif
     CPU_CRITICAL_EXIT();
-    
-#if OS_CFG_TASK_Q_EN > 0u   
+
+#if OS_CFG_TASK_Q_EN > 0u
     if(q_size>0)                                            /* 开启任务内建消息队列                                   */
     {
         OSQCreate(&p_tcb->MsgQ, (CPU_CHAR*)p_name, q_size, &err);
@@ -381,7 +381,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         }
         else
         {
-            CPU_CRITICAL_ENTER(); 
+            CPU_CRITICAL_ENTER();
             p_tcb->MsgCreateSuc = RT_TRUE;
             CPU_CRITICAL_EXIT();
         }
@@ -389,23 +389,23 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #else
     CPU_VAL_UNUSED(q_size);
 #endif
-#if OS_CFG_TASK_SEM_EN > 0u    
+#if OS_CFG_TASK_SEM_EN > 0u
     /*创建任务内建信号量*/
     OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)p_name,0,&err);      /* 任务内建信号量value初始化为0                           */
     if(err != OS_ERR_NONE)                                  /* 任务内建信号量创建失败                                 */
     {
-        CPU_CRITICAL_ENTER(); 
+        CPU_CRITICAL_ENTER();
         p_tcb->SemCreateSuc = RT_FALSE;
         CPU_CRITICAL_EXIT();
         RT_DEBUG_LOG(OS_CFG_DBG_EN,("task sem %s create err!\n",p_name));
     }
     else
     {
-        CPU_CRITICAL_ENTER(); 
+        CPU_CRITICAL_ENTER();
         p_tcb->SemCreateSuc = RT_TRUE;
         CPU_CRITICAL_EXIT();
     }
-#endif    
+#endif
     CPU_CRITICAL_ENTER();
 #if defined(OS_CFG_TLS_TBL_SIZE) && (OS_CFG_TLS_TBL_SIZE > 0u)/* 线程私有变量暂时没有实现                             */
     for (id = 0u; id < OS_CFG_TLS_TBL_SIZE; id++) {
@@ -414,7 +414,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     OS_TLS_TaskCreate(p_tcb);                               /* Call TLS hook                                          */
 #endif
     CPU_CRITICAL_EXIT();
-    
+
     /*创建线程*/
     rt_err = rt_thread_init(&p_tcb->Task,
                             (const char*)p_name,
@@ -437,19 +437,19 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 
     OSTaskCreateHook(p_tcb);                                /* 调用钩子函数                                           */
 
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_CRITICAL_ENTER();
 #if OS_CFG_DBG_EN > 0u
     OS_TaskDbgListAdd(p_tcb);                               /* 将任务加入到Debug链表中                                */
-#endif    
+#endif
     OSTaskQty++;                                            /* Increment the #tasks counter                           */
 
 #if (CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO)
     p_stk_limit = p_stk_base + stk_limit;
 #else
     p_stk_limit = p_stk_base + (stk_size - 1u) - stk_limit;
-#endif 
-#if OS_CFG_DBG_EN > 0u    
+#endif
+#if OS_CFG_DBG_EN > 0u
     p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp;         /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新 */
 #endif
     p_tcb->Opt = opt;
@@ -464,12 +464,12 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_tcb->Prio = p_tcb->Task.init_priority;
 #if OS_CFG_TASK_SEM_EN > 0u
     p_tcb->SemCtr = p_tcb->Sem.Sem.value;
-#endif 
-    CPU_CRITICAL_EXIT();   
+#endif
+    CPU_CRITICAL_EXIT();
 #endif
 
     /*在uCOS-III中的任务创建相当于RTT的任务创建+任务启动*/
-    rt_err = rt_thread_startup(&p_tcb->Task);                 
+    rt_err = rt_thread_startup(&p_tcb->Task);
     *p_err = rt_err_to_ucosiii(rt_err);
 }
 
@@ -502,7 +502,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 * Note(s)    : 1) 'p_err' gets set to OS_ERR_NONE before OSSched() to allow the returned error code to be monitored even
 *                 for a task that is deleting itself. In this case, 'p_err' MUST point to a global variable that can be
 *                 accessed by another task.
-*              2) 大多数线程是循环执行的，无需删除；而能运行完毕的线程，RT-Thread 在线程运行完毕后，自动删除线程，在 
+*              2) 大多数线程是循环执行的，无需删除；而能运行完毕的线程，RT-Thread 在线程运行完毕后，自动删除线程，在
 *                 rt_thread_exit() 里完成删除动作。用户只需要了解该接口的作用，不推荐使用该接口（可以由其他线程调用此接
 *                 口或在定时器超时函数中调用此接口删除一个线程，但是这种使用非常少）。
 ************************************************************************************************************************
@@ -516,7 +516,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 #if OS_CFG_TASK_SEM_EN > 0u || OS_CFG_TASK_Q_EN > 0u
     OS_ERR err;
 #endif
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_SR_ALLOC();
 #endif
 
@@ -526,22 +526,22 @@ void  OSTaskDel (OS_TCB  *p_tcb,
         return;
     }
 #endif
-    
+
 #ifdef OS_SAFETY_CRITICAL_IEC61508
     if (OSSafetyCriticalStartFlag == OS_TRUE) {
        *p_err = OS_ERR_ILLEGAL_DEL_RUN_TIME;
         return;
     }
 #endif
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                 */
     {
         *p_err = OS_ERR_TASK_DEL_ISR;
         return;
     }
 #endif
-    
+
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                               */
        *p_err = OS_ERR_OS_NOT_RUNNING;
@@ -553,7 +553,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     {
         p_tcb = (OS_TCB*)rt_thread_self();
     }
-    
+
 #if (OS_CFG_TASK_IDLE_EN > 0u)
     if ((rt_thread_t)p_tcb == rt_thread_find("tidle")) {    /* Not allowed to delete the idle task                  */
        *p_err = OS_ERR_TASK_DEL_IDLE;
@@ -561,7 +561,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     }
 #endif
 
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_CRITICAL_ENTER();
 #if OS_CFG_DBG_EN > 0u
     OS_TaskDbgListRemove(p_tcb);
@@ -569,16 +569,16 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     OSTaskQty--;                                            /* One less task being managed                            */
     CPU_CRITICAL_EXIT();
 #endif
-    
+
     rt_err = rt_thread_detach(&p_tcb->Task);
     *p_err = rt_err_to_ucosiii(rt_err);
-#if OS_CFG_TASK_SEM_EN > 0u    
+#if OS_CFG_TASK_SEM_EN > 0u
     OSSemDel(&p_tcb->Sem,OS_OPT_DEL_ALWAYS,&err);           /* 删除任务内建信号量                                     */
 #endif
-#if OS_CFG_TASK_Q_EN > 0u 
+#if OS_CFG_TASK_Q_EN > 0u
     OSQDel(&p_tcb->MsgQ,OS_OPT_DEL_ALWAYS,&err);            /* 删除任务内建消息队列                                   */
 #endif
-    OSTaskDelHook(p_tcb);                                   /* 调用钩子函数                                           */ 
+    OSTaskDelHook(p_tcb);                                   /* 调用钩子函数                                           */
     OS_TaskInitTCB(p_tcb);                                  /* Initialize the TCB to default values                   */
     p_tcb->TaskState = (OS_STATE)OS_TASK_STATE_DEL;         /* Indicate that the task was deleted                     */
 
@@ -613,7 +613,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 #if OS_CFG_TASK_Q_EN > 0u
 OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
                           OS_ERR  *p_err)
-{    
+{
     CPU_SR_ALLOC();
 
 #ifdef OS_SAFETY_CRITICAL
@@ -636,7 +636,7 @@ OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
         return (0u);
     }
 #endif
-    
+
     if (p_tcb == (OS_TCB *)0) {                             /* Flush message queue of calling task?                   */
         CPU_CRITICAL_ENTER();
         p_tcb = OSTCBCurPtr;
@@ -702,16 +702,16 @@ void  *OSTaskQPend (OS_TICK       timeout,
                     OS_ERR       *p_err)
 {
     OS_TCB  *p_tcb;
-      
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return ((void *)0);;
     }
 #endif
-      
+
     p_tcb = OSTCBCurPtr;
-    
+
     if(p_tcb->MsgCreateSuc == RT_TRUE)                      /* 检查任务内建消息队列是否创建成功                       */
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_TASK_Q;
@@ -759,7 +759,7 @@ CPU_BOOLEAN  OSTaskQPendAbort (OS_TCB  *p_tcb,
                                OS_ERR  *p_err)
 {
     OS_OPT _opt;
-    
+
     CPU_SR_ALLOC();
 
 #ifdef OS_SAFETY_CRITICAL
@@ -787,12 +787,12 @@ CPU_BOOLEAN  OSTaskQPendAbort (OS_TCB  *p_tcb,
              return (DEF_FALSE);
     }
 #endif
-    
+
     CPU_CRITICAL_ENTER();
 #if OS_CFG_ARG_CHK_EN > 0u
     if ((p_tcb == (OS_TCB *)0) ||                           /* Pend abort self?                                       */
         (p_tcb == OSTCBCurPtr)) {
-        CPU_CRITICAL_EXIT();  
+        CPU_CRITICAL_EXIT();
        *p_err = OS_ERR_PEND_ABORT_SELF;                     /* ... doesn't make sense                                 */
         return (DEF_FALSE);
     }
@@ -801,19 +801,19 @@ CPU_BOOLEAN  OSTaskQPendAbort (OS_TCB  *p_tcb,
         CPU_CRITICAL_EXIT();                                /* No                                                     */
        *p_err = OS_ERR_PEND_ABORT_NONE;
         return (DEF_FALSE);
-    }    
-    CPU_CRITICAL_EXIT();  
-    
+    }
+    CPU_CRITICAL_EXIT();
+
     _opt = OS_OPT_PEND_ABORT_1 | opt;
     OSQPendAbort(&p_tcb->MsgQ,_opt,p_err);
     if(*p_err != OS_ERR_NONE)
     {
         return DEF_FALSE;
-    }   
+    }
     else
     {
         return DEF_TRUE;
-    }    
+    }
 }
 #endif
 
@@ -865,19 +865,19 @@ void  OSTaskQPost (OS_TCB       *p_tcb,
                    OS_MSG_SIZE   msg_size,
                    OS_OPT        opt,
                    OS_ERR       *p_err)
-{   
+{
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
 #endif
-    
+
     if(p_tcb == RT_NULL)
     {
         p_tcb = OSTCBCurPtr;
     }
-    
+
     if(p_tcb->MsgCreateSuc == RT_TRUE)                      /* 检查任务内建消息队列是否创建成功                       */
     {
         OSQPost(&p_tcb->MsgQ,p_void,msg_size,opt,p_err);
@@ -885,7 +885,7 @@ void  OSTaskQPost (OS_TCB       *p_tcb,
     else
     {
         *p_err = OS_ERR_TASK_Q_CREATE_FALSE;
-    }  
+    }
 }
 #endif
 
@@ -919,9 +919,9 @@ OS_REG  OSTaskRegGet (OS_TCB     *p_tcb,
 {
     OS_REG     value;
     rt_thread_t p_thread;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -945,7 +945,7 @@ OS_REG  OSTaskRegGet (OS_TCB     *p_tcb,
     }
     value = ((OS_TCB*)p_thread)->RegTbl[id];
     CPU_CRITICAL_EXIT();
-    
+
    *p_err = OS_ERR_NONE;
     return ((OS_REG)value);
 }
@@ -961,7 +961,7 @@ OS_REG  OSTaskRegGet (OS_TCB     *p_tcb,
 * Arguments  : p_err       is a pointer to a variable that will hold an error code related to this call.
 *
 *                            OS_ERR_NONE               if the call was successful
-*                            OS_ERR_NO_MORE_ID_AVAIL   if you are attempting to assign more task register IDs than you 
+*                            OS_ERR_NO_MORE_ID_AVAIL   if you are attempting to assign more task register IDs than you
 *                                                           have available through OS_CFG_TASK_REG_TBL_SIZE.
 *
 * Returns    : The next available task register 'id' or OS_CFG_TASK_REG_TBL_SIZE if an error is detected.
@@ -972,25 +972,25 @@ OS_REG  OSTaskRegGet (OS_TCB     *p_tcb,
 OS_REG_ID  OSTaskRegGetID (OS_ERR  *p_err)
 {
     OS_REG_ID  id;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return ((OS_REG_ID)OS_CFG_TASK_REG_TBL_SIZE);
     }
 #endif
-    
+
     CPU_CRITICAL_ENTER();
     if (OSTaskRegNextAvailID >= OS_CFG_TASK_REG_TBL_SIZE) {       /* See if we exceeded the number of IDs available   */
        *p_err = OS_ERR_NO_MORE_ID_AVAIL;                          /* Yes, cannot allocate more task register IDs      */
         CPU_CRITICAL_EXIT();
         return ((OS_REG_ID)OS_CFG_TASK_REG_TBL_SIZE);
     }
-     
-    id    = OSTaskRegNextAvailID;								  /* Assign the next available ID                     */
-    OSTaskRegNextAvailID++;										  /* Increment available ID for next request          */
+
+    id    = OSTaskRegNextAvailID;                                 /* Assign the next available ID                     */
+    OSTaskRegNextAvailID++;                                       /* Increment available ID for next request          */
     CPU_CRITICAL_EXIT();
    *p_err = OS_ERR_NONE;
     return (id);
@@ -1029,16 +1029,16 @@ void  OSTaskRegSet (OS_TCB     *p_tcb,
                     OS_ERR     *p_err)
 {
     rt_thread_t p_thread;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
 #endif
-    
+
 #if OS_CFG_ARG_CHK_EN > 0u
     if (id >= OS_CFG_TASK_REG_TBL_SIZE) {
        *p_err = OS_ERR_REG_ID_INVALID;
@@ -1091,24 +1091,24 @@ void  OSTaskResume (OS_TCB  *p_tcb,
                     OS_ERR  *p_err)
 {
     rt_err_t rt_err;
-       
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
 #endif
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u       
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                       /* 检查是否在中断中运行                             */
     {
         *p_err = OS_ERR_TASK_RESUME_ISR;
         return;
     }
 #endif
-    
+
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                       /* Is the kernel running?                           */
@@ -1116,12 +1116,12 @@ void  OSTaskResume (OS_TCB  *p_tcb,
         return;
     }
 #endif
-    
+
     if(p_tcb == RT_NULL)                                          /* 检查TCB指针是否为空                              */
     {
         p_tcb = OSTCBCurPtr;
     }
-    
+
 #if OS_CFG_ARG_CHK_EN > 0u
     if(rt_thread_self() == &p_tcb->Task)                          /* 检查任务是否企图自己恢复自己                     */
     {
@@ -1135,7 +1135,7 @@ void  OSTaskResume (OS_TCB  *p_tcb,
         return;
     }
 #endif
-    
+
     if(p_tcb->SuspendCtr>0)
     {
         CPU_CRITICAL_ENTER();
@@ -1147,7 +1147,7 @@ void  OSTaskResume (OS_TCB  *p_tcb,
     {
         p_tcb->TaskState &= ~OS_TASK_STATE_SUSPENDED;
         rt_err = rt_thread_resume(&p_tcb->Task);
-        *p_err = rt_err_to_ucosiii(rt_err);       
+        *p_err = rt_err_to_ucosiii(rt_err);
     }
 
 }
@@ -1198,20 +1198,20 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
                            OS_OPT    opt,
                            CPU_TS   *p_ts,
                            OS_ERR   *p_err)
-{    
+{
     OS_TCB *p_tcb;
     OS_SEM_CTR ctr;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return ((OS_SEM_CTR)0);
     }
 #endif
-    
-    p_tcb = OSTCBCurPtr;   
+
+    p_tcb = OSTCBCurPtr;
     if(p_tcb->SemCreateSuc == RT_TRUE)                            /* 检查任务内建信号量是否创建成功                   */
     {
         CPU_CRITICAL_ENTER();
@@ -1220,9 +1220,9 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
         p_tcb->SemCtr = p_tcb->Sem.Sem.value;                     /* 更新value                                        */
 #endif
         CPU_CRITICAL_EXIT();
-        
-        ctr = OSSemPend(&p_tcb->Sem,timeout,opt,p_ts,p_err); 
-        
+
+        ctr = OSSemPend(&p_tcb->Sem,timeout,opt,p_ts,p_err);
+
         CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
         p_tcb->SemCtr = p_tcb->Sem.Sem.value;                     /* 更新value                                        */
@@ -1273,9 +1273,9 @@ CPU_BOOLEAN  OSTaskSemPendAbort (OS_TCB  *p_tcb,
                                  OS_ERR  *p_err)
 {
     OS_OPT _opt;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -1300,13 +1300,13 @@ CPU_BOOLEAN  OSTaskSemPendAbort (OS_TCB  *p_tcb,
             *p_err =  OS_ERR_OPT_INVALID;
              return (DEF_FALSE);
     }
-#endif  
-    
+#endif
+
     CPU_CRITICAL_ENTER();
-#if OS_CFG_ARG_CHK_EN > 0u    
+#if OS_CFG_ARG_CHK_EN > 0u
     if ((p_tcb == (OS_TCB *)0) ||                           /* Pend abort self?                                       */
         (p_tcb == OSTCBCurPtr)) {
-        CPU_CRITICAL_EXIT(); 
+        CPU_CRITICAL_EXIT();
        *p_err = OS_ERR_PEND_ABORT_SELF;
         return (DEF_FALSE);
     }
@@ -1316,21 +1316,21 @@ CPU_BOOLEAN  OSTaskSemPendAbort (OS_TCB  *p_tcb,
        *p_err = OS_ERR_PEND_ABORT_NONE;
         return (DEF_FALSE);
     }
-    CPU_CRITICAL_EXIT(); 
-    
+    CPU_CRITICAL_EXIT();
+
     _opt = OS_OPT_PEND_ABORT_1 | opt;
     OSSemPendAbort(&p_tcb->Sem,_opt,p_err);
-    
+
     CPU_CRITICAL_ENTER();
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY  
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_tcb->SemCtr = p_tcb->Sem.Sem.value;
 #endif
     CPU_CRITICAL_EXIT();
-    
+
     if(*p_err != OS_ERR_NONE)
     {
         return DEF_FALSE;
-    }   
+    }
     else
     {
         return DEF_TRUE;
@@ -1374,16 +1374,16 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
                            OS_ERR  *p_err)
 {
     OS_SEM_CTR ctr;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return ((OS_SEM_CTR)0);
     }
 #endif
-    
+
     if(p_tcb == RT_NULL)
     {
         p_tcb = OSTCBCurPtr;
@@ -1433,7 +1433,7 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
 {
     OS_SEM_CTR  ctr;
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -1441,19 +1441,19 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
     }
 #endif
 
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u      
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_SET_ISR;
         return ((OS_SEM_CTR)0);
     }
 #endif
-    
+
     if(p_tcb == RT_NULL)
     {
         p_tcb = OSTCBCurPtr;
     }
-    
+
     CPU_CRITICAL_ENTER();
     ctr = p_tcb->Sem.Sem.value;
     p_tcb->Sem.Sem.value = (OS_SEM_CTR)cnt;                 /* 设置RTT信号量value                                     */
@@ -1514,24 +1514,24 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     rt_uint32_t stack_free;
     rt_uint8_t *ptr;
     rt_thread_t thread;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
 #endif
-    
+
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_TASK_STK_CHK_ISR;
         return;
     }
-#endif  
-    
+#endif
+
 #if OS_CFG_ARG_CHK_EN > 0u
     if (p_free == (CPU_STK_SIZE*)0) {                       /* User must specify valid destinations for the sizes     */
        *p_err  = OS_ERR_PTR_INVALID;
@@ -1543,18 +1543,18 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
         return;
     }
 #endif
-    
+
     /*若TCB指针为NULL,表示当前线程*/
     if(p_tcb ==RT_NULL)
     {
         p_tcb = OSTCBCurPtr;
     }
-    
+
     thread = (rt_thread_t)p_tcb;
-    
+
     CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-#if OS_CFG_DBG_EN > 0u    
+#if OS_CFG_DBG_EN > 0u
     if (p_tcb->StkPtr == (CPU_STK*)0) {                     /* Make sure task exist                                   */
         CPU_CRITICAL_EXIT();
        *p_free = (CPU_STK_SIZE)0;
@@ -1572,11 +1572,11 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     }
 #endif
     CPU_CRITICAL_EXIT();
-    
+
     *p_err = OS_ERR_NONE;
-    
-    /*计算RT-Thread堆栈最大使用情况*/    
-#if CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO       
+
+    /*计算RT-Thread堆栈最大使用情况*/
+#if CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO
     ptr = (rt_uint8_t *)thread->stack_addr;
     while (*ptr == '#')ptr ++;
     stack_size = thread->stack_size;
@@ -1591,7 +1591,7 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     stack_used = (rt_ubase_t)ptr - (rt_ubase_t)thread->stack_addr
     stack_free = stack_size - stack_used;
     *p_used = stack_used / sizeof(CPU_STK_SIZE);
-    *p_free = stack_free / sizeof(CPU_STK_SIZE);    
+    *p_free = stack_free / sizeof(CPU_STK_SIZE);
 #endif
 }
 #endif
@@ -1635,9 +1635,9 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
                       OS_ERR  *p_err)
 {
     rt_err_t rt_err;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -1652,23 +1652,23 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
         return;
     }
 #endif
-    
+
     if(p_tcb == RT_NULL)                                       /* TCB指针是否为空,若为空则为当前线程                   */
     {
         p_tcb = OSTCBCurPtr;
-    } 
-    
+    }
+
 #if (OS_CFG_TASK_IDLE_EN > 0u)
     if ((rt_thread_t)p_tcb == rt_thread_find("tidle")) {       /* Not allowed to delete the idle task                  */
        *p_err = OS_ERR_TASK_SUSPEND_IDLE;
         return;
     }
 #endif
-    
+
     if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)             /* 检查调度器是否被锁                                   */
     {
         *p_err = OS_ERR_SCHED_LOCKED;
-        return;         
+        return;
     }
 
     if (OSRunning != OS_STATE_OS_RUNNING) {                    /* Can't suspend self when the kernel isn't running     */
@@ -1681,7 +1681,7 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
        *p_err = OS_ERR_TASK_SUSPEND_CTR_OVF;
         return;
     }
-    
+
     if((p_tcb->Task.stat & RT_THREAD_STAT_MASK) == RT_THREAD_SUSPEND)
     {
         /*如果任务是挂起状态*/
@@ -1697,8 +1697,8 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
         if(rt_thread_self() == &p_tcb->Task)/*是否要将自己挂起*/
         {
             rt_schedule();/* 根据RTT的要求,若挂起自己需要立即调用rt_shedule进行调度*/
-        }    
-        *p_err = rt_err_to_ucosiii(rt_err);        
+        }
+        *p_err = rt_err_to_ucosiii(rt_err);
     }
 }
 
@@ -1814,13 +1814,13 @@ void  OS_TaskInit (OS_ERR  *p_err)
     }
 #endif
 
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if OS_CFG_DBG_EN > 0u
     OSTaskDbgListPtr  = (OS_TCB      *)0;
 #endif
     OSTaskQty         = (OS_OBJ_QTY   )0;                   /* Clear the number of tasks                              */
 #endif
-    
+
     *p_err            = OS_ERR_NONE;
 }
 
@@ -1843,19 +1843,19 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     OS_REG_ID   reg_id;
 #endif
-    
-    CPU_SR_ALLOC();    
-    
+
+    CPU_SR_ALLOC();
+
     CPU_CRITICAL_ENTER();
-#if OS_CFG_TASK_SEM_EN > 0u    
+#if OS_CFG_TASK_SEM_EN > 0u
     p_tcb->SemCreateSuc       = (CPU_BOOLEAN    )RT_FALSE;
 #endif
-#if OS_CFG_TASK_Q_EN > 0u      
+#if OS_CFG_TASK_Q_EN > 0u
     p_tcb->MsgPtr             = (void          *)0u;
     p_tcb->MsgSize            = (OS_MSG_SIZE    )0u;
     p_tcb->MsgCreateSuc       = (CPU_BOOLEAN    )RT_FALSE;
 #endif
-    p_tcb->ExtPtr             = (void          *)0u;  
+    p_tcb->ExtPtr             = (void          *)0u;
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     for (reg_id = 0u; reg_id < OS_CFG_TASK_REG_TBL_SIZE; reg_id++) {
         p_tcb->RegTbl[reg_id] = (OS_REG)0u;
@@ -1869,11 +1869,11 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->StkFree            = (CPU_STK_SIZE   )0u;
     p_tcb->StkUsed            = (CPU_STK_SIZE   )0u;
 #endif
-    p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;    
+    p_tcb->TaskState          = (OS_STATE       )OS_TASK_STATE_RDY;
     p_tcb->PendOn             = (OS_STATE       )OS_TASK_PEND_ON_NOTHING;
-    
+
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-#if OS_CFG_DBG_EN > 0u 
+#if OS_CFG_DBG_EN > 0u
     p_tcb->DbgPrevPtr         = (OS_TCB        *)0;
     p_tcb->DbgNextPtr         = (OS_TCB        *)0;
     p_tcb->DbgNamePtr         = (CPU_CHAR      *)((void *)" ");
@@ -1885,8 +1885,8 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->SemCtr             = (OS_SEM_CTR     )0u;
     p_tcb->Opt                = (OS_OPT         )0u;
     p_tcb->StkSize            = (CPU_STK        )0u;
-    p_tcb->StkLimitPtr        = (CPU_STK       *)0;    
-    p_tcb->StkBasePtr         = (CPU_STK       *)0;     
+    p_tcb->StkLimitPtr        = (CPU_STK       *)0;
+    p_tcb->StkBasePtr         = (CPU_STK       *)0;
     p_tcb->TaskEntryAddr      = (OS_TASK_PTR    )0;
     p_tcb->TaskEntryArg       = (void          *)0;
     p_tcb->Prio               = (OS_PRIO        )OS_PRIO_INIT;
@@ -1894,8 +1894,8 @@ void  OS_TaskInitTCB (OS_TCB  *p_tcb)
     p_tcb->FlagsPend          = (OS_FLAGS       )0u;
     p_tcb->FlagsOpt           = (OS_OPT         )0u;
     p_tcb->FlagsRdy           = (OS_FLAGS       )0u;
-#endif    
-#endif    
+#endif
+#endif
     CPU_CRITICAL_EXIT();
 }
 

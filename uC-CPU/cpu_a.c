@@ -21,8 +21,8 @@
 *                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
 *********************************************************************************************************
-*/ 
-/* 
+*/
+/*
 ;********************************************************************************************************
 ;                                                uC/CPU
 ;                                    CPU CONFIGURATION & PORT LAYER
@@ -31,12 +31,12 @@
 ;
 ;               All rights reserved.  Protected by international copyright laws.
 ;
-;               uC/CPU is provided in source form to registered licensees ONLY.  It is 
-;               illegal to distribute this source code to any third party unless you receive 
-;               written permission by an authorized Micrium representative.  Knowledge of 
+;               uC/CPU is provided in source form to registered licensees ONLY.  It is
+;               illegal to distribute this source code to any third party unless you receive
+;               written permission by an authorized Micrium representative.  Knowledge of
 ;               the source code may NOT be used to develop a similar product.
 ;
-;               Please help us continue to provide the Embedded community with the finest 
+;               Please help us continue to provide the Embedded community with the finest
 ;               software available.  Your honesty is greatly appreciated.
 ;
 ;               You can contact us at www.micrium.com.
@@ -68,13 +68,13 @@
 ;
 ;                       void  Task (void  *p_arg)
 ;                       {
-;                           CPU_SR_ALLOC();                     // Allocate storage for CPU status register 
+;                           CPU_SR_ALLOC();                     // Allocate storage for CPU status register
 ;                               :
 ;                               :
-;                           CPU_CRITICAL_ENTER();               // cpu_sr = CPU_SR_Save();                  
+;                           CPU_CRITICAL_ENTER();               // cpu_sr = CPU_SR_Save();
 ;                               :
 ;                               :
-;                           CPU_CRITICAL_EXIT();                // CPU_SR_Restore(cpu_sr);                  
+;                           CPU_CRITICAL_EXIT();                // CPU_SR_Restore(cpu_sr);
 ;                               :
 ;                       }
 ;********************************************************************************************************

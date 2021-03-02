@@ -131,7 +131,7 @@ void  CPU_Init (void)
 * Caller(s)   : various.
 *
 * Note(s)     : (1) CPU_SW_Exception() deadlocks the current code execution -- whether multi-tasked/
-*                   -processed/-threaded or single-threaded -- when the current code execution cannot 
+*                   -processed/-threaded or single-threaded -- when the current code execution cannot
 *                   gracefully recover or report a fault or exception condition.
 *
 *                   See also 'cpu_core.h  CPU_SW_EXCEPTION()  Note #1'.
@@ -158,7 +158,7 @@ void  CPU_SW_Exception (void)
 * Caller(s)   : CPU_NameInit(),
 *               Application.
 *
-*               This function is a CPU module application programming interface (API) function & MAY be 
+*               This function is a CPU module application programming interface (API) function & MAY be
 *               called by application function(s).
 *
 * Note(s)     : none.
@@ -197,7 +197,7 @@ void  CPU_NameClr (void)
 *
 * Caller(s)   : Application.
 *
-*               This function is a CPU module application programming interface (API) function & MAY 
+*               This function is a CPU module application programming interface (API) function & MAY
 *               be called by application function(s).
 *
 * Note(s)     : (1) The size of the ASCII character array that will receive the return CPU host name
@@ -254,7 +254,7 @@ void  CPU_NameGet (CPU_CHAR  *p_name,
 *
 * Caller(s)   : Application.
 *
-*               This function is a CPU module application programming interface (API) function & MAY be 
+*               This function is a CPU module application programming interface (API) function & MAY be
 *               called by application function(s).
 *
 * Note(s)     : (1) 'p_name' ASCII string size, including the terminating NULL character, MUST be less

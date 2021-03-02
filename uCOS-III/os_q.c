@@ -21,7 +21,7 @@
 *                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
 *********************************************************************************************************
-*/ 
+*/
 /*
 ************************************************************************************************************************
 *                                                      uC/OS-III
@@ -38,11 +38,11 @@
 *
 * LICENSING TERMS:
 * ---------------
-*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or 
+*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or
 *           for peaceful research.  If you plan or intend to use uC/OS-III in a commercial application/
-*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your 
-*           application/product.   We provide ALL the source code for your convenience and to help you 
-*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use 
+*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your
+*           application/product.   We provide ALL the source code for your convenience and to help you
+*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use
 *           it commercially without paying a licensing fee.
 *
 *           Knowledge of the source code may NOT be used to develop a similar product.
@@ -70,7 +70,7 @@
 *                       通过rt_mq_urgent函数将消息插队到队头进行LIFO紧急发布(相当于OS_OPT_POST_LIFO)
 *                   uCOS-III支持：
 *                       OS_OPT_POST_FIFO(相当于RT_IPC_FLAG_PRIO)
-*                       OS_OPT_POST_LIFO(相当于rt_mq_urgent函数) 
+*                       OS_OPT_POST_LIFO(相当于rt_mq_urgent函数)
 *                       OS_OPT_POST_ALL (RT-Thread未实现,但是本兼容层已经实现,os_rtwrap.c)
 *                       OS_OPT_POST_NO_SCHED (RT-Thread未实现)
 ************************************************************************************************************************
@@ -120,13 +120,13 @@ void  OSQCreate (OS_Q        *p_q,
 
 {
     rt_err_t    rt_err;
-    rt_size_t 	msg_size;
-    rt_size_t 	pool_size;
+    rt_size_t   msg_size;
+    rt_size_t   pool_size;
     rt_size_t   msg_header_size;
     void       *p_pool;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -140,15 +140,15 @@ void  OSQCreate (OS_Q        *p_q,
         return;
     }
 #endif
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_CREATE_ISR;
-        return; 
-    } 
+        return;
+    }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u    
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_q == RT_NULL)                                      /* 检查消息队列指针是否为NULL                             */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
@@ -165,16 +165,16 @@ void  OSQCreate (OS_Q        *p_q,
         return;
     }
 #endif
-    
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u     
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否已经是消息队列，即是否已经创建过*/
     if(rt_object_get_type(&p_q->Msg.parent.parent) == RT_Object_Class_MessageQueue)
     {
         *p_err = OS_ERR_OBJ_CREATED;
-        return;       
+        return;
     }
 #endif
-    
+
     msg_header_size = sizeof(struct _rt_mq_message);        /* sizeof(struct rt_mq_message)                           */
     msg_size = sizeof(ucos_msg_t);                          /* 消息队列中一条消息的最大长度，单位字节                 */
     pool_size = (msg_header_size + msg_size) * max_qty;     /* 存放消息的缓冲区大小                                   */
@@ -187,21 +187,21 @@ void  OSQCreate (OS_Q        *p_q,
     CPU_CRITICAL_ENTER();
     p_q->p_pool = p_pool;
     CPU_CRITICAL_EXIT();
-    
+
     rt_err = rt_mq_init(&p_q->Msg,
                         (const char *)p_name,
                          p_q->p_pool,
                          msg_size,
                          pool_size,
                          RT_IPC_FLAG_FIFO);
-    
+
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err != RT_EOK)
     {
         return;
     }
-    
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
+
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_CRITICAL_ENTER();
     p_q->Type    = OS_OBJ_TYPE_Q;                           /* Mark the data structure as a message queue             */
 #if (OS_CFG_DBG_EN > 0u)
@@ -209,8 +209,8 @@ void  OSQCreate (OS_Q        *p_q,
     OS_QDbgListAdd(p_q);
 #endif
 
-    OSQQty++;                                               /* One more queue created                                 */      
-    CPU_CRITICAL_EXIT();    
+    OSQQty++;                                               /* One more queue created                                 */
+    CPU_CRITICAL_EXIT();
 #endif
 }
 
@@ -260,9 +260,9 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
 {
     rt_err_t rt_err;
     rt_uint32_t pend_q_len;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -276,28 +276,28 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
         return (0u);
     }
 #endif
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_DEL_ISR;
-        return 0; 
+        return 0;
     }
 #endif
-    
+
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                                 */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (0u);
     }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u    
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_q == RT_NULL)                                      /* 检查消息队列指针是否为NULL                             */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
-    } 
+    }
     switch (opt) {
         case OS_OPT_DEL_NO_PEND:
         case OS_OPT_DEL_ALWAYS:
@@ -306,22 +306,22 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
         default:
             *p_err =  OS_ERR_OPT_INVALID;
              return ((OS_OBJ_QTY)0u);
-    }   
+    }
 #endif
-    
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为消息队列*/
     if(rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return 0;       
+        return 0;
     }
 #endif
-    
+
     CPU_CRITICAL_ENTER();
     pend_q_len = rt_list_len(&(p_q->Msg.parent.suspend_thread));
-    CPU_CRITICAL_EXIT(); 
-    
+    CPU_CRITICAL_EXIT();
+
     switch (opt)
     {
         case OS_OPT_DEL_NO_PEND:
@@ -338,13 +338,13 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
                 *p_err = OS_ERR_TASK_WAITING;
             }
             break;
-            
+
         case OS_OPT_DEL_ALWAYS:
             rt_err = rt_mq_detach(&p_q->Msg);
             *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
-    
+
     if(*p_err == OS_ERR_NONE)
     {
         RT_KERNEL_FREE(p_q->p_pool);
@@ -358,7 +358,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
         OS_QClr(p_q);
         CPU_CRITICAL_EXIT();
     }
-    
+
     return pend_q_len;
 }
 #endif
@@ -394,7 +394,7 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
 {
     struct _rt_mq_message *msg;
     OS_MSG_QTY entries = 0;
-    
+
     CPU_SR_ALLOC();
 
 #ifdef OS_SAFETY_CRITICAL
@@ -417,7 +417,7 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
         return (0u);
     }
 #endif
-    
+
 #if OS_CFG_ARG_CHK_EN > 0u
     if (p_q == (OS_Q *)0) {                                 /* Validate arguments                                     */
        *p_err = OS_ERR_OBJ_PTR_NULL;
@@ -432,7 +432,7 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
         return ((OS_MSG_QTY)0);
     }
 #endif
-    
+
     CPU_CRITICAL_ENTER();
     while(p_q->Msg.entry>0)
     {
@@ -441,17 +441,17 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
         p_q->Msg.msg_queue_head = msg->next;                /* move message queue head                                */
         if (p_q->Msg.msg_queue_tail == msg)                 /* reach queue tail, set to NULL                          */
             p_q->Msg.msg_queue_tail = RT_NULL;
-        p_q->Msg.entry --;                                  /* decrease message entry                                 */   
+        p_q->Msg.entry --;                                  /* decrease message entry                                 */
         msg->next = (struct _rt_mq_message *)p_q->Msg.msg_queue_free; /* put message to free list                     */
-        p_q->Msg.msg_queue_free = msg; 
+        p_q->Msg.msg_queue_free = msg;
         entries ++;
     }
-    
+
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");             /* Clear                                                  */
 #endif
     CPU_CRITICAL_EXIT();
-    
+
     return entries;
 }
 #endif
@@ -522,10 +522,10 @@ void  *OSQPend (OS_Q         *p_q,
     OS_TCB     *p_tcb;
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
-#endif   
-    
+#endif
+
     CPU_SR_ALLOC();
-    
+
     CPU_VAL_UNUSED(p_ts);
 
 #ifdef OS_SAFETY_CRITICAL
@@ -534,28 +534,28 @@ void  *OSQPend (OS_Q         *p_q,
         return ((void *)0);
     }
 #endif
-    
+
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_PEND_ISR;
-        return RT_NULL; 
-    }   
+        return RT_NULL;
+    }
 #endif
-    
+
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                                 */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return ((void *)0);
     }
 #endif
-    
+
 #if OS_CFG_ARG_CHK_EN > 0u
     if(p_q == RT_NULL)                                      /* 检查消息队列指针是否为NULL                             */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return RT_NULL;
-    }    
+    }
      if (p_msg_size == (OS_MSG_SIZE *)0) {
        *p_err = OS_ERR_PTR_INVALID;
         return ((void *)0);
@@ -571,15 +571,15 @@ void  *OSQPend (OS_Q         *p_q,
     }
 #endif
 
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为消息队列*/
     if(rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return RT_NULL;       
-    } 
+        return RT_NULL;
+    }
 #endif
-    
+
     /*
         在RTT中timeout为0表示不阻塞,为RT_WAITING_FOREVER表示永久阻塞,
         这与uCOS-III有所不同,因此需要转换
@@ -590,7 +590,7 @@ void  *OSQPend (OS_Q         *p_q,
         if(OSSchedLockNestingCtr > (OS_NESTING_CTR)0)
         {
             *p_err = OS_ERR_SCHED_LOCKED;
-            return RT_NULL;         
+            return RT_NULL;
         }
         if(timeout == 0)                                    /* 在uCOS-III中timeout=0表示永久阻塞                      */
         {
@@ -605,7 +605,7 @@ void  *OSQPend (OS_Q         *p_q,
     {
         time = RT_WAITING_NO;                               /* 在RTT中timeout为0表示非阻塞                            */
     }
-    
+
     CPU_CRITICAL_ENTER();
     p_tcb = OSTCBCurPtr;
     p_tcb->PendStatus = OS_STATUS_PEND_OK;                  /* Clear pend status                                      */
@@ -613,13 +613,13 @@ void  *OSQPend (OS_Q         *p_q,
     if(p_tcb->PendOn != OS_TASK_PEND_ON_TASK_Q)
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_Q;
-    }  
+    }
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     p_tcb->DbgNamePtr = p_q->NamePtr;
     p_q->DbgNamePtr = p_tcb->Task.name;
 #endif
-    CPU_CRITICAL_EXIT();     
-    
+    CPU_CRITICAL_EXIT();
+
     /*开始消息接收以及处理*/
     rt_err = rt_mq_recv(&p_q->Msg,
                         (void*)&ucos_msg,                   /* uCOS消息段                                             */
@@ -632,11 +632,11 @@ void  *OSQPend (OS_Q         *p_q,
         *p_err = OS_ERR_PEND_WOULD_BLOCK;
     }
 
-    CPU_CRITICAL_ENTER();                
+    CPU_CRITICAL_ENTER();
     p_tcb->TaskState &= ~OS_TASK_STATE_PEND;                /* 更新任务状态                                           */
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                /* 清除当前任务等待状态                                   */
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
-    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
+    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");
     if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
     {
         /*若等待表不为空，则将当前等待消息队列的线程赋值给.DbgNamePtr*/
@@ -647,7 +647,7 @@ void  *OSQPend (OS_Q         *p_q,
     {
         p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");         /* 若为空,则清空当前.DbgNamePtr                           */
     }
-#endif 
+#endif
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)           /* Indicate that we aborted                               */
     {
         CPU_CRITICAL_EXIT();
@@ -655,8 +655,8 @@ void  *OSQPend (OS_Q         *p_q,
         *p_msg_size = 0;
         return RT_NULL;
     }
-    CPU_CRITICAL_EXIT();                             
-                         
+    CPU_CRITICAL_EXIT();
+
     if(*p_err == OS_ERR_NONE)
     {
         *p_msg_size = ucos_msg.data_size;
@@ -709,8 +709,8 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
     OS_OBJ_QTY abort_tasks = 0;
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
-#endif   
-    
+#endif
+
     CPU_SR_ALLOC();
 
 #ifdef OS_SAFETY_CRITICAL
@@ -733,7 +733,7 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
         return (0u);
     }
 #endif
-    
+
 #if OS_CFG_ARG_CHK_EN > 0u
     if (p_q == (OS_Q *)0) {                                 /* Validate 'p_sem'                                       */
        *p_err =  OS_ERR_OBJ_PTR_NULL;
@@ -751,24 +751,24 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
              return ((OS_OBJ_QTY)0u);
     }
 #endif
-    
+
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为消息队列*/
     if (rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue) {
        *p_err =  OS_ERR_OBJ_TYPE;
         return ((OS_OBJ_QTY)0u);
     }
-#endif  
-    
+#endif
+
     CPU_CRITICAL_ENTER();
-    if(rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))  /* 若没有线程等待信号量                                   */ 
+    if(rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))  /* 若没有线程等待信号量                                   */
     {
-        CPU_CRITICAL_EXIT(); 
+        CPU_CRITICAL_EXIT();
        *p_err =  OS_ERR_PEND_ABORT_NONE;
-        return ((OS_OBJ_QTY)0u);        
+        return ((OS_OBJ_QTY)0u);
     }
     CPU_CRITICAL_EXIT();
-    
+
     if(opt & OS_OPT_PEND_ABORT_ALL)
     {
         abort_tasks = rt_ipc_pend_abort_all(&(p_q->Msg.parent.suspend_thread));
@@ -778,7 +778,7 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
         rt_ipc_pend_abort_1(&(p_q->Msg.parent.suspend_thread));
         abort_tasks = 1;
     }
- 
+
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_CRITICAL_ENTER();
     if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
@@ -791,13 +791,13 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
     {
         p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");         /* 若为空,则清空当前.DbgNamePtr                           */
     }
-    CPU_CRITICAL_EXIT(); 
+    CPU_CRITICAL_EXIT();
 #endif
     if(!(opt & OS_OPT_POST_NO_SCHED))
     {
         rt_schedule();
     }
-    
+
     *p_err = OS_ERR_NONE;
     return abort_tasks;
 }
@@ -869,25 +869,25 @@ void  OSQPost (OS_Q         *p_q,
     ucos_msg_t  ucos_msg;
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
-#endif   
-    
+#endif
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
 #endif
-    
+
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                                 */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
     }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u    
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_q == RT_NULL)                                      /* 检查消息队列指针是否为NULL                             */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
@@ -907,18 +907,18 @@ void  OSQPost (OS_Q         *p_q,
         default:
             *p_err =  OS_ERR_OPT_INVALID;
              return;
-    }   
+    }
 #endif
-    
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为消息队列*/
     if(rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return;       
+        return;
     }
 #endif
-    
+
     /*装填uCOS消息段*/
     ucos_msg.data_size = msg_size;
     ucos_msg.data_ptr = p_void;

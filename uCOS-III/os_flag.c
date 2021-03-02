@@ -38,11 +38,11 @@
 *
 * LICENSING TERMS:
 * ---------------
-*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or 
+*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or
 *           for peaceful research.  If you plan or intend to use uC/OS-III in a commercial application/
-*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your 
-*           application/product.   We provide ALL the source code for your convenience and to help you 
-*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use 
+*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your
+*           application/product.   We provide ALL the source code for your convenience and to help you
+*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use
 *           it commercially without paying a licensing fee.
 *
 *           Knowledge of the source code may NOT be used to develop a similar product.
@@ -106,10 +106,10 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
                     OS_ERR       *p_err)
 {
     rt_err_t rt_err;
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY           
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_SR_ALLOC();
 #endif
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -122,17 +122,17 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
        *p_err = OS_ERR_ILLEGAL_CREATE_RUN_TIME;
         return;
     }
-#endif    
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_CREATE_ISR;
         return;
-    }    
-#endif    
-    
-#if OS_CFG_ARG_CHK_EN > 0u    
+    }
+#endif
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_grp == RT_NULL)                                    /* 检查事件标志组指针是否为空                             */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
@@ -145,13 +145,13 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
     }
 #endif
 
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u     
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否已经是事件标志组，即是否已经创建过*/
     if(rt_object_get_type(&p_grp->FlagGrp.parent.parent) == RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_CREATED;
-        return;       
-    }   
+        return;
+    }
 #endif
     /*在uCOS-III中事件是直接被插入到链表,不按照优先级排列*/
     rt_err = rt_event_init(&p_grp->FlagGrp,(const char*)p_name,RT_IPC_FLAG_FIFO);
@@ -161,7 +161,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
         return;
     }
 
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_CRITICAL_ENTER();
     p_grp->Type    = OS_OBJ_TYPE_FLAG;                      /* Set to event flag group type                           */
 #if (OS_CFG_DBG_EN > 0u)
@@ -217,9 +217,9 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 {
     rt_err_t rt_err;
     rt_uint32_t pend_flag_len;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -233,14 +233,14 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
         return (0u);
     }
 #endif
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                               */
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0;
-    }        
-#endif    
+    }
+#endif
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                             */
@@ -248,14 +248,14 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
         return (0u);
     }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u    
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_grp == RT_NULL)                                        /* 检查指针是否为空                                   */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
     }
-    switch (opt) {                                       
+    switch (opt) {
         case OS_OPT_DEL_NO_PEND:
         case OS_OPT_DEL_ALWAYS:
              break;
@@ -263,22 +263,22 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
         default:
             *p_err = OS_ERR_OPT_INVALID;
              return ((OS_OBJ_QTY)0);
-    }     
+    }
 #endif
-    
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为事件标志组*/
     if(rt_object_get_type(&p_grp->FlagGrp.parent.parent) != RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return 0;       
-    }   
+        return 0;
+    }
 #endif
-    
+
     CPU_CRITICAL_ENTER();
     pend_flag_len = rt_list_len(&(p_grp->FlagGrp.parent.suspend_thread));
-    CPU_CRITICAL_EXIT();  
-    
+    CPU_CRITICAL_EXIT();
+
     switch (opt)
     {
         case OS_OPT_DEL_NO_PEND:
@@ -287,7 +287,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_event_detach(&p_grp->FlagGrp);
-                *p_err = rt_err_to_ucosiii(rt_err);                 
+                *p_err = rt_err_to_ucosiii(rt_err);
             }
             else
             {
@@ -295,13 +295,13 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
                 *p_err = OS_ERR_TASK_WAITING;
             }
             break;
-            
+
         case OS_OPT_DEL_ALWAYS:
             rt_err = rt_event_detach(&p_grp->FlagGrp);
             *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
-    
+
     if(*p_err == OS_ERR_NONE)
     {
         CPU_CRITICAL_ENTER();
@@ -314,7 +314,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
         OS_FlagClr(p_grp);
         CPU_CRITICAL_EXIT();
     }
-    
+
     return pend_flag_len;
 }
 #endif
@@ -402,25 +402,25 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     OS_TCB         *p_tcb;
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t     thread;
-#endif   
-    
+#endif
+
     CPU_SR_ALLOC();
-    
+
     CPU_VAL_UNUSED(p_ts);
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return ((OS_FLAGS)0);
     }
 #endif
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr> (OS_NESTING_CTR)0)                      /* 检查是否在中断中运行                               */
     {
         *p_err = OS_ERR_PEND_ISR;
         return ((OS_OBJ_QTY)0);
-    }       
+    }
 #endif
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
@@ -429,8 +429,8 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         return (0u);
     }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u    
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_grp == RT_NULL)                                        /* 检查指针是否为空                                   */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
@@ -458,16 +458,16 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         default:
             *p_err = OS_ERR_OPT_INVALID;
              return ((OS_OBJ_QTY)0);
-    }    
-#endif 
-    
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
+    }
+#endif
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为事件标志组*/
     if(rt_object_get_type(&p_grp->FlagGrp.parent.parent) != RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return ((OS_OBJ_QTY)0);       
-    }  
+        return ((OS_OBJ_QTY)0);
+    }
 #endif
 
     /* 提取opt */
@@ -477,12 +477,12 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         consume = DEF_FALSE;
     }
 
-    mode = opt & OS_OPT_PEND_FLAG_MASK;  
+    mode = opt & OS_OPT_PEND_FLAG_MASK;
     switch (mode) {
         case OS_OPT_PEND_FLAG_SET_ALL:
             rt_option = RT_EVENT_FLAG_AND;
             break;
-        
+
         case OS_OPT_PEND_FLAG_SET_ANY:
             rt_option = RT_EVENT_FLAG_OR;
             break;
@@ -500,13 +500,13 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         default:
             *p_err = OS_ERR_FLAG_PEND_OPT;
     }
-    
+
     if (consume == DEF_TRUE)
     {
         /*OS_OPT_PEND_FLAG_CONSUME相当于RTT中的RT_EVENT_FLAG_CLEAR*/
         rt_option |= RT_EVENT_FLAG_CLEAR;
     }
-    
+
     /*
         在RTT中timeout为0表示不阻塞,为RT_WAITING_FOREVER表示永久阻塞,
         这与uCOS-III有所不同,因此需要转换
@@ -516,7 +516,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
         if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)          /* 检查调度器是否被锁                                 */
         {
             *p_err = OS_ERR_SCHED_LOCKED;
-            return ((OS_OBJ_QTY)0);         
+            return ((OS_OBJ_QTY)0);
         }
         if(timeout == 0)                                        /* 在uCOS-III中timeout=0表示永久阻塞                  */
         {
@@ -547,14 +547,14 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_tcb->FlagsOpt  = opt;                                     /* Save the type of wait we are doing                 */
     p_tcb->FlagsRdy  = p_tcb->Task.event_set;                   /* Save flags that were ready                         */
 #endif
-    CPU_CRITICAL_EXIT(); 
+    CPU_CRITICAL_EXIT();
 
     rt_err = rt_event_recv(&p_grp->FlagGrp,
                            flags,
                            rt_option,
                            time,
                            &recved);
-    *p_err = rt_err_to_ucosiii(rt_err);  
+    *p_err = rt_err_to_ucosiii(rt_err);
     if(*p_err == OS_ERR_TIMEOUT && time == RT_WAITING_NO)
     {
         *p_err = OS_ERR_PEND_WOULD_BLOCK;
@@ -568,7 +568,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_grp->Flags      = p_grp->FlagGrp.set;                     /* Set to desired initial value                       */
     p_tcb->FlagsRdy   = p_tcb->Task.event_set;                  /* Save flags that were ready                         */
 #if OS_CFG_DBG_EN > 0u
-    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" "); 
+    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
     {
         /*若等待表不为空，则将当前等待事件组的线程赋值给.DbgNamePtr*/
@@ -578,16 +578,16 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     else
     {
         p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* 若为空,则清空当前.DbgNamePtr                       */
-    } 
+    }
 #endif
 #endif
 
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)               /* Indicate that we aborted                           */
     {
-        CPU_CRITICAL_EXIT(); 
+        CPU_CRITICAL_EXIT();
         *p_err = OS_ERR_PEND_ABORT;
         return 0;
-    }    
+    }
     CPU_CRITICAL_EXIT();
 
     return recved;
@@ -635,8 +635,8 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
     OS_OBJ_QTY abort_tasks = 0;
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
-#endif   
-    
+#endif
+
     CPU_SR_ALLOC();
 
 #ifdef OS_SAFETY_CRITICAL
@@ -659,7 +659,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
         return (0u);
     }
 #endif
-    
+
 #if OS_CFG_ARG_CHK_EN > 0u
     if (p_grp == (OS_FLAG_GRP *)0) {                            /* Validate 'p_sem'                                   */
        *p_err =  OS_ERR_OBJ_PTR_NULL;
@@ -677,23 +677,23 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
              return ((OS_OBJ_QTY)0u);
     }
 #endif
-    
+
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     if (rt_object_get_type(&p_grp->FlagGrp.parent.parent) != RT_Object_Class_Event) {/*Make sure semaphore was created*/
        *p_err =  OS_ERR_OBJ_TYPE;
         return ((OS_OBJ_QTY)0u);
     }
-#endif  
-    
+#endif
+
     CPU_CRITICAL_ENTER();
-    if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))/* 若没有线程等待信号量                               */ 
+    if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))/* 若没有线程等待信号量                               */
     {
-        CPU_CRITICAL_EXIT(); 
+        CPU_CRITICAL_EXIT();
        *p_err =  OS_ERR_PEND_ABORT_NONE;
-        return ((OS_OBJ_QTY)0u);        
+        return ((OS_OBJ_QTY)0u);
     }
     CPU_CRITICAL_EXIT();
-    
+
     if(opt & OS_OPT_PEND_ABORT_ALL)
     {
         abort_tasks = rt_ipc_pend_abort_all(&(p_grp->FlagGrp.parent.suspend_thread));
@@ -703,8 +703,8 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
         rt_ipc_pend_abort_1(&(p_grp->FlagGrp.parent.suspend_thread));
         abort_tasks = 1;
     }
-    
-    CPU_CRITICAL_ENTER(); 
+
+    CPU_CRITICAL_ENTER();
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
     {
@@ -716,14 +716,14 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
     {
         p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* 若为空,则清空当前.DbgNamePtr                       */
     }
-#endif 
-    CPU_CRITICAL_EXIT();  
-    
+#endif
+    CPU_CRITICAL_EXIT();
+
     if(!(opt & OS_OPT_POST_NO_SCHED))
     {
         rt_schedule();
     }
-    
+
     *p_err = OS_ERR_NONE;
     return abort_tasks;
 }
@@ -749,7 +749,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
 OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err)
 {
     OS_FLAGS   flags;
-    
+
     CPU_SR_ALLOC();
 
 #ifdef OS_SAFETY_CRITICAL
@@ -765,7 +765,7 @@ OS_FLAGS  OSFlagPendGetFlagsRdy (OS_ERR  *p_err)
         return (0u);
     }
 #endif
-    
+
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if (OSIntNestingCtr > (OS_NESTING_CTR)0) {                  /* See if called from ISR ...                         */
        *p_err = OS_ERR_PEND_ISR;                                /* ... can't get from an ISR                          */
@@ -837,30 +837,30 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     rt_thread_t thread;
 #endif
 #endif
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return ((OS_FLAGS)0);
     }
-#endif    
-    
+#endif
+
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                             */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (0u);
     }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u   
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_grp == RT_NULL)                                        /* 检查指针是否为空                                   */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
     }
-    switch (opt) {     
+    switch (opt) {
         case OS_OPT_POST_FLAG_SET:
         case OS_OPT_POST_FLAG_CLR:
         case OS_OPT_POST_FLAG_SET | OS_OPT_POST_NO_SCHED:
@@ -870,16 +870,16 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
         default:
             *p_err = OS_ERR_OPT_INVALID;
              return ((OS_FLAGS)0);
-    }   
+    }
 #endif
-    
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为事件标志组*/
     if(rt_object_get_type(&p_grp->FlagGrp.parent.parent) != RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return 0;       
-    }  
+        return 0;
+    }
 #endif
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
@@ -889,10 +889,10 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     p_tcb->FlagsRdy = p_tcb->Task.event_set;                    /* Save flags that were ready                         */
     CPU_CRITICAL_EXIT();
 #endif
-    
+
     rt_err = rt_event_send(&p_grp->FlagGrp,flags);
     *p_err = rt_err_to_ucosiii(rt_err);
-    
+
     CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_grp->Flags      = p_grp->FlagGrp.set;                     /* Set to desired initial value                       */
@@ -910,9 +910,9 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
     }
 #endif
 #endif
-    flags = p_grp->FlagGrp.set; 
+    flags = p_grp->FlagGrp.set;
     CPU_CRITICAL_EXIT();
-    
+
     return flags;                                               /* 返回执行后事件标志组的值                           */
 }
 

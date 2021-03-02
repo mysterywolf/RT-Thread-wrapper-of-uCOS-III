@@ -31,12 +31,12 @@
 *
 *               All rights reserved.  Protected by international copyright laws.
 *
-*               uC/CPU is provided in source form to registered licensees ONLY.  It is 
-*               illegal to distribute this source code to any third party unless you receive 
-*               written permission by an authorized Micrium representative.  Knowledge of 
+*               uC/CPU is provided in source form to registered licensees ONLY.  It is
+*               illegal to distribute this source code to any third party unless you receive
+*               written permission by an authorized Micrium representative.  Knowledge of
 *               the source code may NOT be used to develop a similar product.
 *
-*               Please help us continue to provide the Embedded community with the finest 
+*               Please help us continue to provide the Embedded community with the finest
 *               software available.  Your honesty is greatly appreciated.
 *
 *               You can find our product's user manual, API reference, release notes and
@@ -65,7 +65,7 @@
 *********************************************************************************************************
 *                                               MODULE
 *
-* Note(s) : (1) This CPU header file is protected from multiple pre-processor inclusion through use of 
+* Note(s) : (1) This CPU header file is protected from multiple pre-processor inclusion through use of
 *               the  CPU module present pre-processor macro definition.
 *           (2) RT-Thread支持32位、64位CPU,uCOS-III支持8位、16位、32位但不支持64位CPU,因此当且仅当CPU为
 *               32位时,才能将原有项目从uCOS-III兼容到RT-Thread上.
@@ -128,7 +128,7 @@ typedef  volatile  CPU_INT64U  CPU_REG64;                       /* 64-bit regist
 *********************************************************************************************************
 *                                       CPU WORD CONFIGURATION
 *
-* Note(s) : (1) Configure CPU_CFG_ADDR_SIZE, CPU_CFG_DATA_SIZE, & CPU_CFG_DATA_SIZE_MAX with CPU's &/or 
+* Note(s) : (1) Configure CPU_CFG_ADDR_SIZE, CPU_CFG_DATA_SIZE, & CPU_CFG_DATA_SIZE_MAX with CPU's &/or
 *               compiler's word sizes :
 *
 *                   CPU_WORD_SIZE_08             8-bit word size
@@ -184,9 +184,9 @@ typedef  CPU_ADDR    CPU_SIZE_T;                                /* Defines CPU s
 */
 
 #if defined(ARCH_CPU_STACK_GROWS_UPWARD)                        /* Defines CPU stack growth order (see Note #1).        */
-#define  CPU_CFG_STK_GROWTH     CPU_STK_GROWTH_LO_TO_HI    
+#define  CPU_CFG_STK_GROWTH     CPU_STK_GROWTH_LO_TO_HI
 #else
-#define  CPU_CFG_STK_GROWTH     CPU_STK_GROWTH_HI_TO_LO         
+#define  CPU_CFG_STK_GROWTH     CPU_STK_GROWTH_HI_TO_LO
 #endif
 
 typedef  rt_ubase_t             CPU_STK;                        /* Defines CPU stack word size (in octets).             */
@@ -201,7 +201,7 @@ typedef  CPU_ADDR               CPU_STK_SIZE;                   /* Defines CPU s
 * Note(s) : (1) (a) To save/restore interrupt status, a local variable 'cpu_sr' of type 'CPU_SR' MAY need
 *                   to be declared (e.g. if 'CPU_CRITICAL_METHOD_STATUS_LOCAL' method is configured).
 *
-*                   (1) 'cpu_sr' local variable SHOULD be declared via the CPU_SR_ALLOC() macro which, if 
+*                   (1) 'cpu_sr' local variable SHOULD be declared via the CPU_SR_ALLOC() macro which, if
 *                        used, MUST be declared following ALL other local variables.
 *
 *                        Example :

@@ -21,7 +21,7 @@
 *                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
 *********************************************************************************************************
-*/ 
+*/
 /*
 ************************************************************************************************************************
 *                                                      uC/OS-III
@@ -69,7 +69,7 @@
 #define  OS_CFG_STAT_TASK_STK_LIMIT      ((OS_CFG_STAT_TASK_STK_SIZE  * OS_CFG_TASK_STK_LIMIT_PCT_EMPTY) / 100u)
 
                                                             /* ------------------- STATISTIC TASK ------------------- */
-#define  OS_CFG_STAT_TASK_PRIO  	(OS_CFG_PRIO_MAX-2u)   	/* 只读 统计任务优先级总是为OS_CFG_PRIO_MAX-2             */
+#define  OS_CFG_STAT_TASK_PRIO      (OS_CFG_PRIO_MAX-2u)    /* 只读 统计任务优先级总是为OS_CFG_PRIO_MAX-2             */
 #define  OS_CFG_STAT_TASK_RATE_HZ         10u               /* Rate of execution (1 to 10 Hz)                         */
 #define  OS_CFG_STAT_TASK_STK_SIZE       128u               /* Stack size (number of CPU_STK elements)                */
 

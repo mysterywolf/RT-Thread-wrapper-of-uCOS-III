@@ -38,11 +38,11 @@
 *
 * LICENSING TERMS:
 * ---------------
-*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or 
+*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or
 *           for peaceful research.  If you plan or intend to use uC/OS-III in a commercial application/
-*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your 
-*           application/product.   We provide ALL the source code for your convenience and to help you 
-*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use 
+*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your
+*           application/product.   We provide ALL the source code for your convenience and to help you
+*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use
 *           it commercially without paying a licensing fee.
 *
 *           Knowledge of the source code may NOT be used to develop a similar product.
@@ -108,7 +108,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_SR_ALLOC();
 #endif
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -122,7 +122,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
         return;
     }
 #endif
-    
+
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
@@ -130,13 +130,13 @@ void  OSSemCreate (OS_SEM      *p_sem,
         return;
     }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u       
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_sem == RT_NULL)                                    /* 检查内核对象指针是否为空                               */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
-    }   
+    }
     if(p_name == RT_NULL)                                   /* 检查信号量名指针是否为空                               */
     {
         *p_err = OS_ERR_NAME;
@@ -144,7 +144,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
     }
 #endif
 
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u 
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否已经是信号量，即是否已经创建过*/
     if(rt_object_get_type(&p_sem->Sem.parent.parent) == RT_Object_Class_Semaphore)
     {
@@ -153,8 +153,8 @@ void  OSSemCreate (OS_SEM      *p_sem,
     }
 #endif
 
-    rt_err = rt_sem_init(&p_sem->Sem,(const char*)p_name,cnt,RT_IPC_FLAG_PRIO);   
-    *p_err = rt_err_to_ucosiii(rt_err); 
+    rt_err = rt_sem_init(&p_sem->Sem,(const char*)p_name,cnt,RT_IPC_FLAG_PRIO);
+    *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err != RT_EOK)
     {
         return;
@@ -162,7 +162,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_CRITICAL_ENTER();
-    p_sem->Type    = OS_OBJ_TYPE_SEM;                       /* Mark the data structure as a semaphore                 */    
+    p_sem->Type    = OS_OBJ_TYPE_SEM;                       /* Mark the data structure as a semaphore                 */
 #if (OS_CFG_DBG_EN > 0u)
     p_sem->NamePtr = p_name;
 #endif
@@ -170,7 +170,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
 #if OS_CFG_DBG_EN > 0u
     OS_SemDbgListAdd(p_sem);
 #endif
-    OSSemQty++;    
+    OSSemQty++;
     CPU_CRITICAL_EXIT();
 #endif
 }
@@ -215,29 +215,29 @@ void  OSSemCreate (OS_SEM      *p_sem,
 
 #if OS_CFG_SEM_DEL_EN > 0u
 OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
-                      OS_OPT   opt, 
+                      OS_OPT   opt,
                       OS_ERR  *p_err)
 {
     rt_err_t rt_err;
     rt_uint32_t pend_sem_len;
 
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return ((OS_OBJ_QTY)0);
     }
 #endif
-  
+
 #ifdef OS_SAFETY_CRITICAL_IEC61508
     if (OSSafetyCriticalStartFlag == OS_TRUE) {
        *p_err = OS_ERR_ILLEGAL_DEL_RUN_TIME;
         return (0u);
     }
 #endif
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_DEL_ISR;
@@ -251,14 +251,14 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
         return (0u);
     }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u   
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_sem == RT_NULL)                                    /* 检查指针是否为空                                       */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
     }
-    switch (opt) { 
+    switch (opt) {
         case OS_OPT_DEL_NO_PEND:
         case OS_OPT_DEL_ALWAYS:
              break;
@@ -266,22 +266,22 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
         default:
             *p_err = OS_ERR_OPT_INVALID;
              return ((OS_OBJ_QTY)0);
-    }      
+    }
 #endif
 
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u   
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为信号量*/
     if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return 0;       
+        return 0;
     }
 #endif
-    
+
     CPU_CRITICAL_ENTER();
     pend_sem_len = rt_list_len(&(p_sem->Sem.parent.suspend_thread));
-    CPU_CRITICAL_EXIT();  
-    
+    CPU_CRITICAL_EXIT();
+
     switch (opt)
     {
         case OS_OPT_DEL_NO_PEND:
@@ -290,21 +290,21 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_sem_detach(&p_sem->Sem);
-                *p_err = rt_err_to_ucosiii(rt_err);                 
+                *p_err = rt_err_to_ucosiii(rt_err);
             }
             else
             {
                 CPU_CRITICAL_EXIT();
                 *p_err = OS_ERR_TASK_WAITING;
-            } 
+            }
             break;
-            
+
         case OS_OPT_DEL_ALWAYS:
             rt_err = rt_sem_detach(&p_sem->Sem);
             *p_err = rt_err_to_ucosiii(rt_err);
             break;
     }
-        
+
     if(*p_err == OS_ERR_NONE)
     {
         CPU_CRITICAL_ENTER();
@@ -312,12 +312,12 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
 #if OS_CFG_DBG_EN > 0u
         OS_SemDbgListRemove(p_sem);
 #endif
-        OSSemQty--; 
+        OSSemQty--;
 #endif
         OS_SemClr(p_sem);
         CPU_CRITICAL_EXIT();
-    } 
-    
+    }
+
     return pend_sem_len;
 }
 #endif
@@ -346,7 +346,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
 *                            and indicates that you don't need the timestamp.
 *                            -------------说明-------------
 *                            该参数在RTT中没有意义,填NULL即可
-*               
+*
 *              p_err         is a pointer to a variable that will contain an error code returned by this function.
 *
 *                                OS_ERR_NONE               The call was successful and your task owns the resource
@@ -381,46 +381,46 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
                        OS_OPT    opt,
                        CPU_TS   *p_ts,
                        OS_ERR   *p_err)
-{  
+{
     rt_err_t rt_err;
     rt_int32_t time;
     OS_TCB *p_tcb;
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
-#endif   
-    
+#endif
+
     CPU_SR_ALLOC();
-    
+
     CPU_VAL_UNUSED(p_ts);
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return ((OS_SEM_CTR)0);
     }
 #endif
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u      
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_PEND_ISR;
         return 0;
     }
-#endif  
-    
+#endif
+
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                                 */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (0u);
     }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u    
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_sem == RT_NULL)                                    /* 检查信号量指针是否为空                                 */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
-    } 
+    }
     switch (opt) {
         case OS_OPT_PEND_BLOCKING:
         case OS_OPT_PEND_NON_BLOCKING:
@@ -429,18 +429,18 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
         default:
             *p_err = OS_ERR_OPT_INVALID;
              return ((OS_SEM_CTR)0);
-    }    
+    }
 #endif
-       
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为信号量*/
     if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return 0;       
+        return 0;
     }
 #endif
-    
+
     /*
         在RTT中timeout为0表示不阻塞,为RT_WAITING_FOREVER表示永久阻塞,
         这与uCOS-III有所不同,因此需要转换
@@ -450,9 +450,9 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
         if(OSSchedLockNestingCtr > (OS_NESTING_CTR)0)       /* 检查调度器是否被锁                                     */
         {
             *p_err = OS_ERR_SCHED_LOCKED;
-            return 0;         
-        }        
-        
+            return 0;
+        }
+
         if(timeout == 0)                                    /* 在uCOS-III中timeout=0表示永久阻塞                      */
         {
             time = RT_WAITING_FOREVER;
@@ -466,7 +466,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     {
         time = RT_WAITING_NO;                               /* 在RTT中timeout为0表示非阻塞                            */
     }
-    
+
     CPU_CRITICAL_ENTER();
     p_tcb = OSTCBCurPtr;
     p_tcb->PendStatus = OS_STATUS_PEND_OK;                  /* Clear pend status                                      */
@@ -479,13 +479,13 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = p_sem->NamePtr;                     /* 更新等待任务被哪个信号量所阻塞                         */
     p_sem->DbgNamePtr = p_tcb->Task.name;
-#endif 
+#endif
     p_sem->Ctr = p_sem->Sem.value;                          /* 更新信号量的value                                      */
 #endif
-    CPU_CRITICAL_EXIT(); 
-    
+    CPU_CRITICAL_EXIT();
+
     rt_err = rt_sem_take(&p_sem->Sem,time);
-    *p_err = rt_err_to_ucosiii(rt_err); 
+    *p_err = rt_err_to_ucosiii(rt_err);
     if(*p_err == OS_ERR_TIMEOUT && time == RT_WAITING_NO)
     {
         *p_err = OS_ERR_PEND_WOULD_BLOCK;
@@ -493,11 +493,11 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
 
     CPU_CRITICAL_ENTER();
     p_tcb->TaskState &= ~OS_TASK_STATE_PEND;                /* 更新任务状态                                           */
-    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                /* 清除当前任务等待状态                                   */   
+    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                /* 清除当前任务等待状态                                   */
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_sem->Ctr = p_sem->Sem.value;                          /* 更新信号量的value                                      */
 #if OS_CFG_DBG_EN > 0u
-    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");  
+    p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");
     if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
     {
         /*若等待表不为空，则将当前等待信号量的线程赋值给p_sem->DbgNamePtr*/
@@ -512,13 +512,13 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
 #endif
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)           /* Indicate that we aborted                               */
     {
-        CPU_CRITICAL_EXIT(); 
+        CPU_CRITICAL_EXIT();
         *p_err = OS_ERR_PEND_ABORT;
         return 0;
-    } 
-    
-    CPU_CRITICAL_EXIT();    
-    
+    }
+
+    CPU_CRITICAL_EXIT();
+
     return p_sem->Sem.value;/*返回信号量还剩多少value*/
 }
 
@@ -562,8 +562,8 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
     OS_OBJ_QTY abort_tasks = 0;
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
-#endif   
-    
+#endif
+
     CPU_SR_ALLOC();
 
 #ifdef OS_SAFETY_CRITICAL
@@ -586,7 +586,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
         return (0u);
     }
 #endif
-    
+
 #if OS_CFG_ARG_CHK_EN > 0u
     if (p_sem == (OS_SEM *)0) {                             /* Validate 'p_sem'                                       */
        *p_err =  OS_ERR_OBJ_PTR_NULL;
@@ -604,23 +604,23 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
              return ((OS_OBJ_QTY)0u);
     }
 #endif
-    
+
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     if (rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore) {/*Make sure semaphore was created*/
        *p_err =  OS_ERR_OBJ_TYPE;
         return ((OS_OBJ_QTY)0u);
     }
-#endif  
-    
+#endif
+
     CPU_CRITICAL_ENTER();
-    if(rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))/* 若没有线程等待信号量                                   */ 
+    if(rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))/* 若没有线程等待信号量                                   */
     {
-        CPU_CRITICAL_EXIT(); 
+        CPU_CRITICAL_EXIT();
        *p_err =  OS_ERR_PEND_ABORT_NONE;
-        return ((OS_OBJ_QTY)0u);        
+        return ((OS_OBJ_QTY)0u);
     }
     CPU_CRITICAL_EXIT();
-    
+
     if(opt & OS_OPT_PEND_ABORT_ALL)
     {
         abort_tasks = rt_ipc_pend_abort_all(&(p_sem->Sem.parent.suspend_thread));
@@ -630,7 +630,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
         rt_ipc_pend_abort_1(&(p_sem->Sem.parent.suspend_thread));
         abort_tasks = 1;
     }
-   
+
     CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_sem->Ctr =p_sem->Sem.value;                           /* 更新信号量value值                                      */
@@ -648,12 +648,12 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
 #endif
 #endif
     CPU_CRITICAL_EXIT();
-    
+
     if(!(opt & OS_OPT_POST_NO_SCHED))
     {
         rt_schedule();
     }
-    
+
     *p_err = OS_ERR_NONE;
     return abort_tasks;
 }
@@ -702,10 +702,10 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
     rt_err_t rt_err;
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
-#endif   
-    
+#endif
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -720,13 +720,13 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
     }
 #endif
 
-    
-#if OS_CFG_ARG_CHK_EN > 0u    
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_sem == RT_NULL)                                    /* 检查指针是否为空                                       */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
-    } 
+    }
     switch (opt) {
         case OS_OPT_POST_1:
         case OS_OPT_POST_ALL:
@@ -737,18 +737,18 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
         default:
             *p_err =  OS_ERR_OPT_INVALID;
              return ((OS_SEM_CTR)0u);
-    }  
+    }
 #endif
 
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为信号量*/
     if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return 0;       
+        return 0;
     }
 #endif
-        
+
     if(opt & OS_OPT_POST_ALL)
     {
         rt_err = rt_sem_release_all(&p_sem->Sem);
@@ -757,7 +757,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
     {
         rt_err = rt_sem_release(&p_sem->Sem);
     }
-    
+
     CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_sem->Ctr = p_sem->Sem.value;                          /* 更新信号量value值                                      */
@@ -803,8 +803,8 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
     }
 #endif
     CPU_CRITICAL_EXIT();
-    
-    *p_err = rt_err_to_ucosiii(rt_err); 
+
+    *p_err = rt_err_to_ucosiii(rt_err);
     return p_sem->Sem.value;                                /* 返回信号量还剩多少value                                */
 }
 
@@ -833,48 +833,48 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
 ************************************************************************************************************************
 */
 
-#if OS_CFG_SEM_SET_EN > 0u 
+#if OS_CFG_SEM_SET_EN > 0u
 void  OSSemSet (OS_SEM      *p_sem,
                 OS_SEM_CTR   cnt,
                 OS_ERR      *p_err)
 {
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     rt_thread_t thread;
-#endif   
+#endif
 
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
-#endif    
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u      
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_SET_ISR;
         return;
     }
-#endif  
-    
+#endif
+
 #if OS_CFG_ARG_CHK_EN > 0u
-    if (p_sem == (OS_SEM *)0) { 
+    if (p_sem == (OS_SEM *)0) {
        *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
     }
 #endif
 
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u   
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为信号量*/
     if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return;       
+        return;
     }
 #endif
-    
+
     CPU_CRITICAL_ENTER();
     *p_err = OS_ERR_NONE;
     if (p_sem->Sem.value>0)
@@ -994,7 +994,7 @@ void  OS_SemDbgListRemove (OS_SEM  *p_sem)
         p_sem->DbgNextPtr      = (OS_SEM *)0;
         p_sem->DbgPrevPtr      = (OS_SEM *)0;
     }
-    
+
 }
 #endif
 
@@ -1025,7 +1025,7 @@ void  OS_SemInit (OS_ERR  *p_err)
 #endif
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-#if OS_CFG_DBG_EN > 0u 
+#if OS_CFG_DBG_EN > 0u
     OSSemDbgListPtr = (OS_SEM *)0;
 #endif
     OSSemQty        = (OS_OBJ_QTY)0;

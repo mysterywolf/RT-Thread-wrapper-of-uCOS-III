@@ -21,7 +21,7 @@
 *                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
 *********************************************************************************************************
-*/ 
+*/
 /*
 ************************************************************************************************************************
 *                                                      uC/OS-III
@@ -106,7 +106,7 @@ void  App_OS_ClrAllHooks (void)
     OS_AppTaskCreateHookPtr = (OS_APP_HOOK_TCB)0;
     OS_AppTaskDelHookPtr    = (OS_APP_HOOK_TCB)0;
 #if OS_CFG_STAT_TASK_EN > 0u
-    OS_AppIdleTaskHookPtr   = (OS_APP_HOOK_VOID)0; 
+    OS_AppIdleTaskHookPtr   = (OS_APP_HOOK_VOID)0;
     OS_AppStatTaskHookPtr   = (OS_APP_HOOK_VOID)0;
 #endif
     CPU_CRITICAL_EXIT();

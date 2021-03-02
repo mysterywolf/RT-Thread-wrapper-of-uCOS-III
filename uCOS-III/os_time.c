@@ -21,7 +21,7 @@
 *                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
 *********************************************************************************************************
-*/ 
+*/
 /*
 ************************************************************************************************************************
 *                                                      uC/OS-III
@@ -38,11 +38,11 @@
 *
 * LICENSING TERMS:
 * ---------------
-*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or 
+*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or
 *           for peaceful research.  If you plan or intend to use uC/OS-III in a commercial application/
-*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your 
-*           application/product.   We provide ALL the source code for your convenience and to help you 
-*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use 
+*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your
+*           application/product.   We provide ALL the source code for your convenience and to help you
+*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use
 *           it commercially without paying a licensing fee.
 *
 *           Knowledge of the source code may NOT be used to develop a similar product.
@@ -102,44 +102,44 @@ void  OSTimeDly (OS_TICK   dly,
                  OS_ERR   *p_err)
 {
     rt_err_t rt_err;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
 #endif
-    
+
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                                 */
     {
         *p_err = OS_ERR_TIME_DLY_ISR;
-        return; 
+        return;
     }
 #endif
-    
+
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
     }
 #endif
-    
+
     if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)              /* 检查调度器是否被锁                                   */
     {
         *p_err = OS_ERR_SCHED_LOCKED;
-        return;         
-    } 
-    
-#if OS_CFG_ARG_CHK_EN > 0u      
+        return;
+    }
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(dly == 0)                                                /* 检查是否为0延时                                      */
     {
         *p_err = OS_ERR_TIME_ZERO_DLY;
-        return;         
+        return;
     }
-    
+
     opt &= OS_OPT_TIME_MASK;
     switch (opt) {
         case OS_OPT_TIME_DLY:
@@ -159,11 +159,11 @@ void  OSTimeDly (OS_TICK   dly,
              return;
     }
 #endif
-    
+
     CPU_CRITICAL_ENTER();
     OSTCBCurPtr->TaskState |= OS_TASK_STATE_DLY;
     CPU_CRITICAL_EXIT();
-        
+
     if(opt == OS_OPT_TIME_MATCH)
     {
         rt_err = rt_thread_delay(dly - rt_tick_get());
@@ -172,12 +172,12 @@ void  OSTimeDly (OS_TICK   dly,
     {
         rt_err = rt_thread_delay(dly);
     }
-    
-    *p_err = rt_err_to_ucosiii(rt_err); 
-    
+
+    *p_err = rt_err_to_ucosiii(rt_err);
+
     CPU_CRITICAL_ENTER();
     OSTCBCurPtr->TaskState &= ~OS_TASK_STATE_DLY;
-    CPU_CRITICAL_EXIT();    
+    CPU_CRITICAL_EXIT();
 }
 
 /*
@@ -250,23 +250,23 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
                      OS_ERR      *p_err)
 {
     rt_int32_t dly_ms;
-#if OS_CFG_ARG_CHK_EN > 0u     
+#if OS_CFG_ARG_CHK_EN > 0u
     CPU_BOOLEAN  opt_invalid;
     CPU_BOOLEAN  opt_non_strict;
 #endif
-        
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
 #endif
-    
+
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                                 */
     {
         *p_err = OS_ERR_TIME_DLY_ISR;
-        return; 
+        return;
     }
 #endif
 
@@ -276,14 +276,14 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
         return;
     }
 #endif
-    
+
     if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)              /* 检查调度器是否被锁                                   */
     {
         *p_err = OS_ERR_SCHED_LOCKED;
-        return;         
-    } 
-    
-#if OS_CFG_ARG_CHK_EN > 0u  
+        return;
+    }
+
+#if OS_CFG_ARG_CHK_EN > 0u
     opt_invalid = DEF_BIT_IS_SET_ANY(opt, ~OS_OPT_TIME_OPTS_MASK);
     if (opt_invalid == DEF_YES) {
        *p_err = OS_ERR_OPT_INVALID;
@@ -318,18 +318,18 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
          }
     }
 #endif
-    
+
     dly_ms = hours*3600*1000+minutes*60*1000+seconds*1000+milli;
-    
-#if OS_CFG_ARG_CHK_EN > 0u      
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(dly_ms == 0)                                             /* 检查是否为0延时                                      */
     {
         *p_err = OS_ERR_TIME_ZERO_DLY;
-        return;         
+        return;
     }
 #endif
 
-    OSTimeDly(rt_tick_from_millisecond(dly_ms), opt, p_err); 
+    OSTimeDly(rt_tick_from_millisecond(dly_ms), opt, p_err);
 }
 #endif
 
@@ -361,7 +361,7 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
                        OS_ERR  *p_err)
 {
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -375,13 +375,13 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
         return;
     }
 #endif
-    
+
 #if OS_CFG_ARG_CHK_EN > 0u
     if (p_tcb == (OS_TCB *)0) {                             /* Not possible for the running task to be delayed!       */
        *p_err = OS_ERR_TASK_NOT_DLY;
         return;
     }
-#endif 
+#endif
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                                 */
@@ -389,19 +389,19 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
         return;
     }
 #endif
-    
+
     if (p_tcb == (OS_TCB*)rt_thread_self()) {               /* Not possible for the running task to be delayed!       */
        *p_err = OS_ERR_TASK_NOT_DLY;
         return;
     }
-    
+
     if ((!(p_tcb->Task.thread_timer.parent.flag & RT_TIMER_FLAG_ACTIVATED)) /* Cannot Abort delay if task is ready    */
          || (p_tcb->Task.stat != RT_THREAD_SUSPEND))
     {
         *p_err = OS_ERR_TASK_NOT_DLY;
         return;
     }
-    
+
     CPU_CRITICAL_ENTER();
     switch (p_tcb->TaskState) {
         case OS_TASK_STATE_RDY:                             /* Cannot Abort delay if task is ready                    */
@@ -432,13 +432,13 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
             *p_err = OS_ERR_STATE_INVALID;
              break;
     }
-    
+
     if(*p_err == OS_ERR_NONE)
     {
         p_tcb->Task.error = -RT_ETIMEOUT;
         rt_thread_resume(&p_tcb->Task);
-        rt_schedule();        
-    }  
+        rt_schedule();
+    }
 }
 #endif
 
@@ -482,7 +482,7 @@ OS_TICK  OSTimeGet (OS_ERR  *p_err)
 void  OSTimeSet (OS_TICK   ticks,
                  OS_ERR   *p_err)
 {
-    *p_err = OS_ERR_NONE;  
+    *p_err = OS_ERR_NONE;
     rt_tick_set(ticks);
 }
 

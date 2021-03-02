@@ -36,11 +36,11 @@
 *
 * LICENSING TERMS:
 * ---------------
-*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or 
+*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or
 *           for peaceful research.  If you plan or intend to use uC/OS-III in a commercial application/
-*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your 
-*           application/product.   We provide ALL the source code for your convenience and to help you 
-*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use 
+*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your
+*           application/product.   We provide ALL the source code for your convenience and to help you
+*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use
 *           it commercially without paying a licensing fee.
 *
 *           Knowledge of the source code may NOT be used to develop a similar product.
@@ -360,7 +360,7 @@ extern "C" {
                                                                     /* Dflt prio to init task TCB                     */
 #define  OS_PRIO_INIT                       (OS_PRIO)(OS_CFG_PRIO_MAX)
 
-                                                           
+
 /*
 ************************************************************************************************************************
 ************************************************************************************************************************
@@ -435,7 +435,7 @@ typedef  enum  os_err {
     OS_ERR_MUTEX_OWNER               = 22402u,
     OS_ERR_MUTEX_NESTING             = 22403u,
     OS_ERR_MUTEX_OVF                 = 22404u,
-    
+
     OS_ERR_N                         = 23000u,
     OS_ERR_NAME                      = 23001u,
     OS_ERR_NO_MORE_ID_AVAIL          = 23002u,
@@ -452,7 +452,7 @@ typedef  enum  os_err {
     OS_ERR_OS_RUNNING                = 24202u,
     OS_ERR_OS_NOT_INIT               = 24203u,
     OS_ERR_OS_NO_APP_TASK            = 24204u,
-    
+
     OS_ERR_P                         = 25000u,
     OS_ERR_PEND_ABORT                = 25001u,
     OS_ERR_PEND_ABORT_ISR            = 25002u,
@@ -503,7 +503,7 @@ typedef  enum  os_err {
     OS_ERR_STK_SIZE_INVALID          = 28208u,
     OS_ERR_STK_LIMIT_INVALID         = 28209u,
     OS_ERR_STK_OVF                   = 28210u,
-    
+
     OS_ERR_T                         = 29000u,
     OS_ERR_TASK_CHANGE_PRIO_ISR      = 29001u,
     OS_ERR_TASK_CREATE_ISR           = 29002u,
@@ -529,7 +529,7 @@ typedef  enum  os_err {
     OS_ERR_TASK_SUSPEND_PRIO         = 29022u, /*原版3.03/3.08中仅定义未使用*/
     OS_ERR_TASK_WAITING              = 29023u,
     OS_ERR_TASK_SUSPEND_CTR_OVF      = 29024u,
-    
+
     OS_ERR_TCB_INVALID               = 29101u,
 
     OS_ERR_TLS_ID_INVALID            = 29120u,
@@ -570,7 +570,7 @@ typedef  enum  os_err {
 //  OS_ERR_TMR_STK_SIZE_INVALID      = 29512u,
     OS_ERR_TMR_STOPPED               = 29513u,
     OS_ERR_TMR_INVALID_CALLBACK      = 29514u,
-    
+
     OS_ERR_U                         = 30000u,
 
     OS_ERR_V                         = 31000u,
@@ -583,12 +583,12 @@ typedef  enum  os_err {
     OS_ERR_YIELD_ISR                 = 34001u,
 
     OS_ERR_Z                         = 35000u,
-    
+
     /*
         由于uCOS-III的错误码分类较细，而RTT的错误码分类较为笼统，
         以下RTT错误码使用uCOS-III的错误码很难准确描述
         因此将针对RTT的错误码重新定义(新增)uCOS-III的错误码
-    */    
+    */
     OS_ERR_RT                        = 36000u,/* RTT专用错误码集 */
     OS_ERR_RT_ERROR                  = 36001u,/* 普通错误     */
     OS_ERR_RT_EEMPTY                 = 36002u,/* 无资源       */
@@ -690,7 +690,7 @@ struct os_q
 ------------------------------------------------------------------------------------------------------------------------
 */
 
-struct  os_sem { 
+struct  os_sem {
     struct  rt_semaphore  Sem;
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     OS_OBJ_TYPE           Type;
@@ -700,7 +700,7 @@ struct  os_sem {
     OS_SEM               *DbgNextPtr;
     CPU_CHAR             *DbgNamePtr;                       /* 等待该内核对象挂起表中第一个任务的名字                 */
 #endif
-    OS_SEM_CTR            Ctr;    
+    OS_SEM_CTR            Ctr;
 #endif
 };
 
@@ -736,17 +736,17 @@ struct os_tcb
     OS_SEM           Sem;                                   /* 任务内建信号量                                         */
     CPU_BOOLEAN      SemCreateSuc;                          /* 标记任务内建信号量是否创建成功                         */
 #endif
-#if OS_CFG_TASK_Q_EN > 0u      
+#if OS_CFG_TASK_Q_EN > 0u
     OS_Q             MsgQ;                                  /* 任务内建消息队列                                       */
     void            *MsgPtr;                                /* 任务内建消息队列消息指针                               */
     OS_MSG_SIZE      MsgSize;                               /* 任务内建消息队列消息大小                               */
     CPU_BOOLEAN      MsgCreateSuc;                          /* 标记任务内建消息队列是否创建成功                       */
-#endif    
+#endif
     void            *ExtPtr;                                /* 指向用户附加区指针                                     */
-#if OS_CFG_TASK_REG_TBL_SIZE > 0u       
+#if OS_CFG_TASK_REG_TBL_SIZE > 0u
     OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];      /* 任务寄存器                                             */
 #endif
-    OS_STATUS        PendStatus;                            /* Pend status：OS_STATUS_PEND_ABORT OS_STATUS_PEND_OK可用*/ 
+    OS_STATUS        PendStatus;                            /* Pend status：OS_STATUS_PEND_ABORT OS_STATUS_PEND_OK可用*/
 #if OS_CFG_TASK_SUSPEND_EN > 0u
     OS_NESTING_CTR   SuspendCtr;                            /* Nesting counter for OSTaskSuspend()                    */
 #endif
@@ -760,21 +760,21 @@ struct os_tcb
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if (OS_CFG_DBG_EN > 0u)
     OS_TCB          *DbgPrevPtr;
-    OS_TCB          *DbgNextPtr;  
+    OS_TCB          *DbgNextPtr;
     CPU_CHAR        *DbgNamePtr;                            /* 正在等待内核对象的名称                                 */
     CPU_STK         *StkPtr;                                /* (非实时)该数据在本兼容层中不能反映实时SP指针位置,数据在统计任务中更新*/
-    CPU_CHAR        *NamePtr;                               /* Pointer to task name                                   */    
+    CPU_CHAR        *NamePtr;                               /* Pointer to task name                                   */
 #endif
     OS_TICK          TimeQuanta;
     OS_TICK          TimeQuantaCtr;
-    OS_SEM_CTR       SemCtr;                                /* Task specific semaphore counter                        */  
-    OS_OPT           Opt;                                   /* Task options as passed by OSTaskCreate()               */    
-    CPU_STK          StkSize;                               /* 任务堆栈大小*/    
+    OS_SEM_CTR       SemCtr;                                /* Task specific semaphore counter                        */
+    OS_OPT           Opt;                                   /* Task options as passed by OSTaskCreate()               */
+    CPU_STK          StkSize;                               /* 任务堆栈大小*/
     CPU_STK         *StkLimitPtr;                           /* Pointer used to set stack 'watermark' limit            */
     CPU_STK         *StkBasePtr;                            /* Pointer to base address of stack                       */
     OS_TASK_PTR      TaskEntryAddr;                         /* Pointer to task entry point address                    */
     void            *TaskEntryArg;                          /* Argument passed to task when it was created            */
-    OS_PRIO          Prio;                                  /* Task priority (0 == highest)                           */          
+    OS_PRIO          Prio;                                  /* Task priority (0 == highest)                           */
 #if OS_CFG_FLAG_EN > 0u
     OS_FLAGS         FlagsPend;                             /* Event flag(s) to wait on */
     OS_FLAGS         FlagsRdy;                              /* Event flags that made task ready to run                */
@@ -824,7 +824,7 @@ struct  os_mutex {
     OS_MUTEX           *DbgNextPtr;
     CPU_CHAR           *DbgNamePtr;                         /* 等待该内核对象挂起表中第一个任务的名字                 */
 #endif
-#endif    
+#endif
 };
 
 /*
@@ -891,7 +891,7 @@ OS_EXT            CPU_BOOLEAN               OSSafetyCriticalStartFlag;  /* Flag 
                                                                         /* SEMAPHORES ------------------------------- */
 #if OS_CFG_SEM_EN > 0u
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-#if OS_CFG_DBG_EN > 0u 
+#if OS_CFG_DBG_EN > 0u
 OS_EXT            OS_SEM                   *OSSemDbgListPtr;
 #endif
 OS_EXT            OS_OBJ_QTY                OSSemQty;                   /* Number of semaphores created               */
@@ -953,7 +953,7 @@ OS_EXT            CPU_BOOLEAN               OSSchedRoundRobinEn;        /* Enabl
 
 #if OS_CFG_STAT_TASK_EN > 0u
                                                                         /* IDLE TASK -------------------------------- */
-OS_EXT            OS_IDLE_CTR               OSIdleTaskCtr;              
+OS_EXT            OS_IDLE_CTR               OSIdleTaskCtr;
 
                                                                         /* STATISTICS ------------------------------- */
 OS_EXT            CPU_BOOLEAN               OSStatResetFlag;            /* Force the reset of the computed statistics */
@@ -967,7 +967,7 @@ OS_EXT            OS_TCB                    OSStatTaskTCB;
 #endif
 
 #if OS_CFG_TMR_EN > 0u                                                  /* TIMERS ----------------------------------- */
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if OS_CFG_DBG_EN > 0u
 OS_EXT            OS_TMR                   *OSTmrDbgListPtr;
 #endif
@@ -983,7 +983,7 @@ OS_EXT            OS_OBJ_QTY                OSTmrQty;                   /* Numbe
 ************************************************************************************************************************
 */
 
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 extern  OS_PRIO       const OSCfg_StatTaskPrio;
 extern  OS_RATE_HZ    const OSCfg_StatTaskRate_Hz;
 extern  CPU_STK     * const OSCfg_StatTaskStkBasePtr;
@@ -1044,7 +1044,7 @@ OS_FLAGS      OSFlagPost                (OS_FLAG_GRP           *p_grp,
                                          OS_FLAGS               flags,
                                          OS_OPT                 opt,
                                          OS_ERR                *p_err);
-                                         
+
 /* ------------------------------------------------ INTERNAL FUNCTIONS ---------------------------------------------- */
 
 void          OS_FlagClr                (OS_FLAG_GRP           *p_grp);
@@ -1280,7 +1280,7 @@ void          OS_QDbgListRemove         (OS_Q                  *p_q);
 void          OS_QInit                  (OS_ERR                *p_err);
 
 #endif
-                                         
+
 /* ================================================================================================================== */
 /*                                                     SEMAPHORES                                                     */
 /* ================================================================================================================== */
@@ -1462,7 +1462,7 @@ void          OSTmrSet                  (OS_TMR                *p_tmr,
                                          OS_TMR_CALLBACK_PTR    p_callback,
                                          void                  *p_callback_arg,
                                          OS_ERR                *p_err);
-                                         
+
 CPU_BOOLEAN   OSTmrStart                (OS_TMR                *p_tmr,
                                          OS_ERR                *p_err);
 
@@ -1487,7 +1487,7 @@ void          OS_TmrDbgListRemove       (OS_TMR                *p_tmr);
 void          OS_TmrInit                (OS_ERR                *p_err);
 
 #endif
-  
+
 /* ================================================================================================================== */
 /*                                          FIXED SIZE MEMORY BLOCK MANAGEMENT                                        */
 /* ================================================================================================================== */
@@ -1517,8 +1517,8 @@ void          OS_MemDbgListAdd          (OS_MEM                *p_mem);
 void          OS_MemInit                (OS_ERR                *p_err);
 
 #endif
-                                         
-                                         
+
+
 /*
 ************************************************************************************************************************
 ************************************************************************************************************************

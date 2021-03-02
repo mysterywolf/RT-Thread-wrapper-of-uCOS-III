@@ -21,7 +21,7 @@
 *                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
 *********************************************************************************************************
-*/ 
+*/
 /*
 ************************************************************************************************************************
 *                                                      uC/OS-III
@@ -38,11 +38,11 @@
 *
 * LICENSING TERMS:
 * ---------------
-*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or 
+*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or
 *           for peaceful research.  If you plan or intend to use uC/OS-III in a commercial application/
-*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your 
-*           application/product.   We provide ALL the source code for your convenience and to help you 
-*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use 
+*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your
+*           application/product.   We provide ALL the source code for your convenience and to help you
+*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use
 *           it commercially without paying a licensing fee.
 *
 *           Knowledge of the source code may NOT be used to develop a similar product.
@@ -78,34 +78,34 @@ void  OSStatReset (OS_ERR  *p_err)
 #endif
 
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
 #endif
-    
+
     CPU_CRITICAL_ENTER();
 #if OS_CFG_STAT_TASK_EN > 0u
     OSStatTaskCPUUsageMax = 0u;
     OSStatTaskCPUUsage    = 0u;
 #endif
     CPU_CRITICAL_EXIT();
-    
+
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_CRITICAL_ENTER();
     p_tcb = OSTaskDbgListPtr;
     CPU_CRITICAL_EXIT();
     while (p_tcb != (OS_TCB *)0) {                          /* Reset per-Task statistics                              */
         CPU_CRITICAL_ENTER();
-#if OS_CFG_TASK_PROFILE_EN > 0u        
+#if OS_CFG_TASK_PROFILE_EN > 0u
         p_tcb->CPUUsage         = (OS_CPU_USAGE)0;
-        p_tcb->CPUUsageMax      = (OS_CPU_USAGE)0;    
+        p_tcb->CPUUsageMax      = (OS_CPU_USAGE)0;
 #endif
 
         p_tcb                   = p_tcb->DbgNextPtr;
-        CPU_CRITICAL_EXIT();    
+        CPU_CRITICAL_EXIT();
     }
 #endif
     *p_err = OS_ERR_NONE;
@@ -137,7 +137,7 @@ void  OSStatTaskCPUUsageInit (OS_ERR  *p_err)
 {
     OS_ERR err;
     OS_TICK  dly;
-    
+
     CPU_SR_ALLOC();
 
 #ifdef OS_SAFETY_CRITICAL
@@ -146,14 +146,14 @@ void  OSStatTaskCPUUsageInit (OS_ERR  *p_err)
         return;
     }
 #endif
-    
+
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                 /* Is the kernel running?                               */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
     }
 #endif
-    
+
     OSTimeDly((OS_TICK )2,                                  /* Synchronize with clock tick                            */
               (OS_OPT  )OS_OPT_TIME_PERIODIC,
               (OS_ERR *)&err);
@@ -171,7 +171,7 @@ void  OSStatTaskCPUUsageInit (OS_ERR  *p_err)
     }
     if (dly == (OS_TICK)0) {
         dly =  (OS_TICK)(OS_CFG_TICK_RATE_HZ / (OS_RATE_HZ)10);
-    } 
+    }
     OSTimeDly(dly,                                          /* Determine MAX. idle counter value                      */
               OS_OPT_TIME_PERIODIC,
               &err);
@@ -271,7 +271,7 @@ void  OS_StatTask (void  *p_arg)
                 OSStatTaskCPUUsageMax = OSStatTaskCPUUsage;
             }
         }
-        
+
         OSStatTaskHook();                                   /* Invoke user definable hook                             */
 
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
@@ -280,24 +280,24 @@ void  OS_StatTask (void  *p_arg)
         p_tcb = OSTaskDbgListPtr;
         CPU_CRITICAL_EXIT();
         while (p_tcb != (OS_TCB *)0) {                      /* 开始沿着TCB链表对每一个任务进行遍历                    */
-#if OS_CFG_STAT_TASK_STK_CHK_EN > 0u           
+#if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
             OSTaskStkChk( p_tcb,                            /* Compute stack usage of active tasks only               */
                          &p_tcb->StkFree,
                          &p_tcb->StkUsed,
                          &err);
 #endif
             CPU_CRITICAL_ENTER();
-            p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp; /* 更新SP指针*/   
-            
+            p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp; /* 更新SP指针*/
+
             p_tcb = p_tcb->DbgNextPtr;                      /* 指向下一个TCB结构体                                    */
             CPU_CRITICAL_EXIT();
         }
-        
-#if OS_CFG_TMR_EN > 0u        
+
+#if OS_CFG_TMR_EN > 0u
         /*--------------定时器--------------------*/
         CPU_CRITICAL_ENTER();
         p_tmr = OSTmrDbgListPtr;
-        CPU_CRITICAL_EXIT();     
+        CPU_CRITICAL_EXIT();
         while(p_tmr != (OS_TMR *)0){
             CPU_CRITICAL_ENTER();
             p_tmr->Remain = p_tmr->Tmr.timeout_tick - rt_tick_get();
@@ -305,8 +305,8 @@ void  OS_StatTask (void  *p_arg)
             p_tmr = p_tmr->DbgNextPtr;                      /*指向下一个定时器控制块*/
         }
 #endif
-        
-#endif /*#if OS_CFG_DBG_EN > 0u*/        
+
+#endif /*#if OS_CFG_DBG_EN > 0u*/
 
         if (OSStatResetFlag == DEF_TRUE) {                  /* Check if need to reset statistics                      */
             OSStatResetFlag  = DEF_FALSE;

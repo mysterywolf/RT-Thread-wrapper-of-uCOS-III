@@ -31,12 +31,12 @@
 *
 *               All rights reserved.  Protected by international copyright laws.
 *
-*               uC/CPU is provided in source form to registered licensees ONLY.  It is 
-*               illegal to distribute this source code to any third party unless you receive 
-*               written permission by an authorized Micrium representative.  Knowledge of 
+*               uC/CPU is provided in source form to registered licensees ONLY.  It is
+*               illegal to distribute this source code to any third party unless you receive
+*               written permission by an authorized Micrium representative.  Knowledge of
 *               the source code may NOT be used to develop a similar product.
 *
-*               Please help us continue to provide the Embedded community with the finest 
+*               Please help us continue to provide the Embedded community with the finest
 *               software available.  Your honesty is greatly appreciated.
 *
 *               You can contact us at www.micrium.com.
@@ -53,7 +53,7 @@
 * Programmer(s) : SR
 *                 ITJ
 *********************************************************************************************************
-* Note(s)       : (1) Assumes the following versions (or more recent) of software modules are included in 
+* Note(s)       : (1) Assumes the following versions (or more recent) of software modules are included in
 *                     the project build :
 *
 *                     (a) uC/LIB V1.35.00
@@ -65,7 +65,7 @@
 *********************************************************************************************************
 *                                               MODULE
 *
-* Note(s) : (1) This core CPU header file is protected from multiple pre-processor inclusion through use of 
+* Note(s) : (1) This core CPU header file is protected from multiple pre-processor inclusion through use of
 *               the  core CPU module present pre-processor macro definition.
 *********************************************************************************************************
 */
@@ -167,7 +167,7 @@ typedef enum cpu_err {
 *********************************************************************************************************
 *                                      CPU TIMESTAMP DATA TYPES
 *
-* Note(s) : (1) CPU timestamp timer data type defined to the binary-multiple of 8-bit octets as configured 
+* Note(s) : (1) CPU timestamp timer data type defined to the binary-multiple of 8-bit octets as configured
 *               by 'CPU_CFG_TS_TMR_SIZE' (see 'cpu_cfg.h  CPU TIMESTAMP CONFIGURATION  Note #2').
 *********************************************************************************************************
 */
@@ -206,7 +206,7 @@ CPU_CORE_EXT  CPU_CHAR         CPU_Name[CPU_CFG_NAME_SIZE];     /* CPU host name
 * Caller(s)   : various.
 *
 * Note(s)     : (1) CPU_SW_EXCEPTION() deadlocks the current code execution -- whether multi-tasked/
-*                   -processed/-threaded or single-threaded -- when the current code execution cannot 
+*                   -processed/-threaded or single-threaded -- when the current code execution cannot
 *                   gracefully recover or report a fault or exception condition.
 *
 *                   Example CPU_SW_EXCEPTION() call :
@@ -224,10 +224,10 @@ CPU_CORE_EXT  CPU_CHAR         CPU_Name[CPU_CFG_NAME_SIZE];     /* CPU host name
 *
 *                   See also 'cpu_core.c  CPU_SW_Exception()  Note #1'.
 *
-*               (2) (a) CPU_SW_EXCEPTION()  MAY be developer-implemented to output &/or handle any error or 
-*                       exception conditions; but since CPU_SW_EXCEPTION() is intended to trap unrecoverable 
-*                       software  conditions, it is recommended that developer-implemented versions prevent 
-*                       execution of any code following calls to CPU_SW_EXCEPTION() by deadlocking the code 
+*               (2) (a) CPU_SW_EXCEPTION()  MAY be developer-implemented to output &/or handle any error or
+*                       exception conditions; but since CPU_SW_EXCEPTION() is intended to trap unrecoverable
+*                       software  conditions, it is recommended that developer-implemented versions prevent
+*                       execution of any code following calls to CPU_SW_EXCEPTION() by deadlocking the code
 *                       (see Note #1).
 *
 *                           Example CPU_SW_EXCEPTION() :
@@ -237,10 +237,10 @@ CPU_CORE_EXT  CPU_CHAR         CPU_Name[CPU_CFG_NAME_SIZE];     /* CPU host name
 *                                                                               CPU_SW_Exception();      \
 *                                                                           } while (0)
 *
-*                   (b) (1) However, if execution of code following calls to CPU_SW_EXCEPTION() is required 
-*                           (e.g. for automated testing); it is recommended that the last statement in 
-*                           developer-implemented versions be to return from the current function to prevent 
-*                           possible software exception(s) in the current function from triggering CPU &/or 
+*                   (b) (1) However, if execution of code following calls to CPU_SW_EXCEPTION() is required
+*                           (e.g. for automated testing); it is recommended that the last statement in
+*                           developer-implemented versions be to return from the current function to prevent
+*                           possible software exception(s) in the current function from triggering CPU &/or
 *                           hardware exception(s).
 *
 *                           Example CPU_SW_EXCEPTION() :
@@ -250,19 +250,19 @@ CPU_CORE_EXT  CPU_CHAR         CPU_Name[CPU_CFG_NAME_SIZE];     /* CPU host name
 *                                                                               return  err_rtn_val;     \
 *                                                                           } while (0)
 *
-*                           (A) Note that 'err_rtn_val' in the return statement MUST NOT be enclosed in 
-*                               parentheses.  This allows CPU_SW_EXCEPTION() to return from functions that 
+*                           (A) Note that 'err_rtn_val' in the return statement MUST NOT be enclosed in
+*                               parentheses.  This allows CPU_SW_EXCEPTION() to return from functions that
 *                               return 'void', i.e. NO return type or value (see also Note #2b2A).
 *
-*                       (2) In order for CPU_SW_EXCEPTION() to return from functions with various return 
-*                           types/values, each caller function MUST pass an appropriate error return type 
+*                       (2) In order for CPU_SW_EXCEPTION() to return from functions with various return
+*                           types/values, each caller function MUST pass an appropriate error return type
 *                           & value to CPU_SW_EXCEPTION().
 *
-*                           (A) Note that CPU_SW_EXCEPTION()  MUST NOT be passed any return type or value 
-*                               for functions that return 'void', i.e. NO return type or value; but SHOULD 
-*                               instead be passed a single semicolon.  This prevents possible compiler 
-*                               warnings that CPU_SW_EXCEPTION() is passed too few arguments.  However, 
-*                               the compiler may warn that CPU_SW_EXCEPTION() does NOT prevent creating 
+*                           (A) Note that CPU_SW_EXCEPTION()  MUST NOT be passed any return type or value
+*                               for functions that return 'void', i.e. NO return type or value; but SHOULD
+*                               instead be passed a single semicolon.  This prevents possible compiler
+*                               warnings that CPU_SW_EXCEPTION() is passed too few arguments.  However,
+*                               the compiler may warn that CPU_SW_EXCEPTION() does NOT prevent creating
 *                               null statements on lines with NO other code statements.
 *
 *                           Example CPU_SW_EXCEPTION() calls :
@@ -314,7 +314,7 @@ CPU_CORE_EXT  CPU_CHAR         CPU_Name[CPU_CFG_NAME_SIZE];     /* CPU host name
 *********************************************************************************************************
 *                                           CPU_VAL_UNUSED()
 *
-* Description : 
+* Description :
 *
 * Argument(s) : none.
 *
@@ -351,19 +351,19 @@ CPU_CORE_EXT  CPU_CHAR         CPU_Name[CPU_CFG_NAME_SIZE];     /* CPU host name
 *
 * Caller(s)   : various.
 *
-* Note(s)     : (1) (a) Generic type values should be #define'd with large, non-trivial values to trap 
+* Note(s)     : (1) (a) Generic type values should be #define'd with large, non-trivial values to trap
 *                       & discard invalid/corrupted objects based on type value.
 *
-*                       In other words, by assigning large, non-trivial values to valid objects' type 
-*                       fields; the likelihood that an object with an unassigned &/or corrupted type 
-*                       field will contain a value is highly improbable & therefore the object itself 
+*                       In other words, by assigning large, non-trivial values to valid objects' type
+*                       fields; the likelihood that an object with an unassigned &/or corrupted type
+*                       field will contain a value is highly improbable & therefore the object itself
 *                       will be trapped as invalid.
 *
 *                   (b) (1) CPU_TYPE_CREATE()  creates a 32-bit type value from four values.
 *
-*                       (2) Ideally, generic type values SHOULD be created from 'CPU_CHAR' characters to 
-*                           represent ASCII string abbreviations of the specific object types.  Memory 
-*                           displays of object type values will display the specific object types with 
+*                       (2) Ideally, generic type values SHOULD be created from 'CPU_CHAR' characters to
+*                           represent ASCII string abbreviations of the specific object types.  Memory
+*                           displays of object type values will display the specific object types with
 *                           their chosen ASCII names.
 *
 *                           Examples :

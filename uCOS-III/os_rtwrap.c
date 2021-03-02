@@ -7,7 +7,7 @@
  * Date           Author       Notes
  * 2020-07-12     Meco Man     the first verion
  */
- 
+
 #include "os.h"
 #include <string.h>
 #include <rthw.h>
@@ -31,9 +31,9 @@ OS_ERR rt_err_to_ucosiii(rt_err_t rt_err)
         case RT_ETIMEOUT:/* 超时错误 */
             return OS_ERR_TIMEOUT;
         case RT_EINVAL:/* 非法参数 */
-            return OS_ERR_OPT_INVALID;        
+            return OS_ERR_OPT_INVALID;
         case RT_EFULL:/* 资源已满,该参数仅在IPC中使用 */
-            return OS_ERR_Q_MAX;        
+            return OS_ERR_Q_MAX;
         /*
             由于uCOS-III的错误码分类较细，而RTT的错误码分类较为笼统，
             以下RTT错误码使用uCOS-III的错误码很难准确描述
@@ -71,21 +71,21 @@ rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
     struct rt_thread *thread;
     register rt_ubase_t temp;
     OS_TCB  *p_tcb;
-    
+
     temp = rt_hw_interrupt_disable();
     /* get thread entry */
     thread = rt_list_entry(list->next, struct rt_thread, tlist);
     p_tcb = (OS_TCB*)thread;
     /* set error code to RT_ERROR */
     thread->error = -RT_ERROR;
-    
+
     /*标记当前任务放弃等待*/
-    p_tcb->PendStatus = OS_STATUS_PEND_ABORT; 
-    
+    p_tcb->PendStatus = OS_STATUS_PEND_ABORT;
+
     rt_hw_interrupt_enable(temp);
-    
+
     /* resume it */
-    rt_thread_resume(thread); 
+    rt_thread_resume(thread);
 
     return RT_EOK;
 }
@@ -115,10 +115,10 @@ rt_uint16_t rt_ipc_pend_abort_all (rt_list_t *list)
         p_tcb = ((OS_TCB*)thread);
         /* set error code to RT_ERROR */
         thread->error = -RT_ERROR;
-                
+
         /*标记当前任务放弃等待*/
         p_tcb->PendStatus = OS_STATUS_PEND_ABORT;
-        
+
         /*
          * resume thread
          * In rt_thread_resume function, it will remove current thread from
@@ -128,7 +128,7 @@ rt_uint16_t rt_ipc_pend_abort_all (rt_list_t *list)
 
         /* enable interrupt */
         rt_hw_interrupt_enable(temp);
-        
+
         i++;
     }
 
@@ -146,7 +146,7 @@ static rt_err_t rt_ipc_post_all (rt_list_t *list)
 {
     struct rt_thread *thread;
     register rt_ubase_t temp;
-    
+
     /* wakeup all suspend threads */
     while (!rt_list_isempty(list))
     {
@@ -154,8 +154,8 @@ static rt_err_t rt_ipc_post_all (rt_list_t *list)
         temp = rt_hw_interrupt_disable();
 
         /* get next suspend thread */
-        thread = rt_list_entry(list->next, struct rt_thread, tlist);       
-        
+        thread = rt_list_entry(list->next, struct rt_thread, tlist);
+
         /*
          * resume thread
          * In rt_thread_resume function, it will remove current thread from
@@ -188,7 +188,7 @@ rt_err_t rt_sem_release_all(rt_sem_t sem)
     RT_ASSERT(rt_object_get_type(&sem->parent.parent) == RT_Object_Class_Semaphore);
 
     RT_OBJECT_HOOK_CALL(rt_object_put_hook, (&(sem->parent.parent)));
-    
+
     need_schedule = RT_FALSE;
 
     /* disable interrupt */
@@ -249,7 +249,7 @@ rt_err_t rt_mq_send_all(rt_mq_t mq, void *buffer, rt_size_t size)
 
     /* 获取当前n个线程被当前消息队列挂起 */
     suspend_len = rt_list_len(&mq->parent.suspend_thread);
-    
+
     /* 将相同的消息复制n次,一会一起发出去 */
     while(suspend_len)
     {
@@ -343,13 +343,13 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
 #endif
 
     CPU_SR_ALLOC();
-    
+
     if(argc == 1)
     {
         rt_kprintf("invalid parameter,use --help to get more information.\n");
         return;
     }
-    
+
     if(!strcmp((const char *)argv[1],(const char *)"--help"))
     {
         rt_kprintf("-v version\n");
@@ -377,7 +377,7 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
     {
         rt_kprintf("template's version: 3.03.00\n");
         rt_kprintf("compatible version: 3.00 - 3.08\n");
-    }      
+    }
 #if OS_CFG_STAT_TASK_EN >0u
     else if(!strcmp((const char *)argv[1],(const char *)"-u"))
     {
@@ -413,7 +413,7 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
             rt_kprintf("name:%s\n",p_tcb->Task.name);
             p_tcb = p_tcb->DbgNextPtr;
         }
-        rt_kprintf("\n");        
+        rt_kprintf("\n");
     }
 #if OS_CFG_SEM_EN > 0u
     else if(!strcmp((const char *)argv[1],(const char *)"-s"))
@@ -427,7 +427,7 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
             rt_kprintf("name:%s\n",p_sem->Sem.parent.parent.name);
             p_sem = p_sem->DbgNextPtr;
         }
-        rt_kprintf("\n");          
+        rt_kprintf("\n");
     }
 #endif
 #if OS_CFG_MUTEX_EN > 0u
@@ -442,7 +442,7 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
             rt_kprintf("name:%s\n",p_mutex->Mutex.parent.parent.name);
             p_mutex = p_mutex->DbgNextPtr;
         }
-        rt_kprintf("\n");          
+        rt_kprintf("\n");
     }
 #endif
 #if OS_CFG_Q_EN > 0u
@@ -457,8 +457,8 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
             rt_kprintf("name:%s\n",p_q->Msg.parent.parent.name);
             p_q = p_q->DbgNextPtr;
         }
-        rt_kprintf("\n");          
-    } 
+        rt_kprintf("\n");
+    }
 #endif
 #if OS_CFG_FLAG_EN > 0u
     else if(!strcmp((const char *)argv[1],(const char *)"-f"))
@@ -472,9 +472,9 @@ static void rt_ucosiii_wrapper_info (int argc, char *argv[])
             rt_kprintf("name:%s\n",p_flag->FlagGrp.parent.parent.name);
             p_flag = p_flag->DbgNextPtr;
         }
-        rt_kprintf("\n");          
-    }  
-#endif    
+        rt_kprintf("\n");
+    }
+#endif
     else
     {
         rt_kprintf("invalid parameter,use --help to get more information.\n");
@@ -491,7 +491,7 @@ MSH_CMD_EXPORT_ALIAS(rt_ucosiii_wrapper_info, ucos, get ucos-iii wrapper info);
  * 宏定义。在rtconfig.h中定义本宏定义后，在RT-Thread初始化完成并进入到main线程之前
  * 会自动将uCOS-III兼容层初始化完毕，用户仅需要专注于uCOS-III的应用级任务即可。
  * The wrapper supports uCOS-III standard startup procedure. Alternatively,
- * if you want to run uCOS-III apps directly and ignore the startup procedure, 
+ * if you want to run uCOS-III apps directly and ignore the startup procedure,
  * you can choose this option.
  */
 #ifdef PKG_USING_UCOSIII_WRAPPER_AUTOINIT
@@ -499,19 +499,19 @@ MSH_CMD_EXPORT_ALIAS(rt_ucosiii_wrapper_info, ucos, get ucos-iii wrapper info);
 static int rt_ucosiii_autoinit(void)
 {
     OS_ERR err;
-    
+
     OSInit(&err);                                   /*uCOS-III操作系统初始化*/
     OSStart(&err);                                  /*开始运行uCOS-III操作系统*/
-    
+
     CPU_Init();
-    
+
 #if OS_CFG_APP_HOOKS_EN > 0u
     App_OS_SetAllHooks();                           /*设置钩子函数*/
 #endif
-    
+
 #if OS_CFG_STAT_TASK_EN > 0u
-    OSStatTaskCPUUsageInit(&err);  	                /*统计任务*/    
-    OSStatReset(&err);                              /*复位统计数据*/    
+    OSStatTaskCPUUsageInit(&err);                   /*统计任务*/
+    OSStatReset(&err);                              /*复位统计数据*/
 #endif
 
     return 0;

@@ -164,6 +164,6 @@
 
 #ifdef   OS_SAFETY_CRITICAL
 #define  OS_SAFETY_CRITICAL_EXCEPTION()   {}while(0)
-#endif 
+#endif
 
 #endif

@@ -38,11 +38,11 @@
 *
 * LICENSING TERMS:
 * ---------------
-*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or 
+*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or
 *           for peaceful research.  If you plan or intend to use uC/OS-III in a commercial application/
-*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your 
-*           application/product.   We provide ALL the source code for your convenience and to help you 
-*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use 
+*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your
+*           application/product.   We provide ALL the source code for your convenience and to help you
+*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use
 *           it commercially without paying a licensing fee.
 *
 *           Knowledge of the source code may NOT be used to develop a similar product.
@@ -138,9 +138,9 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 {
     rt_uint8_t rt_flag;
     rt_tick_t  time, time2;
-        
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -153,17 +153,17 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
        *p_err = OS_ERR_ILLEGAL_CREATE_RUN_TIME;
         return;
     }
-#endif   
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                      /* 检查是否在中断中运行                              */
     {
         *p_err = OS_ERR_TMR_ISR;
         return;
     }
-#endif 
-    
-#if OS_CFG_ARG_CHK_EN > 0u    
+#endif
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_tmr == RT_NULL)                                         /* 检查指针是否为空                                  */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
@@ -175,7 +175,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
                 *p_err = OS_ERR_TMR_INVALID_PERIOD;
                  return;
              }
-             
+
              if (p_callback == (OS_TMR_CALLBACK_PTR)0) {         /* No point in a periodic timer without a callback   */
                 *p_err = OS_ERR_TMR_INVALID_CALLBACK;
                  return;
@@ -192,17 +192,17 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
         default:
             *p_err = OS_ERR_OPT_INVALID;
              return;
-    }    
+    }
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     if(rt_object_get_type(&p_tmr->Tmr.parent) == RT_Object_Class_Timer) /* 判断内核对象是否已经是定时器，即是否已经创建过 */
     {
         *p_err = OS_ERR_OBJ_CREATED;
-        return;       
+        return;
     }
 #endif
-    
+
     /*
         uCOS-III原版定时器回调函数就是在定时器线程中调用的,而非在中断中调用,
         因此要使用RTT的RT_TIMER_FLAG_SOFT_TIMER选项,在此之前应将宏定义RT_USING_TIMER_SOFT置1
@@ -210,7 +210,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     if(opt == OS_OPT_TMR_ONE_SHOT)
     {
         rt_flag = RT_TIMER_FLAG_ONE_SHOT|RT_TIMER_FLAG_SOFT_TIMER;
-        time = dly * (OS_CFG_TICK_RATE_HZ / OS_CFG_TMR_TASK_RATE_HZ);           /* RTT和uCOS-III在定时器时钟源的设计不同,需要进行转换*/  
+        time = dly * (OS_CFG_TICK_RATE_HZ / OS_CFG_TMR_TASK_RATE_HZ);           /* RTT和uCOS-III在定时器时钟源的设计不同,需要进行转换*/
     }
     else if(opt == OS_OPT_TMR_PERIODIC)
     {
@@ -222,7 +222,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
         *p_err = OS_ERR_OPT_INVALID;
         return;
     }
-    
+
     CPU_CRITICAL_ENTER();
     p_tmr->State          = (OS_STATE           )OS_TMR_STATE_STOPPED;     /* Initialize the timer fields             */
     p_tmr->CallbackPtr    = (OS_TMR_CALLBACK_PTR)p_callback;
@@ -236,15 +236,15 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_tmr->Match          = (OS_TICK            )0;
     p_tmr->Remain         = (OS_TICK            )0;
-    p_tmr->Type           = (OS_OBJ_TYPE        )OS_OBJ_TYPE_TMR; 
+    p_tmr->Type           = (OS_OBJ_TYPE        )OS_OBJ_TYPE_TMR;
 #if OS_CFG_DBG_EN > 0u
-    p_tmr->NamePtr        = (CPU_CHAR          *)p_name;    
+    p_tmr->NamePtr        = (CPU_CHAR          *)p_name;
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
 #endif
 #endif
     CPU_CRITICAL_EXIT();
-    
+
     if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->_dly && p_tmr->Period)
     {
         /*带有延迟的周期延时，先延时一次延迟部分，该部分延时完毕后，周期部分由回调函数重新装填*/
@@ -254,7 +254,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
                       OS_TmrCallback,
                       p_tmr,                                /* 将p_tmr作为参数传到回调函数中                          */
                       time2,
-                      RT_TIMER_FLAG_ONE_SHOT|RT_TIMER_FLAG_SOFT_TIMER);          
+                      RT_TIMER_FLAG_ONE_SHOT|RT_TIMER_FLAG_SOFT_TIMER);
     }
     else
     {
@@ -263,17 +263,17 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
                       OS_TmrCallback,
                       p_tmr,                                /* 将p_tmr作为参数传到回调函数中                          */
                       time,
-                      rt_flag);        
+                      rt_flag);
     }
- 
+
     *p_err = OS_ERR_NONE;                                   /* rt_timer_init没有返回错误码                            */
 
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_CRITICAL_ENTER();
 #if OS_CFG_DBG_EN > 0u
     OS_TmrDbgListAdd(p_tmr);
 #endif
-    OSTmrQty++;                                             /* Keep track of the number of timers created             */                  
+    OSTmrQty++;                                             /* Keep track of the number of timers created             */
     CPU_CRITICAL_EXIT();
 #endif
 }
@@ -308,9 +308,9 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
                        OS_ERR  *p_err)
 {
     rt_err_t rt_err;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -324,36 +324,36 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
         return (OS_FALSE);
     }
 #endif
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u   
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                                 */
     {
         *p_err = OS_ERR_TMR_ISR;
         return DEF_FALSE;
-    }  
-#endif 
-    
+    }
+#endif
+
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (OS_FALSE);
     }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u    
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_tmr == RT_NULL)                                        /* 检查指针是否为空                                     */
     {
         *p_err = OS_ERR_TMR_INVALID;
         return DEF_FALSE;
     }
 #endif
-    
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为定时器*/
     if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return DEF_FALSE;       
+        return DEF_FALSE;
     }
 #endif
 
@@ -362,29 +362,29 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
         case OS_TMR_STATE_STOPPED:                              /* Timer has not started or ...                          */
         case OS_TMR_STATE_COMPLETED:                            /* ... timer has completed the ONE-SHOT time             */
             break;
-        
+
         case OS_TMR_STATE_UNUSED:                               /* Already deleted                                       */
             *p_err = OS_ERR_TMR_INACTIVE;
             return (DEF_FALSE);
-        
+
         default:
             *p_err = OS_ERR_TMR_INVALID_STATE;
-            return (DEF_FALSE);            
+            return (DEF_FALSE);
     }
-        
-    rt_err = rt_timer_detach(&p_tmr->Tmr);    
+
+    rt_err = rt_timer_detach(&p_tmr->Tmr);
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err == RT_EOK)
     {
         CPU_CRITICAL_ENTER();
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if OS_CFG_DBG_EN > 0u
         OS_TmrDbgListRemove(p_tmr);
 #endif
         OSTmrQty--;
 #endif
-        OS_TmrClr(p_tmr);    
-        CPU_CRITICAL_EXIT(); 
+        OS_TmrClr(p_tmr);
+        CPU_CRITICAL_EXIT();
         return DEF_TRUE;
     }
     else
@@ -422,24 +422,24 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
                          OS_ERR  *p_err)
 {
     OS_TICK  remain;
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_SR_ALLOC();
 #endif
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return ((OS_TICK)0);
     }
-#endif   
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+#endif
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                                 */
     {
         *p_err = OS_ERR_TMR_ISR;
         return 0;
-    }  
-#endif   
+    }
+#endif
 
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
@@ -447,21 +447,21 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
         return (0u);
     }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u    
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_tmr == RT_NULL)                                        /* 检查指针是否为空                                     */
     {
         *p_err = OS_ERR_TMR_INVALID;
         return 0;
     }
 #endif
-    
-#if OS_CFG_OBJ_TYPE_CHK_EN > 0u    
+
+#if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     /*判断内核对象是否为定时器*/
     if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return 0;       
+        return 0;
     }
 #endif
     switch (p_tmr->State) {
@@ -472,7 +472,7 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
             CPU_CRITICAL_ENTER();
             p_tmr->Remain = remain;
             CPU_CRITICAL_EXIT();
-#endif      
+#endif
         case OS_TMR_STATE_STOPPED:
              if (p_tmr->Opt == OS_OPT_TMR_PERIODIC) {
                  if (p_tmr->Dly == 0u) {
@@ -489,20 +489,20 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
              CPU_CRITICAL_EXIT();
 #endif
              *p_err = OS_ERR_NONE;
-             
-        case OS_TMR_STATE_COMPLETED: 
+
+        case OS_TMR_STATE_COMPLETED:
             *p_err = OS_ERR_NONE;
             remain = 0;
-        
+
         case OS_TMR_STATE_UNUSED:
             *p_err = OS_ERR_TMR_INACTIVE;
             remain = 0;
-        
+
         default:
             *p_err = OS_ERR_TMR_INVALID_STATE;
             remain = 0;
     }
-    
+
     return (remain);
 }
 
@@ -557,7 +557,7 @@ void  OSTmrSet (OS_TMR               *p_tmr,
                 OS_ERR               *p_err)
 {
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
@@ -590,7 +590,7 @@ void  OSTmrSet (OS_TMR               *p_tmr,
     if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return;       
+        return;
     }
 #endif
 
@@ -627,7 +627,7 @@ void  OSTmrSet (OS_TMR               *p_tmr,
     p_tmr->CallbackPtr    = p_callback;
     p_tmr->CallbackPtrArg = p_callback_arg;
     CPU_CRITICAL_EXIT();
-    
+
    *p_err                 = OS_ERR_NONE;
 }
 
@@ -660,32 +660,32 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
                          OS_ERR  *p_err)
 {
     rt_err_t rt_err;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return (DEF_FALSE);
     }
 #endif
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_TMR_ISR;
         return DEF_FALSE;
-    }  
-#endif  
-    
+    }
+#endif
+
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                                 */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (OS_FALSE);
     }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u   
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_tmr == RT_NULL)                                        /* 检查指针是否为空                                       */
     {
         *p_err = OS_ERR_TMR_INVALID;
@@ -697,25 +697,25 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
     if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer) /* 判断内核对象是否为定时器                       */
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return DEF_FALSE;       
+        return DEF_FALSE;
     }
 #endif
-    
+
     switch (p_tmr->State) {
         case OS_TMR_STATE_RUNNING:                              /* Restart the timer                                      */
         case OS_TMR_STATE_STOPPED:                              /* Start the timer                                        */
         case OS_TMR_STATE_COMPLETED:
             break;
-        
+
         case OS_TMR_STATE_UNUSED:                               /* Timer not created                                      */
             *p_err = OS_ERR_TMR_INACTIVE;
             return (DEF_FALSE);
-        
+
         default:
             *p_err = OS_ERR_TMR_INVALID_STATE;
-            return (DEF_FALSE);            
+            return (DEF_FALSE);
     }
-    
+
     rt_err = rt_timer_start(&p_tmr->Tmr);
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err == RT_EOK)
@@ -793,7 +793,7 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
         return (OS_TMR_STATE_UNUSED);
     }
 #endif
-    
+
 #if OS_CFG_ARG_CHK_EN > 0u
     if (p_tmr == (OS_TMR *)0) {
        *p_err = OS_ERR_TMR_INVALID;
@@ -823,7 +823,7 @@ OS_STATE  OSTmrStateGet (OS_TMR  *p_tmr,
             *p_err = OS_ERR_TMR_INVALID_STATE;
              break;
     }
-    
+
     return (state);
 }
 
@@ -870,56 +870,56 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
                         OS_ERR  *p_err)
 {
     rt_err_t rt_err;
-    OS_TMR_CALLBACK_PTR  p_fnct;    
+    OS_TMR_CALLBACK_PTR  p_fnct;
     OS_ERR err;
-    
+
     CPU_SR_ALLOC();
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return (DEF_FALSE);
     }
 #endif
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u   
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                                 */
     {
         *p_err = OS_ERR_TMR_ISR;
         return DEF_FALSE;
-    }  
-#endif   
-    
+    }
+#endif
+
 #if (OS_CFG_INVALID_OS_CALLS_CHK_EN > 0u)
     if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Is the kernel running?                               */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return (OS_FALSE);
     }
 #endif
-    
-#if OS_CFG_ARG_CHK_EN > 0u    
+
+#if OS_CFG_ARG_CHK_EN > 0u
     if(p_tmr == RT_NULL)                                        /* 检查指针是否为空                                     */
     {
         *p_err = OS_ERR_TMR_INVALID;
         return DEF_FALSE;
     }
 #endif
-    
+
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
     if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)/* 判断内核对象是否为定时器                      */
     {
         *p_err = OS_ERR_OBJ_TYPE;
-        return DEF_FALSE;       
+        return DEF_FALSE;
     }
 #endif
-     
+
     rt_err = rt_timer_stop(&p_tmr->Tmr);
     if(rt_err == -RT_ERROR)
     {
         *p_err = OS_ERR_TMR_STOPPED;                            /* 返回-RT_ERROR 时则说明已经处于停止状态               */
         return DEF_FALSE;
     }
-    
+
     CPU_CRITICAL_ENTER();
     p_tmr->State = OS_TMR_STATE_STOPPED;                        /* 标记目前定时器状态已经停止                           */
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
@@ -927,56 +927,56 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
 #endif
     p_fnct = p_tmr->CallbackPtr;                                /* Execute callback function ...                        */
     CPU_CRITICAL_EXIT();
-    
+
     switch (p_tmr->State) {
         case OS_TMR_STATE_RUNNING:
             break;
-        
+
         case OS_TMR_STATE_COMPLETED:                            /* Timer has already completed the ONE-SHOT or          */
         case OS_TMR_STATE_STOPPED:                              /* ... timer has not started yet.                       */
-            *p_err = OS_ERR_TMR_STOPPED;    
+            *p_err = OS_ERR_TMR_STOPPED;
             return (DEF_TRUE);
-        
+
         case OS_TMR_STATE_UNUSED:                               /* Timer was not created                                */
             *p_err = OS_ERR_TMR_INACTIVE;
              return (DEF_FALSE);
-        
+
         default:
             *p_err = OS_ERR_TMR_INVALID_STATE;
-             return (DEF_FALSE);        
+             return (DEF_FALSE);
     }
-    
-    
+
+
     *p_err = OS_ERR_NONE;
     OSSchedLock(&err);
-    switch (opt) 
+    switch (opt)
     {
         case OS_OPT_TMR_CALLBACK:
             if (p_fnct != (OS_TMR_CALLBACK_PTR)0) {             /* ... if available                                     */
                 (*p_fnct)((void *)p_tmr, p_tmr->CallbackPtrArg);/* Use callback arg when timer was created              */
             } else {
                 *p_err = OS_ERR_TMR_NO_CALLBACK;
-            }            
+            }
             break;
-            
+
         case OS_OPT_TMR_CALLBACK_ARG:
               if (p_fnct != (OS_TMR_CALLBACK_PTR)0) {
                 (*p_fnct)((void *)p_tmr, p_callback_arg);       /* .. using the 'callback_arg' provided in call         */
               } else {
                  *p_err = OS_ERR_TMR_NO_CALLBACK;
-              }            
+              }
             break;
-              
+
         case OS_OPT_TMR_NONE:
             break;
 
          default:
              OSSchedUnlock(&err);
             *p_err = OS_ERR_OPT_INVALID;
-             return (DEF_FALSE);        
-    }        
+             return (DEF_FALSE);
+    }
     OSSchedUnlock(&err);
-    
+
     if(*p_err != OS_ERR_NONE)
     {
         return DEF_FALSE;
@@ -1023,7 +1023,7 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
     p_tmr->_set_dly       = (OS_TICK            )0;         /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数  */
     p_tmr->_set_period    = (OS_TICK            )0;         /* 该变量为兼容层内部使用,用于配合3.08版本中OSTmrSet函数  */
     p_tmr->_dly           = (OS_TICK            )0;         /* 该变量为兼容层内部使用,用于带有延迟的周期延时          */
-#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY  
+#if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgNextPtr     = (OS_TMR            *)0;
 #endif
@@ -1045,7 +1045,7 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
 
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
 void  OS_TmrDbgListAdd (OS_TMR  *p_tmr)
-{ 
+{
     p_tmr->DbgPrevPtr               = (OS_TMR *)0;
     if (OSTmrDbgListPtr == (OS_TMR *)0) {
         p_tmr->DbgNextPtr           = (OS_TMR *)0;
@@ -1109,7 +1109,7 @@ void  OS_TmrDbgListRemove (OS_TMR  *p_tmr)
 
 void  OS_TmrInit (OS_ERR  *p_err)
 {
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY 
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     OSTmrQty        = (OS_OBJ_QTY)0;
 #if OS_CFG_DBG_EN > 0u
     OSTmrDbgListPtr = (OS_TMR   *)0;
@@ -1135,19 +1135,19 @@ static void OS_TmrCallback(void *p_ara)
     OS_OPT opt;
     OS_TICK dly;
     OS_TICK period;
-    
+
     CPU_SR_ALLOC();
-    
+
     p_tmr = (OS_TMR*)p_ara;
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                 */
     {
         RT_DEBUG_LOG(OS_CFG_DBG_EN,("uCOS-III的定时器是在任务中运行的,不可以在RTT的Hard模式下运行\n"));
         return;
     }
 #endif
-    
+
     if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->_dly && p_tmr->Period)
     {
         /*带有延迟的周期延时，延迟延时已经完毕，开始进行正常周期延时*/
@@ -1162,7 +1162,7 @@ static void OS_TmrCallback(void *p_ara)
 #endif
         CPU_CRITICAL_EXIT();
         rt_timer_start(&(p_tmr->Tmr));                      /* 开启定时器                                           */
-    } 
+    }
     else if(p_tmr->Opt == OS_OPT_TMR_ONE_SHOT)
     {
         CPU_CRITICAL_ENTER();
@@ -1181,12 +1181,12 @@ static void OS_TmrCallback(void *p_ara)
         CPU_CRITICAL_EXIT();
 #endif
     }
-    
+
     /*调用真正uCOS-III的软件定时器回调函数*/
     OSSchedLock(&err);
     p_tmr->CallbackPtr((void *)p_tmr, p_tmr->CallbackPtrArg);
     OSSchedUnlock(&err);
-    
+
     /*开始处理OSTmrSet函数的设置*/
     if(p_tmr->_set_dly || p_tmr->_set_period)               /* 检查是否调用OSTmrSet函数                             */
     {
@@ -1196,9 +1196,9 @@ static void OS_TmrCallback(void *p_ara)
         opt = p_tmr->Opt;
         dly = p_tmr->_set_dly;
         period = p_tmr->_set_period;
- 
+
         OSTmrDel(p_tmr,&err);                               /* 删除老定时器,_set_dly/_set_period会在此函数中清零    */
-        OSTmrCreate(p_tmr, p_tmr->Tmr.parent.name,          /* 创建新定时器,并装填新的参数                          */ 
+        OSTmrCreate(p_tmr, p_tmr->Tmr.parent.name,          /* 创建新定时器,并装填新的参数                          */
             dly, period, opt, callback, arg, &err);
         OSTmrStart(p_tmr, &err);                            /* 启动装填新参数的定时器                               */
     }

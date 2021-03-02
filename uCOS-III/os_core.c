@@ -38,11 +38,11 @@
 *
 * LICENSING TERMS:
 * ---------------
-*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or 
+*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or
 *           for peaceful research.  If you plan or intend to use uC/OS-III in a commercial application/
-*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your 
-*           application/product.   We provide ALL the source code for your convenience and to help you 
-*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use 
+*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your
+*           application/product.   We provide ALL the source code for your convenience and to help you
+*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use
 *           it commercially without paying a licensing fee.
 *
 *           Knowledge of the source code may NOT be used to develop a similar product.
@@ -74,30 +74,30 @@
 void  OSInit (OS_ERR  *p_err)
 {
     CPU_SR_ALLOC();
-    
+
     *p_err = OS_ERR_NONE;
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
-#endif    
+#endif
 
     CPU_CRITICAL_ENTER();
-    
+
     OSInitHook();                                           /* Call port specific initialization code                 */
-    
+
     OSRunning = OS_STATE_OS_STOPPED;                        /* Indicate that multitasking not started                 */
-    
+
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
     OSTaskRegNextAvailID = (OS_REG_ID)0;
-#endif    
-    
+#endif
+
 #ifdef OS_SAFETY_CRITICAL_IEC61508
     OSSafetyCriticalStartFlag = DEF_FALSE;
-#endif  
-    
+#endif
+
 #if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
     OSSchedRoundRobinEn             = DEF_TRUE;             /* RTT的时间片轮转是必选项                                */
     OSSchedRoundRobinDfltTimeQuanta = OS_CFG_TICK_RATE_HZ / 10u;
@@ -110,7 +110,7 @@ void  OSInit (OS_ERR  *p_err)
         return;
     }
 #endif
-    
+
 #if OS_CFG_MUTEX_EN > 0u                                    /* Initialize the Mutex Manager module                    */
     OS_MutexInit(p_err);
     if (*p_err != OS_ERR_NONE) {
@@ -118,7 +118,7 @@ void  OSInit (OS_ERR  *p_err)
         return;
     }
 #endif
-    
+
 #if OS_CFG_FLAG_EN > 0u                                     /* Initialize the Event Flag module                       */
     OS_FlagInit(p_err);
     if (*p_err != OS_ERR_NONE) {
@@ -134,55 +134,55 @@ void  OSInit (OS_ERR  *p_err)
         return;
     }
 #endif
-    
+
     OS_TaskInit(p_err);                                     /* Initialize the task manager                            */
     if (*p_err != OS_ERR_NONE) {
         CPU_CRITICAL_EXIT();
         return;
     }
 
-#if OS_CFG_STAT_TASK_EN > 0u     
+#if OS_CFG_STAT_TASK_EN > 0u
     OS_IdleTaskInit(p_err);                                 /* Initialize the Idle Task                               */
     if (*p_err != OS_ERR_NONE) {
         CPU_CRITICAL_EXIT();
         return;
     }
-                 
+
     OS_StatTaskInit(p_err);                                 /* Initialize the Statistic Task                          */
     if (*p_err != OS_ERR_NONE) {
         CPU_CRITICAL_EXIT();
         return;
     }
-#endif    
-    
+#endif
+
 #if OS_CFG_TMR_EN > 0u                                      /* Initialize the Timer Manager module                    */
     OS_TmrInit(p_err);
     if (*p_err != OS_ERR_NONE) {
         CPU_CRITICAL_EXIT();
         return;
     }
-#endif  
-    
+#endif
+
 #if OS_CFG_MEM_EN > 0u
     OS_MemInit(p_err);                                      /* Initialize the Memory Manager module                   */
     if (*p_err != OS_ERR_NONE) {
         CPU_CRITICAL_EXIT();
         return;
-    }    
+    }
 #endif
 
 #if OS_CFG_DBG_EN > 0u  && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     OS_Dbg_Init();
     OSCfg_Init();
 #endif
-    
+
     OSInitialized = OS_TRUE;                                /* Kernel is initialized                                  */
-    
+
     /*这部分内容是在原版OSStart()函数中运行的,但是在本兼容层中,操作系统已经启动,因此直接在此处进行标记*/
     if (OSRunning == OS_STATE_OS_STOPPED) {
         OSRunning       = OS_STATE_OS_RUNNING;
     }
-    
+
     CPU_CRITICAL_EXIT();
 }
 
@@ -223,7 +223,7 @@ void  OSIntEnter (void)
     if (OSIntNestingCtr >= 250u) {                              /* Have we nested past 250 levels?                    */
         return;                                                 /* Yes                                                */
     }
-    
+
     rt_interrupt_enter();
 }
 
@@ -310,7 +310,7 @@ void  OSSched (void)
     if (OSSchedLockNestingCtr > 0u) {                           /* Scheduler locked?                                  */
         return;                                                 /* Yes                                                */
     }
-    
+
     rt_schedule();
 }
 
@@ -342,16 +342,16 @@ void  OSSchedLock (OS_ERR  *p_err)
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
-#endif    
-    
+#endif
+
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                               */
     {
         *p_err = OS_ERR_SCHED_LOCK_ISR;
-        return; 
-    }  
+        return;
+    }
 #endif
-    
+
     if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Make sure multitasking is running                  */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
@@ -361,8 +361,8 @@ void  OSSchedLock (OS_ERR  *p_err)
        *p_err = OS_ERR_LOCK_NESTING_OVF;
         return;
     }
-    
-    *p_err = OS_ERR_NONE;                                       /* rt_enter_critical没有返回错误码                    */    
+
+    *p_err = OS_ERR_NONE;                                       /* rt_enter_critical没有返回错误码                    */
     rt_enter_critical();
 }
 
@@ -395,33 +395,33 @@ void  OSSchedUnlock (OS_ERR  *p_err)
         return;
     }
 #endif
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u   
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                               */
     {
         *p_err = OS_ERR_SCHED_LOCK_ISR;
-        return; 
+        return;
     }
-#endif  
-    
+#endif
+
     if(OSSchedLockNestingCtr == (OS_NESTING_CTR)0)              /* 检查调度器是否已经完全解锁                         */
     {
         *p_err = OS_ERR_SCHED_NOT_LOCKED;
-        return;         
+        return;
     }
-    
+
     if (OSRunning != OS_STATE_OS_RUNNING) {                     /* Make sure multitasking is running                  */
        *p_err = OS_ERR_OS_NOT_RUNNING;
         return;
-    }  
-    
+    }
+
     *p_err = OS_ERR_NONE;                                       /* rt_exit_critical没有返回错误码                     */
-    
+
     rt_exit_critical();
-    
+
     if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)              /* 检查调度器是否还有锁定嵌套                         */
     {
-        *p_err = OS_ERR_SCHED_LOCKED;      
+        *p_err = OS_ERR_SCHED_LOCKED;
     }
 }
 
@@ -504,35 +504,35 @@ void  OSSchedRoundRobinCfg (CPU_BOOLEAN   en,
 void  OSSchedRoundRobinYield (OS_ERR  *p_err)
 {
     rt_err_t rt_err;
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
 #endif
-    
-#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u    
+
+#if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
     if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_YIELD_ISR;
-        return; 
+        return;
     }
 #endif
-    
+
     if(OSSchedLockNestingCtr > (OS_NESTING_CTR)0)           /* 检查调度器是否被锁                                     */
     {
         *p_err = OS_ERR_SCHED_LOCKED;
-        return;         
+        return;
     }
-    
+
     if (OSSchedRoundRobinEn != DEF_TRUE) {                  /* Make sure round-robin has been enabled                 */
        *p_err = OS_ERR_ROUND_ROBIN_DISABLED;
         return;
-    } 
-    
+    }
+
     rt_err = rt_thread_yield();
-    *p_err = rt_err_to_ucosiii(rt_err); 
+    *p_err = rt_err_to_ucosiii(rt_err);
 }
 #endif
 
@@ -566,28 +566,28 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
 void  OSStart (OS_ERR  *p_err)
 {
     OS_OBJ_QTY  kernel_task_cnt;
-    
-    CPU_SR_ALLOC();    
-    
+
+    CPU_SR_ALLOC();
+
     (void)kernel_task_cnt;
-    
+
 #ifdef OS_SAFETY_CRITICAL
     if (p_err == (OS_ERR *)0) {
         OS_SAFETY_CRITICAL_EXCEPTION();
         return;
     }
 #endif
-    
+
     if (OSInitialized != OS_TRUE) {
        *p_err = OS_ERR_OS_NOT_INIT;
         return;
     }
-    
+
     kernel_task_cnt = 0u;                                       /* Calculate the number of kernel tasks               */
 #if (OS_CFG_STAT_TASK_EN > 0u)
     kernel_task_cnt++;
 #endif
-    
+
     CPU_CRITICAL_ENTER();
 
     if (OSInitialized != OS_TRUE) {
@@ -602,16 +602,16 @@ void  OSStart (OS_ERR  *p_err)
     } else {
         *p_err           = OS_ERR_OS_RUNNING;                   /* OS is already running                              */
     }
-    
-#ifndef PKG_USING_UCOSIII_WRAPPER_TINY    
+
+#ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     /*检查OSStart调用之前是否创建了用户应用级任务，该检查在兼容层中意义不大，因此放在最后*/
     if (OSTaskQty <= kernel_task_cnt) {                         /* No application task created                        */
         *p_err = OS_ERR_OS_NO_APP_TASK;
-        CPU_CRITICAL_EXIT(); 
+        CPU_CRITICAL_EXIT();
         return;
-    }   
+    }
 #endif
-    
+
     CPU_CRITICAL_EXIT();
 }
 
@@ -639,7 +639,7 @@ CPU_INT16U  OSVersion (OS_ERR  *p_err)
         return ((CPU_INT16U)0u);
     }
 #endif
-    
+
     *p_err = OS_ERR_NONE;
     return OS_VERSION;
 }
@@ -709,7 +709,7 @@ void  OS_IdleTaskInit (OS_ERR  *p_err)
     }
 #endif
     OSIdleTaskCtr = (OS_IDLE_CTR)0;
-    rt_thread_idle_sethook(OS_IdleTask);                        /* 向RTT注册μCOS-III兼容层空闲任务(实则为回调函数)    */ 
+    rt_thread_idle_sethook(OS_IdleTask);                        /* 向RTT注册μCOS-III兼容层空闲任务(实则为回调函数)    */
 }
 
 #endif

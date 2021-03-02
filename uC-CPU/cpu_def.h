@@ -31,12 +31,12 @@
 *
 *               All rights reserved.  Protected by international copyright laws.
 *
-*               uC/CPU is provided in source form to registered licensees ONLY.  It is 
-*               illegal to distribute this source code to any third party unless you receive 
-*               written permission by an authorized Micrium representative.  Knowledge of 
+*               uC/CPU is provided in source form to registered licensees ONLY.  It is
+*               illegal to distribute this source code to any third party unless you receive
+*               written permission by an authorized Micrium representative.  Knowledge of
 *               the source code may NOT be used to develop a similar product.
 *
-*               Please help us continue to provide the Embedded community with the finest 
+*               Please help us continue to provide the Embedded community with the finest
 *               software available.  Your honesty is greatly appreciated.
 *
 *               You can contact us at www.micrium.com.
@@ -59,7 +59,7 @@
 *********************************************************************************************************
 *                                               MODULE
 *
-* Note(s) : (1) This CPU definition header file is protected from multiple pre-processor inclusion 
+* Note(s) : (1) This CPU definition header file is protected from multiple pre-processor inclusion
 *               through use of the CPU definition module present pre-processor macro definition.
 *********************************************************************************************************
 */
@@ -88,9 +88,9 @@
 *
 *                           where
 *                                   ver             denotes software version number scaled as an integer value
-*                                   x.yyzz          denotes software version number, where the unscaled integer 
-*                                                       portion denotes the major version number & the unscaled 
-*                                                       fractional portion denotes the (concatenated) minor 
+*                                   x.yyzz          denotes software version number, where the unscaled integer
+*                                                       portion denotes the major version number & the unscaled
+*                                                       fractional portion denotes the (concatenated) minor
 *                                                       version numbers
 *********************************************************************************************************
 */
@@ -137,9 +137,9 @@
 *
 * Note(s) : (1) Configure CPU_CFG_STK_GROWTH in 'cpu.h' with CPU's stack growth order :
 *
-*               (a) CPU_STK_GROWTH_LO_TO_HI     CPU stack pointer increments to the next higher  stack 
+*               (a) CPU_STK_GROWTH_LO_TO_HI     CPU stack pointer increments to the next higher  stack
 *                                                   memory address after data is pushed onto the stack
-*               (b) CPU_STK_GROWTH_HI_TO_LO     CPU stack pointer decrements to the next lower   stack 
+*               (b) CPU_STK_GROWTH_HI_TO_LO     CPU stack pointer decrements to the next lower   stack
 *                                                   memory address after data is pushed onto the stack
 *********************************************************************************************************
 */

@@ -36,28 +36,28 @@ static void AppTaskCreate(void);
 int main(void)/*RT-Thread main线程*/
 {
     OS_ERR err;
-    
+
     OSInit(&err);                                   /*uCOS-III操作系统初始化*/
     if(err != OS_ERR_NONE){
         rt_kprintf("uCOS-III init error!\r\n");
         return 0;
     }
-    
+
     /*创建开始任务*/
-    OSTaskCreate((OS_TCB 	* )&AppTaskStartTCB,
-                 (CPU_CHAR	* )"App Task Start", 
+    OSTaskCreate((OS_TCB    * )&AppTaskStartTCB,
+                 (CPU_CHAR  * )"App Task Start",
                  (OS_TASK_PTR )AppTaskStart,
-                 (void		* )0,
-                 (OS_PRIO	  )APP_TASK_START_PRIO,     
+                 (void      * )0,
+                 (OS_PRIO     )APP_TASK_START_PRIO,
                  (CPU_STK   * )&AppTaskStartStk[0],
                  (CPU_STK_SIZE)APP_TASK_START_STK_SIZE/10,
                  (CPU_STK_SIZE)APP_TASK_START_STK_SIZE,
                  (OS_MSG_QTY  )0,
-                 (OS_TICK	  )0,
-                 (void   	* )0,
+                 (OS_TICK     )0,
+                 (void      * )0,
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR,
-                 (OS_ERR 	* )&err);    
-                 
+                 (OS_ERR    * )&err);
+
     OSStart(&err);                                  /*开始运行uCOS-III操作系统*/
 }
 
@@ -66,23 +66,23 @@ int main(void)/*RT-Thread main线程*/
 static void AppTaskStart(void *p_arg)
 {
     OS_ERR err;
-    
+
     (void)&p_arg;
-    
+
     BSP_Init();
     CPU_Init();
-    
+
 #if OS_CFG_APP_HOOKS_EN > 0u
     App_OS_SetAllHooks();                           /*设置钩子函数*/
-#endif  
-    
-#if OS_CFG_STAT_TASK_EN > 0u
-    OSStatTaskCPUUsageInit(&err);  	                /*统计任务*/    
-    OSStatReset(&err);                              /*复位统计数据*/    
 #endif
-    
+
+#if OS_CFG_STAT_TASK_EN > 0u
+    OSStatTaskCPUUsageInit(&err);                   /*统计任务*/
+    OSStatReset(&err);                              /*复位统计数据*/
+#endif
+
     AppTaskCreate();                                /*创建任务*/
-    
+
     while(DEF_TRUE)
     {
         BSP_LED_Toggle(1);
@@ -104,7 +104,7 @@ void flag_example(void);
 
 static void AppTaskCreate(void)
 {
-    /*可以打开注释,运行测试例程*/  
+    /*可以打开注释,运行测试例程*/
 //    timer_example();
 //    mutex_example();
 //    sem_example();
