@@ -8,42 +8,42 @@
  * 2020-07-14     Meco Man     implement uCOS-III Wrapper
  */
 
-/*±¾ÎÄ¼şÕ¹Ê¾ÁË¼æÈİ²ãÊµÏÖµÄuCOS-III¹Ù·½¸ø³öµÄ±ê×¼³õÊ¼»¯Á÷³Ì*/
-/*Æô¶¯ÒÔ¼°³õÊ¼»¯¹ı³ÌÑÏ¸ñ×ñÕÕ¹Ù·½¸ø³öµÄÀı³Ì*/
-/*´®¿ÚÊ¹ÓÃUSART2*/
+/*æœ¬æ–‡ä»¶å±•ç¤ºäº†å…¼å®¹å±‚å®ç°çš„uCOS-IIIå®˜æ–¹ç»™å‡ºçš„æ ‡å‡†åˆå§‹åŒ–æµç¨‹*/
+/*å¯åŠ¨ä»¥åŠåˆå§‹åŒ–è¿‡ç¨‹ä¸¥æ ¼éµç…§å®˜æ–¹ç»™å‡ºçš„ä¾‹ç¨‹*/
+/*ä¸²å£ä½¿ç”¨USART2*/
 
 #include <os.h>
 #include <os_app_hooks.h>
 
-/*ºê¶¨Òå*/
-#define APP_TASK_START_STK_SIZE     150   /*¿ªÊ¼ÈÎÎñ ÈÎÎñ¶ÑÕ»´óĞ¡*/
-#define APP_TASK_START_PRIO         5     /*¿ªÊ¼ÈÎÎñ ÈÎÎñÓÅÏÈ¼¶*/
+/*å®å®šä¹‰*/
+#define APP_TASK_START_STK_SIZE     150   /*å¼€å§‹ä»»åŠ¡ ä»»åŠ¡å †æ ˆå¤§å°*/
+#define APP_TASK_START_PRIO         5     /*å¼€å§‹ä»»åŠ¡ ä»»åŠ¡ä¼˜å…ˆçº§*/
 
-/*ÈÎÎñ¶ÑÕ»ÒÔ¼°TCB*/
+/*ä»»åŠ¡å †æ ˆä»¥åŠTCB*/
 ALIGN(RT_ALIGN_SIZE)
-static CPU_STK AppTaskStartStk[APP_TASK_START_STK_SIZE];/*ÈÎÎñ¶ÑÕ»*/
+static CPU_STK AppTaskStartStk[APP_TASK_START_STK_SIZE];/*ä»»åŠ¡å †æ ˆ*/
 static OS_TCB AppTaskStartTCB;
 
-/*º¯ÊıÉùÃ÷*/
+/*å‡½æ•°å£°æ˜*/
 static void AppTaskStart(void *p_arg);
 static void AppTaskCreate(void);
 
-/*¿Õº¯Êı*/
+/*ç©ºå‡½æ•°*/
 #define BSP_Init()          do{ rt_kprintf("BSP init!\r\n"); }while(0)
 #define BSP_LED_Toggle(x)   do{ rt_kprintf("LED Toggle!\r\n"); }while(0)
 
 
-int main(void)/*RT-Thread mainÏß³Ì*/
+int main(void)/*RT-Thread mainçº¿ç¨‹*/
 {
     OS_ERR err;
 
-    OSInit(&err);                                   /*uCOS-III²Ù×÷ÏµÍ³³õÊ¼»¯*/
+    OSInit(&err);                                   /*uCOS-IIIæ“ä½œç³»ç»Ÿåˆå§‹åŒ–*/
     if(err != OS_ERR_NONE){
         rt_kprintf("uCOS-III init error!\r\n");
         return 0;
     }
 
-    /*´´½¨¿ªÊ¼ÈÎÎñ*/
+    /*åˆ›å»ºå¼€å§‹ä»»åŠ¡*/
     OSTaskCreate((OS_TCB    * )&AppTaskStartTCB,
                  (CPU_CHAR  * )"App Task Start",
                  (OS_TASK_PTR )AppTaskStart,
@@ -58,11 +58,11 @@ int main(void)/*RT-Thread mainÏß³Ì*/
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR,
                  (OS_ERR    * )&err);
 
-    OSStart(&err);                                  /*¿ªÊ¼ÔËĞĞuCOS-III²Ù×÷ÏµÍ³*/
+    OSStart(&err);                                  /*å¼€å§‹è¿è¡ŒuCOS-IIIæ“ä½œç³»ç»Ÿ*/
 }
 
 
-/*¿ªÊ¼ÈÎÎñ*/
+/*å¼€å§‹ä»»åŠ¡*/
 static void AppTaskStart(void *p_arg)
 {
     OS_ERR err;
@@ -73,15 +73,15 @@ static void AppTaskStart(void *p_arg)
     CPU_Init();
 
 #if OS_CFG_APP_HOOKS_EN > 0u
-    App_OS_SetAllHooks();                           /*ÉèÖÃ¹³×Óº¯Êı*/
+    App_OS_SetAllHooks();                           /*è®¾ç½®é’©å­å‡½æ•°*/
 #endif
 
 #if OS_CFG_STAT_TASK_EN > 0u
-    OSStatTaskCPUUsageInit(&err);                   /*Í³¼ÆÈÎÎñ*/
-    OSStatReset(&err);                              /*¸´Î»Í³¼ÆÊı¾İ*/
+    OSStatTaskCPUUsageInit(&err);                   /*ç»Ÿè®¡ä»»åŠ¡*/
+    OSStatReset(&err);                              /*å¤ä½ç»Ÿè®¡æ•°æ®*/
 #endif
 
-    AppTaskCreate();                                /*´´½¨ÈÎÎñ*/
+    AppTaskCreate();                                /*åˆ›å»ºä»»åŠ¡*/
 
     while(DEF_TRUE)
     {
@@ -93,7 +93,7 @@ static void AppTaskStart(void *p_arg)
 }
 
 
-/*Ê¾ÀıÈÎÎñ*/
+/*ç¤ºä¾‹ä»»åŠ¡*/
 void timer_example (void);
 void mutex_example (void);
 void sem_example   (void);
@@ -104,7 +104,7 @@ void flag_example(void);
 
 static void AppTaskCreate(void)
 {
-    /*¿ÉÒÔ´ò¿ª×¢ÊÍ,ÔËĞĞ²âÊÔÀı³Ì*/
+    /*å¯ä»¥æ‰“å¼€æ³¨é‡Š,è¿è¡Œæµ‹è¯•ä¾‹ç¨‹*/
 //    timer_example();
 //    mutex_example();
 //    sem_example();

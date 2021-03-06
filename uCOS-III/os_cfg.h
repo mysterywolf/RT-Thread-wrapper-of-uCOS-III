@@ -67,26 +67,26 @@
 
                                                             /* ---------------------------- MISCELLANEOUS -------------------------- */
 #if defined RT_USING_HOOK && defined RT_USING_IDLE_HOOK
-#define  OS_CFG_APP_HOOKS_EN             1u                 /* ∂¡–¥ Enable (1) or Disable (0) application specific hooks             */
+#define  OS_CFG_APP_HOOKS_EN             1u                 /* ËØªÂÜô Enable (1) or Disable (0) application specific hooks             */
 #else
-#define  OS_CFG_APP_HOOKS_EN             0u                 /* ÷ª∂¡ Enable (1) or Disable (0) application specific hooks             */
+#define  OS_CFG_APP_HOOKS_EN             0u                 /* Âè™ËØª Enable (1) or Disable (0) application specific hooks             */
 #endif
 #define  OS_CFG_ARG_CHK_EN               1u                 /* Enable (1) or Disable (0) argument checking                           */
 #define  OS_CFG_CALLED_FROM_ISR_CHK_EN   1u                 /* Enable (1) or Disable (0) check for called from ISR                   */
 #define  OS_CFG_DBG_EN                   1u                 /* Enable (1) debug code/variables                                       */
 #define  OS_CFG_INVALID_OS_CALLS_CHK_EN  1u                 /* Enable (1) or Disable (0) checks for invalid kernel calls             */
 #define  OS_CFG_OBJ_TYPE_CHK_EN          1u                 /* Enable (1) or Disable (0) object type checking                        */
-#define  OS_CFG_PEND_MULTI_EN            0u                 /* ÷ª∂¡,Enable (1) or Disable (0) code generation for multi-pend feature */
-#define  OS_CFG_PRIO_MAX        RT_THREAD_PRIORITY_MAX      /* ÷ª∂¡ Defines the maximum number of task priorities                    */
-#define  OS_CFG_SCHED_ROUND_ROBIN_EN     1u                 /* ÷ª∂¡,RTT ±º‰∆¨¬÷◊™Œ™±ÿ—°œÓ Include code for Round-Robin scheduling    */
+#define  OS_CFG_PEND_MULTI_EN            0u                 /* Âè™ËØª,Enable (1) or Disable (0) code generation for multi-pend feature */
+#define  OS_CFG_PRIO_MAX        RT_THREAD_PRIORITY_MAX      /* Âè™ËØª Defines the maximum number of task priorities                    */
+#define  OS_CFG_SCHED_ROUND_ROBIN_EN     1u                 /* Âè™ËØª,RTTÊó∂Èó¥ÁâáËΩÆËΩ¨‰∏∫ÂøÖÈÄâÈ°π Include code for Round-Robin scheduling    */
 #define  OS_CFG_STK_SIZE_MIN            64u                 /* Minimum allowable task stack size                                     */
 
 
                                                             /* ----------------------------- EVENT FLAGS --------------------------- */
-#ifdef RT_USING_EVENT                                       /*  «∑Òø™∆Ù”…RT-ThreadΩ”π‹                                               */
-#define  OS_CFG_FLAG_EN                  1u                 /* ∂¡–¥ Enable (1) or Disable (0) code generation for EVENT FLAGS        */
+#ifdef RT_USING_EVENT                                       /* ÊòØÂê¶ÂºÄÂêØÁî±RT-ThreadÊé•ÁÆ°                                               */
+#define  OS_CFG_FLAG_EN                  1u                 /* ËØªÂÜô Enable (1) or Disable (0) code generation for EVENT FLAGS        */
 #else
-#define  OS_CFG_FLAG_EN                  0u                 /* ÷ª∂¡ Enable (1) or Disable (0) code generation for EVENT FLAGS        */
+#define  OS_CFG_FLAG_EN                  0u                 /* Âè™ËØª Enable (1) or Disable (0) code generation for EVENT FLAGS        */
 #endif
 #define  OS_CFG_FLAG_DEL_EN              1u                 /* Include code for OSFlagDel()                                          */
 #define  OS_CFG_FLAG_MODE_CLR_EN         1u                 /* Include code for Wait on Clear EVENT FLAGS                            */
@@ -98,20 +98,20 @@
 
 
                                                             /* --------------------- MUTUAL EXCLUSION SEMAPHORES ------------------- */
-#ifdef RT_USING_MUTEX                                       /*  «∑Òø™∆Ù”…RT-ThreadΩ”π‹                                               */
-#define  OS_CFG_MUTEX_EN                 1u                 /* ∂¡–¥ Enable (1) or Disable (0) code generation for MUTE               */
+#ifdef RT_USING_MUTEX                                       /* ÊòØÂê¶ÂºÄÂêØÁî±RT-ThreadÊé•ÁÆ°                                               */
+#define  OS_CFG_MUTEX_EN                 1u                 /* ËØªÂÜô Enable (1) or Disable (0) code generation for MUTE               */
 #else
-#define  OS_CFG_MUTEX_EN                 0u                 /* ÷ª∂¡ Enable (1) or Disable (0) code generation for MUTE               */
+#define  OS_CFG_MUTEX_EN                 0u                 /* Âè™ËØª Enable (1) or Disable (0) code generation for MUTE               */
 #endif
 #define  OS_CFG_MUTEX_DEL_EN             1u                 /* Include code for OSMutexDel()                                         */
 #define  OS_CFG_MUTEX_PEND_ABORT_EN      1u                 /* Include code for OSMutexPendAbort()                                   */
 
 
                                                             /* --------------------------- MESSAGE QUEUES -------------------------- */
-#ifdef RT_USING_MESSAGEQUEUE                                /*  «∑Òø™∆Ù”…RT-ThreadΩ”π‹                                               */
-#define  OS_CFG_Q_EN                     1u                 /* ∂¡–¥ Enable (1) or Disable (0) code generation for QUEUES             */
+#ifdef RT_USING_MESSAGEQUEUE                                /* ÊòØÂê¶ÂºÄÂêØÁî±RT-ThreadÊé•ÁÆ°                                               */
+#define  OS_CFG_Q_EN                     1u                 /* ËØªÂÜô Enable (1) or Disable (0) code generation for QUEUES             */
 #else
-#define  OS_CFG_Q_EN                     0u                 /* ÷ª∂¡ Enable (1) or Disable (0) code generation for QUEUES             */
+#define  OS_CFG_Q_EN                     0u                 /* Âè™ËØª Enable (1) or Disable (0) code generation for QUEUES             */
 #endif
 #define  OS_CFG_Q_DEL_EN                 1u                 /* Include code for OSQDel()                                             */
 #define  OS_CFG_Q_FLUSH_EN               1u                 /* Include code for OSQFlush()                                           */
@@ -119,10 +119,10 @@
 
 
                                                             /* ----------------------------- SEMAPHORES ---------------------------- */
-#ifdef RT_USING_SEMAPHORE                                   /*  «∑Òø™∆Ù”…RT-ThreadΩ”π‹                                               */
-#define  OS_CFG_SEM_EN                   1u                 /* ∂¡–¥ Enable (1) or Disable (0) code generation for SEMAPHORES         */
+#ifdef RT_USING_SEMAPHORE                                   /* ÊòØÂê¶ÂºÄÂêØÁî±RT-ThreadÊé•ÁÆ°                                               */
+#define  OS_CFG_SEM_EN                   1u                 /* ËØªÂÜô Enable (1) or Disable (0) code generation for SEMAPHORES         */
 #else
-#define  OS_CFG_SEM_EN                   0u                 /* ÷ª∂¡ Enable (1) or Disable (0) code generation for SEMAPHORES         */
+#define  OS_CFG_SEM_EN                   0u                 /* Âè™ËØª Enable (1) or Disable (0) code generation for SEMAPHORES         */
 #endif
 #define  OS_CFG_SEM_DEL_EN               1u                 /* Include code for OSSemDel()                                           */
 #define  OS_CFG_SEM_PEND_ABORT_EN        1u                 /* nclude code for OSSemPendAbort()                                      */
@@ -138,7 +138,7 @@
 #define  OS_CFG_TASK_SEM_EN              1u                 /* Include code for OSTaskSemXXXX()                                      */
 #define  OS_CFG_TASK_Q_EN                1u                 /* Include code for OSTaskQXXXX()                                        */
 #define  OS_CFG_TASK_Q_PEND_ABORT_EN     1u                 /* Include code for OSTaskQPendAbort()                                   */
-#define  OS_CFG_TASK_PROFILE_EN          0u                 /* ÷ª∂¡ Include variables in OS_TCB for profiling                        */
+#define  OS_CFG_TASK_PROFILE_EN          0u                 /* Âè™ËØª Include variables in OS_TCB for profiling                        */
 #define  OS_CFG_TASK_REG_TBL_SIZE        1u                 /* Number of task specific registers                                     */
 #define  OS_CFG_TASK_SEM_PEND_ABORT_EN   1u                 /* Include code for OSTaskSemPendAbort()                                 */
 #define  OS_CFG_TASK_SUSPEND_EN          1u                 /* Include code for OSTaskSuspend() and OSTaskResume()                   */
@@ -150,14 +150,14 @@
 
 
                                                             /* ------------------- TASK LOCAL STORAGE MANAGEMENT ------------------- */
-#define  OS_CFG_TLS_TBL_SIZE             0u                 /* ÷ª∂¡,∏√π¶ƒ‹…–Œ¥ µœ÷ Include code for Task Local Storage (TLS) registers*/
+#define  OS_CFG_TLS_TBL_SIZE             0u                 /* Âè™ËØª,ËØ•ÂäüËÉΩÂ∞öÊú™ÂÆûÁé∞ Include code for Task Local Storage (TLS) registers*/
 
 
                                                             /* ------------------------- TIMER MANAGEMENT -------------------------- */
-#ifdef RT_USING_TIMER_SOFT                                  /*  «∑Òø™∆Ù”…RT-ThreadΩ”π‹                                               */
-#define  OS_CFG_TMR_EN                   1u                 /* ∂¡–¥ Enable (1) or Disable (0) code generation for TIMERS             */
+#ifdef RT_USING_TIMER_SOFT                                  /* ÊòØÂê¶ÂºÄÂêØÁî±RT-ThreadÊé•ÁÆ°                                               */
+#define  OS_CFG_TMR_EN                   1u                 /* ËØªÂÜô Enable (1) or Disable (0) code generation for TIMERS             */
 #else
-#define  OS_CFG_TMR_EN                   0u                 /* ÷ª∂¡ Enable (1) or Disable (0) code generation for TIMERS             */
+#define  OS_CFG_TMR_EN                   0u                 /* Âè™ËØª Enable (1) or Disable (0) code generation for TIMERS             */
 #endif
 #define  OS_CFG_TMR_DEL_EN               1u                 /* Enable (1) or Disable (0) code generation for OSTmrDel()              */
 

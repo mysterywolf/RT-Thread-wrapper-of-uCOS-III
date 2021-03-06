@@ -275,11 +275,11 @@ void  OS_StatTask (void  *p_arg)
         OSStatTaskHook();                                   /* Invoke user definable hook                             */
 
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
-        /*--------------ÈÎÎñTCB------------------*/
+        /*--------------ä»»åŠ¡TCB------------------*/
         CPU_CRITICAL_ENTER();
         p_tcb = OSTaskDbgListPtr;
         CPU_CRITICAL_EXIT();
-        while (p_tcb != (OS_TCB *)0) {                      /* ¿ªÊ¼ÑØ×ÅTCBÁ´±í¶ÔÃ¿Ò»¸öÈÎÎñ½øÐÐ±éÀú                    */
+        while (p_tcb != (OS_TCB *)0) {                      /* å¼€å§‹æ²¿ç€TCBé“¾è¡¨å¯¹æ¯ä¸€ä¸ªä»»åŠ¡è¿›è¡ŒéåŽ†                    */
 #if OS_CFG_STAT_TASK_STK_CHK_EN > 0u
             OSTaskStkChk( p_tcb,                            /* Compute stack usage of active tasks only               */
                          &p_tcb->StkFree,
@@ -287,14 +287,14 @@ void  OS_StatTask (void  *p_arg)
                          &err);
 #endif
             CPU_CRITICAL_ENTER();
-            p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp; /* ¸üÐÂSPÖ¸Õë*/
+            p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp; /* æ›´æ–°SPæŒ‡é’ˆ*/
 
-            p_tcb = p_tcb->DbgNextPtr;                      /* Ö¸ÏòÏÂÒ»¸öTCB½á¹¹Ìå                                    */
+            p_tcb = p_tcb->DbgNextPtr;                      /* æŒ‡å‘ä¸‹ä¸€ä¸ªTCBç»“æž„ä½“                                    */
             CPU_CRITICAL_EXIT();
         }
 
 #if OS_CFG_TMR_EN > 0u
-        /*--------------¶¨Ê±Æ÷--------------------*/
+        /*--------------å®šæ—¶å™¨--------------------*/
         CPU_CRITICAL_ENTER();
         p_tmr = OSTmrDbgListPtr;
         CPU_CRITICAL_EXIT();
@@ -302,7 +302,7 @@ void  OS_StatTask (void  *p_arg)
             CPU_CRITICAL_ENTER();
             p_tmr->Remain = p_tmr->Tmr.timeout_tick - rt_tick_get();
             CPU_CRITICAL_EXIT();
-            p_tmr = p_tmr->DbgNextPtr;                      /*Ö¸ÏòÏÂÒ»¸ö¶¨Ê±Æ÷¿ØÖÆ¿é*/
+            p_tmr = p_tmr->DbgNextPtr;                      /*æŒ‡å‘ä¸‹ä¸€ä¸ªå®šæ—¶å™¨æŽ§åˆ¶å—*/
         }
 #endif
 

@@ -58,12 +58,12 @@
 
 /*
 ************************************************************************************************************************
-* Note(s)    : 1)uCOS-III³ÆÖ®ÎªÊÂ¼ş±êÖ¾×é(flag group),RTT³ÆÖ®ÎªÊÂ¼ş¼¯(event),ÒÔÏÂÍ³Ò»Ê¹ÓÃ"ÊÂ¼ş±êÖ¾×é"³Æºô
+* Note(s)    : 1)uCOS-IIIç§°ä¹‹ä¸ºäº‹ä»¶æ ‡å¿—ç»„(flag group),RTTç§°ä¹‹ä¸ºäº‹ä»¶é›†(event),ä»¥ä¸‹ç»Ÿä¸€ä½¿ç”¨"äº‹ä»¶æ ‡å¿—ç»„"ç§°å‘¼
 *
-*              2)uCOS-IIIÓëRT-Thread¹ØÓÚÊÂ¼ş±êÖ¾×éµÄ²ßÂÔÇø±ğ
-*                  uCOS-IIIÖ§³ÖÖÃ1ÎªÊÂ¼ş·¢Éú»òÕßÇå0ÎªÊÂ¼ş·¢Éú
-*                  RT-Thread½öÖ§³ÖÖÃ1ÎªÊÂ¼ş·¢Éú
-*                ËäÈ»²ßÂÔÓĞÇø±ğ£¬µ«ÊÇ¶ÔÓÃ»§µÄ½Ó¿ÚÊÇÎŞ²î±ğµÄ£¬Òò´Ë±¾¼æÈİ²ãÃ»ÓĞ¿ÌÒâÊµÏÖÇå0ÎªÊÂ¼ş·¢Éú
+*              2)uCOS-IIIä¸RT-Threadå…³äºäº‹ä»¶æ ‡å¿—ç»„çš„ç­–ç•¥åŒºåˆ«
+*                  uCOS-IIIæ”¯æŒç½®1ä¸ºäº‹ä»¶å‘ç”Ÿæˆ–è€…æ¸…0ä¸ºäº‹ä»¶å‘ç”Ÿ
+*                  RT-Threadä»…æ”¯æŒç½®1ä¸ºäº‹ä»¶å‘ç”Ÿ
+*                è™½ç„¶ç­–ç•¥æœ‰åŒºåˆ«ï¼Œä½†æ˜¯å¯¹ç”¨æˆ·çš„æ¥å£æ˜¯æ— å·®åˆ«çš„ï¼Œå› æ­¤æœ¬å…¼å®¹å±‚æ²¡æœ‰åˆ»æ„å®ç°æ¸…0ä¸ºäº‹ä»¶å‘ç”Ÿ
 ************************************************************************************************************************
 */
 
@@ -91,11 +91,11 @@
 *                                 OS_ERR_OBJ_CREATED             if the event flag group has already been created
 *                                 OS_ERR_OBJ_PTR_NULL            if 'p_grp' is a NULL pointer
 *                               + OS_ERR_OPT_INVALID
-*                             -------------ËµÃ÷-------------
-*                                 OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌĞøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                               - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈİ²ãÒÑ¾­ÎŞ·¨Ê¹ÓÃ
-*                               + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªĞÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                               Ó¦ÓÃ²ãĞèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅĞ¶Ï×ö³öÏàÓ¦µÄĞŞ¸Ä
+*                             -------------è¯´æ˜-------------
+*                                 OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŸç‰ˆçš„é”™è¯¯ç 
+*                               - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                               + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢çš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                               åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›çš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 * Returns    : none
 ************************************************************************************************************************
 */
@@ -125,7 +125,7 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                   */
     {
         *p_err = OS_ERR_CREATE_ISR;
         return;
@@ -133,12 +133,12 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_grp == RT_NULL)                                    /* ¼ì²éÊÂ¼ş±êÖ¾×éÖ¸ÕëÊÇ·ñÎª¿Õ                             */
+    if(p_grp == RT_NULL)                                    /* æ£€æŸ¥äº‹ä»¶æ ‡å¿—ç»„æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                             */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
     }
-    if(p_name == RT_NULL)                                   /* ¼ì²éÊÂ¼ş±êÖ¾×éÃûÖ¸ÕëÊÇ·ñÎª¿Õ                           */
+    if(p_name == RT_NULL)                                   /* æ£€æŸ¥äº‹ä»¶æ ‡å¿—ç»„åæŒ‡é’ˆæ˜¯å¦ä¸ºç©º                           */
     {
         *p_err = OS_ERR_NAME;
         return;
@@ -146,14 +146,14 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅĞ¶ÏÄÚºË¶ÔÏóÊÇ·ñÒÑ¾­ÊÇÊÂ¼ş±êÖ¾×é£¬¼´ÊÇ·ñÒÑ¾­´´½¨¹ı*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦å·²ç»æ˜¯äº‹ä»¶æ ‡å¿—ç»„ï¼Œå³æ˜¯å¦å·²ç»åˆ›å»ºè¿‡*/
     if(rt_object_get_type(&p_grp->FlagGrp.parent.parent) == RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_CREATED;
         return;
     }
 #endif
-    /*ÔÚuCOS-IIIÖĞÊÂ¼şÊÇÖ±½Ó±»²åÈëµ½Á´±í,²»°´ÕÕÓÅÏÈ¼¶ÅÅÁĞ*/
+    /*åœ¨uCOS-IIIä¸­äº‹ä»¶æ˜¯ç›´æ¥è¢«æ’å…¥åˆ°é“¾è¡¨,ä¸æŒ‰ç…§ä¼˜å…ˆçº§æ’åˆ—*/
     rt_err = rt_event_init(&p_grp->FlagGrp,(const char*)p_name,RT_IPC_FLAG_FIFO);
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err != RT_EOK)
@@ -235,7 +235,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                               */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                               */
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0;
@@ -250,7 +250,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_grp == RT_NULL)                                        /* ¼ì²éÖ¸ÕëÊÇ·ñÎª¿Õ                                   */
+    if(p_grp == RT_NULL)                                        /* æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                   */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
@@ -267,7 +267,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅĞ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎªÊÂ¼ş±êÖ¾×é*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºäº‹ä»¶æ ‡å¿—ç»„*/
     if(rt_object_get_type(&p_grp->FlagGrp.parent.parent) != RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -283,7 +283,7 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
     {
         case OS_OPT_DEL_NO_PEND:
             CPU_CRITICAL_ENTER();
-            if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread))) /* ÈôÃ»ÓĞÏß³ÌµÈ´ıĞÅºÅÁ¿                      */
+            if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread))) /* è‹¥æ²¡æœ‰çº¿ç¨‹ç­‰å¾…ä¿¡å·é‡                      */
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_event_detach(&p_grp->FlagGrp);
@@ -359,8 +359,8 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 *                            posted, aborted or the event flag group deleted.  If you pass a NULL pointer (i.e. (CPU_TS *)0)
 *                            then you will not get the timestamp.  In other words, passing a NULL pointer is valid and
 *                            indicates that you don't need the timestamp.
-*                            -------------ËµÃ÷-------------
-*                            ¸Ã²ÎÊıÔÚRTTÖĞÃ»ÓĞÒâÒå,ÌîNULL¼´¿É
+*                            -------------è¯´æ˜-------------
+*                            è¯¥å‚æ•°åœ¨RTTä¸­æ²¡æœ‰æ„ä¹‰,å¡«NULLå³å¯
 *
 *              p_err         is a pointer to an error code and can be:
 *
@@ -375,11 +375,11 @@ OS_OBJ_QTY  OSFlagDel (OS_FLAG_GRP  *p_grp,
 *                                                           available.
 *                                OS_ERR_SCHED_LOCKED        If you called this function when the scheduler is locked
 *                                OS_ERR_TIMEOUT             The bit(s) have not been set in the specified 'timeout'.
-*                            -------------ËµÃ÷-------------
-*                                OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌĞøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                              - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈİ²ãÒÑ¾­ÎŞ·¨Ê¹ÓÃ
-*                              + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªĞÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                              Ó¦ÓÃ²ãĞèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅĞ¶Ï×ö³öÏàÓ¦µÄĞŞ¸Ä
+*                            -------------è¯´æ˜-------------
+*                                OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŸç‰ˆçš„é”™è¯¯ç 
+*                              - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                              + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢çš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                              åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›çš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 *
 * Returns    : The flags in the event flag group that made the task ready or, 0 if a timeout or an error
 *              occurred.
@@ -416,7 +416,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr> (OS_NESTING_CTR)0)                      /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                               */
+    if(OSIntNestingCtr> (OS_NESTING_CTR)0)                      /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                               */
     {
         *p_err = OS_ERR_PEND_ISR;
         return ((OS_OBJ_QTY)0);
@@ -431,7 +431,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_grp == RT_NULL)                                        /* ¼ì²éÖ¸ÕëÊÇ·ñÎª¿Õ                                   */
+    if(p_grp == RT_NULL)                                        /* æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                   */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return ((OS_OBJ_QTY)0);
@@ -462,7 +462,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅĞ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎªÊÂ¼ş±êÖ¾×é*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºäº‹ä»¶æ ‡å¿—ç»„*/
     if(rt_object_get_type(&p_grp->FlagGrp.parent.parent) != RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -470,7 +470,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     }
 #endif
 
-    /* ÌáÈ¡opt */
+    /* æå–opt */
     if ((opt & OS_OPT_PEND_FLAG_CONSUME) != (OS_OPT)0) {        /* See if we need to consume the flags                */
         consume = DEF_TRUE;
     } else {
@@ -503,22 +503,22 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
 
     if (consume == DEF_TRUE)
     {
-        /*OS_OPT_PEND_FLAG_CONSUMEÏàµ±ÓÚRTTÖĞµÄRT_EVENT_FLAG_CLEAR*/
+        /*OS_OPT_PEND_FLAG_CONSUMEç›¸å½“äºRTTä¸­çš„RT_EVENT_FLAG_CLEAR*/
         rt_option |= RT_EVENT_FLAG_CLEAR;
     }
 
     /*
-        ÔÚRTTÖĞtimeoutÎª0±íÊ¾²»×èÈû,ÎªRT_WAITING_FOREVER±íÊ¾ÓÀ¾Ã×èÈû,
-        ÕâÓëuCOS-IIIÓĞËù²»Í¬,Òò´ËĞèÒª×ª»»
+        åœ¨RTTä¸­timeoutä¸º0è¡¨ç¤ºä¸é˜»å¡,ä¸ºRT_WAITING_FOREVERè¡¨ç¤ºæ°¸ä¹…é˜»å¡,
+        è¿™ä¸uCOS-IIIæœ‰æ‰€ä¸åŒ,å› æ­¤éœ€è¦è½¬æ¢
     */
     if((opt & OS_OPT_PEND_NON_BLOCKING) == (OS_OPT)0)
     {
-        if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)          /* ¼ì²éµ÷¶ÈÆ÷ÊÇ·ñ±»Ëø                                 */
+        if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)          /* æ£€æŸ¥è°ƒåº¦å™¨æ˜¯å¦è¢«é”                                 */
         {
             *p_err = OS_ERR_SCHED_LOCKED;
             return ((OS_OBJ_QTY)0);
         }
-        if(timeout == 0)                                        /* ÔÚuCOS-IIIÖĞtimeout=0±íÊ¾ÓÀ¾Ã×èÈû                  */
+        if(timeout == 0)                                        /* åœ¨uCOS-IIIä¸­timeout=0è¡¨ç¤ºæ°¸ä¹…é˜»å¡                  */
         {
             time = RT_WAITING_FOREVER;
         }
@@ -529,7 +529,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     }
     else
     {
-        time = RT_WAITING_NO;                                   /* ÔÚRTTÖĞtimeoutÎª0±íÊ¾·Ç×èÈû                        */
+        time = RT_WAITING_NO;                                   /* åœ¨RTTä¸­timeoutä¸º0è¡¨ç¤ºéé˜»å¡                        */
     }
 
     CPU_CRITICAL_ENTER();
@@ -561,8 +561,8 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     }
 
     CPU_CRITICAL_ENTER();
-    p_tcb->TaskState &= ~OS_TASK_STATE_PEND;                    /* ¸üĞÂÈÎÎñ×´Ì¬                                       */
-    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                    /* Çå³ıµ±Ç°ÈÎÎñµÈ´ı×´Ì¬                               */
+    p_tcb->TaskState &= ~OS_TASK_STATE_PEND;                    /* æ›´æ–°ä»»åŠ¡çŠ¶æ€                                       */
+    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                    /* æ¸…é™¤å½“å‰ä»»åŠ¡ç­‰å¾…çŠ¶æ€                               */
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_grp->Flags      = p_grp->FlagGrp.set;                     /* Set to desired initial value                       */
@@ -571,13 +571,13 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP  *p_grp,
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
     {
-        /*ÈôµÈ´ı±í²»Îª¿Õ£¬Ôò½«µ±Ç°µÈ´ıÊÂ¼ş×éµÄÏß³Ì¸³Öµ¸ø.DbgNamePtr*/
+        /*è‹¥ç­‰å¾…è¡¨ä¸ä¸ºç©ºï¼Œåˆ™å°†å½“å‰ç­‰å¾…äº‹ä»¶ç»„çš„çº¿ç¨‹èµ‹å€¼ç»™.DbgNamePtr*/
         thread = rt_list_entry((&(p_grp->FlagGrp.parent.suspend_thread))->next, struct rt_thread, tlist);
         p_grp->DbgNamePtr = thread->name;
     }
     else
     {
-        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* ÈôÎª¿Õ,ÔòÇå¿Õµ±Ç°.DbgNamePtr                       */
+        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* è‹¥ä¸ºç©º,åˆ™æ¸…ç©ºå½“å‰.DbgNamePtr                       */
     }
 #endif
 #endif
@@ -686,7 +686,7 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
 #endif
 
     CPU_CRITICAL_ENTER();
-    if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))/* ÈôÃ»ÓĞÏß³ÌµÈ´ıĞÅºÅÁ¿                               */
+    if(rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))/* è‹¥æ²¡æœ‰çº¿ç¨‹ç­‰å¾…ä¿¡å·é‡                               */
     {
         CPU_CRITICAL_EXIT();
        *p_err =  OS_ERR_PEND_ABORT_NONE;
@@ -708,13 +708,13 @@ OS_OBJ_QTY  OSFlagPendAbort (OS_FLAG_GRP  *p_grp,
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
     {
-        /*ÈôµÈ´ı±í²»Îª¿Õ£¬Ôò½«µ±Ç°µÈ´ıĞÅºÅÁ¿µÄÏß³Ì¸³Öµ¸ø.DbgNamePtr*/
+        /*è‹¥ç­‰å¾…è¡¨ä¸ä¸ºç©ºï¼Œåˆ™å°†å½“å‰ç­‰å¾…ä¿¡å·é‡çš„çº¿ç¨‹èµ‹å€¼ç»™.DbgNamePtr*/
         thread = rt_list_entry((&(p_grp->FlagGrp.parent.suspend_thread))->next, struct rt_thread, tlist);
         p_grp->DbgNamePtr = thread->name;
     }
     else
     {
-        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* ÈôÎª¿Õ,ÔòÇå¿Õµ±Ç°.DbgNamePtr                       */
+        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* è‹¥ä¸ºç©º,åˆ™æ¸…ç©ºå½“å‰.DbgNamePtr                       */
     }
 #endif
     CPU_CRITICAL_EXIT();
@@ -855,7 +855,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_grp == RT_NULL)                                        /* ¼ì²éÖ¸ÕëÊÇ·ñÎª¿Õ                                   */
+    if(p_grp == RT_NULL)                                        /* æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                   */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
@@ -874,7 +874,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅĞ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎªÊÂ¼ş±êÖ¾×é*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºäº‹ä»¶æ ‡å¿—ç»„*/
     if(rt_object_get_type(&p_grp->FlagGrp.parent.parent) != RT_Object_Class_Event)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -900,20 +900,20 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP  *p_grp,
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_grp->FlagGrp.parent.suspend_thread)))
     {
-        /*ÈôµÈ´ı±í²»Îª¿Õ£¬Ôò½«µ±Ç°µÈ´ıĞÅºÅÁ¿µÄÏß³Ì¸³Öµ¸ø.DbgNamePtr*/
+        /*è‹¥ç­‰å¾…è¡¨ä¸ä¸ºç©ºï¼Œåˆ™å°†å½“å‰ç­‰å¾…ä¿¡å·é‡çš„çº¿ç¨‹èµ‹å€¼ç»™.DbgNamePtr*/
         thread = rt_list_entry((&(p_grp->FlagGrp.parent.suspend_thread))->next, struct rt_thread, tlist);
         p_grp->DbgNamePtr = thread->name;
     }
     else
     {
-        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* ÈôÎª¿Õ,ÔòÇå¿Õµ±Ç°.DbgNamePtr                       */
+        p_grp->DbgNamePtr =(CPU_CHAR *)((void *)" ");           /* è‹¥ä¸ºç©º,åˆ™æ¸…ç©ºå½“å‰.DbgNamePtr                       */
     }
 #endif
 #endif
     flags = p_grp->FlagGrp.set;
     CPU_CRITICAL_EXIT();
 
-    return flags;                                               /* ·µ»ØÖ´ĞĞºóÊÂ¼ş±êÖ¾×éµÄÖµ                           */
+    return flags;                                               /* è¿”å›æ‰§è¡Œåäº‹ä»¶æ ‡å¿—ç»„çš„å€¼                           */
 }
 
 /*

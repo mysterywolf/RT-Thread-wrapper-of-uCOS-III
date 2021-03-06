@@ -65,22 +65,22 @@
 ************************************************************************************************************************
 */
 
-#define  OS_CFG_TASK_STK_LIMIT_PCT_EMPTY  10u               /* Ö»¶Á Stack limit position in percentage to empty       */
+#define  OS_CFG_TASK_STK_LIMIT_PCT_EMPTY  10u               /* åªè¯» Stack limit position in percentage to empty       */
 #define  OS_CFG_STAT_TASK_STK_LIMIT      ((OS_CFG_STAT_TASK_STK_SIZE  * OS_CFG_TASK_STK_LIMIT_PCT_EMPTY) / 100u)
 
                                                             /* ------------------- STATISTIC TASK ------------------- */
-#define  OS_CFG_STAT_TASK_PRIO      (OS_CFG_PRIO_MAX-2u)    /* Ö»¶Á Í³¼ÆÈÎÎñÓÅÏÈ¼¶×ÜÊÇÎªOS_CFG_PRIO_MAX-2             */
+#define  OS_CFG_STAT_TASK_PRIO      (OS_CFG_PRIO_MAX-2u)    /* åªè¯» ç»Ÿè®¡ä»»åŠ¡ä¼˜å…ˆçº§æ€»æ˜¯ä¸ºOS_CFG_PRIO_MAX-2             */
 #define  OS_CFG_STAT_TASK_RATE_HZ         10u               /* Rate of execution (1 to 10 Hz)                         */
 #define  OS_CFG_STAT_TASK_STK_SIZE       128u               /* Stack size (number of CPU_STK elements)                */
 
                                                             /* ----------------------- TIMERS ----------------------- */
-#define  OS_CFG_TMR_TASK_PRIO        RT_TIMER_THREAD_PRIO   /* Ö»¶Á Priority of 'Timer Task' ¶¨Ê±ÈÎÎñÓÅÏÈ¼¶           */
-#define  OS_CFG_TMR_TASK_RATE_HZ         100u               /* ²ÎÊıÒªºÍÔ­°æ¹¤³ÌÒ»ÖÂ,ÓÃÓÚÓëRTT¶¨Ê±Æ÷¼æÈİ×ª»»Rate for timers (100 Hz Typ.)*/
+#define  OS_CFG_TMR_TASK_PRIO        RT_TIMER_THREAD_PRIO   /* åªè¯» Priority of 'Timer Task' å®šæ—¶ä»»åŠ¡ä¼˜å…ˆçº§           */
+#define  OS_CFG_TMR_TASK_RATE_HZ         100u               /* å‚æ•°è¦å’ŒåŸç‰ˆå·¥ç¨‹ä¸€è‡´,ç”¨äºä¸RTTå®šæ—¶å™¨å…¼å®¹è½¬æ¢Rate for timers (100 Hz Typ.)*/
 #define  OS_CFG_TMR_TASK_STK_SIZE \
-    RT_TIMER_THREAD_STACK_SIZE/sizeof(CPU_STK)              /* Ö»¶Á Stack size (number of CPU_STK elements)           */
+    RT_TIMER_THREAD_STACK_SIZE/sizeof(CPU_STK)              /* åªè¯» Stack size (number of CPU_STK elements)           */
 
                                                             /* ------------------------ TICKS ----------------------- */
-#define  OS_CFG_TICK_RATE_HZ         RT_TICK_PER_SECOND     /* Ö»¶Á Tick rate in Hertz (10 to 1000 Hz)                */
+#define  OS_CFG_TICK_RATE_HZ         RT_TICK_PER_SECOND     /* åªè¯» Tick rate in Hertz (10 to 1000 Hz)                */
 
 
 #endif

@@ -67,9 +67,9 @@
 *
 * Note(s) : (1) This CPU header file is protected from multiple pre-processor inclusion through use of
 *               the  CPU module present pre-processor macro definition.
-*           (2) RT-Thread֧��32λ��64λCPU,uCOS-III֧��8λ��16λ��32λ����֧��64λCPU,��˵��ҽ���CPUΪ
-*               32λʱ,���ܽ�ԭ����Ŀ��uCOS-III���ݵ�RT-Thread��.
-*               ��Ȼ,�������64λCPU��ʹ��uCOS-III�ӿڱ��Ҳ�ǿ��Ե�(��Ϊ�ײ�CPU���õ���RTT�Ľӿ�)
+*           (2) RT-Thread支持32位、64位CPU,uCOS-III支持8位、16位、32位但不支持64位CPU,因此当且仅当CPU为
+*               32位时,才能将原有项目从uCOS-III兼容到RT-Thread上.
+*               当然,如果想在64位CPU上使用uCOS-III接口编程也是可以的(因为底层CPU调用的是RTT的接口)
 *********************************************************************************************************
 */
 

@@ -372,15 +372,15 @@ extern "C" {
 ------------------------------------------------------------------------------------------------------------------------
 *                                                      ERROR CODES
 *
-* Note(s) : ÇëÎğËæÒâ´ò¿ª×¢ÊÍµôµÄÃ¶¾ÙÌå³ÉÔ±,Èç¹ûÓÃ»§Ê¹ÓÃµ½ÁËÕâĞ©×¢ÊÍµôµÄ³ÉÔ±,Ôò»áÔÚÇ¨ÒÆÊ±±àÒë±¨´í,ÓÃÒÔÌáĞÑÓÃ»§ÕâĞ©´íÎó´ú
-*           ÂëÔÚ¼æÈİ²ãÒÑ¾­²»¿ÉÓÃ
+* Note(s) : è¯·å‹¿éšæ„æ‰“å¼€æ³¨é‡Šæ‰çš„æšä¸¾ä½“æˆå‘˜,å¦‚æœç”¨æˆ·ä½¿ç”¨åˆ°äº†è¿™äº›æ³¨é‡Šæ‰çš„æˆå‘˜,åˆ™ä¼šåœ¨è¿ç§»æ—¶ç¼–è¯‘æŠ¥é”™,ç”¨ä»¥æé†’ç”¨æˆ·è¿™äº›é”™è¯¯ä»£
+*           ç åœ¨å…¼å®¹å±‚å·²ç»ä¸å¯ç”¨
 ------------------------------------------------------------------------------------------------------------------------
 */
 typedef  enum  os_err {
     OS_ERR_NONE                      =     0u,
 
     OS_ERR_A                         = 10000u,
-    OS_ERR_ACCEPT_ISR                = 10001u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_ACCEPT_ISR                = 10001u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
 
     OS_ERR_B                         = 11000u,
 
@@ -395,8 +395,8 @@ typedef  enum  os_err {
     OS_ERR_F                         = 15000u,
     OS_ERR_FATAL_RETURN              = 15001u,
 
-    OS_ERR_FLAG_GRP_DEPLETED         = 15101u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
-    OS_ERR_FLAG_NOT_RDY              = 15102u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_FLAG_GRP_DEPLETED         = 15101u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
+    OS_ERR_FLAG_NOT_RDY              = 15102u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_FLAG_PEND_OPT             = 15103u,
     OS_ERR_FLUSH_ISR                 = 15104u,
 
@@ -458,22 +458,22 @@ typedef  enum  os_err {
     OS_ERR_PEND_ABORT_ISR            = 25002u,
     OS_ERR_PEND_ABORT_NONE           = 25003u,
     OS_ERR_PEND_ABORT_SELF           = 25004u,
-    OS_ERR_PEND_DEL                  = 25005u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_PEND_DEL                  = 25005u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_PEND_ISR                  = 25006u,
-    OS_ERR_PEND_LOCKED               = 25007u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_PEND_LOCKED               = 25007u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_PEND_WOULD_BLOCK          = 25008u,
 
-    OS_ERR_POST_NULL_PTR             = 25101u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_POST_NULL_PTR             = 25101u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_POST_ISR                  = 25102u,
 
-    OS_ERR_PRIO_EXIST                = 25201u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
-    OS_ERR_PRIO                      = 25202u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_PRIO_EXIST                = 25201u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
+    OS_ERR_PRIO                      = 25202u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_PRIO_INVALID              = 25203u,
 
     OS_ERR_PTR_INVALID               = 25301u,
 
     OS_ERR_Q                         = 26000u,
-    OS_ERR_Q_FULL                    = 26001u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_Q_FULL                    = 26001u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
 //  OS_ERR_Q_EMPTY                   = 26002u,
     OS_ERR_Q_MAX                     = 26003u,
     OS_ERR_Q_SIZE                    = 26004u,
@@ -484,7 +484,7 @@ typedef  enum  os_err {
     OS_ERR_ROUND_ROBIN_DISABLED      = 27003u,
 
     OS_ERR_S                         = 28000u,
-    OS_ERR_SCHED_INVALID_TIME_SLICE  = 28001u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_SCHED_INVALID_TIME_SLICE  = 28001u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_SCHED_LOCK_ISR            = 28002u,
     OS_ERR_SCHED_LOCKED              = 28003u,
     OS_ERR_SCHED_NOT_LOCKED          = 28004u,
@@ -507,26 +507,26 @@ typedef  enum  os_err {
     OS_ERR_T                         = 29000u,
     OS_ERR_TASK_CHANGE_PRIO_ISR      = 29001u,
     OS_ERR_TASK_CREATE_ISR           = 29002u,
-    OS_ERR_TASK_DEL                  = 29003u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_TASK_DEL                  = 29003u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_TASK_DEL_IDLE             = 29004u,
 //  OS_ERR_TASK_DEL_INVALID          = 29005u,
     OS_ERR_TASK_DEL_ISR              = 29006u,
     OS_ERR_TASK_INVALID              = 29007u,
-    OS_ERR_TASK_NO_MORE_TCB          = 29008u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_TASK_NO_MORE_TCB          = 29008u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_TASK_NOT_DLY              = 29009u,
     OS_ERR_TASK_NOT_EXIST            = 29010u,
     OS_ERR_TASK_NOT_SUSPENDED        = 29011u,
     OS_ERR_TASK_OPT                  = 29012u,
     OS_ERR_TASK_RESUME_ISR           = 29013u,
-    OS_ERR_TASK_RESUME_PRIO          = 29014u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_TASK_RESUME_PRIO          = 29014u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_TASK_RESUME_SELF          = 29015u,
-    OS_ERR_TASK_RUNNING              = 29016u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_TASK_RUNNING              = 29016u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_TASK_STK_CHK_ISR          = 29017u,
     OS_ERR_TASK_SUSPENDED            = 29018u,
     OS_ERR_TASK_SUSPEND_IDLE         = 29019u,
 //  OS_ERR_TASK_SUSPEND_INT_HANDLER  = 29020u,
     OS_ERR_TASK_SUSPEND_ISR          = 29021u,
-    OS_ERR_TASK_SUSPEND_PRIO         = 29022u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_TASK_SUSPEND_PRIO         = 29022u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_TASK_WAITING              = 29023u,
     OS_ERR_TASK_SUSPEND_CTR_OVF      = 29024u,
 
@@ -545,26 +545,26 @@ typedef  enum  os_err {
 
     OS_ERR_TIME_DLY_ISR              = 29301u,
     OS_ERR_TIME_DLY_RESUME_ISR       = 29302u,
-    OS_ERR_TIME_GET_ISR              = 29303u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_TIME_GET_ISR              = 29303u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_TIME_INVALID_HOURS        = 29304u,
     OS_ERR_TIME_INVALID_MINUTES      = 29305u,
     OS_ERR_TIME_INVALID_SECONDS      = 29306u,
     OS_ERR_TIME_INVALID_MILLISECONDS = 29307u,
-    OS_ERR_TIME_NOT_DLY              = 29308u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
-    OS_ERR_TIME_SET_ISR              = 29309u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_TIME_NOT_DLY              = 29308u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
+    OS_ERR_TIME_SET_ISR              = 29309u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_TIME_ZERO_DLY             = 29310u,
 
     OS_ERR_TIMEOUT                   = 29401u,
 
     OS_ERR_TMR_INACTIVE              = 29501u,
-    OS_ERR_TMR_INVALID_DEST          = 29502u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_TMR_INVALID_DEST          = 29502u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
     OS_ERR_TMR_INVALID_DLY           = 29503u,
     OS_ERR_TMR_INVALID_PERIOD        = 29504u,
     OS_ERR_TMR_INVALID_STATE         = 29505u,
     OS_ERR_TMR_INVALID               = 29506u,
     OS_ERR_TMR_ISR                   = 29507u,
     OS_ERR_TMR_NO_CALLBACK           = 29508u,
-    OS_ERR_TMR_NON_AVAIL             = 29509u, /*Ô­°æ3.03/3.08ÖĞ½ö¶¨ÒåÎ´Ê¹ÓÃ*/
+    OS_ERR_TMR_NON_AVAIL             = 29509u, /*åŸç‰ˆ3.03/3.08ä¸­ä»…å®šä¹‰æœªä½¿ç”¨*/
 //  OS_ERR_TMR_PRIO_INVALID          = 29510u,
 //  OS_ERR_TMR_STK_INVALID           = 29511u,
 //  OS_ERR_TMR_STK_SIZE_INVALID      = 29512u,
@@ -585,22 +585,22 @@ typedef  enum  os_err {
     OS_ERR_Z                         = 35000u,
 
     /*
-        ÓÉÓÚuCOS-IIIµÄ´íÎóÂë·ÖÀà½ÏÏ¸£¬¶øRTTµÄ´íÎóÂë·ÖÀà½ÏÎªÁıÍ³£¬
-        ÒÔÏÂRTT´íÎóÂëÊ¹ÓÃuCOS-IIIµÄ´íÎóÂëºÜÄÑ×¼È·ÃèÊö
-        Òò´Ë½«Õë¶ÔRTTµÄ´íÎóÂëÖØĞÂ¶¨Òå(ĞÂÔö)uCOS-IIIµÄ´íÎóÂë
+        ç”±äºuCOS-IIIçš„é”™è¯¯ç åˆ†ç±»è¾ƒç»†ï¼Œè€ŒRTTçš„é”™è¯¯ç åˆ†ç±»è¾ƒä¸ºç¬¼ç»Ÿï¼Œ
+        ä»¥ä¸‹RTTé”™è¯¯ç ä½¿ç”¨uCOS-IIIçš„é”™è¯¯ç å¾ˆéš¾å‡†ç¡®æè¿°
+        å› æ­¤å°†é’ˆå¯¹RTTçš„é”™è¯¯ç é‡æ–°å®šä¹‰(æ–°å¢)uCOS-IIIçš„é”™è¯¯ç 
     */
-    OS_ERR_RT                        = 36000u,/* RTT×¨ÓÃ´íÎóÂë¼¯ */
-    OS_ERR_RT_ERROR                  = 36001u,/* ÆÕÍ¨´íÎó     */
-    OS_ERR_RT_EEMPTY                 = 36002u,/* ÎŞ×ÊÔ´       */
-    OS_ERR_RT_ENOMEM                 = 36003u,/* ÎŞÄÚ´æ       */
-    OS_ERR_RT_ENOSYS                 = 36004u,/* ÏµÍ³²»Ö§³Ö   */
-    OS_ERR_RT_EBUSY                  = 36005u,/* ÏµÍ³Ã¦       */
-    OS_ERR_RT_EIO                    = 36006u,/* IO ´íÎó      */
-    OS_ERR_RT_EINTR                  = 36007u,/* ÖĞ¶ÏÏµÍ³µ÷ÓÃ */
+    OS_ERR_RT                        = 36000u,/* RTTä¸“ç”¨é”™è¯¯ç é›† */
+    OS_ERR_RT_ERROR                  = 36001u,/* æ™®é€šé”™è¯¯     */
+    OS_ERR_RT_EEMPTY                 = 36002u,/* æ— èµ„æº       */
+    OS_ERR_RT_ENOMEM                 = 36003u,/* æ— å†…å­˜       */
+    OS_ERR_RT_ENOSYS                 = 36004u,/* ç³»ç»Ÿä¸æ”¯æŒ   */
+    OS_ERR_RT_EBUSY                  = 36005u,/* ç³»ç»Ÿå¿™       */
+    OS_ERR_RT_EIO                    = 36006u,/* IO é”™è¯¯      */
+    OS_ERR_RT_EINTR                  = 36007u,/* ä¸­æ–­ç³»ç»Ÿè°ƒç”¨ */
 
-    /*¼æÈİ²ãĞÂÔö´íÎóÂë*/
-    OS_ERR_TASK_SEM_CREATE_FALSE     = 37001u,/*ÈÎÎñÄÚ½¨ĞÅºÅÁ¿´´½¨Ê§°Ü*/
-    OS_ERR_TASK_Q_CREATE_FALSE       = 37002u,/*ÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁĞ´´½¨Ê§°Ü*/
+    /*å…¼å®¹å±‚æ–°å¢é”™è¯¯ç */
+    OS_ERR_TASK_SEM_CREATE_FALSE     = 37001u,/*ä»»åŠ¡å†…å»ºä¿¡å·é‡åˆ›å»ºå¤±è´¥*/
+    OS_ERR_TASK_Q_CREATE_FALSE       = 37002u,/*ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—åˆ›å»ºå¤±è´¥*/
 } OS_ERR;
 
 
@@ -644,27 +644,27 @@ typedef  void                      (*OS_APP_HOOK_TCB)      (OS_TCB *p_tcb);
 ------------------------------------------------------------------------------------------------------------------------
 *                                                    MESSAGE QUEUES
 *
-* Note(s) : RTTµÄÏûÏ¢¶ÓÁĞÓëuCOSµÄÏûÏ¢¶ÓÁĞÊµÏÖ»úÀíÍêÈ«²»Í¬£º
-*           ¡¤RTTµÄÏûÏ¢¶ÓÁĞÊÇ²ÉÓÃÊı¾İ¿½±´µÄ·½Ê½£¬Ö±½ÓÍê³ÉÊı¾İµÄ´«µİ
-*           ¡¤uCOSµÄÏûÏ¢¶ÓÁĞ²ÉÓÃ´«µİÖ¸ÕëµÄÁã¿½±´·½Ê½
-*           ËäÈ»RTTµÄÓÊÏäÒ²²ÉÓÃ´«µİÖ¸ÕëµÄ·½Ê½£¬µ«ÊÇÃ»ÓĞÌá¹©urgentº¯ÊıÓÃÓÚLIFO·¢ËÍÏûÏ¢,Òò´Ë²ÉÓÃRTTµÄÏûÏ¢¶ÓÁĞÊµÏÖ
-*           ½«uCOS´«µİµÄÊı¾İÖ¸ÕëºÍÊı¾İ´óĞ¡×÷ÎªRTTÏûÏ¢¶ÓÁĞµÄÊı¾İ¶Î·â×°µ½RTTµÄÏûÏ¢¶ÓÁĞÖĞ,Òò´ËĞèÒª¹¹½¨ucos_msg_t½á¹¹Ìå
-*           ²¢ÖØĞÂ¹¹½¨os_q½á¹¹Ìå
+* Note(s) : RTTçš„æ¶ˆæ¯é˜Ÿåˆ—ä¸uCOSçš„æ¶ˆæ¯é˜Ÿåˆ—å®ç°æœºç†å®Œå…¨ä¸åŒï¼š
+*           ãƒ»RTTçš„æ¶ˆæ¯é˜Ÿåˆ—æ˜¯é‡‡ç”¨æ•°æ®æ‹·è´çš„æ–¹å¼ï¼Œç›´æ¥å®Œæˆæ•°æ®çš„ä¼ é€’
+*           ãƒ»uCOSçš„æ¶ˆæ¯é˜Ÿåˆ—é‡‡ç”¨ä¼ é€’æŒ‡é’ˆçš„é›¶æ‹·è´æ–¹å¼
+*           è™½ç„¶RTTçš„é‚®ç®±ä¹Ÿé‡‡ç”¨ä¼ é€’æŒ‡é’ˆçš„æ–¹å¼ï¼Œä½†æ˜¯æ²¡æœ‰æä¾›urgentå‡½æ•°ç”¨äºLIFOå‘é€æ¶ˆæ¯,å› æ­¤é‡‡ç”¨RTTçš„æ¶ˆæ¯é˜Ÿåˆ—å®ç°
+*           å°†uCOSä¼ é€’çš„æ•°æ®æŒ‡é’ˆå’Œæ•°æ®å¤§å°ä½œä¸ºRTTæ¶ˆæ¯é˜Ÿåˆ—çš„æ•°æ®æ®µå°è£…åˆ°RTTçš„æ¶ˆæ¯é˜Ÿåˆ—ä¸­,å› æ­¤éœ€è¦æ„å»ºucos_msg_tç»“æ„ä½“
+*           å¹¶é‡æ–°æ„å»ºos_qç»“æ„ä½“
 ------------------------------------------------------------------------------------------------------------------------
 */
 
 #if OS_CFG_Q_EN > 0u
 
-/*ÓÉÓÚÔÚipc.cÎÄ¼şÖĞµÄstruct rt_mq_messageÃ»ÓĞ±©Â¶³öÀ´,Òò´ËĞèÒª¸´ÖÆÒ»·İ,Îª±ÜÃâÖØ¸´¸ÄÃûÎªstruct _rt_mq_message*/
+/*ç”±äºåœ¨ipc.cæ–‡ä»¶ä¸­çš„struct rt_mq_messageæ²¡æœ‰æš´éœ²å‡ºæ¥,å› æ­¤éœ€è¦å¤åˆ¶ä¸€ä»½,ä¸ºé¿å…é‡å¤æ”¹åä¸ºstruct _rt_mq_message*/
 struct _rt_mq_message
 {
     struct _rt_mq_message *next;
 };
 
-typedef  struct                                            /* uCOSÏûÏ¢¶Î                                              */
+typedef  struct                                            /* uCOSæ¶ˆæ¯æ®µ                                              */
 {
-    rt_uint8_t *data_ptr;                                  /* uCOS-IIIÏûÏ¢Êı¾İÖ¸Õë                                    */
-    rt_uint32_t data_size;                                 /* uCOS-IIIÏûÏ¢Êı¾İ³¤¶È                                    */
+    rt_uint8_t *data_ptr;                                  /* uCOS-IIIæ¶ˆæ¯æ•°æ®æŒ‡é’ˆ                                    */
+    rt_uint32_t data_size;                                 /* uCOS-IIIæ¶ˆæ¯æ•°æ®é•¿åº¦                                    */
 }ucos_msg_t;
 
 struct os_q
@@ -678,7 +678,7 @@ struct os_q
     CPU_CHAR            *NamePtr;                           /* Pointer to Message Queue Name (NUL terminated ASCII)   */
     OS_Q                *DbgPrevPtr;
     OS_Q                *DbgNextPtr;
-    CPU_CHAR            *DbgNamePtr;                        /* µÈ´ı¸ÃÄÚºË¶ÔÏó¹ÒÆğ±íÖĞµÚÒ»¸öÈÎÎñµÄÃû×Ö                 */
+    CPU_CHAR            *DbgNamePtr;                        /* ç­‰å¾…è¯¥å†…æ ¸å¯¹è±¡æŒ‚èµ·è¡¨ä¸­ç¬¬ä¸€ä¸ªä»»åŠ¡çš„åå­—                 */
 #endif
 #endif
 };
@@ -698,7 +698,7 @@ struct  os_sem {
     CPU_CHAR             *NamePtr;                          /* Pointer to Semaphore Name (NUL terminated ASCII)       */
     OS_SEM               *DbgPrevPtr;
     OS_SEM               *DbgNextPtr;
-    CPU_CHAR             *DbgNamePtr;                       /* µÈ´ı¸ÃÄÚºË¶ÔÏó¹ÒÆğ±íÖĞµÚÒ»¸öÈÎÎñµÄÃû×Ö                 */
+    CPU_CHAR             *DbgNamePtr;                       /* ç­‰å¾…è¯¥å†…æ ¸å¯¹è±¡æŒ‚èµ·è¡¨ä¸­ç¬¬ä¸€ä¸ªä»»åŠ¡çš„åå­—                 */
 #endif
     OS_SEM_CTR            Ctr;
 #endif
@@ -719,7 +719,7 @@ struct  os_flag_grp {
     CPU_CHAR            *NamePtr;                           /* Pointer to Event Flag Name (NUL terminated ASCII)      */
     OS_FLAG_GRP         *DbgPrevPtr;
     OS_FLAG_GRP         *DbgNextPtr;
-    CPU_CHAR            *DbgNamePtr;                        /* µÈ´ı¸ÃÄÚºË¶ÔÏó¹ÒÆğ±íÖĞµÚÒ»¸öÈÎÎñµÄÃû×Ö                 */
+    CPU_CHAR            *DbgNamePtr;                        /* ç­‰å¾…è¯¥å†…æ ¸å¯¹è±¡æŒ‚èµ·è¡¨ä¸­ç¬¬ä¸€ä¸ªä»»åŠ¡çš„åå­—                 */
 #endif
 #endif
 };
@@ -731,22 +731,22 @@ struct  os_flag_grp {
 */
 struct os_tcb
 {
-    struct rt_thread Task;                                  /* ÈÎÎñ,ÒªÈ·±£¸Ã³ÉÔ±Î»ÓÚ½á¹¹ÌåµÚÒ»¸ö                      */
+    struct rt_thread Task;                                  /* ä»»åŠ¡,è¦ç¡®ä¿è¯¥æˆå‘˜ä½äºç»“æ„ä½“ç¬¬ä¸€ä¸ª                      */
 #if OS_CFG_TASK_SEM_EN > 0u
-    OS_SEM           Sem;                                   /* ÈÎÎñÄÚ½¨ĞÅºÅÁ¿                                         */
-    CPU_BOOLEAN      SemCreateSuc;                          /* ±ê¼ÇÈÎÎñÄÚ½¨ĞÅºÅÁ¿ÊÇ·ñ´´½¨³É¹¦                         */
+    OS_SEM           Sem;                                   /* ä»»åŠ¡å†…å»ºä¿¡å·é‡                                         */
+    CPU_BOOLEAN      SemCreateSuc;                          /* æ ‡è®°ä»»åŠ¡å†…å»ºä¿¡å·é‡æ˜¯å¦åˆ›å»ºæˆåŠŸ                         */
 #endif
 #if OS_CFG_TASK_Q_EN > 0u
-    OS_Q             MsgQ;                                  /* ÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁĞ                                       */
-    void            *MsgPtr;                                /* ÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁĞÏûÏ¢Ö¸Õë                               */
-    OS_MSG_SIZE      MsgSize;                               /* ÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁĞÏûÏ¢´óĞ¡                               */
-    CPU_BOOLEAN      MsgCreateSuc;                          /* ±ê¼ÇÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁĞÊÇ·ñ´´½¨³É¹¦                       */
+    OS_Q             MsgQ;                                  /* ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—                                       */
+    void            *MsgPtr;                                /* ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—æ¶ˆæ¯æŒ‡é’ˆ                               */
+    OS_MSG_SIZE      MsgSize;                               /* ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—æ¶ˆæ¯å¤§å°                               */
+    CPU_BOOLEAN      MsgCreateSuc;                          /* æ ‡è®°ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—æ˜¯å¦åˆ›å»ºæˆåŠŸ                       */
 #endif
-    void            *ExtPtr;                                /* Ö¸ÏòÓÃ»§¸½¼ÓÇøÖ¸Õë                                     */
+    void            *ExtPtr;                                /* æŒ‡å‘ç”¨æˆ·é™„åŠ åŒºæŒ‡é’ˆ                                     */
 #if OS_CFG_TASK_REG_TBL_SIZE > 0u
-    OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];      /* ÈÎÎñ¼Ä´æÆ÷                                             */
+    OS_REG           RegTbl[OS_CFG_TASK_REG_TBL_SIZE];      /* ä»»åŠ¡å¯„å­˜å™¨                                             */
 #endif
-    OS_STATUS        PendStatus;                            /* Pend status£ºOS_STATUS_PEND_ABORT OS_STATUS_PEND_OK¿ÉÓÃ*/
+    OS_STATUS        PendStatus;                            /* Pend statusï¼šOS_STATUS_PEND_ABORT OS_STATUS_PEND_OKå¯ç”¨*/
 #if OS_CFG_TASK_SUSPEND_EN > 0u
     OS_NESTING_CTR   SuspendCtr;                            /* Nesting counter for OSTaskSuspend()                    */
 #endif
@@ -761,15 +761,15 @@ struct os_tcb
 #if (OS_CFG_DBG_EN > 0u)
     OS_TCB          *DbgPrevPtr;
     OS_TCB          *DbgNextPtr;
-    CPU_CHAR        *DbgNamePtr;                            /* ÕıÔÚµÈ´ıÄÚºË¶ÔÏóµÄÃû³Æ                                 */
-    CPU_STK         *StkPtr;                                /* (·ÇÊµÊ±)¸ÃÊı¾İÔÚ±¾¼æÈİ²ãÖĞ²»ÄÜ·´Ó³ÊµÊ±SPÖ¸ÕëÎ»ÖÃ,Êı¾İÔÚÍ³¼ÆÈÎÎñÖĞ¸üĞÂ*/
+    CPU_CHAR        *DbgNamePtr;                            /* æ­£åœ¨ç­‰å¾…å†…æ ¸å¯¹è±¡çš„åç§°                                 */
+    CPU_STK         *StkPtr;                                /* (éå®æ—¶)è¯¥æ•°æ®åœ¨æœ¬å…¼å®¹å±‚ä¸­ä¸èƒ½åæ˜ å®æ—¶SPæŒ‡é’ˆä½ç½®,æ•°æ®åœ¨ç»Ÿè®¡ä»»åŠ¡ä¸­æ›´æ–°*/
     CPU_CHAR        *NamePtr;                               /* Pointer to task name                                   */
 #endif
     OS_TICK          TimeQuanta;
     OS_TICK          TimeQuantaCtr;
     OS_SEM_CTR       SemCtr;                                /* Task specific semaphore counter                        */
     OS_OPT           Opt;                                   /* Task options as passed by OSTaskCreate()               */
-    CPU_STK          StkSize;                               /* ÈÎÎñ¶ÑÕ»´óĞ¡*/
+    CPU_STK          StkSize;                               /* ä»»åŠ¡å †æ ˆå¤§å°*/
     CPU_STK         *StkLimitPtr;                           /* Pointer used to set stack 'watermark' limit            */
     CPU_STK         *StkBasePtr;                            /* Pointer to base address of stack                       */
     OS_TASK_PTR      TaskEntryAddr;                         /* Pointer to task entry point address                    */
@@ -822,7 +822,7 @@ struct  os_mutex {
     CPU_CHAR           *NamePtr;
     OS_MUTEX           *DbgPrevPtr;
     OS_MUTEX           *DbgNextPtr;
-    CPU_CHAR           *DbgNamePtr;                         /* µÈ´ı¸ÃÄÚºË¶ÔÏó¹ÒÆğ±íÖĞµÚÒ»¸öÈÎÎñµÄÃû×Ö                 */
+    CPU_CHAR           *DbgNamePtr;                         /* ç­‰å¾…è¯¥å†…æ ¸å¯¹è±¡æŒ‚èµ·è¡¨ä¸­ç¬¬ä¸€ä¸ªä»»åŠ¡çš„åå­—                 */
 #endif
 #endif
 };
@@ -841,9 +841,9 @@ struct  os_tmr {
     OS_OPT               Opt;                               /* Options (see OS_OPT_TMR_xxx)                           */
     OS_TICK              Dly;                               /* Delay before start of repeat                           */
     OS_TICK              Period;                            /* Period to repeat timer                                 */
-    OS_TICK              _set_dly;                          /* ¸Ã±äÁ¿Îª¼æÈİ²ãÄÚ²¿Ê¹ÓÃ,ÓÃÓÚÅäºÏ3.08°æ±¾ÖĞOSTmrSetº¯Êı  */
-    OS_TICK              _set_period;                       /* ¸Ã±äÁ¿Îª¼æÈİ²ãÄÚ²¿Ê¹ÓÃ,ÓÃÓÚÅäºÏ3.08°æ±¾ÖĞOSTmrSetº¯Êı  */
-    OS_TICK              _dly;                              /* ¸Ã±äÁ¿Îª¼æÈİ²ãÄÚ²¿Ê¹ÓÃ,ÓÃÓÚ´øÓĞÑÓ³ÙµÄÖÜÆÚÑÓÊ±          */
+    OS_TICK              _set_dly;                          /* è¯¥å˜é‡ä¸ºå…¼å®¹å±‚å†…éƒ¨ä½¿ç”¨,ç”¨äºé…åˆ3.08ç‰ˆæœ¬ä¸­OSTmrSetå‡½æ•°  */
+    OS_TICK              _set_period;                       /* è¯¥å˜é‡ä¸ºå…¼å®¹å±‚å†…éƒ¨ä½¿ç”¨,ç”¨äºé…åˆ3.08ç‰ˆæœ¬ä¸­OSTmrSetå‡½æ•°  */
+    OS_TICK              _dly;                              /* è¯¥å˜é‡ä¸ºå…¼å®¹å±‚å†…éƒ¨ä½¿ç”¨,ç”¨äºå¸¦æœ‰å»¶è¿Ÿçš„å‘¨æœŸå»¶æ—¶          */
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     OS_TICK              Match;                             /* Timer expires when OSTmrTickCtr matches this value     */
     OS_TICK              Remain;                            /* Amount of time remaining before timer expires          */
@@ -1583,31 +1583,31 @@ rt_err_t      rt_mq_send_all            (rt_mq_t mq, void *buffer, rt_size_t siz
 */
 
 #ifndef RT_USING_IDLE_HOOK
-#error "¦ÌCOS-III¼æÈİ²ã±ØĞë¿ªÆôÒªÇóRT_USING_IDLE_HOOKºê¶¨Òå"
+#error "Î¼COS-IIIå…¼å®¹å±‚å¿…é¡»å¼€å¯è¦æ±‚RT_USING_IDLE_HOOKå®å®šä¹‰"
 #endif
 
 #ifndef RT_USING_TIMER_SOFT
-#warning "RT_USING_TIMER_SOFTºêÃ»ÓĞ¿ªÆô,¦ÌCOS-III¼æÈİ²ã½«ÎŞ·¨ÆôÓÃÈí¼ş¶¨Ê±Æ÷,Èç¹ûÄúÈ·ÈÏÕâÃ´×öµÄ»°Çë½«±¾¾¯¸æ×¢ÊÍµô"
+#warning "RT_USING_TIMER_SOFTå®æ²¡æœ‰å¼€å¯,Î¼COS-IIIå…¼å®¹å±‚å°†æ— æ³•å¯ç”¨è½¯ä»¶å®šæ—¶å™¨,å¦‚æœæ‚¨ç¡®è®¤è¿™ä¹ˆåšçš„è¯è¯·å°†æœ¬è­¦å‘Šæ³¨é‡Šæ‰"
 #endif
 
 #if defined RT_USING_MESSAGEQUEUE && !defined RT_USING_HEAP
-#error "Ê¹ÓÃÏûÏ¢¶ÓÁĞĞèÒª¶¨ÒåRT_USING_HEAPÒÔÊ¹ÄÜ¶ÑÄÚ´æ¹¦ÄÜ"
+#error "ä½¿ç”¨æ¶ˆæ¯é˜Ÿåˆ—éœ€è¦å®šä¹‰RT_USING_HEAPä»¥ä½¿èƒ½å †å†…å­˜åŠŸèƒ½"
 #endif
 
 #if OS_CFG_TASK_Q_EN && !OS_CFG_Q_EN
-#error "ÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁĞĞèÒªÏûÏ¢¶ÓÁĞµÄÖ§³Ö,ĞèÒª½«OS_CFG_Q_ENÖÃ1·½¿ÉÊ¹ÓÃ"
+#error "ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—éœ€è¦æ¶ˆæ¯é˜Ÿåˆ—çš„æ”¯æŒ,éœ€è¦å°†OS_CFG_Q_ENç½®1æ–¹å¯ä½¿ç”¨"
 #endif
 
 #if OS_CFG_TASK_SEM_EN && !OS_CFG_SEM_EN
-#error "ÈÎÎñÄÚ½¨ĞÅºÅÁ¿ĞèÒªĞÅºÅÁ¿µÄÖ§³Ö,ĞèÒª½«OS_CFG_SEM_ENÖÃ1·½¿ÉÊ¹ÓÃ"
+#error "ä»»åŠ¡å†…å»ºä¿¡å·é‡éœ€è¦ä¿¡å·é‡çš„æ”¯æŒ,éœ€è¦å°†OS_CFG_SEM_ENç½®1æ–¹å¯ä½¿ç”¨"
 #endif
 
 #if OS_CFG_TASK_Q_PEND_ABORT_EN && !OS_CFG_Q_PEND_ABORT_EN
-#error "Çë½«OS_CFG_Q_PEND_ABORT_ENÖÃ1"
+#error "è¯·å°†OS_CFG_Q_PEND_ABORT_ENç½®1"
 #endif
 
 #if OS_CFG_TASK_SEM_PEND_ABORT_EN && !OS_CFG_SEM_PEND_ABORT_EN
-#error "Çë½«OS_CFG_SEM_PEND_ABORT_ENÖÃ1"
+#error "è¯·å°†OS_CFG_SEM_PEND_ABORT_ENç½®1"
 #endif
 
 /*

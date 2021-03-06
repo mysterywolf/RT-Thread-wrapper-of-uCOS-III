@@ -113,7 +113,7 @@ void  OSTimeDly (OS_TICK   dly,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* ¼ì²éÊÇ·ñÔÚÖÐ¶ÏÖÐÔËÐÐ                                 */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                 */
     {
         *p_err = OS_ERR_TIME_DLY_ISR;
         return;
@@ -127,14 +127,14 @@ void  OSTimeDly (OS_TICK   dly,
     }
 #endif
 
-    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)              /* ¼ì²éµ÷¶ÈÆ÷ÊÇ·ñ±»Ëø                                   */
+    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)              /* æ£€æŸ¥è°ƒåº¦å™¨æ˜¯å¦è¢«é”                                   */
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;
     }
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(dly == 0)                                                /* ¼ì²éÊÇ·ñÎª0ÑÓÊ±                                      */
+    if(dly == 0)                                                /* æ£€æŸ¥æ˜¯å¦ä¸º0å»¶æ—¶                                      */
     {
         *p_err = OS_ERR_TIME_ZERO_DLY;
         return;
@@ -168,7 +168,7 @@ void  OSTimeDly (OS_TICK   dly,
     {
         rt_err = rt_thread_delay(dly - rt_tick_get());
     }
-    else/*²»Çø·ÖOS_OPT_TIME_DLY¡¢OS_OPT_TIME_TIMEOUT¡¢OS_OPT_TIME_MATCH*/
+    else/*ä¸åŒºåˆ†OS_OPT_TIME_DLYã€OS_OPT_TIME_TIMEOUTã€OS_OPT_TIME_MATCH*/
     {
         rt_err = rt_thread_delay(dly);
     }
@@ -236,7 +236,7 @@ void  OSTimeDly (OS_TICK   dly,
 *              2) Although this function allows you to delay a task for many, many hours, it's not recommended to put
 *                 a task to sleep for that long.
 *
-*              3) optÄ¬ÈÏÊÇº¬ÓÐOS_OPT_TIME_HMSM_STRICT£¬Èç¹û¶¨ÒåÎª1000msÖ±½Ó·µ»Ø´íÎó,Îª·ÀÖ¹ÕâÖÖ´íÎó½¨ÒéÊ¹ÓÃ
+*              3) opté»˜è®¤æ˜¯å«æœ‰OS_OPT_TIME_HMSM_STRICTï¼Œå¦‚æžœå®šä¹‰ä¸º1000msç›´æŽ¥è¿”å›žé”™è¯¯,ä¸ºé˜²æ­¢è¿™ç§é”™è¯¯å»ºè®®ä½¿ç”¨
 *                 OS_OPT_TIME_PERIODIC|OS_OPT_TIME_HMSM_NON_STRICT
 ************************************************************************************************************************
 */
@@ -263,7 +263,7 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* ¼ì²éÊÇ·ñÔÚÖÐ¶ÏÖÐÔËÐÐ                                 */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                 */
     {
         *p_err = OS_ERR_TIME_DLY_ISR;
         return;
@@ -277,7 +277,7 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
     }
 #endif
 
-    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)              /* ¼ì²éµ÷¶ÈÆ÷ÊÇ·ñ±»Ëø                                   */
+    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)              /* æ£€æŸ¥è°ƒåº¦å™¨æ˜¯å¦è¢«é”                                   */
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;
@@ -322,7 +322,7 @@ void  OSTimeDlyHMSM (CPU_INT16U   hours,
     dly_ms = hours*3600*1000+minutes*60*1000+seconds*1000+milli;
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(dly_ms == 0)                                             /* ¼ì²éÊÇ·ñÎª0ÑÓÊ±                                      */
+    if(dly_ms == 0)                                             /* æ£€æŸ¥æ˜¯å¦ä¸º0å»¶æ—¶                                      */
     {
         *p_err = OS_ERR_TIME_ZERO_DLY;
         return;
@@ -421,7 +421,7 @@ void  OSTimeDlyResume (OS_TCB  *p_tcb,
              break;
 
         case OS_TASK_STATE_DLY_SUSPENDED:
-             /*ÔÚuCOS-IIIÖÐ¿ÉÒÔ½«ÑÓÊ±È¡Ïû,ÒÀÈ»±£³Ö¹ÒÆð£»µ«ÊÇÔÚRTTÖÐ¹ÒÆðºÍÑÓÊ±ÊÇ°ó¶¨µÄ*/
+             /*åœ¨uCOS-IIIä¸­å¯ä»¥å°†å»¶æ—¶å–æ¶ˆ,ä¾ç„¶ä¿æŒæŒ‚èµ·ï¼›ä½†æ˜¯åœ¨RTTä¸­æŒ‚èµ·å’Œå»¶æ—¶æ˜¯ç»‘å®šçš„*/
 //             p_tcb->TaskState = OS_TASK_STATE_SUSPENDED;
              CPU_CRITICAL_EXIT();
             *p_err            = OS_ERR_TASK_SUSPENDED;

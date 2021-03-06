@@ -58,10 +58,10 @@
 
 /*
 ************************************************************************************************************************
-* Note(s)    : 1)RTTºÍuCOS-IIIÔÚ¶¨Ê±Æ÷Ê±ÖÓÔ´µÄÉè¼Æ²»Í¬£º
-*                 ¡¤RTTµÄ¶¨Ê±Æ÷Ê±ÖÓÆµÂÊÓë²Ù×÷ÏµÍ³ostickÆµÂÊÏàÍ¬
-*                 ¡¤uCOS-IIIµÄ¶¨Ê±Æ÷Ê±ÖÓÓÉostick·ÖÆµµÃµ½£¬·ÖÆµÏµÊıÎªOS_CFG_TMR_TASK_RATE_HZ
-*                º¯ÊıÄÚ²¿ÒÑ¾­¶ÔÉÏÊöÁ½¸ö²Ù×÷ÏµÍ³¶¨ÒåµÄ×ö³öÁË×ª»»
+* Note(s)    : 1)RTTå’ŒuCOS-IIIåœ¨å®šæ—¶å™¨æ—¶é’Ÿæºçš„è®¾è®¡ä¸åŒï¼š
+*                 ãƒ»RTTçš„å®šæ—¶å™¨æ—¶é’Ÿé¢‘ç‡ä¸æ“ä½œç³»ç»Ÿostické¢‘ç‡ç›¸åŒ
+*                 ãƒ»uCOS-IIIçš„å®šæ—¶å™¨æ—¶é’Ÿç”±ostickåˆ†é¢‘å¾—åˆ°ï¼Œåˆ†é¢‘ç³»æ•°ä¸ºOS_CFG_TMR_TASK_RATE_HZ
+*                å‡½æ•°å†…éƒ¨å·²ç»å¯¹ä¸Šè¿°ä¸¤ä¸ªæ“ä½œç³»ç»Ÿå®šä¹‰çš„åšå‡ºäº†è½¬æ¢
 ************************************************************************************************************************
 */
 
@@ -156,7 +156,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                      /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                              */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                      /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                              */
     {
         *p_err = OS_ERR_TMR_ISR;
         return;
@@ -164,7 +164,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_tmr == RT_NULL)                                         /* ¼ì²éÖ¸ÕëÊÇ·ñÎª¿Õ                                  */
+    if(p_tmr == RT_NULL)                                         /* æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                  */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
@@ -196,7 +196,7 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    if(rt_object_get_type(&p_tmr->Tmr.parent) == RT_Object_Class_Timer) /* ÅĞ¶ÏÄÚºË¶ÔÏóÊÇ·ñÒÑ¾­ÊÇ¶¨Ê±Æ÷£¬¼´ÊÇ·ñÒÑ¾­´´½¨¹ı */
+    if(rt_object_get_type(&p_tmr->Tmr.parent) == RT_Object_Class_Timer) /* åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦å·²ç»æ˜¯å®šæ—¶å™¨ï¼Œå³æ˜¯å¦å·²ç»åˆ›å»ºè¿‡ */
     {
         *p_err = OS_ERR_OBJ_CREATED;
         return;
@@ -204,13 +204,13 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 #endif
 
     /*
-        uCOS-IIIÔ­°æ¶¨Ê±Æ÷»Øµ÷º¯Êı¾ÍÊÇÔÚ¶¨Ê±Æ÷Ïß³ÌÖĞµ÷ÓÃµÄ,¶ø·ÇÔÚÖĞ¶ÏÖĞµ÷ÓÃ,
-        Òò´ËÒªÊ¹ÓÃRTTµÄRT_TIMER_FLAG_SOFT_TIMERÑ¡Ïî,ÔÚ´ËÖ®Ç°Ó¦½«ºê¶¨ÒåRT_USING_TIMER_SOFTÖÃ1
+        uCOS-IIIåŸç‰ˆå®šæ—¶å™¨å›è°ƒå‡½æ•°å°±æ˜¯åœ¨å®šæ—¶å™¨çº¿ç¨‹ä¸­è°ƒç”¨çš„,è€Œéåœ¨ä¸­æ–­ä¸­è°ƒç”¨,
+        å› æ­¤è¦ä½¿ç”¨RTTçš„RT_TIMER_FLAG_SOFT_TIMERé€‰é¡¹,åœ¨æ­¤ä¹‹å‰åº”å°†å®å®šä¹‰RT_USING_TIMER_SOFTç½®1
     */
     if(opt == OS_OPT_TMR_ONE_SHOT)
     {
         rt_flag = RT_TIMER_FLAG_ONE_SHOT|RT_TIMER_FLAG_SOFT_TIMER;
-        time = dly * (OS_CFG_TICK_RATE_HZ / OS_CFG_TMR_TASK_RATE_HZ);           /* RTTºÍuCOS-IIIÔÚ¶¨Ê±Æ÷Ê±ÖÓÔ´µÄÉè¼Æ²»Í¬,ĞèÒª½øĞĞ×ª»»*/
+        time = dly * (OS_CFG_TICK_RATE_HZ / OS_CFG_TMR_TASK_RATE_HZ);           /* RTTå’ŒuCOS-IIIåœ¨å®šæ—¶å™¨æ—¶é’Ÿæºçš„è®¾è®¡ä¸åŒ,éœ€è¦è¿›è¡Œè½¬æ¢*/
     }
     else if(opt == OS_OPT_TMR_PERIODIC)
     {
@@ -230,9 +230,9 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
     p_tmr->Opt            = (OS_OPT             )opt;
     p_tmr->Period         = (OS_TICK            )period;
     p_tmr->Dly            = (OS_TICK            )dly;
-    p_tmr->_dly           = (OS_TICK            )dly;      /* ¸Ã±äÁ¿Îª¼æÈİ²ãÄÚ²¿Ê¹ÓÃ,ÓÃÓÚ´øÓĞÑÓ³ÙµÄÖÜÆÚÑÓÊ±           */
-    p_tmr->_set_dly       = (OS_TICK            )0;        /* ¸Ã±äÁ¿Îª¼æÈİ²ãÄÚ²¿Ê¹ÓÃ,ÓÃÓÚÅäºÏ3.08°æ±¾ÖĞOSTmrSetº¯Êı   */
-    p_tmr->_set_period    = (OS_TICK            )0;        /* ¸Ã±äÁ¿Îª¼æÈİ²ãÄÚ²¿Ê¹ÓÃ,ÓÃÓÚÅäºÏ3.08°æ±¾ÖĞOSTmrSetº¯Êı   */
+    p_tmr->_dly           = (OS_TICK            )dly;      /* è¯¥å˜é‡ä¸ºå…¼å®¹å±‚å†…éƒ¨ä½¿ç”¨,ç”¨äºå¸¦æœ‰å»¶è¿Ÿçš„å‘¨æœŸå»¶æ—¶           */
+    p_tmr->_set_dly       = (OS_TICK            )0;        /* è¯¥å˜é‡ä¸ºå…¼å®¹å±‚å†…éƒ¨ä½¿ç”¨,ç”¨äºé…åˆ3.08ç‰ˆæœ¬ä¸­OSTmrSetå‡½æ•°   */
+    p_tmr->_set_period    = (OS_TICK            )0;        /* è¯¥å˜é‡ä¸ºå…¼å®¹å±‚å†…éƒ¨ä½¿ç”¨,ç”¨äºé…åˆ3.08ç‰ˆæœ¬ä¸­OSTmrSetå‡½æ•°   */
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_tmr->Match          = (OS_TICK            )0;
     p_tmr->Remain         = (OS_TICK            )0;
@@ -247,12 +247,12 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
 
     if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->_dly && p_tmr->Period)
     {
-        /*´øÓĞÑÓ³ÙµÄÖÜÆÚÑÓÊ±£¬ÏÈÑÓÊ±Ò»´ÎÑÓ³Ù²¿·Ö£¬¸Ã²¿·ÖÑÓÊ±Íê±Ïºó£¬ÖÜÆÚ²¿·ÖÓÉ»Øµ÷º¯ÊıÖØĞÂ×°Ìî*/
+        /*å¸¦æœ‰å»¶è¿Ÿçš„å‘¨æœŸå»¶æ—¶ï¼Œå…ˆå»¶æ—¶ä¸€æ¬¡å»¶è¿Ÿéƒ¨åˆ†ï¼Œè¯¥éƒ¨åˆ†å»¶æ—¶å®Œæ¯•åï¼Œå‘¨æœŸéƒ¨åˆ†ç”±å›è°ƒå‡½æ•°é‡æ–°è£…å¡«*/
         time2 = p_tmr->Dly * (OS_CFG_TICK_RATE_HZ / OS_CFG_TMR_TASK_RATE_HZ);
         rt_timer_init(&p_tmr->Tmr,
                       (const char*)p_name,
                       OS_TmrCallback,
-                      p_tmr,                                /* ½«p_tmr×÷Îª²ÎÊı´«µ½»Øµ÷º¯ÊıÖĞ                          */
+                      p_tmr,                                /* å°†p_tmrä½œä¸ºå‚æ•°ä¼ åˆ°å›è°ƒå‡½æ•°ä¸­                          */
                       time2,
                       RT_TIMER_FLAG_ONE_SHOT|RT_TIMER_FLAG_SOFT_TIMER);
     }
@@ -261,12 +261,12 @@ void  OSTmrCreate (OS_TMR               *p_tmr,
         rt_timer_init(&p_tmr->Tmr,
                       (const char*)p_name,
                       OS_TmrCallback,
-                      p_tmr,                                /* ½«p_tmr×÷Îª²ÎÊı´«µ½»Øµ÷º¯ÊıÖĞ                          */
+                      p_tmr,                                /* å°†p_tmrä½œä¸ºå‚æ•°ä¼ åˆ°å›è°ƒå‡½æ•°ä¸­                          */
                       time,
                       rt_flag);
     }
 
-    *p_err = OS_ERR_NONE;                                   /* rt_timer_initÃ»ÓĞ·µ»Ø´íÎóÂë                            */
+    *p_err = OS_ERR_NONE;                                   /* rt_timer_initæ²¡æœ‰è¿”å›é”™è¯¯ç                             */
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_CRITICAL_ENTER();
@@ -326,7 +326,7 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                 */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                 */
     {
         *p_err = OS_ERR_TMR_ISR;
         return DEF_FALSE;
@@ -341,7 +341,7 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_tmr == RT_NULL)                                        /* ¼ì²éÖ¸ÕëÊÇ·ñÎª¿Õ                                     */
+    if(p_tmr == RT_NULL)                                        /* æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                     */
     {
         *p_err = OS_ERR_TMR_INVALID;
         return DEF_FALSE;
@@ -349,7 +349,7 @@ CPU_BOOLEAN  OSTmrDel (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅĞ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎª¶¨Ê±Æ÷*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºå®šæ—¶å™¨*/
     if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -434,7 +434,7 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                 */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                 */
     {
         *p_err = OS_ERR_TMR_ISR;
         return 0;
@@ -449,7 +449,7 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_tmr == RT_NULL)                                        /* ¼ì²éÖ¸ÕëÊÇ·ñÎª¿Õ                                     */
+    if(p_tmr == RT_NULL)                                        /* æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                     */
     {
         *p_err = OS_ERR_TMR_INVALID;
         return 0;
@@ -457,7 +457,7 @@ OS_TICK  OSTmrRemainGet (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅĞ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎª¶¨Ê±Æ÷*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºå®šæ—¶å™¨*/
     if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -671,7 +671,7 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                   */
     {
         *p_err = OS_ERR_TMR_ISR;
         return DEF_FALSE;
@@ -686,7 +686,7 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_tmr == RT_NULL)                                        /* ¼ì²éÖ¸ÕëÊÇ·ñÎª¿Õ                                       */
+    if(p_tmr == RT_NULL)                                        /* æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                       */
     {
         *p_err = OS_ERR_TMR_INVALID;
         return DEF_FALSE;
@@ -694,7 +694,7 @@ CPU_BOOLEAN  OSTmrStart (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer) /* ÅĞ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎª¶¨Ê±Æ÷                       */
+    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer) /* åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºå®šæ—¶å™¨                       */
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return DEF_FALSE;
@@ -883,7 +883,7 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                 */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                 */
     {
         *p_err = OS_ERR_TMR_ISR;
         return DEF_FALSE;
@@ -898,7 +898,7 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_tmr == RT_NULL)                                        /* ¼ì²éÖ¸ÕëÊÇ·ñÎª¿Õ                                     */
+    if(p_tmr == RT_NULL)                                        /* æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                     */
     {
         *p_err = OS_ERR_TMR_INVALID;
         return DEF_FALSE;
@@ -906,7 +906,7 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)/* ÅĞ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎª¶¨Ê±Æ÷                      */
+    if(rt_object_get_type(&p_tmr->Tmr.parent) != RT_Object_Class_Timer)/* åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºå®šæ—¶å™¨                      */
     {
         *p_err = OS_ERR_OBJ_TYPE;
         return DEF_FALSE;
@@ -916,12 +916,12 @@ CPU_BOOLEAN  OSTmrStop (OS_TMR  *p_tmr,
     rt_err = rt_timer_stop(&p_tmr->Tmr);
     if(rt_err == -RT_ERROR)
     {
-        *p_err = OS_ERR_TMR_STOPPED;                            /* ·µ»Ø-RT_ERROR Ê±ÔòËµÃ÷ÒÑ¾­´¦ÓÚÍ£Ö¹×´Ì¬               */
+        *p_err = OS_ERR_TMR_STOPPED;                            /* è¿”å›-RT_ERROR æ—¶åˆ™è¯´æ˜å·²ç»å¤„äºåœæ­¢çŠ¶æ€               */
         return DEF_FALSE;
     }
 
     CPU_CRITICAL_ENTER();
-    p_tmr->State = OS_TMR_STATE_STOPPED;                        /* ±ê¼ÇÄ¿Ç°¶¨Ê±Æ÷×´Ì¬ÒÑ¾­Í£Ö¹                           */
+    p_tmr->State = OS_TMR_STATE_STOPPED;                        /* æ ‡è®°ç›®å‰å®šæ—¶å™¨çŠ¶æ€å·²ç»åœæ­¢                           */
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_tmr->Remain  = 0u;
 #endif
@@ -1020,9 +1020,9 @@ void  OS_TmrClr (OS_TMR  *p_tmr)
 #endif
     p_tmr->Period         = (OS_TICK            )0;
     p_tmr->Dly            = (OS_TICK            )0;
-    p_tmr->_set_dly       = (OS_TICK            )0;         /* ¸Ã±äÁ¿Îª¼æÈİ²ãÄÚ²¿Ê¹ÓÃ,ÓÃÓÚÅäºÏ3.08°æ±¾ÖĞOSTmrSetº¯Êı  */
-    p_tmr->_set_period    = (OS_TICK            )0;         /* ¸Ã±äÁ¿Îª¼æÈİ²ãÄÚ²¿Ê¹ÓÃ,ÓÃÓÚÅäºÏ3.08°æ±¾ÖĞOSTmrSetº¯Êı  */
-    p_tmr->_dly           = (OS_TICK            )0;         /* ¸Ã±äÁ¿Îª¼æÈİ²ãÄÚ²¿Ê¹ÓÃ,ÓÃÓÚ´øÓĞÑÓ³ÙµÄÖÜÆÚÑÓÊ±          */
+    p_tmr->_set_dly       = (OS_TICK            )0;         /* è¯¥å˜é‡ä¸ºå…¼å®¹å±‚å†…éƒ¨ä½¿ç”¨,ç”¨äºé…åˆ3.08ç‰ˆæœ¬ä¸­OSTmrSetå‡½æ•°  */
+    p_tmr->_set_period    = (OS_TICK            )0;         /* è¯¥å˜é‡ä¸ºå…¼å®¹å±‚å†…éƒ¨ä½¿ç”¨,ç”¨äºé…åˆ3.08ç‰ˆæœ¬ä¸­OSTmrSetå‡½æ•°  */
+    p_tmr->_dly           = (OS_TICK            )0;         /* è¯¥å˜é‡ä¸ºå…¼å®¹å±‚å†…éƒ¨ä½¿ç”¨,ç”¨äºå¸¦æœ‰å»¶è¿Ÿçš„å‘¨æœŸå»¶æ—¶          */
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     p_tmr->DbgPrevPtr     = (OS_TMR            *)0;
     p_tmr->DbgNextPtr     = (OS_TMR            *)0;
@@ -1120,10 +1120,10 @@ void  OS_TmrInit (OS_ERR  *p_err)
 
 /*
 ************************************************************************************************************************
-*                                                   ÄÚ²¿»Øµ÷º¯Êı
+*                                                   å†…éƒ¨å›è°ƒå‡½æ•°
 *
-* Description: ÓÉÓÚRT-ThreadµÄ¶¨Ê±Æ÷»Øµ÷º¯Êı²ÎÊıÖ»ÓĞÒ»¸ö£¬¶øuCOS-IIIµÄ¶¨Ê±Æ÷»Øµ÷º¯Êı²ÎÊıÓĞÁ½¸ö£¬Òò´ËĞèÒª
-*              ÏÈÓÉRTTµ÷ÓÃÄÚ²¿»Øµ÷º¯Êı£¬ÔÙÓÉÄÚ²¿»Øµ÷º¯Êıµ÷ÓÃuCOS-IIIµÄ»Øµ÷º¯Êı£¬ÒÔ´ËÍê³É²ÎÊıµÄ×ª»»¡£
+* Description: ç”±äºRT-Threadçš„å®šæ—¶å™¨å›è°ƒå‡½æ•°å‚æ•°åªæœ‰ä¸€ä¸ªï¼Œè€ŒuCOS-IIIçš„å®šæ—¶å™¨å›è°ƒå‡½æ•°å‚æ•°æœ‰ä¸¤ä¸ªï¼Œå› æ­¤éœ€è¦
+*              å…ˆç”±RTTè°ƒç”¨å†…éƒ¨å›è°ƒå‡½æ•°ï¼Œå†ç”±å†…éƒ¨å›è°ƒå‡½æ•°è°ƒç”¨uCOS-IIIçš„å›è°ƒå‡½æ•°ï¼Œä»¥æ­¤å®Œæˆå‚æ•°çš„è½¬æ¢ã€‚
 ************************************************************************************************************************
 */
 static void OS_TmrCallback(void *p_ara)
@@ -1141,27 +1141,27 @@ static void OS_TmrCallback(void *p_ara)
     p_tmr = (OS_TMR*)p_ara;
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                 */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                 */
     {
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("uCOS-IIIµÄ¶¨Ê±Æ÷ÊÇÔÚÈÎÎñÖĞÔËĞĞµÄ,²»¿ÉÒÔÔÚRTTµÄHardÄ£Ê½ÏÂÔËĞĞ\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("uCOS-IIIçš„å®šæ—¶å™¨æ˜¯åœ¨ä»»åŠ¡ä¸­è¿è¡Œçš„,ä¸å¯ä»¥åœ¨RTTçš„Hardæ¨¡å¼ä¸‹è¿è¡Œ\n"));
         return;
     }
 #endif
 
     if(p_tmr->Opt==OS_OPT_TMR_PERIODIC && p_tmr->_dly && p_tmr->Period)
     {
-        /*´øÓĞÑÓ³ÙµÄÖÜÆÚÑÓÊ±£¬ÑÓ³ÙÑÓÊ±ÒÑ¾­Íê±Ï£¬¿ªÊ¼½øĞĞÕı³£ÖÜÆÚÑÓÊ±*/
+        /*å¸¦æœ‰å»¶è¿Ÿçš„å‘¨æœŸå»¶æ—¶ï¼Œå»¶è¿Ÿå»¶æ—¶å·²ç»å®Œæ¯•ï¼Œå¼€å§‹è¿›è¡Œæ­£å¸¸å‘¨æœŸå»¶æ—¶*/
         CPU_CRITICAL_ENTER();
-        p_tmr->_dly = 0;                                    /* ÑÓ³Ù²¿·ÖÇåÁã£¬·ÀÖ¹ÔÙ½øÈë±¾Ìõ¼ş·ÖÖ§Óï¾ä               */
+        p_tmr->_dly = 0;                                    /* å»¶è¿Ÿéƒ¨åˆ†æ¸…é›¶ï¼Œé˜²æ­¢å†è¿›å…¥æœ¬æ¡ä»¶åˆ†æ”¯è¯­å¥               */
         p_tmr->Tmr.init_tick = p_tmr->Period * (OS_CFG_TICK_RATE_HZ / OS_CFG_TMR_TASK_RATE_HZ);
         p_tmr->Tmr.timeout_tick = rt_tick_get() + p_tmr->Tmr.init_tick;
-        p_tmr->Tmr.parent.flag |= RT_TIMER_FLAG_PERIODIC;   /* ¶¨Ê±Æ÷ÉèÖÃÎªÖÜÆÚÄ£Ê½                                 */
+        p_tmr->Tmr.parent.flag |= RT_TIMER_FLAG_PERIODIC;   /* å®šæ—¶å™¨è®¾ç½®ä¸ºå‘¨æœŸæ¨¡å¼                                 */
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
         p_tmr->Match = rt_tick_get() + p_tmr->Tmr.init_tick;
         p_tmr->Remain = p_tmr->Period;
 #endif
         CPU_CRITICAL_EXIT();
-        rt_timer_start(&(p_tmr->Tmr));                      /* ¿ªÆô¶¨Ê±Æ÷                                           */
+        rt_timer_start(&(p_tmr->Tmr));                      /* å¼€å¯å®šæ—¶å™¨                                           */
     }
     else if(p_tmr->Opt == OS_OPT_TMR_ONE_SHOT)
     {
@@ -1182,25 +1182,25 @@ static void OS_TmrCallback(void *p_ara)
 #endif
     }
 
-    /*µ÷ÓÃÕæÕıuCOS-IIIµÄÈí¼ş¶¨Ê±Æ÷»Øµ÷º¯Êı*/
+    /*è°ƒç”¨çœŸæ­£uCOS-IIIçš„è½¯ä»¶å®šæ—¶å™¨å›è°ƒå‡½æ•°*/
     OSSchedLock(&err);
     p_tmr->CallbackPtr((void *)p_tmr, p_tmr->CallbackPtrArg);
     OSSchedUnlock(&err);
 
-    /*¿ªÊ¼´¦ÀíOSTmrSetº¯ÊıµÄÉèÖÃ*/
-    if(p_tmr->_set_dly || p_tmr->_set_period)               /* ¼ì²éÊÇ·ñµ÷ÓÃOSTmrSetº¯Êı                             */
+    /*å¼€å§‹å¤„ç†OSTmrSetå‡½æ•°çš„è®¾ç½®*/
+    if(p_tmr->_set_dly || p_tmr->_set_period)               /* æ£€æŸ¥æ˜¯å¦è°ƒç”¨OSTmrSetå‡½æ•°                             */
     {
-        OSTmrStop(p_tmr,OS_OPT_TMR_NONE,0,&err);            /* Í£Ö¹µ±Ç°¶¨Ê±Æ÷                                       */
+        OSTmrStop(p_tmr,OS_OPT_TMR_NONE,0,&err);            /* åœæ­¢å½“å‰å®šæ—¶å™¨                                       */
         callback = p_tmr->CallbackPtr;
         arg = p_tmr->CallbackPtrArg;
         opt = p_tmr->Opt;
         dly = p_tmr->_set_dly;
         period = p_tmr->_set_period;
 
-        OSTmrDel(p_tmr,&err);                               /* É¾³ıÀÏ¶¨Ê±Æ÷,_set_dly/_set_period»áÔÚ´Ëº¯ÊıÖĞÇåÁã    */
-        OSTmrCreate(p_tmr, p_tmr->Tmr.parent.name,          /* ´´½¨ĞÂ¶¨Ê±Æ÷,²¢×°ÌîĞÂµÄ²ÎÊı                          */
+        OSTmrDel(p_tmr,&err);                               /* åˆ é™¤è€å®šæ—¶å™¨,_set_dly/_set_periodä¼šåœ¨æ­¤å‡½æ•°ä¸­æ¸…é›¶    */
+        OSTmrCreate(p_tmr, p_tmr->Tmr.parent.name,          /* åˆ›å»ºæ–°å®šæ—¶å™¨,å¹¶è£…å¡«æ–°çš„å‚æ•°                          */
             dly, period, opt, callback, arg, &err);
-        OSTmrStart(p_tmr, &err);                            /* Æô¶¯×°ÌîĞÂ²ÎÊıµÄ¶¨Ê±Æ÷                               */
+        OSTmrStart(p_tmr, &err);                            /* å¯åŠ¨è£…å¡«æ–°å‚æ•°çš„å®šæ—¶å™¨                               */
     }
 }
 

@@ -99,7 +99,7 @@ void  OSInit (OS_ERR  *p_err)
 #endif
 
 #if OS_CFG_SCHED_ROUND_ROBIN_EN > 0u
-    OSSchedRoundRobinEn             = DEF_TRUE;             /* RTT��ʱ��Ƭ��ת�Ǳ�ѡ��                                */
+    OSSchedRoundRobinEn             = DEF_TRUE;             /* RTT的时间片轮转是必选项                                */
     OSSchedRoundRobinDfltTimeQuanta = OS_CFG_TICK_RATE_HZ / 10u;
 #endif
 
@@ -178,7 +178,7 @@ void  OSInit (OS_ERR  *p_err)
 
     OSInitialized = OS_TRUE;                                /* Kernel is initialized                                  */
 
-    /*�ⲿ����������ԭ��OSStart()���������е�,�����ڱ����ݲ���,����ϵͳ�Ѿ�����,���ֱ���ڴ˴����б��*/
+    /*这部分内容是在原版OSStart()函数中运行的,但是在本兼容层中,操作系统已经启动,因此直接在此处进行标记*/
     if (OSRunning == OS_STATE_OS_STOPPED) {
         OSRunning       = OS_STATE_OS_RUNNING;
     }
@@ -345,7 +345,7 @@ void  OSSchedLock (OS_ERR  *p_err)
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* ����Ƿ����ж�������                               */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                               */
     {
         *p_err = OS_ERR_SCHED_LOCK_ISR;
         return;
@@ -362,7 +362,7 @@ void  OSSchedLock (OS_ERR  *p_err)
         return;
     }
 
-    *p_err = OS_ERR_NONE;                                       /* rt_enter_criticalû�з��ش�����                    */
+    *p_err = OS_ERR_NONE;                                       /* rt_enter_critical没有返回错误码                    */
     rt_enter_critical();
 }
 
@@ -397,14 +397,14 @@ void  OSSchedUnlock (OS_ERR  *p_err)
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* ����Ƿ����ж�������                               */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                     /* 检查是否在中断中运行                               */
     {
         *p_err = OS_ERR_SCHED_LOCK_ISR;
         return;
     }
 #endif
 
-    if(OSSchedLockNestingCtr == (OS_NESTING_CTR)0)              /* ���������Ƿ��Ѿ���ȫ����                         */
+    if(OSSchedLockNestingCtr == (OS_NESTING_CTR)0)              /* 检查调度器是否已经完全解锁                         */
     {
         *p_err = OS_ERR_SCHED_NOT_LOCKED;
         return;
@@ -415,11 +415,11 @@ void  OSSchedUnlock (OS_ERR  *p_err)
         return;
     }
 
-    *p_err = OS_ERR_NONE;                                       /* rt_exit_criticalû�з��ش�����                     */
+    *p_err = OS_ERR_NONE;                                       /* rt_exit_critical没有返回错误码                     */
 
     rt_exit_critical();
 
-    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)              /* ���������Ƿ�������Ƕ��                         */
+    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)              /* 检查调度器是否还有锁定嵌套                         */
     {
         *p_err = OS_ERR_SCHED_LOCKED;
     }
@@ -460,7 +460,7 @@ void  OSSchedRoundRobinCfg (CPU_BOOLEAN   en,
     CPU_CRITICAL_ENTER();
     if (en != DEF_ENABLED) {
         //OSSchedRoundRobinEn = DEF_DISABLED;
-        RT_DEBUG_LOG(OS_CFG_DBG_EN,("��RT-Thread��ʱ��Ƭ��ת�Ǳ�ѡ��,���ɽ���!\n"));
+        RT_DEBUG_LOG(OS_CFG_DBG_EN,("在RT-Thread中时间片轮转是必选项,不可禁用!\n"));
     } else {
         OSSchedRoundRobinEn = DEF_ENABLED;
     }
@@ -488,11 +488,11 @@ void  OSSchedRoundRobinCfg (CPU_BOOLEAN   en,
 *                             OS_ERR_ROUND_ROBIN_DISABLED   Round Robin is not enabled
 *                             OS_ERR_SCHED_LOCKED           The scheduler has been locked
 *                             OS_ERR_YIELD_ISR              Can't be called from an ISR
-*                         -------------˵��-------------
-*                             OS_ERR_XXXX        ��ʾ���Լ�������uCOS-IIIԭ��Ĵ�����
-*                           - OS_ERR_XXXX        ��ʾ�ô������ڱ����ݲ��Ѿ��޷�ʹ��
-*                           + OS_ERR_RT_XXXX     ��ʾ�ô�����Ϊ������RTTר�ô����뼯
-*                           Ӧ�ò���Ҫ��API���صĴ������ж�������Ӧ���޸�
+*                         -------------说明-------------
+*                             OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
+*                           - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
+*                           + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
+*                           应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : none
 *
@@ -513,14 +513,14 @@ void  OSSchedRoundRobinYield (OS_ERR  *p_err)
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ����Ƿ����ж�������                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_YIELD_ISR;
         return;
     }
 #endif
 
-    if(OSSchedLockNestingCtr > (OS_NESTING_CTR)0)           /* ���������Ƿ���                                     */
+    if(OSSchedLockNestingCtr > (OS_NESTING_CTR)0)           /* 检查调度器是否被锁                                     */
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;
@@ -596,7 +596,7 @@ void  OSStart (OS_ERR  *p_err)
         return;
     }
 
-    /*�����ڼ��ݲ�����֮ǰ,RT-Thread����ϵͳ�Ѿ�����,����ڱ�������OSRunning�Ĳ���ת�Ƶ�OSInit������*/
+    /*由于在兼容层运行之前,RT-Thread操作系统已经运行,因此在本函数对OSRunning的操作转移到OSInit函数中*/
     if (OSRunning == OS_STATE_OS_STOPPED) {
         *p_err           = OS_ERR_FATAL_RETURN;                 /* OSStart() is not supposed to return                */
     } else {
@@ -604,7 +604,7 @@ void  OSStart (OS_ERR  *p_err)
     }
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    /*���OSStart����֮ǰ�Ƿ񴴽����û�Ӧ�ü����񣬸ü���ڼ��ݲ������岻����˷������*/
+    /*检查OSStart调用之前是否创建了用户应用级任务，该检查在兼容层中意义不大，因此放在最后*/
     if (OSTaskQty <= kernel_task_cnt) {                         /* No application task created                        */
         *p_err = OS_ERR_OS_NO_APP_TASK;
         CPU_CRITICAL_EXIT();
@@ -666,7 +666,7 @@ CPU_INT16U  OSVersion (OS_ERR  *p_err)
 *
 *              3) This hook has been added to allow you to do such things as STOP the CPU to conserve power.
 *
-*              4) �ڦ�COS-III���ݲ��У�OS_IdleTask������һ������������һ��RT-Thread����ϵͳIdle����Ļص�����
+*              4) 在μCOS-III兼容层中，OS_IdleTask不再是一个函数，而是一个RT-Thread操作系统Idle任务的回调函数
 ************************************************************************************************************************
 */
 
@@ -696,7 +696,7 @@ void  OS_IdleTask (void)
 * Returns    : none
 *
 * Note(s)    : 1) This function is INTERNAL to uC/OS-III and your application MUST NOT call it.
-*              2) �ڦ�COS-III���ݲ��У�OS_IdleTask������һ������������һ��RT-Thread����ϵͳIdle����Ļص�����
+*              2) 在μCOS-III兼容层中，OS_IdleTask不再是一个函数，而是一个RT-Thread操作系统Idle任务的回调函数
 ************************************************************************************************************************
 */
 
@@ -709,7 +709,7 @@ void  OS_IdleTaskInit (OS_ERR  *p_err)
     }
 #endif
     OSIdleTaskCtr = (OS_IDLE_CTR)0;
-    rt_thread_idle_sethook(OS_IdleTask);                        /* ��RTTע���COS-III���ݲ��������(ʵ��Ϊ�ص�����)    */
+    rt_thread_idle_sethook(OS_IdleTask);                        /* 向RTT注册μCOS-III兼容层空闲任务(实则为回调函数)    */
 }
 
 #endif

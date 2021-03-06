@@ -58,21 +58,21 @@
 
 /*
 ************************************************************************************************************************
-* Note(s)    : 1)������Ϣ���з���(post/send)����ѡ���˵��:
-*                   RTT����Ϣ������uCOS����Ϣ����ʵ�ֻ�����ȫ��ͬ��
-*                    ��RTT����Ϣ�����ǲ������ݿ����ķ�ʽ��ֱ��������ݵĴ���
-*                    ��uCOS����Ϣ���в��ô���ָ����㿽����ʽ
-*                   ��ȻRTT������Ҳ���ô���ָ��ķ�ʽ������û���ṩurgent��������LIFO������Ϣ,��˲���RTT����Ϣ����ʵ��
+* Note(s)    : 1)关于消息队列发送(post/send)策略选项的说明:
+*                   RTT的消息队列与uCOS的消息队列实现机理完全不同：
+*                    ・RTT的消息队列是采用数据拷贝的方式，直接完成数据的传递
+*                    ・uCOS的消息队列采用传递指针的零拷贝方式
+*                   虽然RTT的邮箱也采用传递指针的方式，但是没有提供urgent函数用于LIFO发送消息,因此采用RTT的消息队列实现
 *
-*                   RTT֧�֣�
-*                       RT_IPC_FLAG_PRIO(uCOS-IIIû��ʵ��)
-*                       RT_IPC_FLAG_FIFO(�൱��OS_OPT_POST_FIFO)
-*                       ͨ��rt_mq_urgent��������Ϣ��ӵ���ͷ����LIFO��������(�൱��OS_OPT_POST_LIFO)
-*                   uCOS-III֧�֣�
-*                       OS_OPT_POST_FIFO(�൱��RT_IPC_FLAG_PRIO)
-*                       OS_OPT_POST_LIFO(�൱��rt_mq_urgent����)
-*                       OS_OPT_POST_ALL (RT-Threadδʵ��,���Ǳ����ݲ��Ѿ�ʵ��,os_rtwrap.c)
-*                       OS_OPT_POST_NO_SCHED (RT-Threadδʵ��)
+*                   RTT支持：
+*                       RT_IPC_FLAG_PRIO(uCOS-III没有实现)
+*                       RT_IPC_FLAG_FIFO(相当于OS_OPT_POST_FIFO)
+*                       通过rt_mq_urgent函数将消息插队到队头进行LIFO紧急发布(相当于OS_OPT_POST_LIFO)
+*                   uCOS-III支持：
+*                       OS_OPT_POST_FIFO(相当于RT_IPC_FLAG_PRIO)
+*                       OS_OPT_POST_LIFO(相当于rt_mq_urgent函数)
+*                       OS_OPT_POST_ALL (RT-Thread未实现,但是本兼容层已经实现,os_rtwrap.c)
+*                       OS_OPT_POST_NO_SCHED (RT-Thread未实现)
 ************************************************************************************************************************
 */
 
@@ -102,12 +102,12 @@
 *                              OS_ERR_OBJ_CREATED             if the message queue has already been created
 *                              OS_ERR_OBJ_PTR_NULL            if you passed a NULL pointer for 'p_q'
 *                              OS_ERR_Q_SIZE                  if the size you specified is 0
-*                            + OS_ERR_MEM_FULL                �������ڲ��������ڴ�ѷ���,�ô����ʾ�޷����䵽�ڴ�
-*                          -------------˵��-------------
-*                              OS_ERR_XXXX        ��ʾ���Լ�������uCOS-IIIԭ��Ĵ�����
-*                            - OS_ERR_XXXX        ��ʾ�ô������ڱ����ݲ��Ѿ��޷�ʹ��
-*                            + OS_ERR_RT_XXXX     ��ʾ�ô�����Ϊ������RTTר�ô����뼯
-*                            Ӧ�ò���Ҫ��API���صĴ������ж�������Ӧ���޸�
+*                            + OS_ERR_MEM_FULL                本函数内部采用了内存堆分配,该错误表示无法分配到内存
+*                          -------------说明-------------
+*                              OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
+*                            - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
+*                            + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
+*                            应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : none
 ************************************************************************************************************************
@@ -141,7 +141,7 @@ void  OSQCreate (OS_Q        *p_q,
     }
 #endif
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ����Ƿ����ж�������                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_CREATE_ISR;
         return;
@@ -149,17 +149,17 @@ void  OSQCreate (OS_Q        *p_q,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_q == RT_NULL)                                      /* �����Ϣ����ָ���Ƿ�ΪNULL                             */
+    if(p_q == RT_NULL)                                      /* 检查消息队列指针是否为NULL                             */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
     }
-    if(p_name == RT_NULL)                                   /* �����Ϣ��������ָ���Ƿ�ΪNULL                         */
+    if(p_name == RT_NULL)                                   /* 检查消息队列名称指针是否为NULL                         */
     {
         *p_err = OS_ERR_NAME;
         return;
     }
-    if(max_qty == 0)                                        /* �����Ϣ������󳤶��Ƿ�Ϊ0                            */
+    if(max_qty == 0)                                        /* 检查消息队列最大长度是否为0                            */
     {
         *p_err = OS_ERR_Q_SIZE;
         return;
@@ -167,7 +167,7 @@ void  OSQCreate (OS_Q        *p_q,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*�ж��ں˶����Ƿ��Ѿ�����Ϣ���У����Ƿ��Ѿ�������*/
+    /*判断内核对象是否已经是消息队列，即是否已经创建过*/
     if(rt_object_get_type(&p_q->Msg.parent.parent) == RT_Object_Class_MessageQueue)
     {
         *p_err = OS_ERR_OBJ_CREATED;
@@ -176,9 +176,9 @@ void  OSQCreate (OS_Q        *p_q,
 #endif
 
     msg_header_size = sizeof(struct _rt_mq_message);        /* sizeof(struct rt_mq_message)                           */
-    msg_size = sizeof(ucos_msg_t);                          /* ��Ϣ������һ����Ϣ����󳤶ȣ���λ�ֽ�                 */
-    pool_size = (msg_header_size + msg_size) * max_qty;     /* �����Ϣ�Ļ�������С                                   */
-    p_pool = RT_KERNEL_MALLOC(pool_size);                   /* �������ڴ����Ϣ�Ļ�����                               */
+    msg_size = sizeof(ucos_msg_t);                          /* 消息队列中一条消息的最大长度，单位字节                 */
+    pool_size = (msg_header_size + msg_size) * max_qty;     /* 存放消息的缓冲区大小                                   */
+    p_pool = RT_KERNEL_MALLOC(pool_size);                   /* 分配用于存放消息的缓冲区                               */
     if(p_pool == RT_NULL)
     {
         *p_err = OS_ERR_MEM_FULL;
@@ -278,7 +278,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ����Ƿ����ж�������                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0;
@@ -293,7 +293,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_q == RT_NULL)                                      /* �����Ϣ����ָ���Ƿ�ΪNULL                             */
+    if(p_q == RT_NULL)                                      /* 检查消息队列指针是否为NULL                             */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
@@ -310,7 +310,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*�ж��ں˶����Ƿ�Ϊ��Ϣ����*/
+    /*判断内核对象是否为消息队列*/
     if(rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -326,7 +326,7 @@ OS_OBJ_QTY  OSQDel (OS_Q    *p_q,
     {
         case OS_OPT_DEL_NO_PEND:
             CPU_CRITICAL_ENTER();
-            if(rt_list_isempty(&(p_q->Msg.parent.suspend_thread))) /* ��û���̵߳ȴ��ź���                            */
+            if(rt_list_isempty(&(p_q->Msg.parent.suspend_thread))) /* 若没有线程等待信号量                            */
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_mq_detach(&p_q->Msg);
@@ -426,7 +426,7 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*�ж��ں˶����Ƿ�Ϊ��Ϣ����*/
+    /*判断内核对象是否为消息队列*/
     if(rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue) {
        *p_err = OS_ERR_OBJ_TYPE;
         return ((OS_MSG_QTY)0);
@@ -436,7 +436,7 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
     CPU_CRITICAL_ENTER();
     while(p_q->Msg.entry>0)
     {
-        /* ʵ�ֲμ���rt_mq_recv���� */
+        /* 实现参见了rt_mq_recv函数 */
         msg = (struct _rt_mq_message *)(p_q->Msg.msg_queue_head);/* get message from queue                            */
         p_q->Msg.msg_queue_head = msg->next;                /* move message queue head                                */
         if (p_q->Msg.msg_queue_tail == msg)                 /* reach queue tail, set to NULL                          */
@@ -480,8 +480,8 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
 *                            received, pend aborted or the message queue deleted,  If you pass a NULL pointer (i.e.
 *                            (CPU_TS *)0) then you will not get the timestamp.  In other words, passing a NULL pointer
 *                            is valid and indicates that you don't need the timestamp.
-*                            -------------˵��-------------
-*                            �ò�����RTT��û������,��NULL����
+*                            -------------说明-------------
+*                            该参数在RTT中没有意义,填NULL即可
 *
 *              p_err         is a pointer to a variable that will contain an error code returned by this function.
 *
@@ -495,11 +495,11 @@ OS_MSG_QTY  OSQFlush (OS_Q    *p_q,
 *                                OS_ERR_SCHED_LOCKED       the scheduler is locked
 *                                OS_ERR_TIMEOUT            A message was not received within the specified timeout
 *                                                          would lead to a suspension.
-*                            -------------˵��-------------
-*                                OS_ERR_XXXX        ��ʾ���Լ�������uCOS-IIIԭ��Ĵ�����
-*                              - OS_ERR_XXXX        ��ʾ�ô������ڱ����ݲ��Ѿ��޷�ʹ��
-*                              + OS_ERR_RT_XXXX     ��ʾ�ô�����Ϊ������RTTר�ô����뼯
-*                              Ӧ�ò���Ҫ��API���صĴ������ж�������Ӧ���޸�
+*                            -------------说明-------------
+*                                OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
+*                              - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
+*                              + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
+*                              应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : != (void *)0  is a pointer to the message received
 *              == (void *)0  if you received a NULL pointer message or,
@@ -536,7 +536,7 @@ void  *OSQPend (OS_Q         *p_q,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ����Ƿ����ж�������                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* 检查是否在中断中运行                                   */
     {
         *p_err = OS_ERR_PEND_ISR;
         return RT_NULL;
@@ -551,7 +551,7 @@ void  *OSQPend (OS_Q         *p_q,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_q == RT_NULL)                                      /* �����Ϣ����ָ���Ƿ�ΪNULL                             */
+    if(p_q == RT_NULL)                                      /* 检查消息队列指针是否为NULL                             */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return RT_NULL;
@@ -572,7 +572,7 @@ void  *OSQPend (OS_Q         *p_q,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*�ж��ں˶����Ƿ�Ϊ��Ϣ����*/
+    /*判断内核对象是否为消息队列*/
     if(rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -581,18 +581,18 @@ void  *OSQPend (OS_Q         *p_q,
 #endif
 
     /*
-        ��RTT��timeoutΪ0��ʾ������,ΪRT_WAITING_FOREVER��ʾ��������,
-        ����uCOS-III������ͬ,�����Ҫת��
+        在RTT中timeout为0表示不阻塞,为RT_WAITING_FOREVER表示永久阻塞,
+        这与uCOS-III有所不同,因此需要转换
     */
     if((opt & OS_OPT_PEND_NON_BLOCKING) == (OS_OPT)0)
     {
-        /*���������Ƿ���*/
+        /*检查调度器是否被锁*/
         if(OSSchedLockNestingCtr > (OS_NESTING_CTR)0)
         {
             *p_err = OS_ERR_SCHED_LOCKED;
             return RT_NULL;
         }
-        if(timeout == 0)                                    /* ��uCOS-III��timeout=0��ʾ��������                      */
+        if(timeout == 0)                                    /* 在uCOS-III中timeout=0表示永久阻塞                      */
         {
             time = RT_WAITING_FOREVER;
         }
@@ -603,7 +603,7 @@ void  *OSQPend (OS_Q         *p_q,
     }
     else
     {
-        time = RT_WAITING_NO;                               /* ��RTT��timeoutΪ0��ʾ������                            */
+        time = RT_WAITING_NO;                               /* 在RTT中timeout为0表示非阻塞                            */
     }
 
     CPU_CRITICAL_ENTER();
@@ -620,10 +620,10 @@ void  *OSQPend (OS_Q         *p_q,
 #endif
     CPU_CRITICAL_EXIT();
 
-    /*��ʼ��Ϣ�����Լ�����*/
+    /*开始消息接收以及处理*/
     rt_err = rt_mq_recv(&p_q->Msg,
-                        (void*)&ucos_msg,                   /* uCOS��Ϣ��                                             */
-                         sizeof(ucos_msg_t),                /* uCOS��Ϣ�γ���                                         */
+                        (void*)&ucos_msg,                   /* uCOS消息段                                             */
+                         sizeof(ucos_msg_t),                /* uCOS消息段长度                                         */
                          time);
 
     *p_err = rt_err_to_ucosiii(rt_err);
@@ -633,19 +633,19 @@ void  *OSQPend (OS_Q         *p_q,
     }
 
     CPU_CRITICAL_ENTER();
-    p_tcb->TaskState &= ~OS_TASK_STATE_PEND;                /* ��������״̬                                           */
-    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                /* �����ǰ����ȴ�״̬                                   */
+    p_tcb->TaskState &= ~OS_TASK_STATE_PEND;                /* 更新任务状态                                           */
+    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                /* 清除当前任务等待状态                                   */
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");
     if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
     {
-        /*���ȴ�����Ϊ�գ��򽫵�ǰ�ȴ���Ϣ���е��̸߳�ֵ��.DbgNamePtr*/
+        /*若等待表不为空，则将当前等待消息队列的线程赋值给.DbgNamePtr*/
         thread = rt_list_entry((&(p_q->Msg.parent.suspend_thread))->next, struct rt_thread, tlist);
         p_q->DbgNamePtr = thread->name;
     }
     else
     {
-        p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");         /* ��Ϊ��,����յ�ǰ.DbgNamePtr                           */
+        p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");         /* 若为空,则清空当前.DbgNamePtr                           */
     }
 #endif
     if(p_tcb->PendStatus == OS_STATUS_PEND_ABORT)           /* Indicate that we aborted                               */
@@ -753,7 +753,7 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*�ж��ں˶����Ƿ�Ϊ��Ϣ����*/
+    /*判断内核对象是否为消息队列*/
     if (rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue) {
        *p_err =  OS_ERR_OBJ_TYPE;
         return ((OS_OBJ_QTY)0u);
@@ -761,7 +761,7 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
 #endif
 
     CPU_CRITICAL_ENTER();
-    if(rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))  /* ��û���̵߳ȴ��ź���                                   */
+    if(rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))  /* 若没有线程等待信号量                                   */
     {
         CPU_CRITICAL_EXIT();
        *p_err =  OS_ERR_PEND_ABORT_NONE;
@@ -783,13 +783,13 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
     CPU_CRITICAL_ENTER();
     if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
     {
-        /*���ȴ�����Ϊ�գ��򽫵�ǰ�ȴ���Ϣ���е��̸߳�ֵ��.DbgNamePtr*/
+        /*若等待表不为空，则将当前等待消息队列的线程赋值给.DbgNamePtr*/
         thread = rt_list_entry((&(p_q->Msg.parent.suspend_thread))->next, struct rt_thread, tlist);
         p_q->DbgNamePtr = thread->name;
     }
     else
     {
-        p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");         /* ��Ϊ��,����յ�ǰ.DbgNamePtr                           */
+        p_q->DbgNamePtr =(CPU_CHAR *)((void *)" ");         /* 若为空,则清空当前.DbgNamePtr                           */
     }
     CPU_CRITICAL_EXIT();
 #endif
@@ -849,11 +849,11 @@ OS_OBJ_QTY  OSQPendAbort (OS_Q    *p_q,
 *                                OS_ERR_OS_NOT_RUNNING  If uC/OS-III is not running yet
 *                                OS_ERR_Q_MAX           If the queue is full
 *                              + OS_ERR_OPT_INVALID     You specified an invalid option
-*                            -------------˵��-------------
-*                                OS_ERR_XXXX        ��ʾ���Լ�������uCOS-IIIԭ��Ĵ�����
-*                              - OS_ERR_XXXX        ��ʾ�ô������ڱ����ݲ��Ѿ��޷�ʹ��
-*                              + OS_ERR_RT_XXXX     ��ʾ�ô�����Ϊ������RTTר�ô����뼯
-*                              Ӧ�ò���Ҫ��API���صĴ������ж�������Ӧ���޸�
+*                            -------------说明-------------
+*                                OS_ERR_XXXX        表示可以继续沿用uCOS-III原版的错误码
+*                              - OS_ERR_XXXX        表示该错误码在本兼容层已经无法使用
+*                              + OS_ERR_RT_XXXX     表示该错误码为新增的RTT专用错误码集
+*                              应用层需要对API返回的错误码判断做出相应的修改
 *
 * Returns    : None
 ************************************************************************************************************************
@@ -888,7 +888,7 @@ void  OSQPost (OS_Q         *p_q,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_q == RT_NULL)                                      /* �����Ϣ����ָ���Ƿ�ΪNULL                             */
+    if(p_q == RT_NULL)                                      /* 检查消息队列指针是否为NULL                             */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
@@ -911,7 +911,7 @@ void  OSQPost (OS_Q         *p_q,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*�ж��ں˶����Ƿ�Ϊ��Ϣ����*/
+    /*判断内核对象是否为消息队列*/
     if(rt_object_get_type(&p_q->Msg.parent.parent) != RT_Object_Class_MessageQueue)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -919,7 +919,7 @@ void  OSQPost (OS_Q         *p_q,
     }
 #endif
 
-    /*װ��uCOS��Ϣ��*/
+    /*装填uCOS消息段*/
     ucos_msg.data_size = msg_size;
     ucos_msg.data_ptr = p_void;
 
@@ -942,7 +942,7 @@ void  OSQPost (OS_Q         *p_q,
         }
         else
         {
-            /* �㲥����Ҫ����FIFO����LIFO */
+            /* 广播不需要区分FIFO还是LIFO */
             rt_err = rt_mq_send_all(&p_q->Msg,(void*)&ucos_msg,sizeof(ucos_msg_t));
         }
     }
@@ -959,13 +959,13 @@ void  OSQPost (OS_Q         *p_q,
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     if(!rt_list_isempty(&(p_q->Msg.parent.suspend_thread)))
     {
-        /*���ȴ�����Ϊ�գ��򽫵�ǰ�ȴ���Ϣ���е��̸߳�ֵ��.DbgNamePtr*/
+        /*若等待表不为空，则将当前等待消息队列的线程赋值给.DbgNamePtr*/
         thread = rt_list_entry((&(p_q->Msg.parent.suspend_thread))->next, struct rt_thread, tlist);
         p_q->DbgNamePtr = thread->name;
     }
     else
     {
-        p_q->DbgNamePtr = (CPU_CHAR *)((void *)" ");        /* ��Ϊ��,����յ�ǰ.DbgNamePtr                           */
+        p_q->DbgNamePtr = (CPU_CHAR *)((void *)" ");        /* 若为空,则清空当前.DbgNamePtr                           */
     }
 #endif
     CPU_CRITICAL_EXIT();

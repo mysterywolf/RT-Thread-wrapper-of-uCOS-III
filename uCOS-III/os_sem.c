@@ -58,14 +58,14 @@
 
 /*
 ************************************************************************************************************************
-* Note(s)    : 1)¹ØÓÚÐÅºÅÁ¿ÊÍ·Å(post/release)²ßÂÔÑ¡ÏîµÄËµÃ÷:
-*                   RTTÖ§³Ö£º
-*                       RT_IPC_FLAG_PRIO(Ïàµ±ÓÚOS_OPT_POST_1)
-*                       RT_IPC_FLAG_FIFO(uCOS-IIIÃ»ÓÐÊµÏÖ,Æä¾ùÊÇ°´ÕÕÓÅÏÈ¼¶ÅÅÁÐµÄ)
-*                   uCOS-IIIÖ§³Ö£º
-*                       OS_OPT_POST_1 (Ïàµ±ÓÚRT_IPC_FLAG_PRIO)
-*                       OS_OPT_POST_ALL (RT-ThreadÎ´ÊµÏÖ,µ«ÊÇ±¾¼æÈÝ²ãÒÑ¾­ÊµÏÖ,os_rtwrap.c)
-*                       OS_OPT_POST_NO_SCHED (RT-ThreadÎ´ÊµÏÖ)
+* Note(s)    : 1)å…³äºŽä¿¡å·é‡é‡Šæ”¾(post/release)ç­–ç•¥é€‰é¡¹çš„è¯´æ˜Ž:
+*                   RTTæ”¯æŒï¼š
+*                       RT_IPC_FLAG_PRIO(ç›¸å½“äºŽOS_OPT_POST_1)
+*                       RT_IPC_FLAG_FIFO(uCOS-IIIæ²¡æœ‰å®žçŽ°,å…¶å‡æ˜¯æŒ‰ç…§ä¼˜å…ˆçº§æŽ’åˆ—çš„)
+*                   uCOS-IIIæ”¯æŒï¼š
+*                       OS_OPT_POST_1 (ç›¸å½“äºŽRT_IPC_FLAG_PRIO)
+*                       OS_OPT_POST_ALL (RT-Threadæœªå®žçŽ°,ä½†æ˜¯æœ¬å…¼å®¹å±‚å·²ç»å®žçŽ°,os_rtwrap.c)
+*                       OS_OPT_POST_NO_SCHED (RT-Threadæœªå®žçŽ°)
 ************************************************************************************************************************
 */
 
@@ -124,7 +124,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖÐ¶ÏÖÐÔËÐÐ                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                   */
     {
         *p_err = OS_ERR_CREATE_ISR;
         return;
@@ -132,12 +132,12 @@ void  OSSemCreate (OS_SEM      *p_sem,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_sem == RT_NULL)                                    /* ¼ì²éÄÚºË¶ÔÏóÖ¸ÕëÊÇ·ñÎª¿Õ                               */
+    if(p_sem == RT_NULL)                                    /* æ£€æŸ¥å†…æ ¸å¯¹è±¡æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                               */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
     }
-    if(p_name == RT_NULL)                                   /* ¼ì²éÐÅºÅÁ¿ÃûÖ¸ÕëÊÇ·ñÎª¿Õ                               */
+    if(p_name == RT_NULL)                                   /* æ£€æŸ¥ä¿¡å·é‡åæŒ‡é’ˆæ˜¯å¦ä¸ºç©º                               */
     {
         *p_err = OS_ERR_NAME;
         return;
@@ -145,7 +145,7 @@ void  OSSemCreate (OS_SEM      *p_sem,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅÐ¶ÏÄÚºË¶ÔÏóÊÇ·ñÒÑ¾­ÊÇÐÅºÅÁ¿£¬¼´ÊÇ·ñÒÑ¾­´´½¨¹ý*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦å·²ç»æ˜¯ä¿¡å·é‡ï¼Œå³æ˜¯å¦å·²ç»åˆ›å»ºè¿‡*/
     if(rt_object_get_type(&p_sem->Sem.parent.parent) == RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_CREATED;
@@ -238,7 +238,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖÐ¶ÏÖÐÔËÐÐ                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                   */
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0;
@@ -253,7 +253,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_sem == RT_NULL)                                    /* ¼ì²éÖ¸ÕëÊÇ·ñÎª¿Õ                                       */
+    if(p_sem == RT_NULL)                                    /* æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                       */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
@@ -270,7 +270,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅÐ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎªÐÅºÅÁ¿*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºä¿¡å·é‡*/
     if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -286,7 +286,7 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
     {
         case OS_OPT_DEL_NO_PEND:
             CPU_CRITICAL_ENTER();
-            if(rt_list_isempty(&(p_sem->Sem.parent.suspend_thread))) /* ÈôÃ»ÓÐÏß³ÌµÈ´ýÐÅºÅÁ¿                          */
+            if(rt_list_isempty(&(p_sem->Sem.parent.suspend_thread))) /* è‹¥æ²¡æœ‰çº¿ç¨‹ç­‰å¾…ä¿¡å·é‡                          */
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_sem_detach(&p_sem->Sem);
@@ -344,8 +344,8 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
 *                            or pend aborted or the semaphore deleted.  If you pass a NULL pointer (i.e. (CPU_TS*)0)
 *                            then you will not get the timestamp.  In other words, passing a NULL pointer is valid
 *                            and indicates that you don't need the timestamp.
-*                            -------------ËµÃ÷-------------
-*                            ¸Ã²ÎÊýÔÚRTTÖÐÃ»ÓÐÒâÒå,ÌîNULL¼´¿É
+*                            -------------è¯´æ˜Ž-------------
+*                            è¯¥å‚æ•°åœ¨RTTä¸­æ²¡æœ‰æ„ä¹‰,å¡«NULLå³å¯
 *
 *              p_err         is a pointer to a variable that will contain an error code returned by this function.
 *
@@ -365,12 +365,12 @@ OS_OBJ_QTY  OSSemDel (OS_SEM  *p_sem,
 *                              - OS_ERR_STATUS_INVALID     Pend status is invalid
 *                                OS_ERR_TIMEOUT            The semaphore was not received within the specified
 *                                                          timeout.
-*                              + OS_ERR_RT_ERROR           ÆÕÍ¨´íÎó
-*                            -------------ËµÃ÷-------------
-*                                OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌÐøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                              - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈÝ²ãÒÑ¾­ÎÞ·¨Ê¹ÓÃ
-*                              + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªÐÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                              Ó¦ÓÃ²ãÐèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅÐ¶Ï×ö³öÏàÓ¦µÄÐÞ¸Ä
+*                              + OS_ERR_RT_ERROR           æ™®é€šé”™è¯¯
+*                            -------------è¯´æ˜Ž-------------
+*                                OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŽŸç‰ˆçš„é”™è¯¯ç 
+*                              - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                              + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢žçš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                              åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›žçš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 *
 * Returns    : The current value of the semaphore counter or 0 if not available.
 ************************************************************************************************************************
@@ -401,7 +401,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖÐ¶ÏÖÐÔËÐÐ                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                   */
     {
         *p_err = OS_ERR_PEND_ISR;
         return 0;
@@ -416,7 +416,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_sem == RT_NULL)                                    /* ¼ì²éÐÅºÅÁ¿Ö¸ÕëÊÇ·ñÎª¿Õ                                 */
+    if(p_sem == RT_NULL)                                    /* æ£€æŸ¥ä¿¡å·é‡æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                 */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
@@ -433,7 +433,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅÐ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎªÐÅºÅÁ¿*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºä¿¡å·é‡*/
     if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -442,18 +442,18 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
 #endif
 
     /*
-        ÔÚRTTÖÐtimeoutÎª0±íÊ¾²»×èÈû,ÎªRT_WAITING_FOREVER±íÊ¾ÓÀ¾Ã×èÈû,
-        ÕâÓëuCOS-IIIÓÐËù²»Í¬,Òò´ËÐèÒª×ª»»
+        åœ¨RTTä¸­timeoutä¸º0è¡¨ç¤ºä¸é˜»å¡ž,ä¸ºRT_WAITING_FOREVERè¡¨ç¤ºæ°¸ä¹…é˜»å¡ž,
+        è¿™ä¸ŽuCOS-IIIæœ‰æ‰€ä¸åŒ,å› æ­¤éœ€è¦è½¬æ¢
     */
     if((opt & OS_OPT_PEND_NON_BLOCKING) == (OS_OPT)0)
     {
-        if(OSSchedLockNestingCtr > (OS_NESTING_CTR)0)       /* ¼ì²éµ÷¶ÈÆ÷ÊÇ·ñ±»Ëø                                     */
+        if(OSSchedLockNestingCtr > (OS_NESTING_CTR)0)       /* æ£€æŸ¥è°ƒåº¦å™¨æ˜¯å¦è¢«é”                                     */
         {
             *p_err = OS_ERR_SCHED_LOCKED;
             return 0;
         }
 
-        if(timeout == 0)                                    /* ÔÚuCOS-IIIÖÐtimeout=0±íÊ¾ÓÀ¾Ã×èÈû                      */
+        if(timeout == 0)                                    /* åœ¨uCOS-IIIä¸­timeout=0è¡¨ç¤ºæ°¸ä¹…é˜»å¡ž                      */
         {
             time = RT_WAITING_FOREVER;
         }
@@ -464,23 +464,23 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     }
     else
     {
-        time = RT_WAITING_NO;                               /* ÔÚRTTÖÐtimeoutÎª0±íÊ¾·Ç×èÈû                            */
+        time = RT_WAITING_NO;                               /* åœ¨RTTä¸­timeoutä¸º0è¡¨ç¤ºéžé˜»å¡ž                            */
     }
 
     CPU_CRITICAL_ENTER();
     p_tcb = OSTCBCurPtr;
     p_tcb->PendStatus = OS_STATUS_PEND_OK;                  /* Clear pend status                                      */
-    p_tcb->TaskState |= OS_TASK_STATE_PEND;                 /* ¸ü¸Äµ±Ç°ÈÎÎñ×´Ì¬ÎªµÈ´ý                                 */
-    if(p_tcb->PendOn != OS_TASK_PEND_ON_TASK_SEM)           /* ¼ì²é¸Ãº¯ÊýÊÇ·ñ±»ÈÎÎñÄÚ½¨ÐÅºÅÁ¿µ÷ÓÃ                     */
+    p_tcb->TaskState |= OS_TASK_STATE_PEND;                 /* æ›´æ”¹å½“å‰ä»»åŠ¡çŠ¶æ€ä¸ºç­‰å¾…                                 */
+    if(p_tcb->PendOn != OS_TASK_PEND_ON_TASK_SEM)           /* æ£€æŸ¥è¯¥å‡½æ•°æ˜¯å¦è¢«ä»»åŠ¡å†…å»ºä¿¡å·é‡è°ƒç”¨                     */
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_SEM;
     }
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 #if OS_CFG_DBG_EN > 0u
-    p_tcb->DbgNamePtr = p_sem->NamePtr;                     /* ¸üÐÂµÈ´ýÈÎÎñ±»ÄÄ¸öÐÅºÅÁ¿Ëù×èÈû                         */
+    p_tcb->DbgNamePtr = p_sem->NamePtr;                     /* æ›´æ–°ç­‰å¾…ä»»åŠ¡è¢«å“ªä¸ªä¿¡å·é‡æ‰€é˜»å¡ž                         */
     p_sem->DbgNamePtr = p_tcb->Task.name;
 #endif
-    p_sem->Ctr = p_sem->Sem.value;                          /* ¸üÐÂÐÅºÅÁ¿µÄvalue                                      */
+    p_sem->Ctr = p_sem->Sem.value;                          /* æ›´æ–°ä¿¡å·é‡çš„value                                      */
 #endif
     CPU_CRITICAL_EXIT();
 
@@ -492,15 +492,15 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
     }
 
     CPU_CRITICAL_ENTER();
-    p_tcb->TaskState &= ~OS_TASK_STATE_PEND;                /* ¸üÐÂÈÎÎñ×´Ì¬                                           */
-    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                /* Çå³ýµ±Ç°ÈÎÎñµÈ´ý×´Ì¬                                   */
+    p_tcb->TaskState &= ~OS_TASK_STATE_PEND;                /* æ›´æ–°ä»»åŠ¡çŠ¶æ€                                           */
+    p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;                /* æ¸…é™¤å½“å‰ä»»åŠ¡ç­‰å¾…çŠ¶æ€                                   */
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_sem->Ctr = p_sem->Sem.value;                          /* ¸üÐÂÐÅºÅÁ¿µÄvalue                                      */
+    p_sem->Ctr = p_sem->Sem.value;                          /* æ›´æ–°ä¿¡å·é‡çš„value                                      */
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");
     if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
     {
-        /*ÈôµÈ´ý±í²»Îª¿Õ£¬Ôò½«µ±Ç°µÈ´ýÐÅºÅÁ¿µÄÏß³Ì¸³Öµ¸øp_sem->DbgNamePtr*/
+        /*è‹¥ç­‰å¾…è¡¨ä¸ä¸ºç©ºï¼Œåˆ™å°†å½“å‰ç­‰å¾…ä¿¡å·é‡çš„çº¿ç¨‹èµ‹å€¼ç»™p_sem->DbgNamePtr*/
         thread = rt_list_entry((&(p_sem->Sem.parent.suspend_thread))->next, struct rt_thread, tlist);
         p_sem->DbgNamePtr = thread->name;
     }
@@ -519,7 +519,7 @@ OS_SEM_CTR  OSSemPend (OS_SEM   *p_sem,
 
     CPU_CRITICAL_EXIT();
 
-    return p_sem->Sem.value;/*·µ»ØÐÅºÅÁ¿»¹Ê£¶àÉÙvalue*/
+    return p_sem->Sem.value;/*è¿”å›žä¿¡å·é‡è¿˜å‰©å¤šå°‘value*/
 }
 
 /*
@@ -613,7 +613,7 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
 #endif
 
     CPU_CRITICAL_ENTER();
-    if(rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))/* ÈôÃ»ÓÐÏß³ÌµÈ´ýÐÅºÅÁ¿                                   */
+    if(rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))/* è‹¥æ²¡æœ‰çº¿ç¨‹ç­‰å¾…ä¿¡å·é‡                                   */
     {
         CPU_CRITICAL_EXIT();
        *p_err =  OS_ERR_PEND_ABORT_NONE;
@@ -633,11 +633,11 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
 
     CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_sem->Ctr =p_sem->Sem.value;                           /* ¸üÐÂÐÅºÅÁ¿valueÖµ                                      */
+    p_sem->Ctr =p_sem->Sem.value;                           /* æ›´æ–°ä¿¡å·é‡valueå€¼                                      */
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
     {
-        /*ÈôµÈ´ý±í²»Îª¿Õ£¬Ôò½«µ±Ç°µÈ´ýÐÅºÅÁ¿µÄÏß³Ì¸³Öµ¸øp_sem->DbgNamePtr*/
+        /*è‹¥ç­‰å¾…è¡¨ä¸ä¸ºç©ºï¼Œåˆ™å°†å½“å‰ç­‰å¾…ä¿¡å·é‡çš„çº¿ç¨‹èµ‹å€¼ç»™p_sem->DbgNamePtr*/
         thread = rt_list_entry((&(p_sem->Sem.parent.suspend_thread))->next, struct rt_thread, tlist);
         p_sem->DbgNamePtr = thread->name;
     }
@@ -684,12 +684,12 @@ OS_OBJ_QTY  OSSemPendAbort (OS_SEM  *p_sem,
 *                           OS_ERR_OBJ_TYPE      If 'p_sem' is not pointing at a semaphore
 *                           OS_ERR_OS_NOT_RUNNING If uC/OS-III is not running yet
 *                           OS_ERR_SEM_OVF       If the post would cause the semaphore count to overflow.
-*                         + OS_ERR_OPT_INVALID   Ô­°æÖÐÉÙÁËÒ»¸öoptÎÞÐ§µÄ´íÎóÂë
-*                       -------------ËµÃ÷-------------
-*                           OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌÐøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                         - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈÝ²ãÒÑ¾­ÎÞ·¨Ê¹ÓÃ
-*                         + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªÐÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                         Ó¦ÓÃ²ãÐèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅÐ¶Ï×ö³öÏàÓ¦µÄÐÞ¸Ä
+*                         + OS_ERR_OPT_INVALID   åŽŸç‰ˆä¸­å°‘äº†ä¸€ä¸ªoptæ— æ•ˆçš„é”™è¯¯ç 
+*                       -------------è¯´æ˜Ž-------------
+*                           OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŽŸç‰ˆçš„é”™è¯¯ç 
+*                         - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                         + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢žçš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                         åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›žçš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 *
 * Returns    : The current value of the semaphore counter or 0 upon error.
 ************************************************************************************************************************
@@ -722,7 +722,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
 
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_sem == RT_NULL)                                    /* ¼ì²éÖ¸ÕëÊÇ·ñÎª¿Õ                                       */
+    if(p_sem == RT_NULL)                                    /* æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                       */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
@@ -741,7 +741,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅÐ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎªÐÅºÅÁ¿*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºä¿¡å·é‡*/
     if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -760,9 +760,9 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
 
     CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_sem->Ctr = p_sem->Sem.value;                          /* ¸üÐÂÐÅºÅÁ¿valueÖµ                                      */
+    p_sem->Ctr = p_sem->Sem.value;                          /* æ›´æ–°ä¿¡å·é‡valueå€¼                                      */
 #endif
-    switch (sizeof(p_sem->Sem.value)) {                     /* ¼ì²éÐÅºÅÁ¿valueÖµÊÇ·ñ³¬³ört-threadÐÅºÅÁ¿Êý¾ÝÀàÐÍÊýÖµ·¶Î§*/
+    switch (sizeof(p_sem->Sem.value)) {                     /* æ£€æŸ¥ä¿¡å·é‡valueå€¼æ˜¯å¦è¶…å‡ºrt-threadä¿¡å·é‡æ•°æ®ç±»åž‹æ•°å€¼èŒƒå›´*/
         case 1u:
              if (p_sem->Sem.value == DEF_INT_08U_MAX_VAL) {
                  CPU_CRITICAL_EXIT();
@@ -793,7 +793,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
 #if OS_CFG_DBG_EN > 0u && !defined PKG_USING_UCOSIII_WRAPPER_TINY
     if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
     {
-        /*ÈôµÈ´ý±í²»Îª¿Õ£¬Ôò½«µ±Ç°µÈ´ýÐÅºÅÁ¿µÄÏß³Ì¸³Öµ¸øp_sem->DbgNamePtr*/
+        /*è‹¥ç­‰å¾…è¡¨ä¸ä¸ºç©ºï¼Œåˆ™å°†å½“å‰ç­‰å¾…ä¿¡å·é‡çš„çº¿ç¨‹èµ‹å€¼ç»™p_sem->DbgNamePtr*/
         thread = rt_list_entry((&(p_sem->Sem.parent.suspend_thread))->next, struct rt_thread, tlist);
         p_sem->DbgNamePtr = thread->name;
     }
@@ -805,7 +805,7 @@ OS_SEM_CTR  OSSemPost (OS_SEM  *p_sem,
     CPU_CRITICAL_EXIT();
 
     *p_err = rt_err_to_ucosiii(rt_err);
-    return p_sem->Sem.value;                                /* ·µ»ØÐÅºÅÁ¿»¹Ê£¶àÉÙvalue                                */
+    return p_sem->Sem.value;                                /* è¿”å›žä¿¡å·é‡è¿˜å‰©å¤šå°‘value                                */
 }
 
 /*
@@ -852,7 +852,7 @@ void  OSSemSet (OS_SEM      *p_sem,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖÐ¶ÏÖÐÔËÐÐ                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                   */
     {
         *p_err = OS_ERR_SET_ISR;
         return;
@@ -867,7 +867,7 @@ void  OSSemSet (OS_SEM      *p_sem,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅÐ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎªÐÅºÅÁ¿*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºä¿¡å·é‡*/
     if(rt_object_get_type(&p_sem->Sem.parent.parent) != RT_Object_Class_Semaphore)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -883,21 +883,21 @@ void  OSSemSet (OS_SEM      *p_sem,
     }
     else
     {
-        if(rt_list_isempty(&(p_sem->Sem.parent.suspend_thread))) /* ÈôÃ»ÓÐÏß³ÌµÈ´ýÐÅºÅÁ¿                              */
+        if(rt_list_isempty(&(p_sem->Sem.parent.suspend_thread))) /* è‹¥æ²¡æœ‰çº¿ç¨‹ç­‰å¾…ä¿¡å·é‡                              */
         {
             p_sem->Sem.value = cnt;
         }
         else
         {
-             *p_err = OS_ERR_TASK_WAITING;                  /* ÓÐÈÎÎñÕýÔÚµÈ´ý¸ÃÐÅºÅÁ¿,²»¿ÉÒÔÉèÖÃvalue                 */
+             *p_err = OS_ERR_TASK_WAITING;                  /* æœ‰ä»»åŠ¡æ­£åœ¨ç­‰å¾…è¯¥ä¿¡å·é‡,ä¸å¯ä»¥è®¾ç½®value                 */
         }
     }
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_sem->Ctr = p_sem->Sem.value;                          /* ¸üÐÂÐÅºÅÁ¿valueÖµ                                      */
+    p_sem->Ctr = p_sem->Sem.value;                          /* æ›´æ–°ä¿¡å·é‡valueå€¼                                      */
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_sem->Sem.parent.suspend_thread)))
     {
-        /*ÈôµÈ´ý±í²»Îª¿Õ£¬Ôò½«µ±Ç°µÈ´ýÐÅºÅÁ¿µÄÏß³Ì¸³Öµ¸øp_sem->DbgNamePtr*/
+        /*è‹¥ç­‰å¾…è¡¨ä¸ä¸ºç©ºï¼Œåˆ™å°†å½“å‰ç­‰å¾…ä¿¡å·é‡çš„çº¿ç¨‹èµ‹å€¼ç»™p_sem->DbgNamePtr*/
         thread = rt_list_entry((&(p_sem->Sem.parent.suspend_thread))->next, struct rt_thread, tlist);
         p_sem->DbgNamePtr = thread->name;
     }

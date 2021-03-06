@@ -106,7 +106,7 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                   */
     {
         *p_err = OS_ERR_CREATE_ISR;
         return;
@@ -114,12 +114,12 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_mutex == RT_NULL)                                  /* ¼ì²é»¥³âÁ¿Ö¸ÕëÊÇ·ñÎªNULL                               */
+    if(p_mutex == RT_NULL)                                  /* æ£€æŸ¥äº’æ–¥é‡æŒ‡é’ˆæ˜¯å¦ä¸ºNULL                               */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
     }
-    if(p_name == RT_NULL)                                   /* ¼ì²é»¥³âÁ¿Ãû³ÆÖ¸ÕëÊÇ·ñÎªNULL                           */
+    if(p_name == RT_NULL)                                   /* æ£€æŸ¥äº’æ–¥é‡åç§°æŒ‡é’ˆæ˜¯å¦ä¸ºNULL                           */
     {
         *p_err = OS_ERR_NAME;
         return;
@@ -127,7 +127,7 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅĞ¶ÏÄÚºË¶ÔÏóÊÇ·ñÒÑ¾­ÊÇĞÅºÅÁ¿£¬¼´ÊÇ·ñÒÑ¾­´´½¨¹ı*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦å·²ç»æ˜¯ä¿¡å·é‡ï¼Œå³æ˜¯å¦å·²ç»åˆ›å»ºè¿‡*/
     if(rt_object_get_type(&p_mutex->Mutex.parent.parent) == RT_Object_Class_Mutex)
     {
         *p_err = OS_ERR_OBJ_CREATED;
@@ -135,7 +135,7 @@ void  OSMutexCreate (OS_MUTEX  *p_mutex,
     }
 #endif
 
-    rt_err = rt_mutex_init(&p_mutex->Mutex,(const char *)p_name,RT_IPC_FLAG_PRIO); /* uCOS-III½öÖ§³ÖÒÔÓÅÏÈ¼¶½øĞĞÅÅÁĞ  */
+    rt_err = rt_mutex_init(&p_mutex->Mutex,(const char *)p_name,RT_IPC_FLAG_PRIO); /* uCOS-IIIä»…æ”¯æŒä»¥ä¼˜å…ˆçº§è¿›è¡Œæ’åˆ—  */
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err != RT_EOK)
     {
@@ -223,7 +223,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                   */
     {
         *p_err = OS_ERR_DEL_ISR;
         return 0;
@@ -238,7 +238,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_mutex == RT_NULL)                                  /* ¼ì²éÖ¸ÕëÊÇ·ñÎª¿Õ                                       */
+    if(p_mutex == RT_NULL)                                  /* æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                       */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return 0;
@@ -255,7 +255,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅĞ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎª»¥³âÁ¿*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºäº’æ–¥é‡*/
     if(rt_object_get_type(&p_mutex->Mutex.parent.parent) != RT_Object_Class_Mutex)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -271,7 +271,7 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
     {
         case OS_OPT_DEL_NO_PEND:
             CPU_CRITICAL_ENTER();
-            if(rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread))) /* ÈôÃ»ÓĞÏß³ÌµÈ´ıĞÅºÅÁ¿                      */
+            if(rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread))) /* è‹¥æ²¡æœ‰çº¿ç¨‹ç­‰å¾…ä¿¡å·é‡                      */
             {
                 CPU_CRITICAL_EXIT();
                 rt_err = rt_mutex_detach(&p_mutex->Mutex);
@@ -329,8 +329,8 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 *                            pend aborted or the mutex deleted.  If you pass a NULL pointer (i.e. (CPU_TS *)0) then you
 *                            will not get the timestamp.  In other words, passing a NULL pointer is valid and indicates
 *                            that you don't need the timestamp.
-*                            -------------ËµÃ÷-------------
-*                            ¸Ã²ÎÊıÔÚRTTÖĞÃ»ÓĞÒâÒå,ÌîNULL¼´¿É
+*                            -------------è¯´æ˜-------------
+*                            è¯¥å‚æ•°åœ¨RTTä¸­æ²¡æœ‰æ„ä¹‰,å¡«NULLå³å¯
 *
 *              p_err         is a pointer to a variable that will contain an error code returned by this function.
 *
@@ -351,11 +351,11 @@ OS_OBJ_QTY  OSMutexDel (OS_MUTEX  *p_mutex,
 *                              - OS_ERR_STATE_INVALID      If the task is in an invalid state
 *                              - OS_ERR_STATUS_INVALID     If the pend status has an invalid value
 *                                OS_ERR_TIMEOUT            The mutex was not received within the specified timeout.
-*                            -------------ËµÃ÷-------------
-*                                OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌĞøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                              - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈİ²ãÒÑ¾­ÎŞ·¨Ê¹ÓÃ
-*                              + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªĞÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                              Ó¦ÓÃ²ãĞèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅĞ¶Ï×ö³öÏàÓ¦µÄĞŞ¸Ä
+*                            -------------è¯´æ˜-------------
+*                                OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŸç‰ˆçš„é”™è¯¯ç 
+*                              - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                              + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢çš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                              åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›çš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 *
 * Returns    : none
 ************************************************************************************************************************
@@ -386,7 +386,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                   */
     {
         *p_err = OS_ERR_PEND_ISR;
         return;
@@ -401,7 +401,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_mutex == RT_NULL)                                  /* ¼ì²é»¥³âÁ¿Ö¸ÕëÊÇ·ñÎª¿Õ                                 */
+    if(p_mutex == RT_NULL)                                  /* æ£€æŸ¥äº’æ–¥é‡æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                 */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
@@ -418,7 +418,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅĞ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎª»¥³âÁ¿*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºäº’æ–¥é‡*/
     if(rt_object_get_type(&p_mutex->Mutex.parent.parent) != RT_Object_Class_Mutex)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -427,17 +427,17 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
 #endif
 
     /*
-        ÔÚRTTÖĞtimeoutÎª0±íÊ¾²»×èÈû,ÎªRT_WAITING_FOREVER±íÊ¾ÓÀ¾Ã×èÈû,
-        ÕâÓëuCOS-IIIÓĞËù²»Í¬,Òò´ËĞèÒª×ª»»
+        åœ¨RTTä¸­timeoutä¸º0è¡¨ç¤ºä¸é˜»å¡,ä¸ºRT_WAITING_FOREVERè¡¨ç¤ºæ°¸ä¹…é˜»å¡,
+        è¿™ä¸uCOS-IIIæœ‰æ‰€ä¸åŒ,å› æ­¤éœ€è¦è½¬æ¢
     */
     if((opt & OS_OPT_PEND_NON_BLOCKING) == (OS_OPT)0)
     {
-        if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)      /* ¼ì²éµ÷¶ÈÆ÷ÊÇ·ñ±»Ëø                                     */
+        if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)      /* æ£€æŸ¥è°ƒåº¦å™¨æ˜¯å¦è¢«é”                                     */
         {
             *p_err = OS_ERR_SCHED_LOCKED;
             return;
         }
-        if(timeout == 0)                                    /* ÔÚuCOS-IIIÖĞtimeout=0±íÊ¾ÓÀ¾Ã×èÈû                      */
+        if(timeout == 0)                                    /* åœ¨uCOS-IIIä¸­timeout=0è¡¨ç¤ºæ°¸ä¹…é˜»å¡                      */
         {
             time = RT_WAITING_FOREVER;
         }
@@ -448,7 +448,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     }
     else
     {
-        time = RT_WAITING_NO;                               /* ÔÚRTTÖĞtimeoutÎª0±íÊ¾·Ç×èÈû                            */
+        time = RT_WAITING_NO;                               /* åœ¨RTTä¸­timeoutä¸º0è¡¨ç¤ºéé˜»å¡                            */
     }
 
     CPU_CRITICAL_ENTER();
@@ -457,7 +457,7 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     p_tcb->TaskState |= OS_TASK_STATE_PEND;
     p_tcb->PendOn = OS_TASK_PEND_ON_MUTEX;
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* ¸üĞÂ»¥³âÁ¿µÄÇ¶Ì×Öµ                                     */
+    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* æ›´æ–°äº’æ–¥é‡çš„åµŒå¥—å€¼                                     */
 #endif
     if (p_mutex->Mutex.hold == (OS_NESTING_CTR)-1) {
         CPU_CRITICAL_EXIT();
@@ -465,8 +465,8 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
         return;
     }
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/* ¸üĞÂ»¥³âÁ¿Ô­Ê¼ÓÅÏÈ¼¶                             */
-    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;   /* ¸üĞÂ»¥³âÁ¿ËùÓµÓĞµÄÈÎÎñÖ¸Õë                             */
+    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/* æ›´æ–°äº’æ–¥é‡åŸå§‹ä¼˜å…ˆçº§                             */
+    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;   /* æ›´æ–°äº’æ–¥é‡æ‰€æ‹¥æœ‰çš„ä»»åŠ¡æŒ‡é’ˆ                             */
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = p_mutex->NamePtr;
     p_mutex->DbgNamePtr = p_tcb->Task.name;
@@ -482,25 +482,25 @@ void  OSMutexPend (OS_MUTEX  *p_mutex,
     }
 
     CPU_CRITICAL_ENTER();
-    /*¸üĞÂÈÎÎñ×´Ì¬*/
+    /*æ›´æ–°ä»»åŠ¡çŠ¶æ€*/
     p_tcb->TaskState &= ~OS_TASK_STATE_PEND;
-    /*Çå³ıµ±Ç°ÈÎÎñµÈ´ı×´Ì¬*/
+    /*æ¸…é™¤å½“å‰ä»»åŠ¡ç­‰å¾…çŠ¶æ€*/
     p_tcb->PendOn = OS_TASK_PEND_ON_NOTHING;
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* ¸üĞÂ»¥³âÁ¿µÄÇ¶Ì×Öµ                                     */
-    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/* ¸üĞÂ»¥³âÁ¿Ô­Ê¼ÓÅÏÈ¼¶                             */
-    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;   /* ¸üĞÂ»¥³âÁ¿ËùÓµÓĞµÄÈÎÎñÖ¸Õë                             */
+    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* æ›´æ–°äº’æ–¥é‡çš„åµŒå¥—å€¼                                     */
+    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/* æ›´æ–°äº’æ–¥é‡åŸå§‹ä¼˜å…ˆçº§                             */
+    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;   /* æ›´æ–°äº’æ–¥é‡æ‰€æ‹¥æœ‰çš„ä»»åŠ¡æŒ‡é’ˆ                             */
 #if OS_CFG_DBG_EN > 0u
     p_tcb->DbgNamePtr = (CPU_CHAR *)((void *)" ");
     if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
     {
-        /*ÈôµÈ´ı±í²»Îª¿Õ£¬Ôò½«µ±Ç°µÈ´ı»¥³âÁ¿µÄÏß³Ì¸³Öµ¸ø.DbgNamePtr*/
+        /*è‹¥ç­‰å¾…è¡¨ä¸ä¸ºç©ºï¼Œåˆ™å°†å½“å‰ç­‰å¾…äº’æ–¥é‡çš„çº¿ç¨‹èµ‹å€¼ç»™.DbgNamePtr*/
         thread = rt_list_entry((&(p_mutex->Mutex.parent.suspend_thread))->next, struct rt_thread, tlist);
         p_mutex->DbgNamePtr = thread->name;
     }
     else
     {
-        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");     /* ÈôÎª¿Õ,ÔòÇå¿Õµ±Ç°.DbgNamePtr                           */
+        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");     /* è‹¥ä¸ºç©º,åˆ™æ¸…ç©ºå½“å‰.DbgNamePtr                           */
     }
 #endif
 #endif
@@ -612,7 +612,7 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
 #endif
 
     CPU_CRITICAL_ENTER();
-    if(rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))/* ÈôÃ»ÓĞÏß³ÌµÈ´ıĞÅºÅÁ¿                               */
+    if(rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))/* è‹¥æ²¡æœ‰çº¿ç¨‹ç­‰å¾…ä¿¡å·é‡                               */
     {
         CPU_CRITICAL_EXIT();
        *p_err =  OS_ERR_PEND_ABORT_NONE;
@@ -633,19 +633,19 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
 
     CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* ¸üĞÂ»¥³âÁ¿µÄÇ¶Ì×Öµ                                     */
-    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/* ¸üĞÂ»¥³âÁ¿Ô­Ê¼ÓÅÏÈ¼¶                             */
-    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;   /* ¸üĞÂ»¥³âÁ¿ËùÓµÓĞµÄÈÎÎñÖ¸Õë                             */
+    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* æ›´æ–°äº’æ–¥é‡çš„åµŒå¥—å€¼                                     */
+    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority;/* æ›´æ–°äº’æ–¥é‡åŸå§‹ä¼˜å…ˆçº§                             */
+    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;   /* æ›´æ–°äº’æ–¥é‡æ‰€æ‹¥æœ‰çš„ä»»åŠ¡æŒ‡é’ˆ                             */
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
     {
-        /*ÈôµÈ´ı±í²»Îª¿Õ£¬Ôò½«µ±Ç°µÈ´ı»¥³âÁ¿µÄÏß³Ì¸³Öµ¸ø.DbgNamePtr*/
+        /*è‹¥ç­‰å¾…è¡¨ä¸ä¸ºç©ºï¼Œåˆ™å°†å½“å‰ç­‰å¾…äº’æ–¥é‡çš„çº¿ç¨‹èµ‹å€¼ç»™.DbgNamePtr*/
         thread = rt_list_entry((&(p_mutex->Mutex.parent.suspend_thread))->next, struct rt_thread, tlist);
         p_mutex->DbgNamePtr = thread->name;
     }
     else
     {
-        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");     /* ÈôÎª¿Õ,ÔòÇå¿Õµ±Ç°.DbgNamePtr                           */
+        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");     /* è‹¥ä¸ºç©º,åˆ™æ¸…ç©ºå½“å‰.DbgNamePtr                           */
     }
 #endif
 #endif
@@ -673,8 +673,8 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
 *
 *                           OS_OPT_POST_NONE        No special option selected
 *                         - OS_OPT_POST_NO_SCHED    If you don't want the scheduler to be called after the post.
-*                       -------------ËµÃ÷-------------
-*                        RTTÃ»ÓĞÊµÏÖÊÍ·Å»¥³âÁ¿ºó²»µ÷¶È£¬OS_OPT_POST_NO_SCHED²»¿ÉÓÃ
+*                       -------------è¯´æ˜-------------
+*                        RTTæ²¡æœ‰å®ç°é‡Šæ”¾äº’æ–¥é‡åä¸è°ƒåº¦ï¼ŒOS_OPT_POST_NO_SCHEDä¸å¯ç”¨
 *
 *              p_err    is a pointer to a variable that will contain an error code returned by this function.
 *
@@ -687,11 +687,11 @@ OS_OBJ_QTY  OSMutexPendAbort (OS_MUTEX  *p_mutex,
 *                           OS_ERR_OS_NOT_RUNNING   If uC/OS-III is not running yet
 *                         + OS_ERR_OPT_INVALID
 *                         + OS_RT_ERROR
-*                       -------------ËµÃ÷-------------
-*                           OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌĞøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                         - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈİ²ãÒÑ¾­ÎŞ·¨Ê¹ÓÃ
-*                         + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªĞÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                         Ó¦ÓÃ²ãĞèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅĞ¶Ï×ö³öÏàÓ¦µÄĞŞ¸Ä
+*                       -------------è¯´æ˜-------------
+*                           OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŸç‰ˆçš„é”™è¯¯ç 
+*                         - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                         + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢çš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                         åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›çš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 *
 * Returns    : none
 ************************************************************************************************************************
@@ -716,7 +716,7 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                   */
     {
         *p_err = OS_ERR_POST_ISR;
         return;
@@ -731,7 +731,7 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(p_mutex == RT_NULL)                                  /* ¼ì²éÖ¸ÕëÊÇ·ñÎª¿Õ                                       */
+    if(p_mutex == RT_NULL)                                  /* æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦ä¸ºç©º                                       */
     {
         *p_err = OS_ERR_OBJ_PTR_NULL;
         return;
@@ -748,7 +748,7 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
 #endif
 
 #if OS_CFG_OBJ_TYPE_CHK_EN > 0u
-    /*ÅĞ¶ÏÄÚºË¶ÔÏóÊÇ·ñÎªĞÅºÅÁ¿*/
+    /*åˆ¤æ–­å†…æ ¸å¯¹è±¡æ˜¯å¦ä¸ºä¿¡å·é‡*/
     if(rt_object_get_type(&p_mutex->Mutex.parent.parent) != RT_Object_Class_Mutex)
     {
         *p_err = OS_ERR_OBJ_TYPE;
@@ -758,27 +758,27 @@ void  OSMutexPost (OS_MUTEX  *p_mutex,
 
     rt_err = rt_mutex_release(&p_mutex->Mutex);
     *p_err = rt_err_to_ucosiii(rt_err);
-    /*Ö»ÓĞÒÑ¾­ÓµÓĞ»¥³âÁ¿¿ØÖÆÈ¨µÄÏß³Ì²ÅÄÜÊÍ·Å*/
-    if(rt_err == -RT_ERROR)                                 /* rt_mutex_release·µ»Ø-RT_ERROR±íÊ¾¸ÃÏß³Ì·ÇÕÆÎÕ»¥³âÁ¿µÄÏß³Ì*/
+    /*åªæœ‰å·²ç»æ‹¥æœ‰äº’æ–¥é‡æ§åˆ¶æƒçš„çº¿ç¨‹æ‰èƒ½é‡Šæ”¾*/
+    if(rt_err == -RT_ERROR)                                 /* rt_mutex_releaseè¿”å›-RT_ERRORè¡¨ç¤ºè¯¥çº¿ç¨‹éæŒæ¡äº’æ–¥é‡çš„çº¿ç¨‹*/
     {
         *p_err = OS_ERR_MUTEX_NOT_OWNER;
     }
 
     CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* ¸üĞÂ»¥³âÁ¿µÄÇ¶Ì×Öµ                                     */
-    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority; /* ¸üĞÂ»¥³âÁ¿Ô­Ê¼ÓÅÏÈ¼¶                            */
-    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;   /* ¸üĞÂ»¥³âÁ¿ËùÓµÓĞµÄÈÎÎñÖ¸Õë                             */
+    p_mutex->OwnerNestingCtr = p_mutex->Mutex.hold;         /* æ›´æ–°äº’æ–¥é‡çš„åµŒå¥—å€¼                                     */
+    p_mutex->OwnerOriginalPrio = p_mutex->Mutex.original_priority; /* æ›´æ–°äº’æ–¥é‡åŸå§‹ä¼˜å…ˆçº§                            */
+    p_mutex->OwnerTCBPtr = (OS_TCB*)p_mutex->Mutex.owner;   /* æ›´æ–°äº’æ–¥é‡æ‰€æ‹¥æœ‰çš„ä»»åŠ¡æŒ‡é’ˆ                             */
 #if OS_CFG_DBG_EN > 0u
     if(!rt_list_isempty(&(p_mutex->Mutex.parent.suspend_thread)))
     {
-        /*ÈôµÈ´ı±í²»Îª¿Õ£¬Ôò½«µ±Ç°µÈ´ı»¥³âÁ¿µÄÏß³Ì¸³Öµ¸ø.DbgNamePtr*/
+        /*è‹¥ç­‰å¾…è¡¨ä¸ä¸ºç©ºï¼Œåˆ™å°†å½“å‰ç­‰å¾…äº’æ–¥é‡çš„çº¿ç¨‹èµ‹å€¼ç»™.DbgNamePtr*/
         thread = rt_list_entry((&(p_mutex->Mutex.parent.suspend_thread))->next, struct rt_thread, tlist);
         p_mutex->DbgNamePtr = thread->name;
     }
     else
     {
-        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");     /* ÈôÎª¿Õ,ÔòÇå¿Õµ±Ç°.DbgNamePtr                           */
+        p_mutex->DbgNamePtr =(CPU_CHAR *)((void *)" ");     /* è‹¥ä¸ºç©º,åˆ™æ¸…ç©ºå½“å‰.DbgNamePtr                           */
     }
 #endif
 #endif

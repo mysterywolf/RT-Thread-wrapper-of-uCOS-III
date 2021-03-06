@@ -15,43 +15,43 @@
 extern void (*rt_object_put_hook)(struct rt_object *object);
 
 /**
- * ½«RT-Thread´íÎóÂë×ª»»ÎªuCOS-III´íÎóÂë
+ * å°†RT-Threadé”™è¯¯ç è½¬æ¢ä¸ºuCOS-IIIé”™è¯¯ç 
  *
- * @param RT-Thread´íÎóÂë
+ * @param RT-Threadé”™è¯¯ç 
  *
- * @return uCOS-III´íÎóÂë
+ * @return uCOS-IIIé”™è¯¯ç 
  */
 OS_ERR rt_err_to_ucosiii(rt_err_t rt_err)
 {
-    switch(-rt_err)/*RTT·µ»ØµÄ´íÎóÂë¶¼ÊÇ´ø¸ººÅµÄ*/
+    switch(-rt_err)/*RTTè¿”å›çš„é”™è¯¯ç éƒ½æ˜¯å¸¦è´Ÿå·çš„*/
     {
-        /*ÒÔÏÂRTT´íÎóÂë¿ÉÒÔÓÃÔ­°æuCOS-III´íÎóÂë½øĞĞ¼æÈİ*/
-        case RT_EOK: /* ÎŞ´íÎó */
+        /*ä»¥ä¸‹RTTé”™è¯¯ç å¯ä»¥ç”¨åŸç‰ˆuCOS-IIIé”™è¯¯ç è¿›è¡Œå…¼å®¹*/
+        case RT_EOK: /* æ— é”™è¯¯ */
             return OS_ERR_NONE;
-        case RT_ETIMEOUT:/* ³¬Ê±´íÎó */
+        case RT_ETIMEOUT:/* è¶…æ—¶é”™è¯¯ */
             return OS_ERR_TIMEOUT;
-        case RT_EINVAL:/* ·Ç·¨²ÎÊı */
+        case RT_EINVAL:/* éæ³•å‚æ•° */
             return OS_ERR_OPT_INVALID;
-        case RT_EFULL:/* ×ÊÔ´ÒÑÂú,¸Ã²ÎÊı½öÔÚIPCÖĞÊ¹ÓÃ */
+        case RT_EFULL:/* èµ„æºå·²æ»¡,è¯¥å‚æ•°ä»…åœ¨IPCä¸­ä½¿ç”¨ */
             return OS_ERR_Q_MAX;
         /*
-            ÓÉÓÚuCOS-IIIµÄ´íÎóÂë·ÖÀà½ÏÏ¸£¬¶øRTTµÄ´íÎóÂë·ÖÀà½ÏÎªÁıÍ³£¬
-            ÒÔÏÂRTT´íÎóÂëÊ¹ÓÃuCOS-IIIµÄ´íÎóÂëºÜÄÑ×¼È·ÃèÊö
-            Òò´Ë½«Õë¶ÔRTTµÄ´íÎóÂëÖØĞÂ¶¨Òå(ĞÂÔö)uCOS-IIIµÄ´íÎóÂë
+            ç”±äºuCOS-IIIçš„é”™è¯¯ç åˆ†ç±»è¾ƒç»†ï¼Œè€ŒRTTçš„é”™è¯¯ç åˆ†ç±»è¾ƒä¸ºç¬¼ç»Ÿï¼Œ
+            ä»¥ä¸‹RTTé”™è¯¯ç ä½¿ç”¨uCOS-IIIçš„é”™è¯¯ç å¾ˆéš¾å‡†ç¡®æè¿°
+            å› æ­¤å°†é’ˆå¯¹RTTçš„é”™è¯¯ç é‡æ–°å®šä¹‰(æ–°å¢)uCOS-IIIçš„é”™è¯¯ç 
         */
-        case RT_ERROR:/* ÆÕÍ¨´íÎó    */
+        case RT_ERROR:/* æ™®é€šé”™è¯¯    */
             return OS_ERR_RT_ERROR;
-        case RT_EEMPTY:/* ÎŞ×ÊÔ´     */
+        case RT_EEMPTY:/* æ— èµ„æº     */
             return OS_ERR_RT_EEMPTY;
-        case RT_ENOMEM:/* ÎŞÄÚ´æ     */
+        case RT_ENOMEM:/* æ— å†…å­˜     */
             return OS_ERR_RT_ENOMEM;
-        case RT_ENOSYS:/* ÏµÍ³²»Ö§³Ö */
+        case RT_ENOSYS:/* ç³»ç»Ÿä¸æ”¯æŒ */
             return OS_ERR_RT_ENOSYS;
-        case RT_EBUSY:/* ÏµÍ³Ã¦      */
+        case RT_EBUSY:/* ç³»ç»Ÿå¿™      */
             return OS_ERR_RT_EBUSY;
-        case RT_EIO:/* IO ´íÎó       */
+        case RT_EIO:/* IO é”™è¯¯       */
             return OS_ERR_RT_EIO;
-        case RT_EINTR:/* ÖĞ¶ÏÏµÍ³µ÷ÓÃ*/
+        case RT_EINTR:/* ä¸­æ–­ç³»ç»Ÿè°ƒç”¨*/
             return OS_ERR_RT_EINTR;
 
         default:
@@ -60,11 +60,11 @@ OS_ERR rt_err_to_ucosiii(rt_err_t rt_err)
 }
 
 /**
- * ÈÃµ±¹ÒÆğ±íµÚÒ»¸öÈÎÎñ·ÅÆúµÈ´ıIPC,½øÈë¾ÍĞ÷Ì¬(ÓÉrt_ipc_list_resumeº¯Êı¸Ä±à)
+ * è®©å½“æŒ‚èµ·è¡¨ç¬¬ä¸€ä¸ªä»»åŠ¡æ”¾å¼ƒç­‰å¾…IPC,è¿›å…¥å°±ç»ªæ€(ç”±rt_ipc_list_resumeå‡½æ•°æ”¹ç¼–)
  *
- * @param ¹ÒÆğ±í±íÍ·Ö¸Õë
+ * @param æŒ‚èµ·è¡¨è¡¨å¤´æŒ‡é’ˆ
  *
- * @return ´íÎóÂë
+ * @return é”™è¯¯ç 
  */
 rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
 {
@@ -79,7 +79,7 @@ rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
     /* set error code to RT_ERROR */
     thread->error = -RT_ERROR;
 
-    /*±ê¼Çµ±Ç°ÈÎÎñ·ÅÆúµÈ´ı*/
+    /*æ ‡è®°å½“å‰ä»»åŠ¡æ”¾å¼ƒç­‰å¾…*/
     p_tcb->PendStatus = OS_STATUS_PEND_ABORT;
 
     rt_hw_interrupt_enable(temp);
@@ -91,11 +91,11 @@ rt_err_t rt_ipc_pend_abort_1 (rt_list_t *list)
 }
 
 /**
- * ÈÃËùÓĞµÈ´ı¸ÃIPCµÄÈÎÎñÈ«²¿·ÅÆúµÈ´ı£¬½øÈë¾ÍĞ÷Ì¬(ÓÉrt_ipc_list_resume_allº¯Êı¸Ä±à)
+ * è®©æ‰€æœ‰ç­‰å¾…è¯¥IPCçš„ä»»åŠ¡å…¨éƒ¨æ”¾å¼ƒç­‰å¾…ï¼Œè¿›å…¥å°±ç»ªæ€(ç”±rt_ipc_list_resume_allå‡½æ•°æ”¹ç¼–)
  *
- * @param ¹ÒÆğ±í±íÍ·Ö¸Õë
+ * @param æŒ‚èµ·è¡¨è¡¨å¤´æŒ‡é’ˆ
  *
- * @return ·ÅÆúÁË¶àÉÙ¸öÈÎÎñ
+ * @return æ”¾å¼ƒäº†å¤šå°‘ä¸ªä»»åŠ¡
  */
 rt_uint16_t rt_ipc_pend_abort_all (rt_list_t *list)
 {
@@ -116,7 +116,7 @@ rt_uint16_t rt_ipc_pend_abort_all (rt_list_t *list)
         /* set error code to RT_ERROR */
         thread->error = -RT_ERROR;
 
-        /*±ê¼Çµ±Ç°ÈÎÎñ·ÅÆúµÈ´ı*/
+        /*æ ‡è®°å½“å‰ä»»åŠ¡æ”¾å¼ƒç­‰å¾…*/
         p_tcb->PendStatus = OS_STATUS_PEND_ABORT;
 
         /*
@@ -136,11 +136,11 @@ rt_uint16_t rt_ipc_pend_abort_all (rt_list_t *list)
 }
 
 /**
- * ÈÃËùÓĞµÈ´ı¸ÃIPCµÄÈÎÎñÈ«²¿Åú×¼½øÈë¾ÍĞ÷Ì¬(ÓÉrt_ipc_list_resume_allº¯Êı¸Ä±à)
+ * è®©æ‰€æœ‰ç­‰å¾…è¯¥IPCçš„ä»»åŠ¡å…¨éƒ¨æ‰¹å‡†è¿›å…¥å°±ç»ªæ€(ç”±rt_ipc_list_resume_allå‡½æ•°æ”¹ç¼–)
  *
- * @param ¹ÒÆğ±í±íÍ·Ö¸Õë
+ * @param æŒ‚èµ·è¡¨è¡¨å¤´æŒ‡é’ˆ
  *
- * @return ´íÎóÂë
+ * @return é”™è¯¯ç 
  */
 static rt_err_t rt_ipc_post_all (rt_list_t *list)
 {
@@ -172,7 +172,7 @@ static rt_err_t rt_ipc_post_all (rt_list_t *list)
 
 /**
  * This function will wake ALL threads which are WAITTING for semaphores
- * ¸Ä±à×Ôrt_sem_releaseº¯Êı
+ * æ”¹ç¼–è‡ªrt_sem_releaseå‡½æ•°
  *
  * @param sem the semaphore object
  *
@@ -218,7 +218,7 @@ rt_err_t rt_sem_release_all(rt_sem_t sem)
 
 /**
  * This function will wake ALL threads which are WAITTING for message queue (FIFO)
- * ¸Ä±à×Ôrt_mq_sendº¯Êı
+ * æ”¹ç¼–è‡ªrt_mq_sendå‡½æ•°
  *
  * @param mq the message queue object
  * @param buffer the message
@@ -247,10 +247,10 @@ rt_err_t rt_mq_send_all(rt_mq_t mq, void *buffer, rt_size_t size)
     /* disable interrupt */
     temp = rt_hw_interrupt_disable();
 
-    /* »ñÈ¡µ±Ç°n¸öÏß³Ì±»µ±Ç°ÏûÏ¢¶ÓÁĞ¹ÒÆğ */
+    /* è·å–å½“å‰nä¸ªçº¿ç¨‹è¢«å½“å‰æ¶ˆæ¯é˜Ÿåˆ—æŒ‚èµ· */
     suspend_len = rt_list_len(&mq->parent.suspend_thread);
 
-    /* ½«ÏàÍ¬µÄÏûÏ¢¸´ÖÆn´Î,Ò»»áÒ»Æğ·¢³öÈ¥ */
+    /* å°†ç›¸åŒçš„æ¶ˆæ¯å¤åˆ¶næ¬¡,ä¸€ä¼šä¸€èµ·å‘å‡ºå» */
     while(suspend_len)
     {
         /* get a free list, there must be an empty item */
@@ -298,7 +298,7 @@ rt_err_t rt_mq_send_all(rt_mq_t mq, void *buffer, rt_size_t size)
     /* resume suspended thread */
     if (!rt_list_isempty(&mq->parent.suspend_thread))
     {
-        /* ½«µÈ´ı±¾ÏûÏ¢¶ÓÁĞµÄËùÓĞÏß³ÌÈ«²¿½â¹Ò,´ËÊ±ËûÃÇ½«Í¬Ê±»ñµÃÏàÍ¬µÄÏûÏ¢ */
+        /* å°†ç­‰å¾…æœ¬æ¶ˆæ¯é˜Ÿåˆ—çš„æ‰€æœ‰çº¿ç¨‹å…¨éƒ¨è§£æŒ‚,æ­¤æ—¶ä»–ä»¬å°†åŒæ—¶è·å¾—ç›¸åŒçš„æ¶ˆæ¯ */
         rt_ipc_post_all(&(mq->parent.suspend_thread));
 
         /* enable interrupt */
@@ -317,7 +317,7 @@ rt_err_t rt_mq_send_all(rt_mq_t mq, void *buffer, rt_size_t size)
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
 /**
- * mshÃüÁî£ºuCOS-III¼æÈİ²ãĞÅÏ¢»ñÈ¡
+ * mshå‘½ä»¤ï¼šuCOS-IIIå…¼å®¹å±‚ä¿¡æ¯è·å–
  */
 #if defined RT_USING_FINSH && OS_CFG_DBG_EN > 0u
 static void rt_ucosiii_wrapper_info (int argc, char *argv[])
@@ -485,11 +485,11 @@ MSH_CMD_EXPORT_ALIAS(rt_ucosiii_wrapper_info, ucos, get ucos-iii wrapper info);
 #endif
 
 /**
- * ×Ô¶¯³õÊ¼»¯
- * uCOS-III¼æÈİ²ãÖ§³Ö°´ÕÕuCOS-IIIÔ­°æµÄ³õÊ¼»¯²½Öè½øĞĞ³õÊ¼»¯£¬µ«ÊÇÔÚÓĞĞ©Çé¿ö£¬
- * ÓÃ»§²»ÏëÊÖ¶¯³õÊ¼»¯uCOS-III¼æÈİ²ã£¬ÏëÒªÖ±½ÓÔËĞĞÓ¦ÓÃ²ãÈÎÎñ»òÄ£¿é£¬Ôò¿ÉÒÔÊ¹ÓÃ¸Ã
- * ºê¶¨Òå¡£ÔÚrtconfig.hÖĞ¶¨Òå±¾ºê¶¨Òåºó£¬ÔÚRT-Thread³õÊ¼»¯Íê³É²¢½øÈëµ½mainÏß³ÌÖ®Ç°
- * »á×Ô¶¯½«uCOS-III¼æÈİ²ã³õÊ¼»¯Íê±Ï£¬ÓÃ»§½öĞèÒª×¨×¢ÓÚuCOS-IIIµÄÓ¦ÓÃ¼¶ÈÎÎñ¼´¿É¡£
+ * è‡ªåŠ¨åˆå§‹åŒ–
+ * uCOS-IIIå…¼å®¹å±‚æ”¯æŒæŒ‰ç…§uCOS-IIIåŸç‰ˆçš„åˆå§‹åŒ–æ­¥éª¤è¿›è¡Œåˆå§‹åŒ–ï¼Œä½†æ˜¯åœ¨æœ‰äº›æƒ…å†µï¼Œ
+ * ç”¨æˆ·ä¸æƒ³æ‰‹åŠ¨åˆå§‹åŒ–uCOS-IIIå…¼å®¹å±‚ï¼Œæƒ³è¦ç›´æ¥è¿è¡Œåº”ç”¨å±‚ä»»åŠ¡æˆ–æ¨¡å—ï¼Œåˆ™å¯ä»¥ä½¿ç”¨è¯¥
+ * å®å®šä¹‰ã€‚åœ¨rtconfig.hä¸­å®šä¹‰æœ¬å®å®šä¹‰åï¼Œåœ¨RT-Threadåˆå§‹åŒ–å®Œæˆå¹¶è¿›å…¥åˆ°mainçº¿ç¨‹ä¹‹å‰
+ * ä¼šè‡ªåŠ¨å°†uCOS-IIIå…¼å®¹å±‚åˆå§‹åŒ–å®Œæ¯•ï¼Œç”¨æˆ·ä»…éœ€è¦ä¸“æ³¨äºuCOS-IIIçš„åº”ç”¨çº§ä»»åŠ¡å³å¯ã€‚
  * The wrapper supports uCOS-III standard startup procedure. Alternatively,
  * if you want to run uCOS-III apps directly and ignore the startup procedure,
  * you can choose this option.
@@ -500,18 +500,18 @@ static int rt_ucosiii_autoinit(void)
 {
     OS_ERR err;
 
-    OSInit(&err);                                   /*uCOS-III²Ù×÷ÏµÍ³³õÊ¼»¯*/
-    OSStart(&err);                                  /*¿ªÊ¼ÔËĞĞuCOS-III²Ù×÷ÏµÍ³*/
+    OSInit(&err);                                   /*uCOS-IIIæ“ä½œç³»ç»Ÿåˆå§‹åŒ–*/
+    OSStart(&err);                                  /*å¼€å§‹è¿è¡ŒuCOS-IIIæ“ä½œç³»ç»Ÿ*/
 
     CPU_Init();
 
 #if OS_CFG_APP_HOOKS_EN > 0u
-    App_OS_SetAllHooks();                           /*ÉèÖÃ¹³×Óº¯Êı*/
+    App_OS_SetAllHooks();                           /*è®¾ç½®é’©å­å‡½æ•°*/
 #endif
 
 #if OS_CFG_STAT_TASK_EN > 0u
-    OSStatTaskCPUUsageInit(&err);                   /*Í³¼ÆÈÎÎñ*/
-    OSStatReset(&err);                              /*¸´Î»Í³¼ÆÊı¾İ*/
+    OSStatTaskCPUUsageInit(&err);                   /*ç»Ÿè®¡ä»»åŠ¡*/
+    OSStatReset(&err);                              /*å¤ä½ç»Ÿè®¡æ•°æ®*/
 #endif
 
     return 0;

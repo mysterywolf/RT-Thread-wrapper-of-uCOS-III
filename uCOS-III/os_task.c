@@ -58,7 +58,7 @@
 
 /*
 ************************************************************************************************************************
-* Note(s)    : 1)ÓÉÓÚRT-ThreadÃ»ÓĞÏà¹Ø½Ó¿Ú£¬Òò´ËÒÔÏÂº¯ÊıÃ»ÓĞÊµÏÖ
+* Note(s)    : 1)ç”±äºRT-Threadæ²¡æœ‰ç›¸å…³æ¥å£ï¼Œå› æ­¤ä»¥ä¸‹å‡½æ•°æ²¡æœ‰å®ç°
 *                   OSTaskTimeQuantaSet
 ************************************************************************************************************************
 */
@@ -156,8 +156,8 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
 *                             represents the number of CPU_STK entries left before the stack is full.  For example,
 *                             specifying 10% of the 'stk_size' value indicates that the stack limit will be reached
 *                             when the stack reaches 90% full.
-*                            -------------ËµÃ÷-------------
-*                             ¸Ã²ÎÊıÔÚ±¾¼æÈİ²ãÖĞÃ»ÓĞÒâÒå£¬ÌîÊ²Ã´¶¼ĞĞ
+*                            -------------è¯´æ˜-------------
+*                             è¯¥å‚æ•°åœ¨æœ¬å…¼å®¹å±‚ä¸­æ²¡æœ‰æ„ä¹‰ï¼Œå¡«ä»€ä¹ˆéƒ½è¡Œ
 *
 *              stk_size       is the size of the stack in number of elements.  If CPU_STK is set to CPU_INT08U,
 *                             'stk_size' corresponds to the number of bytes available.  If CPU_STK is set to
@@ -207,11 +207,11 @@ void  OSTaskChangePrio (OS_TCB   *p_tcb,
 *                                 OS_ERR_TASK_INVALID            if you specified a NULL pointer for 'p_task'
 *                                 OS_ERR_TCB_INVALID             if you specified a NULL pointer for 'p_tcb'
 *                               + OS_ERR_RT_ERROR
-*                             -------------ËµÃ÷-------------
-*                                 OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌĞøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                               - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈİ²ãÒÑ¾­ÎŞ·¨Ê¹ÓÃ
-*                               + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªĞÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                               Ó¦ÓÃ²ãĞèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅĞ¶Ï×ö³öÏàÓ¦µÄĞŞ¸Ä
+*                             -------------è¯´æ˜-------------
+*                                 OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŸç‰ˆçš„é”™è¯¯ç 
+*                               - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                               + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢çš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                               åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›çš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 *
 * Returns    : A pointer to the TCB of the task created.  This pointer must be used as an ID (i.e handle) to the task.
 ************************************************************************************************************************
@@ -266,7 +266,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                   */
     {
         *p_err = OS_ERR_TASK_CREATE_ISR;
         return;
@@ -284,12 +284,12 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         *p_err = OS_ERR_TASK_INVALID;
         return;
     }
-    if(p_name == RT_NULL)                                   /*¼ì²éÈÎÎñÃûÊÇ·ñÎªNULL*/
+    if(p_name == RT_NULL)                                   /*æ£€æŸ¥ä»»åŠ¡åæ˜¯å¦ä¸ºNULL*/
     {
         *p_err = OS_ERR_NAME;
         return;
     }
-    if(prio >= RT_THREAD_PRIORITY_MAX-1)                    /* ¼ì²éÈÎÎñÓÅÏÈ¼¶,²»¿ÉÕ¼ÓÃ¿ÕÏĞÈÎÎñÓÅÏÈ¼¶*/
+    if(prio >= RT_THREAD_PRIORITY_MAX-1)                    /* æ£€æŸ¥ä»»åŠ¡ä¼˜å…ˆçº§,ä¸å¯å ç”¨ç©ºé—²ä»»åŠ¡ä¼˜å…ˆçº§*/
     {
         *p_err = OS_ERR_PRIO_INVALID;
         return;
@@ -347,8 +347,8 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #if OS_CFG_TASK_SEM_EN > 0u
     p_tcb->SemCreateSuc = RT_FALSE;
 #endif
-    p_tcb->ExtPtr = p_ext;                                  /* ÓÃ»§¸½¼ÓÇøÖ¸Õë                                         */
-    p_tcb->SuspendCtr = 0;                                  /* Ç¶Ì×¹ÒÆğÎª0²ã                                          */
+    p_tcb->ExtPtr = p_ext;                                  /* ç”¨æˆ·é™„åŠ åŒºæŒ‡é’ˆ                                         */
+    p_tcb->SuspendCtr = 0;                                  /* åµŒå¥—æŒ‚èµ·ä¸º0å±‚                                          */
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     p_tcb->TimeQuanta    = time_quanta;                     /* Save the #ticks for time slice (0 means not sliced)    */
@@ -369,10 +369,10 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     CPU_CRITICAL_EXIT();
 
 #if OS_CFG_TASK_Q_EN > 0u
-    if(q_size>0)                                            /* ¿ªÆôÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁĞ                                   */
+    if(q_size>0)                                            /* å¼€å¯ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—                                   */
     {
         OSQCreate(&p_tcb->MsgQ, (CPU_CHAR*)p_name, q_size, &err);
-        if(err != OS_ERR_NONE)                              /* ÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁĞ´´½¨Ê§°Ü                               */
+        if(err != OS_ERR_NONE)                              /* ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—åˆ›å»ºå¤±è´¥                               */
         {
             CPU_CRITICAL_ENTER();
             p_tcb->MsgCreateSuc = RT_FALSE;
@@ -390,9 +390,9 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     CPU_VAL_UNUSED(q_size);
 #endif
 #if OS_CFG_TASK_SEM_EN > 0u
-    /*´´½¨ÈÎÎñÄÚ½¨ĞÅºÅÁ¿*/
-    OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)p_name,0,&err);      /* ÈÎÎñÄÚ½¨ĞÅºÅÁ¿value³õÊ¼»¯Îª0                           */
-    if(err != OS_ERR_NONE)                                  /* ÈÎÎñÄÚ½¨ĞÅºÅÁ¿´´½¨Ê§°Ü                                 */
+    /*åˆ›å»ºä»»åŠ¡å†…å»ºä¿¡å·é‡*/
+    OSSemCreate(&p_tcb->Sem,(CPU_CHAR*)p_name,0,&err);      /* ä»»åŠ¡å†…å»ºä¿¡å·é‡valueåˆå§‹åŒ–ä¸º0                           */
+    if(err != OS_ERR_NONE)                                  /* ä»»åŠ¡å†…å»ºä¿¡å·é‡åˆ›å»ºå¤±è´¥                                 */
     {
         CPU_CRITICAL_ENTER();
         p_tcb->SemCreateSuc = RT_FALSE;
@@ -407,7 +407,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     }
 #endif
     CPU_CRITICAL_ENTER();
-#if defined(OS_CFG_TLS_TBL_SIZE) && (OS_CFG_TLS_TBL_SIZE > 0u)/* Ïß³ÌË½ÓĞ±äÁ¿ÔİÊ±Ã»ÓĞÊµÏÖ                             */
+#if defined(OS_CFG_TLS_TBL_SIZE) && (OS_CFG_TLS_TBL_SIZE > 0u)/* çº¿ç¨‹ç§æœ‰å˜é‡æš‚æ—¶æ²¡æœ‰å®ç°                             */
     for (id = 0u; id < OS_CFG_TLS_TBL_SIZE; id++) {
         p_tcb->TLS_Tbl[id] = (OS_TLS)0;
     }
@@ -415,13 +415,13 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 #endif
     CPU_CRITICAL_EXIT();
 
-    /*´´½¨Ïß³Ì*/
+    /*åˆ›å»ºçº¿ç¨‹*/
     rt_err = rt_thread_init(&p_tcb->Task,
                             (const char*)p_name,
                             p_task,
                             p_arg,
                             p_stk_base,
-                            stk_size*sizeof(CPU_STK),/*uCOS-IIIµÄÈÎÎñ¶ÑÕ»Ê±ÒÔCPU_STKÎªµ¥Î»£¬¶øRTTÊÇÒÔ×Ö½ÚÎªµ¥Î»£¬Òò´ËĞèÒª½øĞĞ×ª»»*/
+                            stk_size*sizeof(CPU_STK),/*uCOS-IIIçš„ä»»åŠ¡å †æ ˆæ—¶ä»¥CPU_STKä¸ºå•ä½ï¼Œè€ŒRTTæ˜¯ä»¥å­—èŠ‚ä¸ºå•ä½ï¼Œå› æ­¤éœ€è¦è¿›è¡Œè½¬æ¢*/
                             prio,
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
                             p_tcb->TimeQuantaCtr
@@ -435,12 +435,12 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
         return;
     }
 
-    OSTaskCreateHook(p_tcb);                                /* µ÷ÓÃ¹³×Óº¯Êı                                           */
+    OSTaskCreateHook(p_tcb);                                /* è°ƒç”¨é’©å­å‡½æ•°                                           */
 
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
     CPU_CRITICAL_ENTER();
 #if OS_CFG_DBG_EN > 0u
-    OS_TaskDbgListAdd(p_tcb);                               /* ½«ÈÎÎñ¼ÓÈëµ½DebugÁ´±íÖĞ                                */
+    OS_TaskDbgListAdd(p_tcb);                               /* å°†ä»»åŠ¡åŠ å…¥åˆ°Debugé“¾è¡¨ä¸­                                */
 #endif
     OSTaskQty++;                                            /* Increment the #tasks counter                           */
 
@@ -450,7 +450,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     p_stk_limit = p_stk_base + (stk_size - 1u) - stk_limit;
 #endif
 #if OS_CFG_DBG_EN > 0u
-    p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp;         /* (·ÇÊµÊ±)¸ÃÊı¾İÔÚ±¾¼æÈİ²ãÖĞ²»ÄÜ·´Ó³ÊµÊ±SPÖ¸ÕëÎ»ÖÃ,Êı¾İÔÚÍ³¼ÆÈÎÎñÖĞ¸üĞÂ */
+    p_tcb->StkPtr = ((struct rt_thread*)p_tcb)->sp;         /* (éå®æ—¶)è¯¥æ•°æ®åœ¨æœ¬å…¼å®¹å±‚ä¸­ä¸èƒ½åæ˜ å®æ—¶SPæŒ‡é’ˆä½ç½®,æ•°æ®åœ¨ç»Ÿè®¡ä»»åŠ¡ä¸­æ›´æ–° */
 #endif
     p_tcb->Opt = opt;
     p_tcb->StkSize = stk_size;
@@ -468,7 +468,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     CPU_CRITICAL_EXIT();
 #endif
 
-    /*ÔÚuCOS-IIIÖĞµÄÈÎÎñ´´½¨Ïàµ±ÓÚRTTµÄÈÎÎñ´´½¨+ÈÎÎñÆô¶¯*/
+    /*åœ¨uCOS-IIIä¸­çš„ä»»åŠ¡åˆ›å»ºç›¸å½“äºRTTçš„ä»»åŠ¡åˆ›å»º+ä»»åŠ¡å¯åŠ¨*/
     rt_err = rt_thread_startup(&p_tcb->Task);
     *p_err = rt_err_to_ucosiii(rt_err);
 }
@@ -481,7 +481,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 *              pointer for 'p_tcb'.  The deleted task is returned to the dormant state and can be re-activated by
 *              creating the deleted task again.
 *
-* Arguments  : p_tcb      is the TCB of the tack to delete,ÈôÎªNULL±íÊ¾É¾³ıµ±Ç°ÈÎÎñ
+* Arguments  : p_tcb      is the TCB of the tack to delete,è‹¥ä¸ºNULLè¡¨ç¤ºåˆ é™¤å½“å‰ä»»åŠ¡
 *
 *              p_err      is a pointer to an error code returned by this function:
 *
@@ -493,18 +493,18 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
 *                             OS_ERR_TASK_DEL_IDLE         if you attempted to delete uC/OS-III's idle task
 *                           - OS_ERR_TASK_DEL_INVALID      if you attempted to delete uC/OS-III's ISR handler task
 *                             OS_ERR_TASK_DEL_ISR          if you tried to delete a task from an ISR
-*                         -------------ËµÃ÷-------------
-*                             OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌĞøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                           - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈİ²ãÒÑ¾­ÎŞ·¨Ê¹ÓÃ
-*                           + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªĞÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                          Ó¦ÓÃ²ãĞèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅĞ¶Ï×ö³öÏàÓ¦µÄĞŞ¸Ä
+*                         -------------è¯´æ˜-------------
+*                             OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŸç‰ˆçš„é”™è¯¯ç 
+*                           - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                           + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢çš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                          åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›çš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 *
 * Note(s)    : 1) 'p_err' gets set to OS_ERR_NONE before OSSched() to allow the returned error code to be monitored even
 *                 for a task that is deleting itself. In this case, 'p_err' MUST point to a global variable that can be
 *                 accessed by another task.
-*              2) ´ó¶àÊıÏß³ÌÊÇÑ­»·Ö´ĞĞµÄ£¬ÎŞĞèÉ¾³ı£»¶øÄÜÔËĞĞÍê±ÏµÄÏß³Ì£¬RT-Thread ÔÚÏß³ÌÔËĞĞÍê±Ïºó£¬×Ô¶¯É¾³ıÏß³Ì£¬ÔÚ
-*                 rt_thread_exit() ÀïÍê³ÉÉ¾³ı¶¯×÷¡£ÓÃ»§Ö»ĞèÒªÁË½â¸Ã½Ó¿ÚµÄ×÷ÓÃ£¬²»ÍÆ¼öÊ¹ÓÃ¸Ã½Ó¿Ú£¨¿ÉÒÔÓÉÆäËûÏß³Ìµ÷ÓÃ´Ë½Ó
-*                 ¿Ú»òÔÚ¶¨Ê±Æ÷³¬Ê±º¯ÊıÖĞµ÷ÓÃ´Ë½Ó¿ÚÉ¾³ıÒ»¸öÏß³Ì£¬µ«ÊÇÕâÖÖÊ¹ÓÃ·Ç³£ÉÙ£©¡£
+*              2) å¤§å¤šæ•°çº¿ç¨‹æ˜¯å¾ªç¯æ‰§è¡Œçš„ï¼Œæ— éœ€åˆ é™¤ï¼›è€Œèƒ½è¿è¡Œå®Œæ¯•çš„çº¿ç¨‹ï¼ŒRT-Thread åœ¨çº¿ç¨‹è¿è¡Œå®Œæ¯•åï¼Œè‡ªåŠ¨åˆ é™¤çº¿ç¨‹ï¼Œåœ¨
+*                 rt_thread_exit() é‡Œå®Œæˆåˆ é™¤åŠ¨ä½œã€‚ç”¨æˆ·åªéœ€è¦äº†è§£è¯¥æ¥å£çš„ä½œç”¨ï¼Œä¸æ¨èä½¿ç”¨è¯¥æ¥å£ï¼ˆå¯ä»¥ç”±å…¶ä»–çº¿ç¨‹è°ƒç”¨æ­¤æ¥
+*                 å£æˆ–åœ¨å®šæ—¶å™¨è¶…æ—¶å‡½æ•°ä¸­è°ƒç”¨æ­¤æ¥å£åˆ é™¤ä¸€ä¸ªçº¿ç¨‹ï¼Œä½†æ˜¯è¿™ç§ä½¿ç”¨éå¸¸å°‘ï¼‰ã€‚
 ************************************************************************************************************************
 */
 
@@ -535,7 +535,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                 */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                 */
     {
         *p_err = OS_ERR_TASK_DEL_ISR;
         return;
@@ -549,7 +549,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     }
 #endif
 
-    if(p_tcb == RT_NULL)                                    /* ÈôÎªNULL±íÊ¾É¾³ıµ±Ç°ÈÎÎñ                             */
+    if(p_tcb == RT_NULL)                                    /* è‹¥ä¸ºNULLè¡¨ç¤ºåˆ é™¤å½“å‰ä»»åŠ¡                             */
     {
         p_tcb = (OS_TCB*)rt_thread_self();
     }
@@ -573,16 +573,16 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     rt_err = rt_thread_detach(&p_tcb->Task);
     *p_err = rt_err_to_ucosiii(rt_err);
 #if OS_CFG_TASK_SEM_EN > 0u
-    OSSemDel(&p_tcb->Sem,OS_OPT_DEL_ALWAYS,&err);           /* É¾³ıÈÎÎñÄÚ½¨ĞÅºÅÁ¿                                     */
+    OSSemDel(&p_tcb->Sem,OS_OPT_DEL_ALWAYS,&err);           /* åˆ é™¤ä»»åŠ¡å†…å»ºä¿¡å·é‡                                     */
 #endif
 #if OS_CFG_TASK_Q_EN > 0u
-    OSQDel(&p_tcb->MsgQ,OS_OPT_DEL_ALWAYS,&err);            /* É¾³ıÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁĞ                                   */
+    OSQDel(&p_tcb->MsgQ,OS_OPT_DEL_ALWAYS,&err);            /* åˆ é™¤ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—                                   */
 #endif
-    OSTaskDelHook(p_tcb);                                   /* µ÷ÓÃ¹³×Óº¯Êı                                           */
+    OSTaskDelHook(p_tcb);                                   /* è°ƒç”¨é’©å­å‡½æ•°                                           */
     OS_TaskInitTCB(p_tcb);                                  /* Initialize the TCB to default values                   */
     p_tcb->TaskState = (OS_STATE)OS_TASK_STATE_DEL;         /* Indicate that the task was deleted                     */
 
-    rt_schedule();                                          /* ±ØĞëÒªµ÷¶ÈÒ»ÏÂ,·ñÔòÍ»È»¼äÉ¾³ıÈÎÎñ,ÔÚrttÖĞ¿ÉÄÜ»áÒı·¢´íÎó*/
+    rt_schedule();                                          /* å¿…é¡»è¦è°ƒåº¦ä¸€ä¸‹,å¦åˆ™çªç„¶é—´åˆ é™¤ä»»åŠ¡,åœ¨rttä¸­å¯èƒ½ä¼šå¼•å‘é”™è¯¯*/
 }
 #endif
 
@@ -681,12 +681,12 @@ OS_MSG_QTY  OSTaskQFlush (OS_TCB  *p_tcb,
 *                                OS_ERR_SCHED_LOCKED       If the scheduler is locked
 *                                OS_ERR_TIMEOUT            A message was not received within the specified timeout
 *                                                          would lead to a suspension.
-*                              + OS_ERR_TASK_Q_CREATE_FALSE ÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁĞ´´½¨Ê§°Ü
-*                            -------------ËµÃ÷-------------
-*                                OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌĞøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                              - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈİ²ãÒÑ¾­ÎŞ·¨Ê¹ÓÃ
-*                              + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªĞÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                              Ó¦ÓÃ²ãĞèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅĞ¶Ï×ö³öÏàÓ¦µÄĞŞ¸Ä
+*                              + OS_ERR_TASK_Q_CREATE_FALSE ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—åˆ›å»ºå¤±è´¥
+*                            -------------è¯´æ˜-------------
+*                                OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŸç‰ˆçš„é”™è¯¯ç 
+*                              - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                              + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢çš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                              åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›çš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 *
 * Returns    : A pointer to the message received or a NULL pointer upon error.
 *
@@ -712,7 +712,7 @@ void  *OSTaskQPend (OS_TICK       timeout,
 
     p_tcb = OSTCBCurPtr;
 
-    if(p_tcb->MsgCreateSuc == RT_TRUE)                      /* ¼ì²éÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁĞÊÇ·ñ´´½¨³É¹¦                       */
+    if(p_tcb->MsgCreateSuc == RT_TRUE)                      /* æ£€æŸ¥ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—æ˜¯å¦åˆ›å»ºæˆåŠŸ                       */
     {
         p_tcb->PendOn = OS_TASK_PEND_ON_TASK_Q;
         return OSQPend(&p_tcb->MsgQ,timeout,opt,p_msg_size,p_ts,p_err);
@@ -848,12 +848,12 @@ CPU_BOOLEAN  OSTaskQPendAbort (OS_TCB  *p_tcb,
 *                             OS_ERR_Q_MAX           If the queue is full
 *                             OS_ERR_OS_NOT_RUNNING  If uC/OS-III is not running yet
 *                             OS_ERR_MSG_POOL_EMPTY  If there are no more OS_MSGs available from the pool
-*                           + OS_ERR_TASK_Q_CREATE_FALSE ÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁĞ´´½¨Ê§°Ü
-*                         -------------ËµÃ÷-------------
-*                             OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌĞøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                           - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈİ²ãÒÑ¾­ÎŞ·¨Ê¹ÓÃ
-*                           + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªĞÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                           Ó¦ÓÃ²ãĞèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅĞ¶Ï×ö³öÏàÓ¦µÄĞŞ¸Ä
+*                           + OS_ERR_TASK_Q_CREATE_FALSE ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—åˆ›å»ºå¤±è´¥
+*                         -------------è¯´æ˜-------------
+*                             OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŸç‰ˆçš„é”™è¯¯ç 
+*                           - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                           + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢çš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                           åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›çš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 *
 * Returns    : none
 ************************************************************************************************************************
@@ -878,7 +878,7 @@ void  OSTaskQPost (OS_TCB       *p_tcb,
         p_tcb = OSTCBCurPtr;
     }
 
-    if(p_tcb->MsgCreateSuc == RT_TRUE)                      /* ¼ì²éÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁĞÊÇ·ñ´´½¨³É¹¦                       */
+    if(p_tcb->MsgCreateSuc == RT_TRUE)                      /* æ£€æŸ¥ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—æ˜¯å¦åˆ›å»ºæˆåŠŸ                       */
     {
         OSQPost(&p_tcb->MsgQ,p_void,msg_size,opt,p_err);
     }
@@ -1076,11 +1076,11 @@ void  OSTaskRegSet (OS_TCB     *p_tcb,
 *                             OS_ERR_TASK_RESUME_ISR       if you called this function from an ISR
 *                             OS_ERR_TASK_RESUME_SELF      You cannot resume 'self'
 *                             OS_ERR_TASK_NOT_SUSPENDED    if the task to resume has not been suspended
-*                         -------------ËµÃ÷-------------
-*                             OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌĞøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                           - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈİ²ãÒÑ¾­ÎŞ·¨Ê¹ÓÃ
-*                           + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªĞÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                          Ó¦ÓÃ²ãĞèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅĞ¶Ï×ö³öÏàÓ¦µÄĞŞ¸Ä
+*                         -------------è¯´æ˜-------------
+*                             OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŸç‰ˆçš„é”™è¯¯ç 
+*                           - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                           + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢çš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                          åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›çš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 *
 * Returns    : none
 ************************************************************************************************************************
@@ -1102,7 +1102,7 @@ void  OSTaskResume (OS_TCB  *p_tcb,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                       /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                             */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                       /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                             */
     {
         *p_err = OS_ERR_TASK_RESUME_ISR;
         return;
@@ -1117,18 +1117,18 @@ void  OSTaskResume (OS_TCB  *p_tcb,
     }
 #endif
 
-    if(p_tcb == RT_NULL)                                          /* ¼ì²éTCBÖ¸ÕëÊÇ·ñÎª¿Õ                              */
+    if(p_tcb == RT_NULL)                                          /* æ£€æŸ¥TCBæŒ‡é’ˆæ˜¯å¦ä¸ºç©º                              */
     {
         p_tcb = OSTCBCurPtr;
     }
 
 #if OS_CFG_ARG_CHK_EN > 0u
-    if(rt_thread_self() == &p_tcb->Task)                          /* ¼ì²éÈÎÎñÊÇ·ñÆóÍ¼×Ô¼º»Ö¸´×Ô¼º                     */
+    if(rt_thread_self() == &p_tcb->Task)                          /* æ£€æŸ¥ä»»åŠ¡æ˜¯å¦ä¼å›¾è‡ªå·±æ¢å¤è‡ªå·±                     */
     {
         *p_err = OS_ERR_TASK_RESUME_SELF;
         return;
     }
-    /*¼ì²éÈÎÎñÊÇ·ñÃ»ÓĞ±»¹ÒÆğ*/
+    /*æ£€æŸ¥ä»»åŠ¡æ˜¯å¦æ²¡æœ‰è¢«æŒ‚èµ·*/
     if((p_tcb->Task.stat & RT_THREAD_STAT_MASK) != RT_THREAD_SUSPEND)
     {
         *p_err = OS_ERR_TASK_NOT_SUSPENDED;
@@ -1182,12 +1182,12 @@ void  OSTaskResume (OS_TCB  *p_tcb,
 *                              - OS_ERR_STATUS_INVALID     If the pend status is invalid
 *                                OS_ERR_TIMEOUT            A message was not received within the specified timeout
 *                                                          would lead to a suspension.
-*                              + OS_ERR_TASK_SEM_CREATE_FALSE ÈÎÎñÄÚ½¨ĞÅºÅÁ¿´´½¨Ê§°Ü
-*                            -------------ËµÃ÷-------------
-*                                OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌĞøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                              - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈİ²ãÒÑ¾­ÎŞ·¨Ê¹ÓÃ
-*                              + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªĞÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                              Ó¦ÓÃ²ãĞèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅĞ¶Ï×ö³öÏàÓ¦µÄĞŞ¸Ä
+*                              + OS_ERR_TASK_SEM_CREATE_FALSE ä»»åŠ¡å†…å»ºä¿¡å·é‡åˆ›å»ºå¤±è´¥
+*                            -------------è¯´æ˜-------------
+*                                OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŸç‰ˆçš„é”™è¯¯ç 
+*                              - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                              + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢çš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                              åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›çš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 *
 * Returns    : The current count of signals the task received, 0 if none.
 ************************************************************************************************************************
@@ -1212,12 +1212,12 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
 #endif
 
     p_tcb = OSTCBCurPtr;
-    if(p_tcb->SemCreateSuc == RT_TRUE)                            /* ¼ì²éÈÎÎñÄÚ½¨ĞÅºÅÁ¿ÊÇ·ñ´´½¨³É¹¦                   */
+    if(p_tcb->SemCreateSuc == RT_TRUE)                            /* æ£€æŸ¥ä»»åŠ¡å†…å»ºä¿¡å·é‡æ˜¯å¦åˆ›å»ºæˆåŠŸ                   */
     {
         CPU_CRITICAL_ENTER();
-        p_tcb->PendOn = OS_TASK_PEND_ON_TASK_SEM;                 /* ÉèÖÃÈÎÎñµÈ´ı×´Ì¬                                 */
+        p_tcb->PendOn = OS_TASK_PEND_ON_TASK_SEM;                 /* è®¾ç½®ä»»åŠ¡ç­‰å¾…çŠ¶æ€                                 */
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-        p_tcb->SemCtr = p_tcb->Sem.Sem.value;                     /* ¸üĞÂvalue                                        */
+        p_tcb->SemCtr = p_tcb->Sem.Sem.value;                     /* æ›´æ–°value                                        */
 #endif
         CPU_CRITICAL_EXIT();
 
@@ -1225,7 +1225,7 @@ OS_SEM_CTR  OSTaskSemPend (OS_TICK   timeout,
 
         CPU_CRITICAL_ENTER();
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-        p_tcb->SemCtr = p_tcb->Sem.Sem.value;                     /* ¸üĞÂvalue                                        */
+        p_tcb->SemCtr = p_tcb->Sem.Sem.value;                     /* æ›´æ–°value                                        */
 #endif
         CPU_CRITICAL_EXIT();
         return ctr;
@@ -1357,12 +1357,12 @@ CPU_BOOLEAN  OSTaskSemPendAbort (OS_TCB  *p_tcb,
 *                            OS_ERR_NONE              If the requested task is signaled
 *                            OS_ERR_OS_NOT_RUNNING    If uC/OS-III is not running yet
 *                            OS_ERR_SEM_OVF           If the post would cause the semaphore count to overflow.
-*                          + OS_ERR_TASK_SEM_CREATE_FALSE ÈÎÎñÄÚ½¨ĞÅºÅÁ¿´´½¨Ê§°Ü
-*                        -------------ËµÃ÷-------------
-*                            OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌĞøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                          - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈİ²ãÒÑ¾­ÎŞ·¨Ê¹ÓÃ
-*                          + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªĞÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                          Ó¦ÓÃ²ãĞèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅĞ¶Ï×ö³öÏàÓ¦µÄĞŞ¸Ä
+*                          + OS_ERR_TASK_SEM_CREATE_FALSE ä»»åŠ¡å†…å»ºä¿¡å·é‡åˆ›å»ºå¤±è´¥
+*                        -------------è¯´æ˜-------------
+*                            OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŸç‰ˆçš„é”™è¯¯ç 
+*                          - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                          + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢çš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                          åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›çš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 *
 * Returns    : The current value of the task's signal counter or 0 if called from an ISR
 ************************************************************************************************************************
@@ -1388,7 +1388,7 @@ OS_SEM_CTR  OSTaskSemPost (OS_TCB  *p_tcb,
     {
         p_tcb = OSTCBCurPtr;
     }
-    if(p_tcb->SemCreateSuc == RT_TRUE)                      /* ¼ì²éÈÎÎñÄÚ½¨ĞÅºÅÁ¿ÊÇ·ñ´´½¨³É¹¦                         */
+    if(p_tcb->SemCreateSuc == RT_TRUE)                      /* æ£€æŸ¥ä»»åŠ¡å†…å»ºä¿¡å·é‡æ˜¯å¦åˆ›å»ºæˆåŠŸ                         */
     {
         ctr = OSSemPost(&p_tcb->Sem,opt,p_err);
         CPU_CRITICAL_ENTER();
@@ -1442,7 +1442,7 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                   */
     {
         *p_err = OS_ERR_SET_ISR;
         return ((OS_SEM_CTR)0);
@@ -1456,9 +1456,9 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
 
     CPU_CRITICAL_ENTER();
     ctr = p_tcb->Sem.Sem.value;
-    p_tcb->Sem.Sem.value = (OS_SEM_CTR)cnt;                 /* ÉèÖÃRTTĞÅºÅÁ¿value                                     */
+    p_tcb->Sem.Sem.value = (OS_SEM_CTR)cnt;                 /* è®¾ç½®RTTä¿¡å·é‡value                                     */
 #ifndef PKG_USING_UCOSIII_WRAPPER_TINY
-    p_tcb->SemCtr = p_tcb->Sem.Sem.value;                   /* ¸üĞÂ.SemCtr                                            */
+    p_tcb->SemCtr = p_tcb->Sem.Sem.value;                   /* æ›´æ–°.SemCtr                                            */
 #endif
     CPU_CRITICAL_EXIT();
     *p_err = OS_ERR_NONE;
@@ -1480,8 +1480,8 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
 *              p_used      is a pointer to a variable that will receive the number of used 'entries' on the task's stack.
 *
 *              p_used_max  is a pointer to a variable that will receive the maximum number of used 'entries' on the task's stack.
-*                          -------------ËµÃ÷-------------
-*                          ¸Ã²ÎÊıÊÇÏà½ÏÓÚÔ­°æĞÂÔöµÄ²ÎÊı
+*                          -------------è¯´æ˜-------------
+*                          è¯¥å‚æ•°æ˜¯ç›¸è¾ƒäºåŸç‰ˆæ–°å¢çš„å‚æ•°
 *
 *              p_err       is a pointer to a variable that will contain an error code.
 *
@@ -1491,15 +1491,15 @@ OS_SEM_CTR  OSTaskSemSet (OS_TCB      *p_tcb,
 *                              OS_ERR_TASK_OPT           if you did NOT specified OS_OPT_TASK_STK_CHK when the task
 *                                                        was created
 *                              OS_ERR_TASK_STK_CHK_ISR   you called this function from an ISR
-*                         -------------ËµÃ÷-------------
-*                             OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌĞøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                           - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈİ²ãÒÑ¾­ÎŞ·¨Ê¹ÓÃ
-*                           + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªĞÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                          Ó¦ÓÃ²ãĞèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅĞ¶Ï×ö³öÏàÓ¦µÄĞŞ¸Ä
+*                         -------------è¯´æ˜-------------
+*                             OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŸç‰ˆçš„é”™è¯¯ç 
+*                           - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                           + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢çš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                          åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›çš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 * Returns    : none
 *
-* Note(s)    : 1) Ô­°æº¯Êı»ñÈ¡µÄÊÇÊµÊ±¶ÑÕ»Ê¹ÓÃÇé¿ö,ÔÚ±¾¼æÈİ²ãÖĞ¸Ãº¯Êı»ñÈ¡µ½µÄ½ØÖ¹µ½µ±Ç°Ê±¿ÌµÄ¶ÑÕ»×î´óÊ¹ÓÃºÍÊµÊ±Ê¹ÓÃ/Ê£Óà,
-*                 ±ÈÔ­°æº¯Êı¶àÁËÒ»¸öp_used_max²ÎÊı,ÕâÒª±ÈÔ­°æ¸üÄÜÓĞĞ§µÄÆÀ¹Àµ±Ç°ÈÎÎñ(Ïß³Ì)µÄ¶ÑÕ»Ê¹ÓÃÇé¿ö
+* Note(s)    : 1) åŸç‰ˆå‡½æ•°è·å–çš„æ˜¯å®æ—¶å †æ ˆä½¿ç”¨æƒ…å†µ,åœ¨æœ¬å…¼å®¹å±‚ä¸­è¯¥å‡½æ•°è·å–åˆ°çš„æˆªæ­¢åˆ°å½“å‰æ—¶åˆ»çš„å †æ ˆæœ€å¤§ä½¿ç”¨å’Œå®æ—¶ä½¿ç”¨/å‰©ä½™,
+*                 æ¯”åŸç‰ˆå‡½æ•°å¤šäº†ä¸€ä¸ªp_used_maxå‚æ•°,è¿™è¦æ¯”åŸç‰ˆæ›´èƒ½æœ‰æ•ˆçš„è¯„ä¼°å½“å‰ä»»åŠ¡(çº¿ç¨‹)çš„å †æ ˆä½¿ç”¨æƒ…å†µ
 ************************************************************************************************************************
 */
 
@@ -1525,7 +1525,7 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                   */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                 /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                   */
     {
         *p_err = OS_ERR_TASK_STK_CHK_ISR;
         return;
@@ -1544,7 +1544,7 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
     }
 #endif
 
-    /*ÈôTCBÖ¸ÕëÎªNULL,±íÊ¾µ±Ç°Ïß³Ì*/
+    /*è‹¥TCBæŒ‡é’ˆä¸ºNULL,è¡¨ç¤ºå½“å‰çº¿ç¨‹*/
     if(p_tcb ==RT_NULL)
     {
         p_tcb = OSTCBCurPtr;
@@ -1575,7 +1575,7 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
 
     *p_err = OS_ERR_NONE;
 
-    /*¼ÆËãRT-Thread¶ÑÕ»×î´óÊ¹ÓÃÇé¿ö*/
+    /*è®¡ç®—RT-Threadå †æ ˆæœ€å¤§ä½¿ç”¨æƒ…å†µ*/
 #if CPU_CFG_STK_GROWTH == CPU_STK_GROWTH_HI_TO_LO
     ptr = (rt_uint8_t *)thread->stack_addr;
     while (*ptr == '#')ptr ++;
@@ -1619,11 +1619,11 @@ void  OSTaskStkChk (OS_TCB        *p_tcb,
 *                                                            allowed.
 *                         - OS_ERR_TASK_SUSPEND_INT_HANDLER  if you attempted to suspend the idle task which is not
 *                                                            allowed.
-*                       -------------ËµÃ÷-------------
-*                           OS_ERR_XXXX        ±íÊ¾¿ÉÒÔ¼ÌĞøÑØÓÃuCOS-IIIÔ­°æµÄ´íÎóÂë
-*                         - OS_ERR_XXXX        ±íÊ¾¸Ã´íÎóÂëÔÚ±¾¼æÈİ²ãÒÑ¾­ÎŞ·¨Ê¹ÓÃ
-*                         + OS_ERR_RT_XXXX     ±íÊ¾¸Ã´íÎóÂëÎªĞÂÔöµÄRTT×¨ÓÃ´íÎóÂë¼¯
-*                        Ó¦ÓÃ²ãĞèÒª¶ÔAPI·µ»ØµÄ´íÎóÂëÅĞ¶Ï×ö³öÏàÓ¦µÄĞŞ¸Ä
+*                       -------------è¯´æ˜-------------
+*                           OS_ERR_XXXX        è¡¨ç¤ºå¯ä»¥ç»§ç»­æ²¿ç”¨uCOS-IIIåŸç‰ˆçš„é”™è¯¯ç 
+*                         - OS_ERR_XXXX        è¡¨ç¤ºè¯¥é”™è¯¯ç åœ¨æœ¬å…¼å®¹å±‚å·²ç»æ— æ³•ä½¿ç”¨
+*                         + OS_ERR_RT_XXXX     è¡¨ç¤ºè¯¥é”™è¯¯ç ä¸ºæ–°å¢çš„RTTä¸“ç”¨é”™è¯¯ç é›†
+*                        åº”ç”¨å±‚éœ€è¦å¯¹APIè¿”å›çš„é”™è¯¯ç åˆ¤æ–­åšå‡ºç›¸åº”çš„ä¿®æ”¹
 *
 * Note(s)    : 1) You should use this function with great care.  If you suspend a task that is waiting for an event
 *                 (i.e. a message, a semaphore, a queue ...) you will prevent this task from running when the event
@@ -1646,14 +1646,14 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
 #endif
 
 #if OS_CFG_CALLED_FROM_ISR_CHK_EN > 0u
-    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                    /* ¼ì²éÊÇ·ñÔÚÖĞ¶ÏÖĞÔËĞĞ                                 */
+    if(OSIntNestingCtr > (OS_NESTING_CTR)0)                    /* æ£€æŸ¥æ˜¯å¦åœ¨ä¸­æ–­ä¸­è¿è¡Œ                                 */
     {
         *p_err = OS_ERR_TASK_SUSPEND_ISR;
         return;
     }
 #endif
 
-    if(p_tcb == RT_NULL)                                       /* TCBÖ¸ÕëÊÇ·ñÎª¿Õ,ÈôÎª¿ÕÔòÎªµ±Ç°Ïß³Ì                   */
+    if(p_tcb == RT_NULL)                                       /* TCBæŒ‡é’ˆæ˜¯å¦ä¸ºç©º,è‹¥ä¸ºç©ºåˆ™ä¸ºå½“å‰çº¿ç¨‹                   */
     {
         p_tcb = OSTCBCurPtr;
     }
@@ -1665,7 +1665,7 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
     }
 #endif
 
-    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)             /* ¼ì²éµ÷¶ÈÆ÷ÊÇ·ñ±»Ëø                                   */
+    if (OSSchedLockNestingCtr > (OS_NESTING_CTR)0)             /* æ£€æŸ¥è°ƒåº¦å™¨æ˜¯å¦è¢«é”                                   */
     {
         *p_err = OS_ERR_SCHED_LOCKED;
         return;
@@ -1676,7 +1676,7 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
         return;
     }
 
-    /*¼ì²é.SuspendCtrÊÇ·ñ½«ÒªÒç³ö*/
+    /*æ£€æŸ¥.SuspendCtræ˜¯å¦å°†è¦æº¢å‡º*/
     if (p_tcb->SuspendCtr == (OS_NESTING_CTR)-1) {
        *p_err = OS_ERR_TASK_SUSPEND_CTR_OVF;
         return;
@@ -1684,7 +1684,7 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
 
     if((p_tcb->Task.stat & RT_THREAD_STAT_MASK) == RT_THREAD_SUSPEND)
     {
-        /*Èç¹ûÈÎÎñÊÇ¹ÒÆğ×´Ì¬*/
+        /*å¦‚æœä»»åŠ¡æ˜¯æŒ‚èµ·çŠ¶æ€*/
         CPU_CRITICAL_ENTER();
         p_tcb->SuspendCtr++;
         CPU_CRITICAL_EXIT();
@@ -1694,9 +1694,9 @@ void   OSTaskSuspend (OS_TCB  *p_tcb,
     {
         p_tcb->TaskState |= OS_TASK_STATE_SUSPENDED;
         rt_err = rt_thread_suspend(&p_tcb->Task);
-        if(rt_thread_self() == &p_tcb->Task)/*ÊÇ·ñÒª½«×Ô¼º¹ÒÆğ*/
+        if(rt_thread_self() == &p_tcb->Task)/*æ˜¯å¦è¦å°†è‡ªå·±æŒ‚èµ·*/
         {
-            rt_schedule();/* ¸ù¾İRTTµÄÒªÇó,Èô¹ÒÆğ×Ô¼ºĞèÒªÁ¢¼´µ÷ÓÃrt_shedule½øĞĞµ÷¶È*/
+            rt_schedule();/* æ ¹æ®RTTçš„è¦æ±‚,è‹¥æŒ‚èµ·è‡ªå·±éœ€è¦ç«‹å³è°ƒç”¨rt_sheduleè¿›è¡Œè°ƒåº¦*/
         }
         *p_err = rt_err_to_ucosiii(rt_err);
     }

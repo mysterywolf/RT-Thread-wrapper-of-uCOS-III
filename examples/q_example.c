@@ -8,29 +8,29 @@
  * 2020-07-23     Meco Man     the first verion
  */
 
-/*������չʾ�����ʹ��uCOS-III����Ϣ����(�㲥��ʽ)*/
+/*本例程展示了如何使用uCOS-III的消息队列(广播形式)*/
 
 #include <os.h>
 
 #if OS_CFG_Q_EN > 0u
 
-#define TASK_PRIORITY         6     /*�������ȼ�*/
-#define TASK_STACK_SIZE       80    /*�����ջ��С*/
-#define TASK_TIMESLICE        5     /*����ʱ��Ƭ*/
+#define TASK_PRIORITY         6     /*任务优先级*/
+#define TASK_STACK_SIZE       80    /*任务堆栈大小*/
+#define TASK_TIMESLICE        5     /*任务时间片*/
 
 ALIGN(RT_ALIGN_SIZE)
-static CPU_STK AppTask1_Stack[TASK_STACK_SIZE];/*�����ջ*/
-static OS_TCB  AppTask1_TCB;/*������ƿ�*/
+static CPU_STK AppTask1_Stack[TASK_STACK_SIZE];/*任务堆栈*/
+static OS_TCB  AppTask1_TCB;/*任务控制块*/
 
 ALIGN(RT_ALIGN_SIZE)
-static CPU_STK AppTask2_Stack[TASK_STACK_SIZE];/*�����ջ*/
-static OS_TCB  AppTask2_TCB;/*������ƿ�*/
+static CPU_STK AppTask2_Stack[TASK_STACK_SIZE];/*任务堆栈*/
+static OS_TCB  AppTask2_TCB;/*任务控制块*/
 
 ALIGN(RT_ALIGN_SIZE)
-static CPU_STK AppTask3_Stack[TASK_STACK_SIZE];/*�����ջ*/
-static OS_TCB  AppTask3_TCB;/*������ƿ�*/
+static CPU_STK AppTask3_Stack[TASK_STACK_SIZE];/*任务堆栈*/
+static OS_TCB  AppTask3_TCB;/*任务控制块*/
 
-static OS_Q msg;/*������Ϣ����*/
+static OS_Q msg;/*定义消息队列*/
 
 static char buffer[128];
 
@@ -44,7 +44,7 @@ static void AppTask1 (void *param)
         i++;
         rt_sprintf(buffer,"task1 msg:%d",i);
 
-        /*������Ϣ����Ϣ����*/
+        /*发送消息到消息队列*/
         OSQPost((OS_Q*      )&msg,
                 (void*      )buffer,
                 (OS_MSG_SIZE)rt_strlen(buffer),
@@ -55,7 +55,7 @@ static void AppTask1 (void *param)
         {
             rt_kprintf("queue post err:%d!\r\n",err);
         }
-        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_HMSM_NON_STRICT,&err);/*��ʱ500ms*/
+        OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_HMSM_NON_STRICT,&err);/*延时500ms*/
     }
 }
 
@@ -70,7 +70,7 @@ static void AppTask2 (void *param)
 
     while(1)
     {
-        /*�����ȴ���Ϣ*/
+        /*阻塞等待消息*/
         p=OSQPend((OS_Q*        )&msg,
                   (OS_TICK      )0,
                   (OS_OPT       )OS_OPT_PEND_BLOCKING,
@@ -101,7 +101,7 @@ static void AppTask3 (void *param)
 
     while(1)
     {
-        /*�����ȴ���Ϣ*/
+        /*阻塞等待消息*/
         p=OSQPend((OS_Q*        )&msg,
                   (OS_TICK      )0,
                   (OS_OPT       )OS_OPT_PEND_BLOCKING,
@@ -128,61 +128,61 @@ void q_example (void)
 
     OSQCreate ((OS_Q*       )&msg,
                 (CPU_CHAR*  )"msg",
-                (OS_MSG_QTY )10,/*��Ϣ�������ɵ������Ϣ��*/
+                (OS_MSG_QTY )10,/*消息队列容纳的最大消息数*/
                 (OS_ERR*    )&err);
     if(err!=OS_ERR_NONE)
     {
         rt_kprintf("queue create err!:%d\r\n",err);
     }
 
-    OSTaskCreate(&AppTask1_TCB,                 /*������ƿ�*/
-               (CPU_CHAR*)"AppTask1",           /*��������*/
-               AppTask1,                        /*������*/
-               0,                               /*���ݸ��������Ĳ���*/
-               TASK_PRIORITY,                   /*�������ȼ�*/
-               &AppTask1_Stack[0],              /*�����ջ����ַ*/
-               TASK_STACK_SIZE/10,              /*�����ջ�����λ*/
-               TASK_STACK_SIZE,                 /*�����ջ��С*/
-               0,                               /*�����ڲ���Ϣ�����ܹ����յ������Ϣ��Ŀ,Ϊ0ʱ��ֹ������Ϣ*/
-               TASK_TIMESLICE,                  /*��ʹ��ʱ��Ƭ��תʱ��ʱ��Ƭ���ȣ�Ϊ0ʱΪĬ�ϳ���*/
-               0,                               /*�û�����Ĵ洢��*/
-               OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, /*����ѡ��*/
+    OSTaskCreate(&AppTask1_TCB,                 /*任务控制块*/
+               (CPU_CHAR*)"AppTask1",           /*任务名字*/
+               AppTask1,                        /*任务函数*/
+               0,                               /*传递给任务函数的参数*/
+               TASK_PRIORITY,                   /*任务优先级*/
+               &AppTask1_Stack[0],              /*任务堆栈基地址*/
+               TASK_STACK_SIZE/10,              /*任务堆栈深度限位*/
+               TASK_STACK_SIZE,                 /*任务堆栈大小*/
+               0,                               /*任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息*/
+               TASK_TIMESLICE,                  /*当使能时间片轮转时的时间片长度，为0时为默认长度*/
+               0,                               /*用户补充的存储区*/
+               OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, /*任务选项*/
                &err);
         if(err!=OS_ERR_NONE)
         {
             rt_kprintf("task1 create err:%d\n",err);
         }
 
-    OSTaskCreate(&AppTask2_TCB,                 /*������ƿ�*/
-               (CPU_CHAR*)"AppTask2",           /*��������*/
-               AppTask2,                        /*������*/
-               0,                               /*���ݸ��������Ĳ���*/
-               TASK_PRIORITY,                   /*�������ȼ�*/
-               &AppTask2_Stack[0],              /*�����ջ����ַ*/
-               TASK_STACK_SIZE/10,              /*�����ջ�����λ*/
-               TASK_STACK_SIZE,                 /*�����ջ��С*/
-               0,                               /*�����ڲ���Ϣ�����ܹ����յ������Ϣ��Ŀ,Ϊ0ʱ��ֹ������Ϣ*/
-               TASK_TIMESLICE,                  /*��ʹ��ʱ��Ƭ��תʱ��ʱ��Ƭ���ȣ�Ϊ0ʱΪĬ�ϳ���*/
-               0,                               /*�û�����Ĵ洢��*/
-               OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, /*����ѡ��*/
+    OSTaskCreate(&AppTask2_TCB,                 /*任务控制块*/
+               (CPU_CHAR*)"AppTask2",           /*任务名字*/
+               AppTask2,                        /*任务函数*/
+               0,                               /*传递给任务函数的参数*/
+               TASK_PRIORITY,                   /*任务优先级*/
+               &AppTask2_Stack[0],              /*任务堆栈基地址*/
+               TASK_STACK_SIZE/10,              /*任务堆栈深度限位*/
+               TASK_STACK_SIZE,                 /*任务堆栈大小*/
+               0,                               /*任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息*/
+               TASK_TIMESLICE,                  /*当使能时间片轮转时的时间片长度，为0时为默认长度*/
+               0,                               /*用户补充的存储区*/
+               OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, /*任务选项*/
                &err);
         if(err!=OS_ERR_NONE)
         {
             rt_kprintf("task2 create err:%d\n",err);
         }
 
-    OSTaskCreate(&AppTask3_TCB,                 /*������ƿ�*/
-               (CPU_CHAR*)"AppTask3",           /*��������*/
-               AppTask3,                        /*������*/
-               0,                               /*���ݸ��������Ĳ���*/
-               TASK_PRIORITY,                   /*�������ȼ�*/
-               &AppTask3_Stack[0],              /*�����ջ����ַ*/
-               TASK_STACK_SIZE/10,              /*�����ջ�����λ*/
-               TASK_STACK_SIZE,                 /*�����ջ��С*/
-               0,                               /*�����ڲ���Ϣ�����ܹ����յ������Ϣ��Ŀ,Ϊ0ʱ��ֹ������Ϣ*/
-               TASK_TIMESLICE,                  /*��ʹ��ʱ��Ƭ��תʱ��ʱ��Ƭ���ȣ�Ϊ0ʱΪĬ�ϳ���*/
-               0,                               /*�û�����Ĵ洢��*/
-               OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, /*����ѡ��*/
+    OSTaskCreate(&AppTask3_TCB,                 /*任务控制块*/
+               (CPU_CHAR*)"AppTask3",           /*任务名字*/
+               AppTask3,                        /*任务函数*/
+               0,                               /*传递给任务函数的参数*/
+               TASK_PRIORITY,                   /*任务优先级*/
+               &AppTask3_Stack[0],              /*任务堆栈基地址*/
+               TASK_STACK_SIZE/10,              /*任务堆栈深度限位*/
+               TASK_STACK_SIZE,                 /*任务堆栈大小*/
+               0,                               /*任务内部消息队列能够接收的最大消息数目,为0时禁止接收消息*/
+               TASK_TIMESLICE,                  /*当使能时间片轮转时的时间片长度，为0时为默认长度*/
+               0,                               /*用户补充的存储区*/
+               OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, /*任务选项*/
                &err);
         if(err!=OS_ERR_NONE)
         {
