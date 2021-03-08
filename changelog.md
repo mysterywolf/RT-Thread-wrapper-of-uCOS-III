@@ -666,3 +666,8 @@
 
 尽力实现`os_pend_multi.c`
 
+
+
+# 已知问题
+
+受上游RT-Thread影响（https://github.com/RT-Thread/rt-thread/issues/3946）导致兼容层的任务挂起/解挂API在挂起其他任务时，不能正确工作。任务自己挂起自己时，可以正常工作。
