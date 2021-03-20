@@ -168,13 +168,13 @@ int main(void) /*RT-Thread main线程*/
 
 ### 2.5.3 自动初始化流程
 
-如果您在应用层中不想手动初始化本兼容层，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏定义。请参见 [6.2.1章节](#6.2.1 Enable uCOS-III wrapper automatically init)（**如无特殊要求，建议采用该种方式**）。
+如果您在应用层中不想手动初始化本兼容层，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`宏定义。请参见 [6.2.1章节](###6.2.1 Enable uCOS-III wrapper automatically init)（**如无特殊要求，建议采用该种方式**）。
 
 
 
 ### 2.5.4 精简版兼容层
 
-如果你在使用过程中不需要兼容任务/内核对象结构体的成员变量，或者不需要使用uC/Probe软件监控兼容层状态，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_TINY`宏定义。请参见 [6.2.2章节](#6.2.2 Enable uCOS-III wrapper tiny mode)。
+如果你在使用过程中不需要兼容任务/内核对象结构体的成员变量，或者不需要使用uC/Probe软件监控兼容层状态，可以在`rtconfig.h`文件中定义`PKG_USING_UCOSIII_WRAPPER_TINY`宏定义。请参见 [6.2.2章节](###6.2.2 Enable uCOS-III wrapper tiny mode)。
 
 
 
