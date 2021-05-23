@@ -153,8 +153,8 @@ void  OSFlagCreate (OS_FLAG_GRP  *p_grp,
         return;
     }
 #endif
-    /*在uCOS-III中事件是直接被插入到链表,不按照优先级排列*/
-    rt_err = rt_event_init(&p_grp->FlagGrp,(const char*)p_name,RT_IPC_FLAG_FIFO);
+
+    rt_err = rt_event_init(&p_grp->FlagGrp,(const char*)p_name,RT_IPC_FLAG_PRIO);
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err != RT_EOK)
     {

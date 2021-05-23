@@ -193,7 +193,7 @@ void  OSQCreate (OS_Q        *p_q,
                          p_q->p_pool,
                          msg_size,
                          pool_size,
-                         RT_IPC_FLAG_FIFO);
+                         RT_IPC_FLAG_PRIO);
 
     *p_err = rt_err_to_ucosiii(rt_err);
     if(rt_err != RT_EOK)

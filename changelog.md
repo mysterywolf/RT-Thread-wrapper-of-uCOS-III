@@ -384,6 +384,9 @@
 
 - 经过五个月的预发布测试，正式发布v1.0.0版本
 
+### 2021-05-23
+
+- 将`RT_IPC_FLAG_FIFO`改为`RT_IPC_FLAG_PRIO`以确保实时性
 
 
 
@@ -392,8 +395,6 @@
 ## v0.1.0
 
 所有内核对象兼容已经全部实现，可以满足正常的兼容需求。本版本尚未实现μCOS-III的统计任务，该功能将在后续版本中发布。
-
-
 
 ## v0.2.0 
 
@@ -406,8 +407,6 @@
 **[add]** 实现Idle任务钩子函数`OSIdleTaskHook()`
 
 **[add]** 实现uCOS-III内部任务——统计任务
-
-
 
 ## v0.3.0
 
@@ -453,8 +452,6 @@
 
 **[add]** 实现`OSQFlush`函数（目前仅有2个uCOS-III API无法兼容）
 
-
-
 ## v0.4.0
 
 **[add]** 移植`cpu_core.c`文件增加`CPU_Init`函数，防止老项目移植时因为没有该函数而报错，在函数内没有任何动作(DO NOTHING)
@@ -471,8 +468,6 @@
 
 **[add]** 内核对象双向Dbg链表全部实现，并与FinSH对接，可以在msh模式下使用ucos命令查看兼容层管理的内核对象以及相关信息（例如CPU使用率）
 
-
-
 ## v0.5.0
 
 **[bug fix]** 实现并解决`OSSemPost`函数`OS_OPT_POST_ALL`选项（已知）
@@ -487,8 +482,6 @@
 
 **[bug fix]** 修复了CPU使用率突然飙升至100%的问题，该问题为μCOS-III原版（3.03版本）内部bug，即便是最新版的3.08版本该问题依然没有得到彻底解决（仅仅是将飙升至100%改成了骤降至0%）
 
-
-
 ## v0.6.0
 
 **[add]** 增加`OS_TASK_STATE_SUSPENDED`任务状态
@@ -502,8 +495,6 @@
 **[enhance]** 对`OSTaskStkChk`函数当传入`OS_TCB*`参数为空时，转换为当前`OS_TCB*`的逻辑做了调整
 
 **[bug fix]** 对函数`OSTmrRemainGet`、`OSTmrStop`、`OSTmrStateGet`、`OSTmrStart`、`OSTmrDel`仿照原版增加定时器状态检查功能
-
-
 
 ## v0.7.0
 
@@ -537,13 +528,9 @@
 
 **[add 3.08]** 实现3.06版本中新增的`OSTmrSet`函数
 
-
-
 ## v0.8.0
 
 **[add]** 实现`OSTaskChangePrio`函数，目前兼容层仅1个API没有实现
-
-
 
 ## v0.9.0
 
@@ -557,8 +544,6 @@
 ```
 
 **[add]** 增加`suspend_example.c`例程
-
-
 
 ## v0.10.0
 
@@ -584,8 +569,6 @@
 
 创建任务时，将任务堆栈的首地址由`AppTask1_Stack`改为`&AppTask1_Stack[0]`以突出堆栈的首地址
 
-
-
 ## v0.11.0
 
 对齐并整理注释 
@@ -603,8 +586,6 @@
 **[add]** 实现`PKG_USING_UCOSIII_WRAPPER_TINY`以精简兼容层
 
 **[del]** 删除`os_task.c`无用注释
-
-
 
 ## v0.12.0
 
@@ -644,8 +625,6 @@
 
 **[add]** 实现`OS_TCB`结构体中`.FlagsPend`、`.FlagsRdy`、`.FlagsOpt`成员变量
 
-
-
 ## v0.13.0
 
 **[add]** 实现广播消息队列
@@ -662,11 +641,13 @@
 
 **[fix]** 修复从RT-Thread到uCOS-III定时器换算公式没有考虑到Systick变化的问题
 
-
-
 ## v1.0.0
 
 经过五个月的预发布测试，正式发布v1.0.0版本
+
+## V1.0.1
+
+将`RT_IPC_FLAG_FIFO`改为`RT_IPC_FLAG_PRIO`以确保实时性
 
 
 
