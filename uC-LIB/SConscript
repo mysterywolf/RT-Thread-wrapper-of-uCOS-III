@@ -1,4 +1,3 @@
-Import('rtconfig')
 from building import *
 
 cwd = GetCurrentDir()
