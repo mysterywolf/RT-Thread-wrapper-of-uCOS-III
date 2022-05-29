@@ -1,5 +1,5 @@
 # RT-Thread操作系统的μC/OS-III兼容层
-## uCOS-III RTOS Compatibility Layer for RT-Thread
+## μC/OS-III RTOS Compatibility Layer for RT-Thread
 ## 让基于μC/OS-III开发的应用层无感地迁移到RT-Thread操作系统
 
 ### 如果喜欢请Star，这是对本开源项目最大的鼓励，谢谢；如果想要贡献PR，请fork
