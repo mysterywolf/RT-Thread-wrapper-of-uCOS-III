@@ -246,7 +246,7 @@ RT-Thread目前没有动态更改时间片大小的功能：
 void  OSTaskTimeQuantaSet (OS_TCB *p_tcb, OS_TICK time_quanta, OS_ERR *p_err);
  ```
 
-兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能，该功能在原版3.05.00版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06.00版本开始删除了该功能，因此本兼容层暂时没有实现该函数的兼容：
+兼容层取消原版μCOS-III中的多内核对象等待(Multi-Pend)功能，该功能在原版3.05.00版本开始向用户发出警告不要使用该功能(原文措辞为deprecated)，从3.06.00版本开始删除了该功能，因此本兼容层没有实现该函数的兼容：
 
 ```c
 OS_OBJ_QTY  OSPendMulti (OS_PEND_DATA  *p_pend_data_tbl,

@@ -1,251 +1,251 @@
-# Î¬»¤ÈÕÖ¾
+# ç»´æŠ¤æ—¥å¿—
 
 ### 2020-06-29 
 
-- ³õ²½´î½¨¿ò¼Ü
-- Íê³ÉÐÅºÅÁ¿¼æÈÝ
-- Íê³É`os_time.c`ÏµÍ³ÑÓÊ±ÓÐ¹Ø¼æÈÝ
+- åˆæ­¥æ­å»ºæ¡†æž¶
+- å®Œæˆä¿¡å·é‡å…¼å®¹
+- å®Œæˆ`os_time.c`ç³»ç»Ÿå»¶æ—¶æœ‰å…³å…¼å®¹
 
 
 ### 2020-06-30 
 
-- Íê³ÉÈí¼þ¶¨Ê±Æ÷¼æÈÝ
+- å®Œæˆè½¯ä»¶å®šæ—¶å™¨å…¼å®¹
 
 
 ### 2020-07-01  
 
-- ÊµÏÖ»¥³âÁ¿¼æÈÝ
+- å®žçŽ°äº’æ–¥é‡å…¼å®¹
 
 
 ### 2020-07-02  
 
-- ÊµÏÖÏûÏ¢¶ÓÁÐ¼æÈÝ
+- å®žçŽ°æ¶ˆæ¯é˜Ÿåˆ—å…¼å®¹
 
 
 ### 2020-07-03  
 
-- ÊµÏÖÐÅºÅ±êÖ¾×é¼æÈÝ
+- å®žçŽ°ä¿¡å·æ ‡å¿—ç»„å…¼å®¹
 
-- ÊµÏÖÈÎÎñÄÚ½¨¼Ä´æÆ÷¼æÈÝ
+- å®žçŽ°ä»»åŠ¡å†…å»ºå¯„å­˜å™¨å…¼å®¹
 
-- ÊµÏÖÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁÐ¼æÈÝ
+- å®žçŽ°ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—å…¼å®¹
 
 ### 2020-07-04  
 
-- ÊµÏÖÈÎÎñÄÚ½¨ÐÅºÅÁ¿¼æÈÝ
-- ÊµÏÖuCOS-III°²È«ÈÏÖ¤¼ì²éÏà¹Ø¼æÈÝ
-- ¶Ô½Ó`os_cfg.h`ºê¶¨Òå
-- Ôö¼Ó`os_cfg_app.h`²¢ÓëÖ®¶Ô½Ó
-- Íê³É`os_sem.c` `os_q.c`ÎÄ¼þºê¶¨Òå¼ì²éÒÔ¼°Á÷³ÌµÄÈ·ÈÏ
+- å®žçŽ°ä»»åŠ¡å†…å»ºä¿¡å·é‡å…¼å®¹
+- å®žçŽ°uCOS-IIIå®‰å…¨è®¤è¯æ£€æŸ¥ç›¸å…³å…¼å®¹
+- å¯¹æŽ¥`os_cfg.h`å®å®šä¹‰
+- å¢žåŠ `os_cfg_app.h`å¹¶ä¸Žä¹‹å¯¹æŽ¥
+- å®Œæˆ`os_sem.c` `os_q.c`æ–‡ä»¶å®å®šä¹‰æ£€æŸ¥ä»¥åŠæµç¨‹çš„ç¡®è®¤
 
 ### 2020-07-05  
 
-- Íê³É`os_flag.c` `os_mutex.c` `os_tmr.c` `os_task.c` `os_time.c` `os_core.c`ÎÄ¼þºê¶¨Òå¼ì²éÒÔ¼°Á÷³ÌµÄÈ·ÈÏ
-- ÓÅ»¯`os_cfg_app.h`¡¢`os_cfg.h`
+- å®Œæˆ`os_flag.c` `os_mutex.c` `os_tmr.c` `os_task.c` `os_time.c` `os_core.c`æ–‡ä»¶å®å®šä¹‰æ£€æŸ¥ä»¥åŠæµç¨‹çš„ç¡®è®¤
+- ä¼˜åŒ–`os_cfg_app.h`ã€`os_cfg.h`
 
 ### 2020-07-06  
 
-- ³äÊµ`readme.md`
-- ÊµÏÖ`OSSemSet`¡¢`OSTaskSemSet`º¯Êý
-- ÓÅ»¯`OSTaskSuspend`¡¢`OSTaskResume`º¯Êý£¬Ê¹Æä¾ß±¸Ç¶Ì×¹ÒÆð/½â¹ÒÄÜÁ¦
-- ÊµÏÖ¹³×Óº¯Êý
+- å……å®ž`readme.md`
+- å®žçŽ°`OSSemSet`ã€`OSTaskSemSet`å‡½æ•°
+- ä¼˜åŒ–`OSTaskSuspend`ã€`OSTaskResume`å‡½æ•°ï¼Œä½¿å…¶å…·å¤‡åµŒå¥—æŒ‚èµ·/è§£æŒ‚èƒ½åŠ›
+- å®žçŽ°é’©å­å‡½æ•°
 
 ### 2020-07-07  
 
-- ÒÆÖ²`os_mem.c`ÎÄ¼þ
-- ÓÅ»¯ÁËÄÚºË¶ÔÏóµÄ½á¹¹Ìå
+- ç§»æ¤`os_mem.c`æ–‡ä»¶
+- ä¼˜åŒ–äº†å†…æ ¸å¯¹è±¡çš„ç»“æž„ä½“
 
 ### 2020-07-08  
 
-- ÊµÏÖ`OSTmrStateGet`º¯Êý
-- ¹¹½¨Í³¼ÆÈÎÎñ¿ò¼Ü
-- ÐÞ¸Ä`OSTaskDel`º¯ÊýÃ»ÓÐÉ¾³ýÈÎÎñÄÚ½¨ÐÅºÅÁ¿¡¢ÈÎÎñÄÚ½¨¶ÓÁÐµÄbug
-- ÒÆÖ²`OS_TaskDbgListAdd`¡¢`OS_TaskDbgListRemove`º¯Êý
-- ÊµÏÖ`OS_TaskInitTCB`º¯Êý
-- ÊµÏÖIdleÈÎÎñ£¨ÊµÔòÎªRTT IdleÈÎÎñµÄ»Øµ÷º¯Êý£©
-- ÊµÏÖIdleÈÎÎñ¹³×Óº¯Êý`OSIdleTaskHook()`
+- å®žçŽ°`OSTmrStateGet`å‡½æ•°
+- æž„å»ºç»Ÿè®¡ä»»åŠ¡æ¡†æž¶
+- ä¿®æ”¹`OSTaskDel`å‡½æ•°æ²¡æœ‰åˆ é™¤ä»»åŠ¡å†…å»ºä¿¡å·é‡ã€ä»»åŠ¡å†…å»ºé˜Ÿåˆ—çš„bug
+- ç§»æ¤`OS_TaskDbgListAdd`ã€`OS_TaskDbgListRemove`å‡½æ•°
+- å®žçŽ°`OS_TaskInitTCB`å‡½æ•°
+- å®žçŽ°Idleä»»åŠ¡ï¼ˆå®žåˆ™ä¸ºRTT Idleä»»åŠ¡çš„å›žè°ƒå‡½æ•°ï¼‰
+- å®žçŽ°Idleä»»åŠ¡é’©å­å‡½æ•°`OSIdleTaskHook()`
 
 ### 2020-07-09
 
-- ÊµÏÖuCOS-IIIÄÚ²¿ÈÎÎñ¡ª¡ªÍ³¼ÆÈÎÎñ£¬¿ÉÒÔÕýÈ·¼ÆËãCPUÊ¹ÓÃÂÊ¡¢Ã¿¸öÈÎÎñµÄÊ¹ÓÃ¶ÑÕ»
+- å®žçŽ°uCOS-IIIå†…éƒ¨ä»»åŠ¡â€”â€”ç»Ÿè®¡ä»»åŠ¡ï¼Œå¯ä»¥æ­£ç¡®è®¡ç®—CPUä½¿ç”¨çŽ‡ã€æ¯ä¸ªä»»åŠ¡çš„ä½¿ç”¨å †æ ˆ
 
 ### 2020-07-10
 
-- ÊµÏÖ`OSTimeDlyResume`º¯Êý
-- ÐÞ¸´`OSSemDel`º¯ÊýÎÞ·¨·µ»Øµ±Ç°µÈ´ýÐÅºÅÁ¿ÊýÁ¿¡¢ÎÞ·¨Ê¹ÓÃ`OS_OPT_DEL_NO_PEND`Ñ¡ÏîµÄÎÊÌâ
-- ÐÞ¸´`OSMutexDel`º¯ÊýÎÞ·¨·µ»Øµ±Ç°µÈ´ýÐÅºÅÁ¿ÊýÁ¿¡¢ÎÞ·¨Ê¹ÓÃ`OS_OPT_DEL_NO_PEND`Ñ¡ÏîµÄÎÊÌâ
-- ÐÞ¸´`OSQDel`º¯ÊýÎÞ·¨·µ»Øµ±Ç°µÈ´ýÐÅºÅÁ¿ÊýÁ¿¡¢ÎÞ·¨Ê¹ÓÃ`OS_OPT_DEL_NO_PEND`Ñ¡ÏîµÄÎÊÌâ
-- ÐÞ¸´`OSFlagDel`º¯ÊýÎÞ·¨·µ»Øµ±Ç°µÈ´ýÐÅºÅÁ¿ÊýÁ¿¡¢ÎÞ·¨Ê¹ÓÃ`OS_OPT_DEL_NO_PEND`Ñ¡ÏîµÄÎÊÌâ
+- å®žçŽ°`OSTimeDlyResume`å‡½æ•°
+- ä¿®å¤`OSSemDel`å‡½æ•°æ— æ³•è¿”å›žå½“å‰ç­‰å¾…ä¿¡å·é‡æ•°é‡ã€æ— æ³•ä½¿ç”¨`OS_OPT_DEL_NO_PEND`é€‰é¡¹çš„é—®é¢˜
+- ä¿®å¤`OSMutexDel`å‡½æ•°æ— æ³•è¿”å›žå½“å‰ç­‰å¾…ä¿¡å·é‡æ•°é‡ã€æ— æ³•ä½¿ç”¨`OS_OPT_DEL_NO_PEND`é€‰é¡¹çš„é—®é¢˜
+- ä¿®å¤`OSQDel`å‡½æ•°æ— æ³•è¿”å›žå½“å‰ç­‰å¾…ä¿¡å·é‡æ•°é‡ã€æ— æ³•ä½¿ç”¨`OS_OPT_DEL_NO_PEND`é€‰é¡¹çš„é—®é¢˜
+- ä¿®å¤`OSFlagDel`å‡½æ•°æ— æ³•è¿”å›žå½“å‰ç­‰å¾…ä¿¡å·é‡æ•°é‡ã€æ— æ³•ä½¿ç”¨`OS_OPT_DEL_NO_PEND`é€‰é¡¹çš„é—®é¢˜
 
 ### 2020-07-11
 
 
-- Ôö¼Ó¼æÈÝÔ­°æ`OS_TCB`½á¹¹Ìå³ÉÔ±±äÁ¿
-- ÊµÏÖ`OSSemPendAbort`º¯Êý£¬`OSSemPend`º¯ÊýÔö¼ÓÁË´¦Àí`OS_ERR_PEND_ABORT`µÄ¹¦ÄÜ
+- å¢žåŠ å…¼å®¹åŽŸç‰ˆ`OS_TCB`ç»“æž„ä½“æˆå‘˜å˜é‡
+- å®žçŽ°`OSSemPendAbort`å‡½æ•°ï¼Œ`OSSemPend`å‡½æ•°å¢žåŠ äº†å¤„ç†`OS_ERR_PEND_ABORT`çš„åŠŸèƒ½
 
 ### 2020-07-12
 
-- ÐÂÔö`os_rtwrap.c`ÎÄ¼þ£¬¸ºÔð¶ÔRT-ThreadºÍ¦ÌCOS-IIIµÄ×ª»»Ìá¹©Ö§³Ö¡£²¢ÔÚ`os.h`ÎÄ¼þÄ©Î²Ôö¼Ó`os_rtwrap.c`ÄÚº¯ÊýµÄÉùÃ÷
-- ÊµÏÖ`OSTaskSemPendAbort`º¯Êý
-- ÊµÏÖ`OSTaskQPendAbort`º¯Êý
-- ÊµÏÖ`OSSemPendAbort`º¯Êý£¬`OSSemPend`º¯ÊýÔö¼ÓÁË´¦Àí`OS_ERR_PEND_ABORT`µÄ¹¦ÄÜ
-- ÊµÏÖ`OSSemMutexAbort`º¯Êý£¬`OSMutexPend`º¯ÊýÔö¼ÓÁË´¦Àí`OS_ERR_PEND_ABORT`µÄ¹¦ÄÜ
-- ÊµÏÖ`OSSFlagPendAbort`º¯Êý£¬`OSFlagPend`º¯ÊýÔö¼ÓÁË´¦Àí`OS_ERR_PEND_ABORT`µÄ¹¦ÄÜ
-- ÊµÏÖ`OSQPendAbort`º¯Êý£¬`OSQPend`º¯ÊýÔö¼ÓÁË´¦Àí`OS_ERR_PEND_ABORT`µÄ¹¦ÄÜ
+- æ–°å¢ž`os_rtwrap.c`æ–‡ä»¶ï¼Œè´Ÿè´£å¯¹RT-Threadå’ŒÎ¼COS-IIIçš„è½¬æ¢æä¾›æ”¯æŒã€‚å¹¶åœ¨`os.h`æ–‡ä»¶æœ«å°¾å¢žåŠ `os_rtwrap.c`å†…å‡½æ•°çš„å£°æ˜Ž
+- å®žçŽ°`OSTaskSemPendAbort`å‡½æ•°
+- å®žçŽ°`OSTaskQPendAbort`å‡½æ•°
+- å®žçŽ°`OSSemPendAbort`å‡½æ•°ï¼Œ`OSSemPend`å‡½æ•°å¢žåŠ äº†å¤„ç†`OS_ERR_PEND_ABORT`çš„åŠŸèƒ½
+- å®žçŽ°`OSSemMutexAbort`å‡½æ•°ï¼Œ`OSMutexPend`å‡½æ•°å¢žåŠ äº†å¤„ç†`OS_ERR_PEND_ABORT`çš„åŠŸèƒ½
+- å®žçŽ°`OSSFlagPendAbort`å‡½æ•°ï¼Œ`OSFlagPend`å‡½æ•°å¢žåŠ äº†å¤„ç†`OS_ERR_PEND_ABORT`çš„åŠŸèƒ½
+- å®žçŽ°`OSQPendAbort`å‡½æ•°ï¼Œ`OSQPend`å‡½æ•°å¢žåŠ äº†å¤„ç†`OS_ERR_PEND_ABORT`çš„åŠŸèƒ½
 
 ### 2020-07-14
 
-- ÊµÏÖ`OSSchedRoundRobinCfg`º¯Êý
-- ÊµÏÖ`OSFlagPendGetFlagsRdy`º¯Êý
-- ÊµÏÖ`OSQFlush`º¯Êý
-- ÊµÏÖ`OSTaskQFlush`º¯Êý
-- ²¹³ä`timer_sample.c`Àý³Ì
+- å®žçŽ°`OSSchedRoundRobinCfg`å‡½æ•°
+- å®žçŽ°`OSFlagPendGetFlagsRdy`å‡½æ•°
+- å®žçŽ°`OSQFlush`å‡½æ•°
+- å®žçŽ°`OSTaskQFlush`å‡½æ•°
+- è¡¥å……`timer_sample.c`ä¾‹ç¨‹
 
 ### 2020-07-15
 
-- ÒÆÖ²`cpu_core.c`ÎÄ¼þÔö¼Ó`CPU_Init`º¯Êý£¬ÀÏÏîÄ¿Èç¹ûÓÃµ½¸Ãº¯ÊýÔÚÇ¨ÒÆÊ±²»»á±¨´í£¬º¯ÊýÄÚ²¿Ã»ÓÐÊµ¼Ê¶¯×÷
-- ÓÅ»¯ÁË`timer_sample.c`Àý³Ì
-- ²¹³ä`mutex_sample.c`Àý³Ì
+- ç§»æ¤`cpu_core.c`æ–‡ä»¶å¢žåŠ `CPU_Init`å‡½æ•°ï¼Œè€é¡¹ç›®å¦‚æžœç”¨åˆ°è¯¥å‡½æ•°åœ¨è¿ç§»æ—¶ä¸ä¼šæŠ¥é”™ï¼Œå‡½æ•°å†…éƒ¨æ²¡æœ‰å®žé™…åŠ¨ä½œ
+- ä¼˜åŒ–äº†`timer_sample.c`ä¾‹ç¨‹
+- è¡¥å……`mutex_sample.c`ä¾‹ç¨‹
 
 ### 2020-07-16
 
-- ÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁÐ¡¢ÈÎÎñÄÚ½¨ÐÅºÅÁ¿Ö±½ÓÑØÓÃÈÎÎñµÄname£¬²»ÔÙstrcat×Ö·û´®
-- ÊµÏÖ`OSTmrDel`º¯Êý»Øµ÷º¯Êý¹¦ÄÜ
-- Ôö¼Ó`OSTmrDbgListPtr`Á´±í
-- ÊµÏÖÁËÓÉRT-Thread¶¨Ê±Æ÷»Øµ÷º¯ÊýÒ»¸ö²ÎÊý£¬µ½¦ÌCOS-III¶¨Ê±Æ÷»Øµ÷º¯ÊýÁ½¸ö²ÎÊýµÄ×ª»»£¬ÔÚÒÆÖ²Ê±¿ÉÒÔÖ±½ÓÑØÓÃÔ­°æ»Øµ÷º¯Êý£¬ÎÞÐèÔÙÐÞ¸ÄÎªRTT¶¨Ê±Æ÷µÄ»Øµ÷º¯ÊýÑùÊ½
-- ÍêÕûÊµÏÖÁË`p_tmr->State`µÄËùÓÐÑ¡Ïî£¬ÖØÐÂÊµÏÖÁË`OSTmrStateGet`º¯Êý
-- ÊµÏÖ¦ÌCOS-IIIÈí¼þ¶¨Ê±Æ÷´øÓÐÑÓ³ÙµÄÖÜÆÚÑÓÊ±¹¦ÄÜ(`os_tmr.c`ÊÜÏÞÏîÈ«²¿½â¾ö)
+- ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—ã€ä»»åŠ¡å†…å»ºä¿¡å·é‡ç›´æŽ¥æ²¿ç”¨ä»»åŠ¡çš„nameï¼Œä¸å†strcatå­—ç¬¦ä¸²
+- å®žçŽ°`OSTmrDel`å‡½æ•°å›žè°ƒå‡½æ•°åŠŸèƒ½
+- å¢žåŠ `OSTmrDbgListPtr`é“¾è¡¨
+- å®žçŽ°äº†ç”±RT-Threadå®šæ—¶å™¨å›žè°ƒå‡½æ•°ä¸€ä¸ªå‚æ•°ï¼Œåˆ°Î¼COS-IIIå®šæ—¶å™¨å›žè°ƒå‡½æ•°ä¸¤ä¸ªå‚æ•°çš„è½¬æ¢ï¼Œåœ¨ç§»æ¤æ—¶å¯ä»¥ç›´æŽ¥æ²¿ç”¨åŽŸç‰ˆå›žè°ƒå‡½æ•°ï¼Œæ— éœ€å†ä¿®æ”¹ä¸ºRTTå®šæ—¶å™¨çš„å›žè°ƒå‡½æ•°æ ·å¼
+- å®Œæ•´å®žçŽ°äº†`p_tmr->State`çš„æ‰€æœ‰é€‰é¡¹ï¼Œé‡æ–°å®žçŽ°äº†`OSTmrStateGet`å‡½æ•°
+- å®žçŽ°Î¼COS-IIIè½¯ä»¶å®šæ—¶å™¨å¸¦æœ‰å»¶è¿Ÿçš„å‘¨æœŸå»¶æ—¶åŠŸèƒ½(`os_tmr.c`å—é™é¡¹å…¨éƒ¨è§£å†³)
 
 ### 2020-07-18
 
-- ¿ªÊ¼¶Ô½ÓFinSH£¬ÊµÏÖmshÃüÁî
+- å¼€å§‹å¯¹æŽ¥FinSHï¼Œå®žçŽ°mshå‘½ä»¤
 
 ### 2020-07-19
 
-- `OSInit`º¯ÊýÄÚ¼ÓÈëÁÙ½çÇø±£»¤
-- ÊµÏÖ`OSSemDbgListPtr`Á´±í
-- ÊµÏÖ`OSSemQty`È«¾Ö±äÁ¿
-- ÊµÏÖ`OSMutexDbgListPtr`Á´±í
-- ÊµÏÖ`OSMutexQty`È«¾Ö±äÁ¿
-- ÊµÏÖ`OSQDbgListPtr`Á´±í
-- ÊµÏÖ`OSQQty`È«¾Ö±äÁ¿
-- ÊµÏÖ`OSFlagDbgListPtr`Á´±í
-- ÊµÏÖ`OSFlagQty`È«¾Ö±äÁ¿
+- `OSInit`å‡½æ•°å†…åŠ å…¥ä¸´ç•ŒåŒºä¿æŠ¤
+- å®žçŽ°`OSSemDbgListPtr`é“¾è¡¨
+- å®žçŽ°`OSSemQty`å…¨å±€å˜é‡
+- å®žçŽ°`OSMutexDbgListPtr`é“¾è¡¨
+- å®žçŽ°`OSMutexQty`å…¨å±€å˜é‡
+- å®žçŽ°`OSQDbgListPtr`é“¾è¡¨
+- å®žçŽ°`OSQQty`å…¨å±€å˜é‡
+- å®žçŽ°`OSFlagDbgListPtr`é“¾è¡¨
+- å®žçŽ°`OSFlagQty`å…¨å±€å˜é‡
 
 ### 2020-07-20
 
-- ÔÚ`os_rtwrap.c`ÎÄ¼þÖÐÔö¼Ó`rt_ipc_post_all`ºÍ`rt_sem_release_all`º¯Êý£¬²¢ÊµÏÖÁË`OSSemPost`º¯Êý`OS_OPT_POST_ALL`Ñ¡Ïî
+- åœ¨`os_rtwrap.c`æ–‡ä»¶ä¸­å¢žåŠ `rt_ipc_post_all`å’Œ`rt_sem_release_all`å‡½æ•°ï¼Œå¹¶å®žçŽ°äº†`OSSemPost`å‡½æ•°`OS_OPT_POST_ALL`é€‰é¡¹
 
 ### 2020-07-22
 
-- Ôö¼Ó`sem_sample.c`Àý³Ì
+- å¢žåŠ `sem_sample.c`ä¾‹ç¨‹
 
 ### 2020-07-23
 
-- Ôö¼Ó`q_sample.c`Àý³Ì
-- ÐÞ¸Ä`main.c`£¬ÑÏ¸ñ°´ÕÕ¦ÌCOS-III¹Ù·½¸ø³öµÄ³õÊ¼»¯Á÷³Ì½øÐÐ³õÊ¼»¯
+- å¢žåŠ `q_sample.c`ä¾‹ç¨‹
+- ä¿®æ”¹`main.c`ï¼Œä¸¥æ ¼æŒ‰ç…§Î¼COS-IIIå®˜æ–¹ç»™å‡ºçš„åˆå§‹åŒ–æµç¨‹è¿›è¡Œåˆå§‹åŒ–
 
 ### 2020-07-24
 
-- Ôö¼Ó¦ÌC/LIBÈ«²¿ÎÄ¼þ£¨V1.39.00£©
-- ¸ü¸Ä¹¤³Ì½á¹¹£¬½«¹¤³ÌÎÄ¼þÌáµ½Ò»¼¶Ä¿Â¼
-- ÊµÏÖ¦ÌC/CPUÖÐ`CPU_NameClr`¡¢`CPU_NameGet`¡¢`CPU_NameSet`º¯Êý
+- å¢žåŠ Î¼C/LIBå…¨éƒ¨æ–‡ä»¶ï¼ˆV1.39.00ï¼‰
+- æ›´æ”¹å·¥ç¨‹ç»“æž„ï¼Œå°†å·¥ç¨‹æ–‡ä»¶æåˆ°ä¸€çº§ç›®å½•
+- å®žçŽ°Î¼C/CPUä¸­`CPU_NameClr`ã€`CPU_NameGet`ã€`CPU_NameSet`å‡½æ•°
 
 ### 2020-07-25
 
-- Ôö¼Ó`os_dbg.c`¡¢`os_cfg_app.c`ÎÄ¼þ£¬¿ªÊ¼Óë¦ÌC/ProbeÈí¼þ½øÐÐ¶Ô½Ó
-- ÊµÏÖ`OS_TCB`³ÉÔ±±äÁ¿`.TaskState`
-- `OS_TCB`³ÉÔ±±äÁ¿`.StkPtr`¸ÄÎªÔÚÍ³¼ÆÈÎÎñÖÐ¶¨Ê±¸üÐÂ
+- å¢žåŠ `os_dbg.c`ã€`os_cfg_app.c`æ–‡ä»¶ï¼Œå¼€å§‹ä¸ŽÎ¼C/Probeè½¯ä»¶è¿›è¡Œå¯¹æŽ¥
+- å®žçŽ°`OS_TCB`æˆå‘˜å˜é‡`.TaskState`
+- `OS_TCB`æˆå‘˜å˜é‡`.StkPtr`æ”¹ä¸ºåœ¨ç»Ÿè®¡ä»»åŠ¡ä¸­å®šæ—¶æ›´æ–°
 
 ### 2020-07-26
 
-- ÊµÏÖ`OS_TCB`³ÉÔ±±äÁ¿`.PendOn`¡¢`.DbgName`
-- ÐÅºÅÁ¿¡¢»¥³âÁ¿¡¢ÏûÏ¢¶ÓÁÐ¡¢ÊÂ¼þ±êÖ¾×é½á¹¹ÌåÔö¼Ó³ÉÔ±±äÁ¿`.DbgName`
+- å®žçŽ°`OS_TCB`æˆå‘˜å˜é‡`.PendOn`ã€`.DbgName`
+- ä¿¡å·é‡ã€äº’æ–¥é‡ã€æ¶ˆæ¯é˜Ÿåˆ—ã€äº‹ä»¶æ ‡å¿—ç»„ç»“æž„ä½“å¢žåŠ æˆå‘˜å˜é‡`.DbgName`
 
 ### 2020-07-27
 
-- ÐÞ¸´`OSMutexPendAbort`¡¢`OSSemPendAbort`¡¢`OSQPendAbort`¡¢`OSFlagPendAbort`º¯Êý·µ»ØÖµÓÉµ±Ç°»¹ÓÐ¶àÉÙÈÎÎñÔÚµÈ´ý¸ÃÄÚºË¶ÔÏó ¸ÄÎª ·ÅÆúÁË¶àÉÙ¸öÈÎÎñ
-- Ôö¼Ó`task_sem_sample.c`Àý³Ì
-- ÊµÏÖ`OS_MUTEX`½á¹¹Ìå`.OwnerNestingCtr`¡¢`.OwnerTCBPtr`¡¢`.OwnerOriginalPrio`³ÉÔ±±äÁ¿
-- ÐÞ¸´ÁËCPUÊ¹ÓÃÂÊÍ»È»ì­ÉýÖÁ100%µÄÎÊÌâ£¬¸ÃÎÊÌâÎª¦ÌCOS-IIIÔ­°æ£¨3.03°æ±¾£©ÄÚ²¿bug£¬¼´±ãÊÇ×îÐÂ°æµÄ3.08°æ±¾¸ÃÎÊÌâÒÀÈ»Ã»ÓÐµÃµ½³¹µ×½â¾ö£¨½ö½öÊÇ½«ì­ÉýÖÁ100%¸Ä³ÉÁËÖè½µÖÁ0%£©
+- ä¿®å¤`OSMutexPendAbort`ã€`OSSemPendAbort`ã€`OSQPendAbort`ã€`OSFlagPendAbort`å‡½æ•°è¿”å›žå€¼ç”±å½“å‰è¿˜æœ‰å¤šå°‘ä»»åŠ¡åœ¨ç­‰å¾…è¯¥å†…æ ¸å¯¹è±¡ æ”¹ä¸º æ”¾å¼ƒäº†å¤šå°‘ä¸ªä»»åŠ¡
+- å¢žåŠ `task_sem_sample.c`ä¾‹ç¨‹
+- å®žçŽ°`OS_MUTEX`ç»“æž„ä½“`.OwnerNestingCtr`ã€`.OwnerTCBPtr`ã€`.OwnerOriginalPrio`æˆå‘˜å˜é‡
+- ä¿®å¤äº†CPUä½¿ç”¨çŽ‡çªç„¶é£™å‡è‡³100%çš„é—®é¢˜ï¼Œè¯¥é—®é¢˜ä¸ºÎ¼COS-IIIåŽŸç‰ˆï¼ˆ3.03ç‰ˆæœ¬ï¼‰å†…éƒ¨bugï¼Œå³ä¾¿æ˜¯æœ€æ–°ç‰ˆçš„3.08ç‰ˆæœ¬è¯¥é—®é¢˜ä¾ç„¶æ²¡æœ‰å¾—åˆ°å½»åº•è§£å†³ï¼ˆä»…ä»…æ˜¯å°†é£™å‡è‡³100%æ”¹æˆäº†éª¤é™è‡³0%ï¼‰
 
 ### 2020-07-28
 
-- Ôö¼Ó`OS_CFG_TASK_PROFILE_EN`ºê¶¨Òå£¬ÓÃÒÔ½µµÍ×ÊÔ´Õ¼ÓÃ
-- ÔÚ`os_cfg_zpp.c`ÎÄ¼þÖÐÔö¼Ó`OS_CFG_DBG_EN`ºê¶¨Òå£¬ÓÃÒÔ½µµÍ×ÊÔ´Õ¼ÓÃ
+- å¢žåŠ `OS_CFG_TASK_PROFILE_EN`å®å®šä¹‰ï¼Œç”¨ä»¥é™ä½Žèµ„æºå ç”¨
+- åœ¨`os_cfg_app.c`æ–‡ä»¶ä¸­å¢žåŠ `OS_CFG_DBG_EN`å®å®šä¹‰ï¼Œç”¨ä»¥é™ä½Žèµ„æºå ç”¨
 
 ### 2020-07-29
 
-- ÍêÉÆreadme
+- å®Œå–„readme
 
 ### 2020-08-03
 
-- Ôö¼Ó`OS_TASK_STATE_SUSPENDED`ÈÎÎñ×´Ì¬
+- å¢žåŠ `OS_TASK_STATE_SUSPENDED`ä»»åŠ¡çŠ¶æ€
 
 ### 2020-08-07
 
-- ½«Àý³ÌÓÉsample×ÖÑÛ¸Ä³Éexample
-- Ôö¼Ó`PKG_USING_UCOSIII_WRAPPER_AUTOINIT`ºê
+- å°†ä¾‹ç¨‹ç”±sampleå­—çœ¼æ”¹æˆexample
+- å¢žåŠ `PKG_USING_UCOSIII_WRAPPER_AUTOINIT`å®
 
 ### 2020-08-08
 
-- Ôö¼ÓSConscript½Å±¾£¬ÒÔÖ§³Öenv¹¤¾ß½øÐÐ×Ô¶¯»¯Ìí¼ÓÈí¼þ°ü
+- å¢žåŠ SConscriptè„šæœ¬ï¼Œä»¥æ”¯æŒenvå·¥å…·è¿›è¡Œè‡ªåŠ¨åŒ–æ·»åŠ è½¯ä»¶åŒ…
 
 ### 2020-08-12
 
-- ÍêÉÆreadmeÎÄµµ
+- å®Œå–„readmeæ–‡æ¡£
 
 ### 2020-08-13
 
--  ÐÞ¸´`OSTmrRemainGet`º¯Êý¼ÆËãÊ£ÓàÊ±¼äµÄ´íÎó
--  ÊµÏÖ`OS_TMR`½á¹¹Ìå`.Match`ºÍ`.Remain`³ÉÔ±±äÁ¿
+-  ä¿®å¤`OSTmrRemainGet`å‡½æ•°è®¡ç®—å‰©ä½™æ—¶é—´çš„é”™è¯¯
+-  å®žçŽ°`OS_TMR`ç»“æž„ä½“`.Match`å’Œ`.Remain`æˆå‘˜å˜é‡
 
 ### 2020-08-16
 
-- ÊµÏÖ´íÎó´úÂë`OS_ERR_TASK_SUSPENDED`  ¡¢`OS_ERR_TASK_OPT`¡¢`OS_ERR_LOCK_NESTING_OVF`¡¢`OS_ERR_MUTEX_NESTING`¡¢`OS_ERR_MUTEX_OWNER`¡¢`OS_ERR_ROUND_ROBIN_DISABLED`¡¢`OS_ERR_STK_LIMIT_INVALID` ¡¢`OS_ERR_FLAG_PEND_OPT`
-- ¶Ô`OSTaskStkChk`º¯Êýµ±´«Èë`OS_TCB*`²ÎÊýÎª¿ÕÊ±£¬×ª»»Îªµ±Ç°`OS_TCB*`µÄÂß¼­×öÁËµ÷Õû
+- å®žçŽ°é”™è¯¯ä»£ç `OS_ERR_TASK_SUSPENDED`  ã€`OS_ERR_TASK_OPT`ã€`OS_ERR_LOCK_NESTING_OVF`ã€`OS_ERR_MUTEX_NESTING`ã€`OS_ERR_MUTEX_OWNER`ã€`OS_ERR_ROUND_ROBIN_DISABLED`ã€`OS_ERR_STK_LIMIT_INVALID` ã€`OS_ERR_FLAG_PEND_OPT`
+- å¯¹`OSTaskStkChk`å‡½æ•°å½“ä¼ å…¥`OS_TCB*`å‚æ•°ä¸ºç©ºæ—¶ï¼Œè½¬æ¢ä¸ºå½“å‰`OS_TCB*`çš„é€»è¾‘åšäº†è°ƒæ•´
 
 ### 2020-08-17
 
-- ¶Ôº¯Êý`OSTmrRemainGet`¡¢`OSTmrStop`¡¢`OSTmrStateGet`¡¢`OSTmrStart`¡¢`OSTmrDel`·ÂÕÕÔ­°æÔö¼Ó¶¨Ê±Æ÷×´Ì¬¼ì²é¹¦ÄÜ
+- å¯¹å‡½æ•°`OSTmrRemainGet`ã€`OSTmrStop`ã€`OSTmrStateGet`ã€`OSTmrStart`ã€`OSTmrDel`ä»¿ç…§åŽŸç‰ˆå¢žåŠ å®šæ—¶å™¨çŠ¶æ€æ£€æŸ¥åŠŸèƒ½
 
 ### 2020-08-18
 
-- ÐÞ¸´`OSInit`º¯Êýreturn·ÖÖ§Ã»ÓÐµ÷ÓÃ`CPU_CRITICAL_EXIT()`´ò¿ªÖÐ¶ÏµÄbug
-- Ôö¼ÓÊÓÆµ½éÉÜ&½Ì³ÌÁ´½Ó
-- Ôö¼Ó3.08°æ±¾ÖÐÐÂÔöµÄ`OSInitialized`È«¾Ö±äÁ¿£»`OS_FALSE`¡¢`OS_TRUE`ºê¶¨Òå£»´íÎó´úÂë`OS_ERR_OS_NOT_INIT`¡¢`OS_ERR_OS_NO_APP_TASK`
-- É¾³ýÒÑ¾­ÔÚ3.08ÖÐ·ÏÆúµÄ´íÎó´úÂë`OS_ERR_INT_Q`¡¢`OS_ERR_INT_Q_FULL`¡¢`OS_ERR_INT_Q_SIZE`¡¢`OS_ERR_INT_Q_STK_INVALID`¡¢`OS_ERR_INT_Q_STK_SIZE_INVALID`£»Ôö¼Ó3.08´íÎó´úÂë`OS_ERR_ILLEGAL_DEL_RUN_TIME`£¬Í¬Ê±²¹³ä¸Ã´íÎó´úÂëµÄÏà¹ØÊµÏÖ
-- ÔÚ`OSTmrDel`¡¢`OSTaskDel`¡¢`OSMutexDel`¡¢`OSSemDel`¡¢`OSQDel`¡¢`OSFlagDel`º¯ÊýÔö¼Ó`OS_SAFETY_CRITICAL_IEC61508`Ïà¹Ø¼ì²é
-- Ôö¼Ó´íÎó´úÂë`OS_ERR_MUTEX_OVF`£¬Í¬Ê±²¹³ä¸Ã´íÎó´úÂëµÄÏà¹ØÊµÏÖ
-- Ôö¼Ó´íÎó´úÂë`OS_ERR_TASK_SUSPEND_CTR_OVF`£¬Í¬Ê±²¹³ä¸Ã´íÎó´úÂëµÄÏà¹ØÊµÏÖ
-- Ôö¼Ó´íÎó´úÂë`OS_ERR_TMR_INVALID_CALLBACK`£¬Í¬Ê±²¹³ä¸Ã´íÎó´úÂëµÄÏà¹ØÊµÏÖ
+- ä¿®å¤`OSInit`å‡½æ•°returnåˆ†æ”¯æ²¡æœ‰è°ƒç”¨`CPU_CRITICAL_EXIT()`æ‰“å¼€ä¸­æ–­çš„bug
+- å¢žåŠ è§†é¢‘ä»‹ç»&æ•™ç¨‹é“¾æŽ¥
+- å¢žåŠ 3.08ç‰ˆæœ¬ä¸­æ–°å¢žçš„`OSInitialized`å…¨å±€å˜é‡ï¼›`OS_FALSE`ã€`OS_TRUE`å®å®šä¹‰ï¼›é”™è¯¯ä»£ç `OS_ERR_OS_NOT_INIT`ã€`OS_ERR_OS_NO_APP_TASK`
+- åˆ é™¤å·²ç»åœ¨3.08ä¸­åºŸå¼ƒçš„é”™è¯¯ä»£ç `OS_ERR_INT_Q`ã€`OS_ERR_INT_Q_FULL`ã€`OS_ERR_INT_Q_SIZE`ã€`OS_ERR_INT_Q_STK_INVALID`ã€`OS_ERR_INT_Q_STK_SIZE_INVALID`ï¼›å¢žåŠ 3.08é”™è¯¯ä»£ç `OS_ERR_ILLEGAL_DEL_RUN_TIME`ï¼ŒåŒæ—¶è¡¥å……è¯¥é”™è¯¯ä»£ç çš„ç›¸å…³å®žçŽ°
+- åœ¨`OSTmrDel`ã€`OSTaskDel`ã€`OSMutexDel`ã€`OSSemDel`ã€`OSQDel`ã€`OSFlagDel`å‡½æ•°å¢žåŠ `OS_SAFETY_CRITICAL_IEC61508`ç›¸å…³æ£€æŸ¥
+- å¢žåŠ é”™è¯¯ä»£ç `OS_ERR_MUTEX_OVF`ï¼ŒåŒæ—¶è¡¥å……è¯¥é”™è¯¯ä»£ç çš„ç›¸å…³å®žçŽ°
+- å¢žåŠ é”™è¯¯ä»£ç `OS_ERR_TASK_SUSPEND_CTR_OVF`ï¼ŒåŒæ—¶è¡¥å……è¯¥é”™è¯¯ä»£ç çš„ç›¸å…³å®žçŽ°
+- å¢žåŠ é”™è¯¯ä»£ç `OS_ERR_TMR_INVALID_CALLBACK`ï¼ŒåŒæ—¶è¡¥å……è¯¥é”™è¯¯ä»£ç çš„ç›¸å…³å®žçŽ°
 
 ### 2020-08-19
 
-- ½«¸÷¸öÄÚºË¶ÔÏóµÄÃû×ÖÖ¸Õë¹éÎªµ½`OS_CFG_DBG_EN`ºê¶¨Òå¹ÜÀí·¶Î§£¨3.08°æ±¾Èç´Ë£©
+- å°†å„ä¸ªå†…æ ¸å¯¹è±¡çš„åå­—æŒ‡é’ˆå½’ä¸ºåˆ°`OS_CFG_DBG_EN`å®å®šä¹‰ç®¡ç†èŒƒå›´ï¼ˆ3.08ç‰ˆæœ¬å¦‚æ­¤ï¼‰
 
 ### 2020-08-22
 
-- Íê³É¶Ô`CPU_CRITICAL_ENTER`/`CPU_CRITICAL_EXIT`Æ¥Åä¼ì²é
-- Ôö¼Ó3.08°æ±¾µÄÏòÏÂ¼æÈÝºê¶¨Òå£¨os.h£©
-- Ôö¼Ó`OS_CFG_INVALID_OS_CALLS_CHK_EN`ºê¼°ÆäÊµÏÖ
-- ÐÞ¸´`OSTaskDel`º¯ÊýÔÚTCBÖ¸ÕëÎªNULL¼´É¾³ýÈÎÎñ×Ô¼ºÊ±£¬Ã»ÓÐ¼°Ê±½«ÄÚ²¿±äÁ¿`p_tcb`¸³ÖµÎªµ±Ç°ÈÎÎñÖ¸ÕëµÄbug
-- ÊµÏÖ`OS_CFG_TASK_IDLE_EN`ºêÒÔ¼°Ïà¹Ø¼ì²é
+- å®Œæˆå¯¹`CPU_CRITICAL_ENTER`/`CPU_CRITICAL_EXIT`åŒ¹é…æ£€æŸ¥
+- å¢žåŠ 3.08ç‰ˆæœ¬çš„å‘ä¸‹å…¼å®¹å®å®šä¹‰ï¼ˆos.hï¼‰
+- å¢žåŠ `OS_CFG_INVALID_OS_CALLS_CHK_EN`å®åŠå…¶å®žçŽ°
+- ä¿®å¤`OSTaskDel`å‡½æ•°åœ¨TCBæŒ‡é’ˆä¸ºNULLå³åˆ é™¤ä»»åŠ¡è‡ªå·±æ—¶ï¼Œæ²¡æœ‰åŠæ—¶å°†å†…éƒ¨å˜é‡`p_tcb`èµ‹å€¼ä¸ºå½“å‰ä»»åŠ¡æŒ‡é’ˆçš„bug
+- å®žçŽ°`OS_CFG_TASK_IDLE_EN`å®ä»¥åŠç›¸å…³æ£€æŸ¥
 
 ### 2020-08-23
 
-- ÐÞ¸Ä`OS_TMR`½á¹¹Ìå`.Remain`¡¢`.Match`³ÉÔ±±äÁ¿¸³ÖµµÄbug
-- ÊµÏÖ3.06°æ±¾ÖÐÐÂÔöµÄ`OSTmrSet`º¯Êý
+- ä¿®æ”¹`OS_TMR`ç»“æž„ä½“`.Remain`ã€`.Match`æˆå‘˜å˜é‡èµ‹å€¼çš„bug
+- å®žçŽ°3.06ç‰ˆæœ¬ä¸­æ–°å¢žçš„`OSTmrSet`å‡½æ•°
 
 ### 2020-08-25
 
--  ÊµÏÖ`OSTaskChangePrio`º¯Êý£¬Ä¿Ç°¼æÈÝ²ã½ö1¸öAPIÃ»ÓÐÊµÏÖ
+-  å®žçŽ°`OSTaskChangePrio`å‡½æ•°ï¼Œç›®å‰å…¼å®¹å±‚ä»…1ä¸ªAPIæ²¡æœ‰å®žçŽ°
 
 ### 2020-08-31
 
-- Ôö¼Ó`suspend_example.c`Àý³Ì
+- å¢žåŠ `suspend_example.c`ä¾‹ç¨‹
 
-- ÐÞ¸´`p_tcb->TaskState`±äÁ¿£¬Ôö¼ÓÒÔÏÂ¹¦ÄÜ£º
+- ä¿®å¤`p_tcb->TaskState`å˜é‡ï¼Œå¢žåŠ ä»¥ä¸‹åŠŸèƒ½ï¼š
 
     ```c
     #define  OS_TASK_STATE_PEND_TIMEOUT           (OS_STATE)(  3u)  /*   0 1 1     Pend + Timeout                         */
@@ -257,136 +257,136 @@
 
 ### 2020-09-20
 
-- ÐÞ¸´Ã»ÓÐµ÷ÓÃ`OS_MemInit`º¯Êý³õÊ¼»¯ÄÚ´æ³ØµÄbug
+- ä¿®å¤æ²¡æœ‰è°ƒç”¨`OS_MemInit`å‡½æ•°åˆå§‹åŒ–å†…å­˜æ± çš„bug
 
 ### 2020-09-21
 
-- ÐÞ¸´`OS_TmrCallback`¶¨Ê±Æ÷ÄÚ²¿»Øµ÷º¯ÊýÔÚ´¦Àí`OSTmrSet`¸üÐÂ²ÎÊýÊ±¶¨Ê±Æ÷²ÎÊý¿ÉÄÜÎÞ·¨ÖØÐÂÉèÖÃµÄbug
-- Ôö¼Ó¶Ô`OSInit`º¯ÊýµÄ´íÎóÂë¼ì²é´úÂë
-- ÐÞ¸´`OSStart`º¯ÊýÄÚÍ³¼Æ¼æÈÝ²ãÄÚ²¿ÈÎÎñÊýÁ¿µÄ´íÎó£¨²»Ó¦ÔÙ°üº¬¿ÕÏÐÈÎÎñºÍ¶¨Ê±Æ÷ÈÎÎñ£¬ÕâÁ½¸öÈÎÎñÓ¦ÎªRTTÄÚ²¿ÈÎÎñ£©
-- ½«`OS_TmrCallback`º¯ÊýÉèÎªstaticÎÄ¼þË½ÓÐº¯Êý 
-- ÇåÀíÉ¾³ý`OSTmrCreate`º¯Êý¶àÓà²ÎÊý¼ì²é´úÂë
+- ä¿®å¤`OS_TmrCallback`å®šæ—¶å™¨å†…éƒ¨å›žè°ƒå‡½æ•°åœ¨å¤„ç†`OSTmrSet`æ›´æ–°å‚æ•°æ—¶å®šæ—¶å™¨å‚æ•°å¯èƒ½æ— æ³•é‡æ–°è®¾ç½®çš„bug
+- å¢žåŠ å¯¹`OSInit`å‡½æ•°çš„é”™è¯¯ç æ£€æŸ¥ä»£ç 
+- ä¿®å¤`OSStart`å‡½æ•°å†…ç»Ÿè®¡å…¼å®¹å±‚å†…éƒ¨ä»»åŠ¡æ•°é‡çš„é”™è¯¯ï¼ˆä¸åº”å†åŒ…å«ç©ºé—²ä»»åŠ¡å’Œå®šæ—¶å™¨ä»»åŠ¡ï¼Œè¿™ä¸¤ä¸ªä»»åŠ¡åº”ä¸ºRTTå†…éƒ¨ä»»åŠ¡ï¼‰
+- å°†`OS_TmrCallback`å‡½æ•°è®¾ä¸ºstaticæ–‡ä»¶ç§æœ‰å‡½æ•° 
+- æ¸…ç†åˆ é™¤`OSTmrCreate`å‡½æ•°å¤šä½™å‚æ•°æ£€æŸ¥ä»£ç 
 
 ### 2020-09-22
 
-- ÕûÀí`os_tmr.c`×¢ÊÍ
-- ½«`OSSemPost `/ `OSMutexPost`º¯Êý¸ÄÎª¶Ô`OS_OPT_POST_NO_SCHED`Ñ¡ÏîºöÂÔ
+- æ•´ç†`os_tmr.c`æ³¨é‡Š
+- å°†`OSSemPost `/ `OSMutexPost`å‡½æ•°æ”¹ä¸ºå¯¹`OS_OPT_POST_NO_SCHED`é€‰é¡¹å¿½ç•¥
 
 ### 2020-09-23
 
-- ½«´úÂëÖÐ¦ÌCOS¸ÄÎªuCOS·ÀÖ¹ÔÚÖÕ¶ËÊä³öÊ±ÓÉÓÚ¦Ì²»ÊÇASCIIÂë¶ø³öÏÖÂÒÂë
+- å°†ä»£ç ä¸­Î¼COSæ”¹ä¸ºuCOSé˜²æ­¢åœ¨ç»ˆç«¯è¾“å‡ºæ—¶ç”±äºŽÎ¼ä¸æ˜¯ASCIIç è€Œå‡ºçŽ°ä¹±ç 
 
 ### 2020-09-27
 
-- ÐÞ¸´`OS_TmrCallback`º¯ÊýÖÐ£¬ÔÚÓÐÑÓ³ÙµÄÖÜÆÚÑÓÊ±Ã»ÓÐ¶Ô`.Match` `.Remain`³ÉÔ±±äÁ¿ÖØÐÂ¸³ÖµµÄÎÊÌâ
+- ä¿®å¤`OS_TmrCallback`å‡½æ•°ä¸­ï¼Œåœ¨æœ‰å»¶è¿Ÿçš„å‘¨æœŸå»¶æ—¶æ²¡æœ‰å¯¹`.Match` `.Remain`æˆå‘˜å˜é‡é‡æ–°èµ‹å€¼çš„é—®é¢˜
 
 ### 2020-09-28
 
-- ´´½¨ÈÎÎñÊ±£¬½«ÈÎÎñ¶ÑÕ»µÄÊ×µØÖ·ÓÉ`AppTask1_Stack`¸ÄÎª`&AppTask1_Stack[0]`ÒÔÍ»³ö¶ÑÕ»µÄÊ×µØÖ·
+- åˆ›å»ºä»»åŠ¡æ—¶ï¼Œå°†ä»»åŠ¡å †æ ˆçš„é¦–åœ°å€ç”±`AppTask1_Stack`æ”¹ä¸º`&AppTask1_Stack[0]`ä»¥çªå‡ºå †æ ˆçš„é¦–åœ°å€
 
 ### 2020-10-05
 
-- ¶ÔÆë²¢ÕûÀí×¢ÊÍ
-- É¾³ýÎÞÓÃµÄ¹³×Óº¯Êý£¨ÒÑ±»RT-Thread¹³×Óº¯Êý½Ó¹Ü£©
-- ÐÞ¸´`OSTimeDlyResume`º¯ÊýÖÐ`p_tcb->TaskState`×´Ì¬´¦ÀíµÄÎÊÌâ
-- ½«¿ÕÏÐÈÎÎñÄÉÈëµ½`OS_CFG_STAT_TASK_EN`¿ØÖÆ·¶Î§ÄÚ
-- É¾³ý`os_dbg.c`ÎÞÓÃ´úÂë
+- å¯¹é½å¹¶æ•´ç†æ³¨é‡Š
+- åˆ é™¤æ— ç”¨çš„é’©å­å‡½æ•°ï¼ˆå·²è¢«RT-Threadé’©å­å‡½æ•°æŽ¥ç®¡ï¼‰
+- ä¿®å¤`OSTimeDlyResume`å‡½æ•°ä¸­`p_tcb->TaskState`çŠ¶æ€å¤„ç†çš„é—®é¢˜
+- å°†ç©ºé—²ä»»åŠ¡çº³å…¥åˆ°`OS_CFG_STAT_TASK_EN`æŽ§åˆ¶èŒƒå›´å†…
+- åˆ é™¤`os_dbg.c`æ— ç”¨ä»£ç 
 
 ### 2020-10-06
 
-- É¾³ý`os.h`ÎÞÓÃ´úÂë
+- åˆ é™¤`os.h`æ— ç”¨ä»£ç 
 
 ### 2020-10-07
 
-- ÊµÏÖ`PKG_USING_UCOSIII_WRAPPER_TINY`ÒÔ¾«¼ò¼æÈÝ²ã
-- É¾³ý`os_task.c`ÎÞÓÃ×¢ÊÍ
-- Ôö¼Ó`OS_CFG_TASK_SEM_EN`ºê¶¨ÒåÓÃÓÚ²Ã¼ôÈÎÎñÄÚ½¨ÐÅºÅÁ¿
+- å®žçŽ°`PKG_USING_UCOSIII_WRAPPER_TINY`ä»¥ç²¾ç®€å…¼å®¹å±‚
+- åˆ é™¤`os_task.c`æ— ç”¨æ³¨é‡Š
+- å¢žåŠ `OS_CFG_TASK_SEM_EN`å®å®šä¹‰ç”¨äºŽè£å‰ªä»»åŠ¡å†…å»ºä¿¡å·é‡
 
 ### 2020-10-15
 
-- É¾³ýÎÞÓÃÅäÖÃºê¶¨Òå
+- åˆ é™¤æ— ç”¨é…ç½®å®å®šä¹‰
 
 ### 2020-10-16
 
-- ÓÅ»¯`PKG_USING_UCOSIII_WRAPPER_TINY`
+- ä¼˜åŒ–`PKG_USING_UCOSIII_WRAPPER_TINY`
 
 ### 2020-10-26
 
-- É¾³ý`OSTaskSuspend()`º¯ÊýÎÞÓÃµÄÑ¡Ôñ·ÖÖ§
+- åˆ é™¤`OSTaskSuspend()`å‡½æ•°æ— ç”¨çš„é€‰æ‹©åˆ†æ”¯
 
 ### 2020-11-01
 
-- ÐÞ¸´`OSQDel()`º¯ÊýÍü¼Ç»ØÊÕÏûÏ¢ÄÚ´æ³Øµ¼ÖÂÄÚ´æÐ¹Â©µÄÎÊÌâ
-- ÕûÀí`os_q.c`×¢ÊÍ¸ñÊ½
-- ÕûÀí`os_mem.c`×¢ÊÍ¸ñÊ½
-- ÕûÀí`os_core.c`×¢ÊÍ¸ñÊ½
-- ÕûÀí`os_flag.c`×¢ÊÍ¸ñÊ½
-- ÕûÀí`os_mutex.c`×¢ÊÍ¸ñÊ½
-- ÕûÀí`os_stat.c`×¢ÊÍ¸ñÊ½
-- ÕûÀí`os_task.c`×¢ÊÍ¸ñÊ½
-- ÕûÀí`os_time.c`×¢ÊÍ¸ñÊ½
-- ÕûÀí`os_tmr.c`×¢ÊÍ¸ñÊ½
-- ÕûÀí`os_sem.c`×¢ÊÍ¸ñÊ½
+- ä¿®å¤`OSQDel()`å‡½æ•°å¿˜è®°å›žæ”¶æ¶ˆæ¯å†…å­˜æ± å¯¼è‡´å†…å­˜æ³„æ¼çš„é—®é¢˜
+- æ•´ç†`os_q.c`æ³¨é‡Šæ ¼å¼
+- æ•´ç†`os_mem.c`æ³¨é‡Šæ ¼å¼
+- æ•´ç†`os_core.c`æ³¨é‡Šæ ¼å¼
+- æ•´ç†`os_flag.c`æ³¨é‡Šæ ¼å¼
+- æ•´ç†`os_mutex.c`æ³¨é‡Šæ ¼å¼
+- æ•´ç†`os_stat.c`æ³¨é‡Šæ ¼å¼
+- æ•´ç†`os_task.c`æ³¨é‡Šæ ¼å¼
+- æ•´ç†`os_time.c`æ³¨é‡Šæ ¼å¼
+- æ•´ç†`os_tmr.c`æ³¨é‡Šæ ¼å¼
+- æ•´ç†`os_sem.c`æ³¨é‡Šæ ¼å¼
 
 ### 2020-11-08
 
-- Ï¸Î¢µ÷Õû´úÂë¸ñÊ½
-- Ôö¼Ó¶ÔÀÏ°æ±¾`os_pend_multi.c`ÎÄ¼þµÄreadmeËµÃ÷
+- ç»†å¾®è°ƒæ•´ä»£ç æ ¼å¼
+- å¢žåŠ å¯¹è€ç‰ˆæœ¬`os_pend_multi.c`æ–‡ä»¶çš„readmeè¯´æ˜Ž
 
 ### 2020-11-13
 
-- ¶Ô`OSFlagPend()`º¯Êý`rt_option`±äÁ¿¸³³õÖµ
+- å¯¹`OSFlagPend()`å‡½æ•°`rt_option`å˜é‡èµ‹åˆå€¼
 
 ### 2020-11-14
 
-- ÓÅ»¯¹¤³ÌÎÄ¼þ½á¹¹
-- Í·ÎÄ¼þ²¿·Ö°üº¬ÓÉ<>¸ÄÎª""
-- ÐÞ¸´¹Ø±ÕÄ³Ð©ºê¶¨Òå£¬¹¤³Ì±¨´íµÄÎÊÌâ
-- `cpu.h`ÎÄ¼þÔö¼Ó`CPU_CFG_STK_ALIGN_BYTES`ºê¶¨Òå
-- ÊµÏÖ¶Ô`OS_ERR_PEND_WOULD_BLOCK`´íÎó´úÂëµÄÖ§³Ö
+- ä¼˜åŒ–å·¥ç¨‹æ–‡ä»¶ç»“æž„
+- å¤´æ–‡ä»¶éƒ¨åˆ†åŒ…å«ç”±<>æ”¹ä¸º""
+- ä¿®å¤å…³é—­æŸäº›å®å®šä¹‰ï¼Œå·¥ç¨‹æŠ¥é”™çš„é—®é¢˜
+- `cpu.h`æ–‡ä»¶å¢žåŠ `CPU_CFG_STK_ALIGN_BYTES`å®å®šä¹‰
+- å®žçŽ°å¯¹`OS_ERR_PEND_WOULD_BLOCK`é”™è¯¯ä»£ç çš„æ”¯æŒ
 
 ### 2020-11-15
 
-- Ôö¼Ó`flag_example.c`Àý³Ì
-- ÊµÏÖ`OS_CFG_FLAG_MODE_CLR_EN`¹¦ÄÜ
-- `OSQPost`ºÍ`OSFlagPost`º¯Êý¸ÄÎª¶Ô`OS_OPT_POST_NO_SCHED`Ñ¡ÏîºöÂÔ
-- ÊµÏÖ`OS_TCB`½á¹¹ÌåÖÐ`.FlagsPend`¡¢`.FlagsRdy`¡¢`.FlagsOpt`³ÉÔ±±äÁ¿
+- å¢žåŠ `flag_example.c`ä¾‹ç¨‹
+- å®žçŽ°`OS_CFG_FLAG_MODE_CLR_EN`åŠŸèƒ½
+- `OSQPost`å’Œ`OSFlagPost`å‡½æ•°æ”¹ä¸ºå¯¹`OS_OPT_POST_NO_SCHED`é€‰é¡¹å¿½ç•¥
+- å®žçŽ°`OS_TCB`ç»“æž„ä½“ä¸­`.FlagsPend`ã€`.FlagsRdy`ã€`.FlagsOpt`æˆå‘˜å˜é‡
 
 ### 2020-11-16
 
-- ÊµÏÖ¹ã²¥ÏûÏ¢¶ÓÁÐº¯Êý¿ò¼Ü
-- ÊµÏÖ¹ã²¥ÏûÏ¢¶ÓÁÐ
+- å®žçŽ°å¹¿æ’­æ¶ˆæ¯é˜Ÿåˆ—å‡½æ•°æ¡†æž¶
+- å®žçŽ°å¹¿æ’­æ¶ˆæ¯é˜Ÿåˆ—
 
 ### 2020-11-24
 
-- ½«×Ô¶¯³õÊ¼»¯ÓÉ`INIT_DEVICE_EXPORT`ÌáÇ°ÖÁ`INIT_PREV_EXPORT`
+- å°†è‡ªåŠ¨åˆå§‹åŒ–ç”±`INIT_DEVICE_EXPORT`æå‰è‡³`INIT_PREV_EXPORT`
 
 ### 2020-11-30
 
-- ÍêÉÆ`.FlagsRdy`³ÉÔ±±äÁ¿
-- ÍêÉÆ`p_grp->Flags`³ÉÔ±±äÁ¿
+- å®Œå–„`.FlagsRdy`æˆå‘˜å˜é‡
+- å®Œå–„`p_grp->Flags`æˆå‘˜å˜é‡
 
 ### 2020-12-16
 
-- ÐÞ¸´`OSTmrRemainGet()`º¯Êý·µ»Ø½á¹ûµ¥Î»²»Ò»ÖÂµÄÎÊÌâ
-- ÐÞ¸´`OS_TMR`½á¹¹Ìå`.Remain`³ÉÔ±±äÁ¿ÊýÖµµ¥Î»²»Ò»ÖÂµÄÎÊÌâ
-- ÐÞ¸´´ÓRT-Threadµ½uCOS-III¶¨Ê±Æ÷»»Ëã¹«Ê½Ã»ÓÐ¿¼ÂÇµ½Systick±ä»¯µÄÎÊÌâ
+- ä¿®å¤`OSTmrRemainGet()`å‡½æ•°è¿”å›žç»“æžœå•ä½ä¸ä¸€è‡´çš„é—®é¢˜
+- ä¿®å¤`OS_TMR`ç»“æž„ä½“`.Remain`æˆå‘˜å˜é‡æ•°å€¼å•ä½ä¸ä¸€è‡´çš„é—®é¢˜
+- ä¿®å¤ä»ŽRT-Threadåˆ°uCOS-IIIå®šæ—¶å™¨æ¢ç®—å…¬å¼æ²¡æœ‰è€ƒè™‘åˆ°Systickå˜åŒ–çš„é—®é¢˜
 
 ### 2020-12-17
 
-- ÍêÉÆ`.FlagsRdy`³ÉÔ±±äÁ¿
+- å®Œå–„`.FlagsRdy`æˆå‘˜å˜é‡
 
 ### 2020-12-25
 
-- ÐÞ¸´¶¨Òå`PKG_USING_UCOSIII_WRAPPER_TINY`ºó£¬´úÂë±¨´íµÄÎÊÌâ
+- ä¿®å¤å®šä¹‰`PKG_USING_UCOSIII_WRAPPER_TINY`åŽï¼Œä»£ç æŠ¥é”™çš„é—®é¢˜
 
 ### 2021-05-05
 
-- ¾­¹ýÎå¸öÔÂµÄÔ¤·¢²¼²âÊÔ£¬ÕýÊ½·¢²¼v1.0.0°æ±¾
+- ç»è¿‡äº”ä¸ªæœˆçš„é¢„å‘å¸ƒæµ‹è¯•ï¼Œæ­£å¼å‘å¸ƒv1.0.0ç‰ˆæœ¬
 
 ### 2021-05-23
 
-- ½«`RT_IPC_FLAG_FIFO`¸ÄÎª`RT_IPC_FLAG_PRIO`ÒÔÈ·±£ÊµÊ±ÐÔ
+- å°†`RT_IPC_FLAG_FIFO`æ”¹ä¸º`RT_IPC_FLAG_PRIO`ä»¥ç¡®ä¿å®žæ—¶æ€§
 
 
 
@@ -394,147 +394,147 @@
 
 ## v0.1.0
 
-ËùÓÐÄÚºË¶ÔÏó¼æÈÝÒÑ¾­È«²¿ÊµÏÖ£¬¿ÉÒÔÂú×ãÕý³£µÄ¼æÈÝÐèÇó¡£±¾°æ±¾ÉÐÎ´ÊµÏÖ¦ÌCOS-IIIµÄÍ³¼ÆÈÎÎñ£¬¸Ã¹¦ÄÜ½«ÔÚºóÐø°æ±¾ÖÐ·¢²¼¡£
+æ‰€æœ‰å†…æ ¸å¯¹è±¡å…¼å®¹å·²ç»å…¨éƒ¨å®žçŽ°ï¼Œå¯ä»¥æ»¡è¶³æ­£å¸¸çš„å…¼å®¹éœ€æ±‚ã€‚æœ¬ç‰ˆæœ¬å°šæœªå®žçŽ°Î¼COS-IIIçš„ç»Ÿè®¡ä»»åŠ¡ï¼Œè¯¥åŠŸèƒ½å°†åœ¨åŽç»­ç‰ˆæœ¬ä¸­å‘å¸ƒã€‚
 
 ## v0.2.0 
 
-**[bug fix]** ÐÞ¸Ä`OSTaskDel`º¯ÊýÃ»ÓÐÉ¾³ýÈÎÎñÄÚ½¨ÐÅºÅÁ¿¡¢ÈÎÎñÄÚ½¨¶ÓÁÐµÄbug
+**[bug fix]** ä¿®æ”¹`OSTaskDel`å‡½æ•°æ²¡æœ‰åˆ é™¤ä»»åŠ¡å†…å»ºä¿¡å·é‡ã€ä»»åŠ¡å†…å»ºé˜Ÿåˆ—çš„bug
 
-**[add]** ÊµÏÖ`OSTmrStateGet`º¯Êý£¨Ä¿Ç°½öÓÐ13¸öuCOS-III APIÎÞ·¨¼æÈÝ£©
+**[add]** å®žçŽ°`OSTmrStateGet`å‡½æ•°ï¼ˆç›®å‰ä»…æœ‰13ä¸ªuCOS-III APIæ— æ³•å…¼å®¹ï¼‰
 
-**[add]** ÊµÏÖIdleÈÎÎñ£¨ÊµÔòÎªRTT IdleÈÎÎñµÄ»Øµ÷º¯Êý£©
+**[add]** å®žçŽ°Idleä»»åŠ¡ï¼ˆå®žåˆ™ä¸ºRTT Idleä»»åŠ¡çš„å›žè°ƒå‡½æ•°ï¼‰
 
-**[add]** ÊµÏÖIdleÈÎÎñ¹³×Óº¯Êý`OSIdleTaskHook()`
+**[add]** å®žçŽ°Idleä»»åŠ¡é’©å­å‡½æ•°`OSIdleTaskHook()`
 
-**[add]** ÊµÏÖuCOS-IIIÄÚ²¿ÈÎÎñ¡ª¡ªÍ³¼ÆÈÎÎñ
+**[add]** å®žçŽ°uCOS-IIIå†…éƒ¨ä»»åŠ¡â€”â€”ç»Ÿè®¡ä»»åŠ¡
 
 ## v0.3.0
 
-**[bug fix]** ÐÞ¸´`OSSemDel`º¯ÊýÎÞ·¨·µ»Øµ±Ç°µÈ´ýÐÅºÅÁ¿ÊýÁ¿¡¢ÎÞ·¨Ê¹ÓÃ`OS_OPT_DEL_NO_PEND`Ñ¡ÏîµÄÎÊÌâ£¨ÒÑÖª£©
+**[bug fix]** ä¿®å¤`OSSemDel`å‡½æ•°æ— æ³•è¿”å›žå½“å‰ç­‰å¾…ä¿¡å·é‡æ•°é‡ã€æ— æ³•ä½¿ç”¨`OS_OPT_DEL_NO_PEND`é€‰é¡¹çš„é—®é¢˜ï¼ˆå·²çŸ¥ï¼‰
 
-**[bug fix]** ÐÞ¸´`OSMutexDel`º¯ÊýÎÞ·¨·µ»Øµ±Ç°µÈ´ýÐÅºÅÁ¿ÊýÁ¿¡¢ÎÞ·¨Ê¹ÓÃ`OS_OPT_DEL_NO_PEND`Ñ¡ÏîµÄÎÊÌâ£¨ÒÑÖª£©
+**[bug fix]** ä¿®å¤`OSMutexDel`å‡½æ•°æ— æ³•è¿”å›žå½“å‰ç­‰å¾…ä¿¡å·é‡æ•°é‡ã€æ— æ³•ä½¿ç”¨`OS_OPT_DEL_NO_PEND`é€‰é¡¹çš„é—®é¢˜ï¼ˆå·²çŸ¥ï¼‰
 
-**[bug fix]** ÐÞ¸´`OSQDel`º¯ÊýÎÞ·¨·µ»Øµ±Ç°µÈ´ýÐÅºÅÁ¿ÊýÁ¿¡¢ÎÞ·¨Ê¹ÓÃ`OS_OPT_DEL_NO_PEND`Ñ¡ÏîµÄÎÊÌâ£¨ÒÑÖª£©
+**[bug fix]** ä¿®å¤`OSQDel`å‡½æ•°æ— æ³•è¿”å›žå½“å‰ç­‰å¾…ä¿¡å·é‡æ•°é‡ã€æ— æ³•ä½¿ç”¨`OS_OPT_DEL_NO_PEND`é€‰é¡¹çš„é—®é¢˜ï¼ˆå·²çŸ¥ï¼‰
 
-**[bug fix]** ÐÞ¸´`OSFlagDel`º¯ÊýÎÞ·¨·µ»Øµ±Ç°µÈ´ýÐÅºÅÁ¿ÊýÁ¿¡¢ÎÞ·¨Ê¹ÓÃ`OS_OPT_DEL_NO_PEND`Ñ¡ÏîµÄÎÊÌâ£¨ÒÑÖª£©
+**[bug fix]** ä¿®å¤`OSFlagDel`å‡½æ•°æ— æ³•è¿”å›žå½“å‰ç­‰å¾…ä¿¡å·é‡æ•°é‡ã€æ— æ³•ä½¿ç”¨`OS_OPT_DEL_NO_PEND`é€‰é¡¹çš„é—®é¢˜ï¼ˆå·²çŸ¥ï¼‰
 
-**[bug fix]** `OSSemPend`º¯ÊýÔö¼ÓÁË´¦Àí`OS_ERR_PEND_ABORT`µÄ¹¦ÄÜ£¨ÒÑÖª£©
+**[bug fix]** `OSSemPend`å‡½æ•°å¢žåŠ äº†å¤„ç†`OS_ERR_PEND_ABORT`çš„åŠŸèƒ½ï¼ˆå·²çŸ¥ï¼‰
 
-**[bug fix]** `OSMutexPend`º¯ÊýÔö¼ÓÁË´¦Àí`OS_ERR_PEND_ABORT`µÄ¹¦ÄÜ£¨ÒÑÖª£©
+**[bug fix]** `OSMutexPend`å‡½æ•°å¢žåŠ äº†å¤„ç†`OS_ERR_PEND_ABORT`çš„åŠŸèƒ½ï¼ˆå·²çŸ¥ï¼‰
 
-**[bug fix]** `OSQPend`º¯ÊýÔö¼ÓÁË´¦Àí`OS_ERR_PEND_ABORT`µÄ¹¦ÄÜ£¨ÒÑÖª£©
+**[bug fix]** `OSQPend`å‡½æ•°å¢žåŠ äº†å¤„ç†`OS_ERR_PEND_ABORT`çš„åŠŸèƒ½ï¼ˆå·²çŸ¥ï¼‰
 
-**[bug fix]** `OSFlagPend`º¯ÊýÔö¼ÓÁË´¦Àí`OS_ERR_PEND_ABORT`µÄ¹¦ÄÜ£¨ÒÑÖª£©
+**[bug fix]** `OSFlagPend`å‡½æ•°å¢žåŠ äº†å¤„ç†`OS_ERR_PEND_ABORT`çš„åŠŸèƒ½ï¼ˆå·²çŸ¥ï¼‰
 
-**[add]** Ôö¼Ó¼æÈÝÔ­°æ`OS_TCB`½á¹¹Ìå³ÉÔ±±äÁ¿
+**[add]** å¢žåŠ å…¼å®¹åŽŸç‰ˆ`OS_TCB`ç»“æž„ä½“æˆå‘˜å˜é‡
 
-**[add]** ÊµÏÖ`OSTimeDlyResume`º¯Êý
+**[add]** å®žçŽ°`OSTimeDlyResume`å‡½æ•°
 
-**[add]** ÊµÏÖ`OSSemPendAbort`º¯Êý
+**[add]** å®žçŽ°`OSSemPendAbort`å‡½æ•°
 
-**[add]** ÊµÏÖ`OSTaskSemPendAbort`º¯Êý
+**[add]** å®žçŽ°`OSTaskSemPendAbort`å‡½æ•°
 
-**[add]** ÊµÏÖ`OSMutexPendAbort`º¯Êý
+**[add]** å®žçŽ°`OSMutexPendAbort`å‡½æ•°
 
-**[add]** ÊµÏÖ`OSQPendAbort`º¯Êý
+**[add]** å®žçŽ°`OSQPendAbort`å‡½æ•°
 
-**[add]** ÊµÏÖ`OSTaskQPendAbort`º¯Êý
+**[add]** å®žçŽ°`OSTaskQPendAbort`å‡½æ•°
 
-**[add]** ÊµÏÖ`OSFlagPendAbort`º¯Êý
+**[add]** å®žçŽ°`OSFlagPendAbort`å‡½æ•°
 
-**[add]** ÊµÏÖ`OSSchedRoundRobinCfg`º¯Êý
+**[add]** å®žçŽ°`OSSchedRoundRobinCfg`å‡½æ•°
 
-**[add]** ÊµÏÖ`OSFlagPendGetFlagsRdy`º¯Êý
+**[add]** å®žçŽ°`OSFlagPendGetFlagsRdy`å‡½æ•°
 
-**[add]** ÊµÏÖ`OSFlagPendGetFlagsRdy`º¯Êý
+**[add]** å®žçŽ°`OSFlagPendGetFlagsRdy`å‡½æ•°
 
-**[add]** ÊµÏÖ`OSTaskQFlush`º¯Êý
+**[add]** å®žçŽ°`OSTaskQFlush`å‡½æ•°
 
-**[add]** ÊµÏÖ`OSQFlush`º¯Êý£¨Ä¿Ç°½öÓÐ2¸öuCOS-III APIÎÞ·¨¼æÈÝ£©
+**[add]** å®žçŽ°`OSQFlush`å‡½æ•°ï¼ˆç›®å‰ä»…æœ‰2ä¸ªuCOS-III APIæ— æ³•å…¼å®¹ï¼‰
 
 ## v0.4.0
 
-**[add]** ÒÆÖ²`cpu_core.c`ÎÄ¼þÔö¼Ó`CPU_Init`º¯Êý£¬·ÀÖ¹ÀÏÏîÄ¿ÒÆÖ²Ê±ÒòÎªÃ»ÓÐ¸Ãº¯Êý¶ø±¨´í£¬ÔÚº¯ÊýÄÚÃ»ÓÐÈÎºÎ¶¯×÷(DO NOTHING)
+**[add]** ç§»æ¤`cpu_core.c`æ–‡ä»¶å¢žåŠ `CPU_Init`å‡½æ•°ï¼Œé˜²æ­¢è€é¡¹ç›®ç§»æ¤æ—¶å› ä¸ºæ²¡æœ‰è¯¥å‡½æ•°è€ŒæŠ¥é”™ï¼Œåœ¨å‡½æ•°å†…æ²¡æœ‰ä»»ä½•åŠ¨ä½œ(DO NOTHING)
 
-**[del]** ÈÎÎñÄÚ½¨ÏûÏ¢¶ÓÁÐ¡¢ÈÎÎñÄÚ½¨ÐÅºÅÁ¿Ö±½ÓÑØÓÃÈÎÎñµÄname£¬²»ÔÙstrcat×Ö·û´®
+**[del]** ä»»åŠ¡å†…å»ºæ¶ˆæ¯é˜Ÿåˆ—ã€ä»»åŠ¡å†…å»ºä¿¡å·é‡ç›´æŽ¥æ²¿ç”¨ä»»åŠ¡çš„nameï¼Œä¸å†strcatå­—ç¬¦ä¸²
 
-**[bug fix]** ÊµÏÖÁËÓÉRTT¶¨Ê±Æ÷»Øµ÷º¯ÊýÒ»¸ö²ÎÊý£¬µ½¦ÌCOS-III¶¨Ê±Æ÷»Øµ÷º¯ÊýÁ½¸ö²ÎÊýµÄ×ª»»£¬ÔÚÒÆÖ²Ê±¿ÉÒÔÖ±½ÓÑØÓÃÔ­°æ»Øµ÷º¯Êý£¬ÎÞÐèÔÙÐÞ¸ÄÎªRTT¶¨Ê±Æ÷µÄ»Øµ÷º¯ÊýÑùÊ½¡££¨ÒÑÖª£©
+**[bug fix]** å®žçŽ°äº†ç”±RTTå®šæ—¶å™¨å›žè°ƒå‡½æ•°ä¸€ä¸ªå‚æ•°ï¼Œåˆ°Î¼COS-IIIå®šæ—¶å™¨å›žè°ƒå‡½æ•°ä¸¤ä¸ªå‚æ•°çš„è½¬æ¢ï¼Œåœ¨ç§»æ¤æ—¶å¯ä»¥ç›´æŽ¥æ²¿ç”¨åŽŸç‰ˆå›žè°ƒå‡½æ•°ï¼Œæ— éœ€å†ä¿®æ”¹ä¸ºRTTå®šæ—¶å™¨çš„å›žè°ƒå‡½æ•°æ ·å¼ã€‚ï¼ˆå·²çŸ¥ï¼‰
 
-**[add]** ÍêÕûÊµÏÖÁË`p_tmr->State`µÄËùÓÐÑ¡Ïî£¬ÖØÐÂÊµÏÖÁË`OSTmrStateGet`º¯Êý
+**[add]** å®Œæ•´å®žçŽ°äº†`p_tmr->State`çš„æ‰€æœ‰é€‰é¡¹ï¼Œé‡æ–°å®žçŽ°äº†`OSTmrStateGet`å‡½æ•°
 
-**[bug fix]** ÊµÏÖ¦ÌCOS-IIIÈí¼þ¶¨Ê±Æ÷´øÓÐÑÓ³ÙµÄÖÜÆÚÑÓÊ±¹¦ÄÜ(ÒÑÖª£¬`os_tmr.c`ÊÜÏÞÏîÈ«²¿½â¾ö)
+**[bug fix]** å®žçŽ°Î¼COS-IIIè½¯ä»¶å®šæ—¶å™¨å¸¦æœ‰å»¶è¿Ÿçš„å‘¨æœŸå»¶æ—¶åŠŸèƒ½(å·²çŸ¥ï¼Œ`os_tmr.c`å—é™é¡¹å…¨éƒ¨è§£å†³)
 
-**[bug fix]** `OSInit`º¯ÊýÄÚ¼ÓÈëÁÙ½çÇø±£»¤
+**[bug fix]** `OSInit`å‡½æ•°å†…åŠ å…¥ä¸´ç•ŒåŒºä¿æŠ¤
 
-**[add]** ÄÚºË¶ÔÏóË«ÏòDbgÁ´±íÈ«²¿ÊµÏÖ£¬²¢ÓëFinSH¶Ô½Ó£¬¿ÉÒÔÔÚmshÄ£Ê½ÏÂÊ¹ÓÃucosÃüÁî²é¿´¼æÈÝ²ã¹ÜÀíµÄÄÚºË¶ÔÏóÒÔ¼°Ïà¹ØÐÅÏ¢£¨ÀýÈçCPUÊ¹ÓÃÂÊ£©
+**[add]** å†…æ ¸å¯¹è±¡åŒå‘Dbgé“¾è¡¨å…¨éƒ¨å®žçŽ°ï¼Œå¹¶ä¸ŽFinSHå¯¹æŽ¥ï¼Œå¯ä»¥åœ¨mshæ¨¡å¼ä¸‹ä½¿ç”¨ucoså‘½ä»¤æŸ¥çœ‹å…¼å®¹å±‚ç®¡ç†çš„å†…æ ¸å¯¹è±¡ä»¥åŠç›¸å…³ä¿¡æ¯ï¼ˆä¾‹å¦‚CPUä½¿ç”¨çŽ‡ï¼‰
 
 ## v0.5.0
 
-**[bug fix]** ÊµÏÖ²¢½â¾ö`OSSemPost`º¯Êý`OS_OPT_POST_ALL`Ñ¡Ïî£¨ÒÑÖª£©
+**[bug fix]** å®žçŽ°å¹¶è§£å†³`OSSemPost`å‡½æ•°`OS_OPT_POST_ALL`é€‰é¡¹ï¼ˆå·²çŸ¥ï¼‰
 
-**[add]** Ôö¼Ó¦ÌC/LIBÈ«²¿ÎÄ¼þ£¨V1.39.00£©
+**[add]** å¢žåŠ Î¼C/LIBå…¨éƒ¨æ–‡ä»¶ï¼ˆV1.39.00ï¼‰
 
-**[add]** ÊµÏÖ¦ÌC/CPUÖÐ`CPU_NameClr`¡¢`CPU_NameGet`¡¢`CPU_NameSet`º¯Êý
+**[add]** å®žçŽ°Î¼C/CPUä¸­`CPU_NameClr`ã€`CPU_NameGet`ã€`CPU_NameSet`å‡½æ•°
 
-**[add]** ÊµÏÖÓë¦ÌC/ProbeÈí¼þµÄ¶Ô½ÓÒÔ¼°¶Ô½ÓËùÐèµÄ±ØÒª³ÉÔ±±äÁ¿
+**[add]** å®žçŽ°ä¸ŽÎ¼C/Probeè½¯ä»¶çš„å¯¹æŽ¥ä»¥åŠå¯¹æŽ¥æ‰€éœ€çš„å¿…è¦æˆå‘˜å˜é‡
 
-**[bug fix]** ÐÞ¸´`OSMutexPendAbort`¡¢`OSSemPendAbort`¡¢`OSQPendAbort`¡¢`OSFlagPendAbort`º¯Êý·µ»ØÖµÓÉ µ±Ç°»¹ÓÐ¶àÉÙÈÎÎñÔÚµÈ´ý¸ÃÄÚºË¶ÔÏó ¸ÄÎª ·ÅÆúÁË¶àÉÙ¸öÈÎÎñ
+**[bug fix]** ä¿®å¤`OSMutexPendAbort`ã€`OSSemPendAbort`ã€`OSQPendAbort`ã€`OSFlagPendAbort`å‡½æ•°è¿”å›žå€¼ç”± å½“å‰è¿˜æœ‰å¤šå°‘ä»»åŠ¡åœ¨ç­‰å¾…è¯¥å†…æ ¸å¯¹è±¡ æ”¹ä¸º æ”¾å¼ƒäº†å¤šå°‘ä¸ªä»»åŠ¡
 
-**[bug fix]** ÐÞ¸´ÁËCPUÊ¹ÓÃÂÊÍ»È»ì­ÉýÖÁ100%µÄÎÊÌâ£¬¸ÃÎÊÌâÎª¦ÌCOS-IIIÔ­°æ£¨3.03°æ±¾£©ÄÚ²¿bug£¬¼´±ãÊÇ×îÐÂ°æµÄ3.08°æ±¾¸ÃÎÊÌâÒÀÈ»Ã»ÓÐµÃµ½³¹µ×½â¾ö£¨½ö½öÊÇ½«ì­ÉýÖÁ100%¸Ä³ÉÁËÖè½µÖÁ0%£©
+**[bug fix]** ä¿®å¤äº†CPUä½¿ç”¨çŽ‡çªç„¶é£™å‡è‡³100%çš„é—®é¢˜ï¼Œè¯¥é—®é¢˜ä¸ºÎ¼COS-IIIåŽŸç‰ˆï¼ˆ3.03ç‰ˆæœ¬ï¼‰å†…éƒ¨bugï¼Œå³ä¾¿æ˜¯æœ€æ–°ç‰ˆçš„3.08ç‰ˆæœ¬è¯¥é—®é¢˜ä¾ç„¶æ²¡æœ‰å¾—åˆ°å½»åº•è§£å†³ï¼ˆä»…ä»…æ˜¯å°†é£™å‡è‡³100%æ”¹æˆäº†éª¤é™è‡³0%ï¼‰
 
 ## v0.6.0
 
-**[add]** Ôö¼Ó`OS_TASK_STATE_SUSPENDED`ÈÎÎñ×´Ì¬
+**[add]** å¢žåŠ `OS_TASK_STATE_SUSPENDED`ä»»åŠ¡çŠ¶æ€
 
-**[bug fix]** ÐÞ¸´`OSTmrRemainGet`º¯Êý¼ÆËãÊ£ÓàÊ±¼äµÄ´íÎó
+**[bug fix]** ä¿®å¤`OSTmrRemainGet`å‡½æ•°è®¡ç®—å‰©ä½™æ—¶é—´çš„é”™è¯¯
 
-**[add]** ÊµÏÖ`OS_TMR`½á¹¹Ìå`.Match`ºÍ`.Remain`³ÉÔ±±äÁ¿
+**[add]** å®žçŽ°`OS_TMR`ç»“æž„ä½“`.Match`å’Œ`.Remain`æˆå‘˜å˜é‡
 
-**[add]** ÊµÏÖ´íÎó´úÂë`OS_ERR_TASK_SUSPENDED`  ¡¢`OS_ERR_TASK_OPT`¡¢`OS_ERR_LOCK_NESTING_OVF`¡¢`OS_ERR_MUTEX_NESTING`¡¢`OS_ERR_MUTEX_OWNER`¡¢`OS_ERR_ROUND_ROBIN_DISABLED`¡¢`OS_ERR_STK_LIMIT_INVALID` ¡¢`OS_ERR_FLAG_PEND_OPT`
+**[add]** å®žçŽ°é”™è¯¯ä»£ç `OS_ERR_TASK_SUSPENDED`  ã€`OS_ERR_TASK_OPT`ã€`OS_ERR_LOCK_NESTING_OVF`ã€`OS_ERR_MUTEX_NESTING`ã€`OS_ERR_MUTEX_OWNER`ã€`OS_ERR_ROUND_ROBIN_DISABLED`ã€`OS_ERR_STK_LIMIT_INVALID` ã€`OS_ERR_FLAG_PEND_OPT`
 
-**[enhance]** ¶Ô`OSTaskStkChk`º¯Êýµ±´«Èë`OS_TCB*`²ÎÊýÎª¿ÕÊ±£¬×ª»»Îªµ±Ç°`OS_TCB*`µÄÂß¼­×öÁËµ÷Õû
+**[enhance]** å¯¹`OSTaskStkChk`å‡½æ•°å½“ä¼ å…¥`OS_TCB*`å‚æ•°ä¸ºç©ºæ—¶ï¼Œè½¬æ¢ä¸ºå½“å‰`OS_TCB*`çš„é€»è¾‘åšäº†è°ƒæ•´
 
-**[bug fix]** ¶Ôº¯Êý`OSTmrRemainGet`¡¢`OSTmrStop`¡¢`OSTmrStateGet`¡¢`OSTmrStart`¡¢`OSTmrDel`·ÂÕÕÔ­°æÔö¼Ó¶¨Ê±Æ÷×´Ì¬¼ì²é¹¦ÄÜ
+**[bug fix]** å¯¹å‡½æ•°`OSTmrRemainGet`ã€`OSTmrStop`ã€`OSTmrStateGet`ã€`OSTmrStart`ã€`OSTmrDel`ä»¿ç…§åŽŸç‰ˆå¢žåŠ å®šæ—¶å™¨çŠ¶æ€æ£€æŸ¥åŠŸèƒ½
 
 ## v0.7.0
 
-**[bug fix]** ÐÞ¸´`OSInit`º¯Êýreturn·ÖÖ§Ã»ÓÐµ÷ÓÃ`CPU_CRITICAL_EXIT()`´ò¿ªÖÐ¶ÏµÄbug
+**[bug fix]** ä¿®å¤`OSInit`å‡½æ•°returnåˆ†æ”¯æ²¡æœ‰è°ƒç”¨`CPU_CRITICAL_EXIT()`æ‰“å¼€ä¸­æ–­çš„bug
 
-**[add 3.08]** Ôö¼Ó3.08°æ±¾ÖÐÐÂÔöµÄ`OSInitialized`È«¾Ö±äÁ¿£»`OS_FALSE`¡¢`OS_TRUE`ºê¶¨Òå£»´íÎó´úÂë`OS_ERR_OS_NOT_INIT`¡¢`OS_ERR_OS_NO_APP_TASK`
+**[add 3.08]** å¢žåŠ 3.08ç‰ˆæœ¬ä¸­æ–°å¢žçš„`OSInitialized`å…¨å±€å˜é‡ï¼›`OS_FALSE`ã€`OS_TRUE`å®å®šä¹‰ï¼›é”™è¯¯ä»£ç `OS_ERR_OS_NOT_INIT`ã€`OS_ERR_OS_NO_APP_TASK`
 
-**[add 3.08]** É¾³ýÒÑ¾­ÔÚ3.08ÖÐ·ÏÆúµÄ´íÎó´úÂë`OS_ERR_INT_Q`¡¢`OS_ERR_INT_Q_FULL`¡¢`OS_ERR_INT_Q_SIZE`¡¢`OS_ERR_INT_Q_STK_INVALID`¡¢`OS_ERR_INT_Q_STK_SIZE_INVALID`£»Ôö¼Ó3.08´íÎó´úÂë`OS_ERR_ILLEGAL_DEL_RUN_TIME`£¬Í¬Ê±²¹³ä¸Ã´íÎó´úÂëµÄÏà¹ØÊµÏÖ
+**[add 3.08]** åˆ é™¤å·²ç»åœ¨3.08ä¸­åºŸå¼ƒçš„é”™è¯¯ä»£ç `OS_ERR_INT_Q`ã€`OS_ERR_INT_Q_FULL`ã€`OS_ERR_INT_Q_SIZE`ã€`OS_ERR_INT_Q_STK_INVALID`ã€`OS_ERR_INT_Q_STK_SIZE_INVALID`ï¼›å¢žåŠ 3.08é”™è¯¯ä»£ç `OS_ERR_ILLEGAL_DEL_RUN_TIME`ï¼ŒåŒæ—¶è¡¥å……è¯¥é”™è¯¯ä»£ç çš„ç›¸å…³å®žçŽ°
 
-**[add 3.08]** ÔÚ`OSTmrDel`¡¢`OSTaskDel`¡¢`OSMutexDel`¡¢`OSSemDel`¡¢`OSQDel`¡¢`OSFlagDel`º¯ÊýÔö¼Ó`OS_SAFETY_CRITICAL_IEC61508`Ïà¹Ø¼ì²é
+**[add 3.08]** åœ¨`OSTmrDel`ã€`OSTaskDel`ã€`OSMutexDel`ã€`OSSemDel`ã€`OSQDel`ã€`OSFlagDel`å‡½æ•°å¢žåŠ `OS_SAFETY_CRITICAL_IEC61508`ç›¸å…³æ£€æŸ¥
 
-**[add 3.08]** Ôö¼Ó´íÎó´úÂë`OS_ERR_MUTEX_OVF`£¬Í¬Ê±²¹³ä¸Ã´íÎó´úÂëµÄÏà¹ØÊµÏÖ
+**[add 3.08]** å¢žåŠ é”™è¯¯ä»£ç `OS_ERR_MUTEX_OVF`ï¼ŒåŒæ—¶è¡¥å……è¯¥é”™è¯¯ä»£ç çš„ç›¸å…³å®žçŽ°
 
-**[add 3.08]** Ôö¼Ó´íÎó´úÂë`OS_ERR_TASK_SUSPEND_CTR_OVF`£¬Í¬Ê±²¹³ä¸Ã´íÎó´úÂëµÄÏà¹ØÊµÏÖ
+**[add 3.08]** å¢žåŠ é”™è¯¯ä»£ç `OS_ERR_TASK_SUSPEND_CTR_OVF`ï¼ŒåŒæ—¶è¡¥å……è¯¥é”™è¯¯ä»£ç çš„ç›¸å…³å®žçŽ°
 
-**[add 3.08]** Ôö¼Ó´íÎó´úÂë`OS_ERR_TMR_INVALID_CALLBACK`£¬Í¬Ê±²¹³ä¸Ã´íÎó´úÂëµÄÏà¹ØÊµÏÖ
+**[add 3.08]** å¢žåŠ é”™è¯¯ä»£ç `OS_ERR_TMR_INVALID_CALLBACK`ï¼ŒåŒæ—¶è¡¥å……è¯¥é”™è¯¯ä»£ç çš„ç›¸å…³å®žçŽ°
 
-3.08°æ±¾´íÎó´úÂëÏà¹ØµÄ¼æÈÝÒÑ¾­È«²¿Íê³É
+3.08ç‰ˆæœ¬é”™è¯¯ä»£ç ç›¸å…³çš„å…¼å®¹å·²ç»å…¨éƒ¨å®Œæˆ
 
-**[add 3.08]** Ôö¼Ó3.08°æ±¾µÄÏòÏÂ¼æÈÝºê¶¨Òå£¨os.h£©
+**[add 3.08]** å¢žåŠ 3.08ç‰ˆæœ¬çš„å‘ä¸‹å…¼å®¹å®å®šä¹‰ï¼ˆos.hï¼‰
 
-**[add 3.08]** Ôö¼Ó`OS_CFG_INVALID_OS_CALLS_CHK_EN`ºê¼°ÆäÊµÏÖ
+**[add 3.08]** å¢žåŠ `OS_CFG_INVALID_OS_CALLS_CHK_EN`å®åŠå…¶å®žçŽ°
 
-**[add]** ÔÚÃ¿¸öcºÍhÎÄ¼þ¿ªÊ¼Î»ÖÃ¶¼²¹³äÁË¦ÌCOS-III×îÐÂµÄ¿ªÔ´Ð­ÒéÐÅÏ¢
+**[add]** åœ¨æ¯ä¸ªcå’Œhæ–‡ä»¶å¼€å§‹ä½ç½®éƒ½è¡¥å……äº†Î¼COS-IIIæœ€æ–°çš„å¼€æºåè®®ä¿¡æ¯
 
-**[bug fix]** ÐÞ¸´`OSTaskDel`º¯ÊýÔÚTCBÖ¸ÕëÎªNULL¼´É¾³ýÈÎÎñ×Ô¼ºÊ±£¬Ã»ÓÐ¼°Ê±½«ÄÚ²¿±äÁ¿`p_tcb`¸³ÖµÎªµ±Ç°ÈÎÎñÖ¸ÕëµÄbug
+**[bug fix]** ä¿®å¤`OSTaskDel`å‡½æ•°åœ¨TCBæŒ‡é’ˆä¸ºNULLå³åˆ é™¤ä»»åŠ¡è‡ªå·±æ—¶ï¼Œæ²¡æœ‰åŠæ—¶å°†å†…éƒ¨å˜é‡`p_tcb`èµ‹å€¼ä¸ºå½“å‰ä»»åŠ¡æŒ‡é’ˆçš„bug
 
-**[add]** ÊµÏÖ`OS_CFG_TASK_IDLE_EN`ºêÒÔ¼°Ïà¹Ø¼ì²é
+**[add]** å®žçŽ°`OS_CFG_TASK_IDLE_EN`å®ä»¥åŠç›¸å…³æ£€æŸ¥
 
-**[bug fix]** ÐÞ¸Ä`OS_TMR`½á¹¹Ìå`.Remain`¡¢`.Match`³ÉÔ±±äÁ¿¸³ÖµµÄbug
+**[bug fix]** ä¿®æ”¹`OS_TMR`ç»“æž„ä½“`.Remain`ã€`.Match`æˆå‘˜å˜é‡èµ‹å€¼çš„bug
 
-**[add 3.08]** ÊµÏÖ3.06°æ±¾ÖÐÐÂÔöµÄ`OSTmrSet`º¯Êý
+**[add 3.08]** å®žçŽ°3.06ç‰ˆæœ¬ä¸­æ–°å¢žçš„`OSTmrSet`å‡½æ•°
 
 ## v0.8.0
 
-**[add]** ÊµÏÖ`OSTaskChangePrio`º¯Êý£¬Ä¿Ç°¼æÈÝ²ã½ö1¸öAPIÃ»ÓÐÊµÏÖ
+**[add]** å®žçŽ°`OSTaskChangePrio`å‡½æ•°ï¼Œç›®å‰å…¼å®¹å±‚ä»…1ä¸ªAPIæ²¡æœ‰å®žçŽ°
 
 ## v0.9.0
 
-**[bug fix]**  ÐÞ¸´`p_tcb->TaskState`±äÁ¿£¬Ôö¼ÓÒÔÏÂ¹¦ÄÜ£º
+**[bug fix]**  ä¿®å¤`p_tcb->TaskState`å˜é‡ï¼Œå¢žåŠ ä»¥ä¸‹åŠŸèƒ½ï¼š
 
 ```c
 #define  OS_TASK_STATE_PEND_TIMEOUT           (OS_STATE)(  3u)  /*   0 1 1     Pend + Timeout                         */
@@ -543,122 +543,114 @@
 #define  OS_TASK_STATE_PEND_TIMEOUT_SUSPENDED (OS_STATE)(  7u)  /*   1 1 1     Suspended + Pend + Timeout             */
 ```
 
-**[add]** Ôö¼Ó`suspend_example.c`Àý³Ì
+**[add]** å¢žåŠ `suspend_example.c`ä¾‹ç¨‹
 
 ## v0.10.0
 
-**[bug fix]** ÐÞ¸´Ã»ÓÐµ÷ÓÃ`OS_MemInit`º¯Êý³õÊ¼»¯ÄÚ´æ³ØµÄbug
+**[bug fix]** ä¿®å¤æ²¡æœ‰è°ƒç”¨`OS_MemInit`å‡½æ•°åˆå§‹åŒ–å†…å­˜æ± çš„bug
 
-**[bug fix]** ÐÞ¸´`OS_TmrCallback`¶¨Ê±Æ÷ÄÚ²¿»Øµ÷º¯ÊýÔÚ´¦Àí`OSTmrSet`¸üÐÂ²ÎÊýÊ±¶¨Ê±Æ÷²ÎÊý¿ÉÄÜÎÞ·¨ÖØÐÂÉèÖÃµÄbug
+**[bug fix]** ä¿®å¤`OS_TmrCallback`å®šæ—¶å™¨å†…éƒ¨å›žè°ƒå‡½æ•°åœ¨å¤„ç†`OSTmrSet`æ›´æ–°å‚æ•°æ—¶å®šæ—¶å™¨å‚æ•°å¯èƒ½æ— æ³•é‡æ–°è®¾ç½®çš„bug
 
-**[add]** Ôö¼Ó¶Ô`OSInit`º¯ÊýµÄ´íÎóÂë¼ì²é´úÂë
+**[add]** å¢žåŠ å¯¹`OSInit`å‡½æ•°çš„é”™è¯¯ç æ£€æŸ¥ä»£ç 
 
-**[bug fix]** ÐÞ¸´`OSStart`º¯ÊýÄÚÍ³¼Æ¼æÈÝ²ãÄÚ²¿ÈÎÎñÊýÁ¿µÄ´íÎó£¨²»Ó¦ÔÙ°üº¬¿ÕÏÐÈÎÎñºÍ¶¨Ê±Æ÷ÈÎÎñ£¬ÕâÁ½¸öÈÎÎñÓ¦ÎªRTTÄÚ²¿ÈÎÎñ£©
+**[bug fix]** ä¿®å¤`OSStart`å‡½æ•°å†…ç»Ÿè®¡å…¼å®¹å±‚å†…éƒ¨ä»»åŠ¡æ•°é‡çš„é”™è¯¯ï¼ˆä¸åº”å†åŒ…å«ç©ºé—²ä»»åŠ¡å’Œå®šæ—¶å™¨ä»»åŠ¡ï¼Œè¿™ä¸¤ä¸ªä»»åŠ¡åº”ä¸ºRTTå†…éƒ¨ä»»åŠ¡ï¼‰
 
-**[fix]** ½«`OS_TmrCallback`º¯ÊýÉèÎªstaticÎÄ¼þË½ÓÐº¯Êý 
+**[fix]** å°†`OS_TmrCallback`å‡½æ•°è®¾ä¸ºstaticæ–‡ä»¶ç§æœ‰å‡½æ•° 
 
-**[del]** ÇåÀíÉ¾³ý`OSTmrCreate`º¯Êý¶àÓà²ÎÊý¼ì²é´úÂë
+**[del]** æ¸…ç†åˆ é™¤`OSTmrCreate`å‡½æ•°å¤šä½™å‚æ•°æ£€æŸ¥ä»£ç 
 
-ÕûÀí`os_tmr.c`×¢ÊÍ
+æ•´ç†`os_tmr.c`æ³¨é‡Š
 
-½«`OSSemPost `ºÍ `OSMutexPost`º¯Êý¸ÄÎª¶Ô`OS_OPT_POST_NO_SCHED`Ñ¡ÏîºöÂÔ
+å°†`OSSemPost `å’Œ `OSMutexPost`å‡½æ•°æ”¹ä¸ºå¯¹`OS_OPT_POST_NO_SCHED`é€‰é¡¹å¿½ç•¥
 
-**[bug fix]** ½«´úÂëÖÐ¦ÌCOS¸ÄÎªuCOS·ÀÖ¹ÔÚÖÕ¶ËÊä³öÊ±ÓÉÓÚ¦Ì²»ÊÇASCIIÂë¶ø³öÏÖÂÒÂë
+**[bug fix]** å°†ä»£ç ä¸­Î¼COSæ”¹ä¸ºuCOSé˜²æ­¢åœ¨ç»ˆç«¯è¾“å‡ºæ—¶ç”±äºŽÎ¼ä¸æ˜¯ASCIIç è€Œå‡ºçŽ°ä¹±ç 
 
-**[bug fix]** ÐÞ¸´`OS_TmrCallback`º¯ÊýÖÐ£¬ÔÚÓÐÑÓ³ÙµÄÖÜÆÚÑÓÊ±Ã»ÓÐ¶Ô`.Match` `.Remain`³ÉÔ±±äÁ¿ÖØÐÂ¸³ÖµµÄÎÊÌâ
+**[bug fix]** ä¿®å¤`OS_TmrCallback`å‡½æ•°ä¸­ï¼Œåœ¨æœ‰å»¶è¿Ÿçš„å‘¨æœŸå»¶æ—¶æ²¡æœ‰å¯¹`.Match` `.Remain`æˆå‘˜å˜é‡é‡æ–°èµ‹å€¼çš„é—®é¢˜
 
-´´½¨ÈÎÎñÊ±£¬½«ÈÎÎñ¶ÑÕ»µÄÊ×µØÖ·ÓÉ`AppTask1_Stack`¸ÄÎª`&AppTask1_Stack[0]`ÒÔÍ»³ö¶ÑÕ»µÄÊ×µØÖ·
+åˆ›å»ºä»»åŠ¡æ—¶ï¼Œå°†ä»»åŠ¡å †æ ˆçš„é¦–åœ°å€ç”±`AppTask1_Stack`æ”¹ä¸º`&AppTask1_Stack[0]`ä»¥çªå‡ºå †æ ˆçš„é¦–åœ°å€
 
 ## v0.11.0
 
-¶ÔÆë²¢ÕûÀí×¢ÊÍ 
+å¯¹é½å¹¶æ•´ç†æ³¨é‡Š 
 
-**[del]** É¾³ýÎÞÓÃµÄ¹³×Óº¯Êý£¨ÒÑ±»RT-Thread¹³×Óº¯Êý½Ó¹Ü£©
+**[del]** åˆ é™¤æ— ç”¨çš„é’©å­å‡½æ•°ï¼ˆå·²è¢«RT-Threadé’©å­å‡½æ•°æŽ¥ç®¡ï¼‰
 
-**[bug fix]** ÐÞ¸´`OSTimeDlyResume`º¯ÊýÖÐ`p_tcb->TaskState`×´Ì¬´¦ÀíµÄÎÊÌâ
+**[bug fix]** ä¿®å¤`OSTimeDlyResume`å‡½æ•°ä¸­`p_tcb->TaskState`çŠ¶æ€å¤„ç†çš„é—®é¢˜
 
-½«¿ÕÏÐÈÎÎñÄÉÈëµ½`OS_CFG_STAT_TASK_EN`¿ØÖÆ·¶Î§ÄÚ
+å°†ç©ºé—²ä»»åŠ¡çº³å…¥åˆ°`OS_CFG_STAT_TASK_EN`æŽ§åˆ¶èŒƒå›´å†…
 
-**[del]** É¾³ý`os_dbg.c`ÎÞÓÃ´úÂë
+**[del]** åˆ é™¤`os_dbg.c`æ— ç”¨ä»£ç 
 
-**[del]** É¾³ý`os.h`ÎÞÓÃ´úÂë
+**[del]** åˆ é™¤`os.h`æ— ç”¨ä»£ç 
 
-**[add]** ÊµÏÖ`PKG_USING_UCOSIII_WRAPPER_TINY`ÒÔ¾«¼ò¼æÈÝ²ã
+**[add]** å®žçŽ°`PKG_USING_UCOSIII_WRAPPER_TINY`ä»¥ç²¾ç®€å…¼å®¹å±‚
 
-**[del]** É¾³ý`os_task.c`ÎÞÓÃ×¢ÊÍ
+**[del]** åˆ é™¤`os_task.c`æ— ç”¨æ³¨é‡Š
 
 ## v0.12.0
 
-**[add]** Ôö¼Ó`OS_CFG_TASK_SEM_EN`ºê¶¨ÒåÓÃÓÚ²Ã¼ôÈÎÎñÄÚ½¨ÐÅºÅÁ¿
+**[add]** å¢žåŠ `OS_CFG_TASK_SEM_EN`å®å®šä¹‰ç”¨äºŽè£å‰ªä»»åŠ¡å†…å»ºä¿¡å·é‡
 
-**[add]** ÔÚ`os.h`ÖÐÔö¼Óºê¶¨Òå¼ì²é´úÂë
+**[add]** åœ¨`os.h`ä¸­å¢žåŠ å®å®šä¹‰æ£€æŸ¥ä»£ç 
 
-**[del]** É¾³ýÎÞÓÃÅäÖÃºê¶¨Òå
+**[del]** åˆ é™¤æ— ç”¨é…ç½®å®å®šä¹‰
 
-**[adjust]** ÓÅ»¯`PKG_USING_UCOSIII_WRAPPER_TINY`
+**[adjust]** ä¼˜åŒ–`PKG_USING_UCOSIII_WRAPPER_TINY`
 
-**[del]** É¾³ý`OSTaskSuspend()`º¯ÊýÎÞÓÃµÄÑ¡Ôñ·ÖÖ§
+**[del]** åˆ é™¤`OSTaskSuspend()`å‡½æ•°æ— ç”¨çš„é€‰æ‹©åˆ†æ”¯
 
-**[bug fix]** ÐÞ¸´`OSQDel()`º¯ÊýÍü¼Ç»ØÊÕÏûÏ¢ÄÚ´æ³Øµ¼ÖÂÄÚ´æÐ¹Â©µÄÎÊÌâ
+**[bug fix]** ä¿®å¤`OSQDel()`å‡½æ•°å¿˜è®°å›žæ”¶æ¶ˆæ¯å†…å­˜æ± å¯¼è‡´å†…å­˜æ³„æ¼çš„é—®é¢˜
 
-**[adjust]** ÕûÀí`os_q.c`¡¢`os_mem.c`¡¢`os_core.c`¡¢`os_core.c`¡¢`os_flag.c`¡¢`os_stat.c`¡¢`os_task.c`¡¢`os_time.c`¡¢`os_tmr.c`¡¢`os_sem.c`ÎÄ¼þ×¢ÊÍ¸ñÊ½
+**[adjust]** æ•´ç†`os_q.c`ã€`os_mem.c`ã€`os_core.c`ã€`os_core.c`ã€`os_flag.c`ã€`os_stat.c`ã€`os_task.c`ã€`os_time.c`ã€`os_tmr.c`ã€`os_sem.c`æ–‡ä»¶æ³¨é‡Šæ ¼å¼
 
-**[doc]** Ôö¼Ó¶ÔÀÏ°æ±¾`os_pend_multi.c`ÎÄ¼þµÄreadmeËµÃ÷
+**[doc]** å¢žåŠ å¯¹è€ç‰ˆæœ¬`os_pend_multi.c`æ–‡ä»¶çš„readmeè¯´æ˜Ž
 
-**[bug fixed]** ¶Ô`OSFlagPend()`º¯Êý`rt_option`±äÁ¿¸³³õÖµ
+**[bug fixed]** å¯¹`OSFlagPend()`å‡½æ•°`rt_option`å˜é‡èµ‹åˆå€¼
 
-**[adjust]** ÓÅ»¯¹¤³ÌÎÄ¼þ½á¹¹
+**[adjust]** ä¼˜åŒ–å·¥ç¨‹æ–‡ä»¶ç»“æž„
 
-**[adjust]** Í·ÎÄ¼þ²¿·Ö°üº¬ÓÉ<>¸ÄÎª""
+**[adjust]** å¤´æ–‡ä»¶éƒ¨åˆ†åŒ…å«ç”±<>æ”¹ä¸º""
 
-**[bug]** ÐÞ¸´¹Ø±ÕÄ³Ð©ºê¶¨Òå£¬¹¤³Ì±¨´íµÄÎÊÌâ
+**[bug]** ä¿®å¤å…³é—­æŸäº›å®å®šä¹‰ï¼Œå·¥ç¨‹æŠ¥é”™çš„é—®é¢˜
 
-**[add]** `cpu.h`ÎÄ¼þÔö¼Ó`CPU_CFG_STK_ALIGN_BYTES`ºê¶¨Òå
+**[add]** `cpu.h`æ–‡ä»¶å¢žåŠ `CPU_CFG_STK_ALIGN_BYTES`å®å®šä¹‰
 
-**[add]** ÊµÏÖ¶Ô`OS_ERR_PEND_WOULD_BLOCK`´íÎó´úÂëµÄÖ§³Ö
+**[add]** å®žçŽ°å¯¹`OS_ERR_PEND_WOULD_BLOCK`é”™è¯¯ä»£ç çš„æ”¯æŒ
 
-**[add]** Ôö¼Ó`flag_example.c`Àý³Ì
+**[add]** å¢žåŠ `flag_example.c`ä¾‹ç¨‹
 
-**[add]** ÊµÏÖ`OS_CFG_FLAG_MODE_CLR_EN`¹¦ÄÜ
+**[add]** å®žçŽ°`OS_CFG_FLAG_MODE_CLR_EN`åŠŸèƒ½
 
-**[adjust]** `OSQPost`ºÍ`OSFlagPost`º¯Êý¸ÄÎª¶Ô`OS_OPT_POST_NO_SCHED`Ñ¡ÏîºöÂÔ
+**[adjust]** `OSQPost`å’Œ`OSFlagPost`å‡½æ•°æ”¹ä¸ºå¯¹`OS_OPT_POST_NO_SCHED`é€‰é¡¹å¿½ç•¥
 
-**[add]** ÊµÏÖ`OS_TCB`½á¹¹ÌåÖÐ`.FlagsPend`¡¢`.FlagsRdy`¡¢`.FlagsOpt`³ÉÔ±±äÁ¿
+**[add]** å®žçŽ°`OS_TCB`ç»“æž„ä½“ä¸­`.FlagsPend`ã€`.FlagsRdy`ã€`.FlagsOpt`æˆå‘˜å˜é‡
 
 ## v0.13.0
 
-**[add]** ÊµÏÖ¹ã²¥ÏûÏ¢¶ÓÁÐ
+**[add]** å®žçŽ°å¹¿æ’­æ¶ˆæ¯é˜Ÿåˆ—
 
-**[adjust]** ½«×Ô¶¯³õÊ¼»¯ÓÉ`INIT_DEVICE_EXPORT`ÌáÇ°ÖÁ`INIT_PREV_EXPORT`
+**[adjust]** å°†è‡ªåŠ¨åˆå§‹åŒ–ç”±`INIT_DEVICE_EXPORT`æå‰è‡³`INIT_PREV_EXPORT`
 
-ÍêÉÆ`.FlagsRdy`³ÉÔ±±äÁ¿
+å®Œå–„`.FlagsRdy`æˆå‘˜å˜é‡
 
-ÍêÉÆ`p_grp->Flags`³ÉÔ±±äÁ¿
+å®Œå–„`p_grp->Flags`æˆå‘˜å˜é‡
 
-**[fix]** ÐÞ¸´`OSTmrRemainGet()`º¯Êý·µ»Ø½á¹ûµ¥Î»²»Ò»ÖÂµÄÎÊÌâ
+**[fix]** ä¿®å¤`OSTmrRemainGet()`å‡½æ•°è¿”å›žç»“æžœå•ä½ä¸ä¸€è‡´çš„é—®é¢˜
 
-**[fix]** ÐÞ¸´`OS_TMR`½á¹¹Ìå`.Remain`³ÉÔ±±äÁ¿ÊýÖµµ¥Î»²»Ò»ÖÂµÄÎÊÌâ
+**[fix]** ä¿®å¤`OS_TMR`ç»“æž„ä½“`.Remain`æˆå‘˜å˜é‡æ•°å€¼å•ä½ä¸ä¸€è‡´çš„é—®é¢˜
 
-**[fix]** ÐÞ¸´´ÓRT-Threadµ½uCOS-III¶¨Ê±Æ÷»»Ëã¹«Ê½Ã»ÓÐ¿¼ÂÇµ½Systick±ä»¯µÄÎÊÌâ
+**[fix]** ä¿®å¤ä»ŽRT-Threadåˆ°uCOS-IIIå®šæ—¶å™¨æ¢ç®—å…¬å¼æ²¡æœ‰è€ƒè™‘åˆ°Systickå˜åŒ–çš„é—®é¢˜
 
 ## v1.0.0
 
-¾­¹ýÎå¸öÔÂµÄÔ¤·¢²¼²âÊÔ£¬ÕýÊ½·¢²¼v1.0.0°æ±¾
+ç»è¿‡äº”ä¸ªæœˆçš„é¢„å‘å¸ƒæµ‹è¯•ï¼Œæ­£å¼å‘å¸ƒv1.0.0ç‰ˆæœ¬
 
 ## V1.0.1
 
-½«`RT_IPC_FLAG_FIFO`¸ÄÎª`RT_IPC_FLAG_PRIO`ÒÔÈ·±£ÊµÊ±ÐÔ
+å°†`RT_IPC_FLAG_FIFO`æ”¹ä¸º`RT_IPC_FLAG_PRIO`ä»¥ç¡®ä¿å®žæ—¶æ€§
 
 
 
-# TODO
+# å·²çŸ¥é—®é¢˜
 
-## v1.1.0
-
-¾¡Á¦ÊµÏÖ`os_pend_multi.c`
-
-
-
-# ÒÑÖªÎÊÌâ
-
-ÊÜÉÏÓÎRT-ThreadÓ°Ïì(https://github.com/RT-Thread/rt-thread/issues/3946) µ¼ÖÂ¼æÈÝ²ãµÄÈÎÎñ¹ÒÆð/½â¹ÒAPIÔÚ¹ÒÆðÆäËûÈÎÎñÊ±£¬²»ÄÜÕýÈ·¹¤×÷¡£ÈÎÎñ×Ô¼º¹ÒÆð×Ô¼ºÊ±£¬¿ÉÒÔÕý³£¹¤×÷¡£
+å—ä¸Šæ¸¸RT-Threadå½±å“(https://github.com/RT-Thread/rt-thread/issues/3946) å¯¼è‡´å…¼å®¹å±‚çš„ä»»åŠ¡æŒ‚èµ·/è§£æŒ‚APIåœ¨æŒ‚èµ·å…¶ä»–ä»»åŠ¡æ—¶ï¼Œä¸èƒ½æ­£ç¡®å·¥ä½œã€‚ä»»åŠ¡è‡ªå·±æŒ‚èµ·è‡ªå·±æ—¶ï¼Œå¯ä»¥æ­£å¸¸å·¥ä½œã€‚
