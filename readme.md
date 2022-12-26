@@ -33,7 +33,7 @@
 - RT-Thread操作系统的FreeRTOS兼容层：https://github.com/RT-Thread-packages/FreeRTOS-Wrapper
 - RT-Thread操作系统的RTX(即CMSIS-RTOS)兼容层：https://github.com/RT-Thread-packages/CMSIS_RTOS1
 - RT-Thread操作系统的RTX5(即CMSIS-RTOS2)兼容层：https://github.com/RT-Thread-packages/CMSIS_RTOS2
-
+- RT-Thread操作系统的Arduino生态兼容层：https://github.com/RTduino/RTduino
 
 
 ## 1.2 本兼容层适合于
