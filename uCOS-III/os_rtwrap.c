@@ -13,6 +13,9 @@
 #include <rthw.h>
 
 extern void (*rt_object_put_hook)(struct rt_object *object);
+#ifndef __on_rt_object_put_hook
+    #define __on_rt_object_put_hook(parent)         __ON_HOOK_ARGS(rt_object_put_hook, (parent))
+#endif
 
 /**
  * 将RT-Thread错误码转换为uCOS-III错误码
